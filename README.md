@@ -1,4 +1,16 @@
+## Quickly provide multilingual summaries of YouTube videos. This is achieved through the following methods:
+
+1. Utilize local or database to store video summaries. The browser extension will prioritize displaying matching video summaries. If no corresponding summary is found in the database, it will call an LLM (Language Learning Model) to generate a summary and store.
+2. The browser extension will also collect 10 recommended videos to database, summarize them in parallel, and store the summaries in the local or database.
+
+
+
+### Start the Project from  [YouTube Summary with ChatGPT](https://github.com/kazuki-sf/YouTube_Summary_with_ChatGPT)
+-------------------------------------------------
+
+
 # YouTube Summary with ChatGPT
+
 
 YouTube Summary with ChatGPT is a simple Chrome Extension (manifest v3) that allows you to get both YouTube video transcripts and summary of the video with OpenAI's ChatGPT AI technology. Chrome Extension is available on [Chrome Web Store](https://chrome.google.com/webstore/detail/chatgpt-youtube-summary/nmmicjeknamkfloonkhhcjmomieiodli).
 

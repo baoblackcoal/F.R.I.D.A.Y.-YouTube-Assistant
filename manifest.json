@@ -1,6 +1,6 @@
 {
-  "name": "YouTube Summary with ChatGPT",
-  "version": "1.0.4",
+  "name": "YoutubeSummary",
+  "version": "1.0.5",
   "manifest_version": 3,
   "description": "Use ChatGPT to summarize YouTube videos",
   "background": {
