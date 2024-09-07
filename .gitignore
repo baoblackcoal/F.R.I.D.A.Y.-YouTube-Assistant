@@ -6,7 +6,7 @@ dist/
 # IntelliJ
 .idea
 # VS Code
-.vscode
+#.vscode
 
 # npm
 package-lock.json

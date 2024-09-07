@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            // "request": "attach",
+            "name": "Launch Chrome against localhost",
+            "runtimeArgs": [
+                "--load-extension=${workspaceFolder}/dist",
+                "--remote-debugging-port=9222"
+            ],
+            // "port": 9229,
+            // "url": "https://www.youtube.com/watch?v=oc6RV5c1yd0", // webpack项目启动时的web访问地址和端口
+            "url": "https://www.example.com", // webpack项目启动时的web访问地址和端口
+            "webRoot": "${workspaceFolder}/src",
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/*",
+                "webpack:///*": "${webRoot}/*"
+            },
+            "sourceMaps": true,
+            "preLaunchTask": "Run Clean and Build", // The label of the task created in tasks.json
+            "trace": true
+        }
+    ]
+}
