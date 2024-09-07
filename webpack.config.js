@@ -57,7 +57,8 @@ const moduleRules = [
 
 const config = {
     target: 'web',
-    devtool: "cheap-module-source-map",
+    // devtool: "cheap-module-source-map",
+    devtool: 'inline-source-map', 
     mode: process.env.NODE_ENV || "development",
     entry: {
         'contentscript/index': path.join(__dirname, "src", "contentscript", "index.js"),
@@ -75,7 +76,8 @@ const config = {
 };
 
 if (ENV === "development") {
-    config.devtool = 'cheap-module-source-map';
+    config.devtool = 'inline-source-map'
+    // config.devtool = 'cheap-module-source-map';
 }
 
 module.exports = config;
