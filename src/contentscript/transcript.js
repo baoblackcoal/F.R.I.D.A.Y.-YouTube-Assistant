@@ -33,6 +33,25 @@ export async function getTranscript(langOption) {
   return transcript;
 }
 
+
+export async function getRawTranscriptText(link) {
+
+  // Get Transcript
+  const transcriptPageResponse = await fetch(link); // default 0
+  const transcriptPageXml = await transcriptPageResponse.text();
+
+  // Parse Transcript
+  const jQueryParse = $.parseHTML(transcriptPageXml);
+  const textNodes = jQueryParse[1].childNodes;
+
+  // Extract text content and concatenate it into a single string
+  const transcriptText = Array.from(textNodes)
+    .map(i => i.textContent)
+    .join(' '); // Join all text content with a space in between
+
+  return transcriptText;
+}
+
 export async function getRawTranscript(link) {
 
   // Get Transcript

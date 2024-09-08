@@ -8,9 +8,9 @@ window.onload = async () => {
         
     if (window.location.hostname === "www.youtube.com") {
         
-        if (window.location.search !== "" && window.location.search.includes("v=")) {
-            insertSummaryBtn();
-        }
+        // if (window.location.search !== "" && window.location.search.includes("v=")) {
+        //     insertSummaryBtn();
+        // }
 
         const bodyList = document.querySelector("body");
         let observer = new MutationObserver((mutations) => {

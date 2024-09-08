@@ -1,6 +1,6 @@
 "use strict";
 
-import { getLangOptionsWithLink, getTranscriptHTML } from "./transcript";
+import { getLangOptionsWithLink, getTranscriptHTML, getRawTranscriptText } from "./transcript";
 import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
@@ -131,21 +131,42 @@ export function insertSummaryBtn() {
 
         })
 
+       
+        generateSummary();
     });
-
 }
 
-// Call the generate function and update the content dynamically
-const gemini_api_key = process.env.GEMINI_API_KEY;
-setKey(gemini_api_key);
-generate("Hello").then((response_text) => {
-    const contentElement = document.querySelector(".ytbs_content");
-    if (contentElement) {
-        contentElement.textContent = response_text; // Update the content with the generated text
+async function getTranscriptText() {
+     // Get Transcript Language Options & Create Language Select Btns
+     const videoId = getSearchParam(window.location.href).v;
+     const langOptionsWithLink = await getLangOptionsWithLink(videoId);
+     if (!langOptionsWithLink) {
+         noTranscriptionAlert();
+         return null;
+     }
+
+     const text = await getRawTranscriptText(langOptionsWithLink[0].link);
+     return text;
+}
+
+async function generateSummary() {
+    const textTranscript = await getTranscriptText();
+    if (textTranscript == null) {
+        return;        
     }
-}).catch(error => {
-    console.error('Error generating text:', error);
-});
+
+    // Call the generate function and update the content dynamically
+    const gemini_api_key = process.env.GEMINI_API_KEY;
+    setKey(gemini_api_key);
+    generate(`Summary for: {{{ ${textTranscript} }}}`).then((response_text) => {
+        const contentElement = document.querySelector(".ytbs_content");
+        if (contentElement) {
+            contentElement.textContent = response_text; // Update the content with the generated text
+        }
+    }).catch(error => {
+        console.error('Error generating text:', error);
+    });
+}
 
 function playVideoAtTimestamp(seconds) {
     // Assuming you have an iframe with id 'video' that contains the YouTube video
