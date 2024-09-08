@@ -34,42 +34,36 @@ export async function getTranscript(langOption) {
 }
 
 
-export async function getRawTranscriptText(link) {
-
+async function fetchAndParseTranscript(link) {
   // Get Transcript
-  const transcriptPageResponse = await fetch(link); // default 0
+  const transcriptPageResponse = await fetch(link);
   const transcriptPageXml = await transcriptPageResponse.text();
 
   // Parse Transcript
   const jQueryParse = $.parseHTML(transcriptPageXml);
   const textNodes = jQueryParse[1].childNodes;
 
+  return textNodes;
+}
+
+export async function getRawTranscriptText(link) {
+  const textNodes = await fetchAndParseTranscript(link);
+
   // Extract text content and concatenate it into a single string
-  const transcriptText = Array.from(textNodes)
+  return Array.from(textNodes)
     .map(i => i.textContent)
     .join(' '); // Join all text content with a space in between
-
-  return transcriptText;
 }
 
 export async function getRawTranscript(link) {
+  const textNodes = await fetchAndParseTranscript(link);
 
-  // Get Transcript
-  const transcriptPageResponse = await fetch(link); // default 0
-  const transcriptPageXml = await transcriptPageResponse.text();
-
-  // Parse Transcript
-  const jQueryParse = $.parseHTML(transcriptPageXml);
-  const textNodes = jQueryParse[1].childNodes;
-
-  return Array.from(textNodes).map(i => {
-    return {
-      start: i.getAttribute("start"),
-      duration: i.getAttribute("dur"),
-      text: i.textContent
-    };
-  });
-
+  // Return an array of objects with start, duration, and text properties
+  return Array.from(textNodes).map(i => ({
+    start: i.getAttribute("start"),
+    duration: i.getAttribute("dur"),
+    text: i.textContent
+  }));
 }
 
 export async function getTranscriptHTML(link, videoId) {
