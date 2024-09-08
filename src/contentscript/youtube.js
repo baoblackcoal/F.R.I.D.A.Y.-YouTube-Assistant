@@ -23,6 +23,16 @@ export function insertSummaryBtn() {
 
         // Place Script Div
         document.querySelector("#secondary.style-scope.ytd-watch-flexy").insertAdjacentHTML("afterbegin", `
+            <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);">
+                <div class="ytbs_content">summary content</div>
+                <div class="ytbs_highlight_content_container">
+                    <div class="ytbs_highlight_content">highlight</div>
+                    <div class="ytbs_highlight_content">highlight</div>
+                    <div class="ytbs_highlight_content">highlight</div>
+                </div>
+                <div class="ytbs_keyword">keyword1, keyword2, keyword3</div>
+            </div>
+   
             <div class="yt_ai_summary_container">
                 <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <a href="https://glasp.co/youtube-summary" target="_blank" style="width: 24px;height: 24px;">
@@ -121,6 +131,16 @@ export function insertSummaryBtn() {
 
 }
 
+function playVideoAtTimestamp(seconds) {
+    // Assuming you have an iframe with id 'video' that contains the YouTube video
+    var iframe = document.getElementById('video');
+    var player = new YT.Player(iframe);
+
+    // Seek to the specified timestamp
+    player.seekTo(seconds, true);
+    player.playVideo();
+}
+
 function sanitizeWidget() {
     // Sanitize Transcript Div
     document.querySelector("#yt_ai_summary_lang_select").innerHTML = "";
@@ -190,7 +210,7 @@ function scrollIntoCurrTimeDiv() {
     const currTime = getTYCurrentTime();
     Array.from(document.getElementsByClassName("yt_ai_summary_transcript_text_timestamp")).forEach((el, i, arr) => {
         const startTimeOfEl = el.getAttribute("data-start-time");
-        const startTimeOfNextEl = (i === arr.length-1) ? getTYEndTime() : arr[i+1].getAttribute("data-start-time") ?? 0;
+        const startTimeOfNextEl = (i === arr.length - 1) ? getTYEndTime() : arr[i + 1].getAttribute("data-start-time") ?? 0;
         if (currTime >= startTimeOfEl && currTime < startTimeOfNextEl) {
             el.scrollIntoView({ behavior: 'auto', block: 'start' });
             document.querySelector("#secondary > div.yt_ai_summary_container").scrollIntoView({ behavior: 'auto', block: 'end' });
@@ -232,10 +252,12 @@ function copyTranscript(videoId) {
 
 function copyTranscriptAndPrompt() {
     const textEls = document.getElementsByClassName("yt_ai_summary_transcript_text");
-    const textData = Array.from(textEls).map((textEl, i) => { return {
-        text: textEl.textContent.trim(),
-        index: i,
-    }})
+    const textData = Array.from(textEls).map((textEl, i) => {
+        return {
+            text: textEl.textContent.trim(),
+            index: i,
+        }
+    })
     const text = getChunckedTranscripts(textData, textData);
     const prompt = getSummaryPrompt(text);
     copyTextToClipboard(prompt);
