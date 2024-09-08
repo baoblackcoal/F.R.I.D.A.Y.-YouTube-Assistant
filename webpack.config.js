@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 
+dotenv.config();
 
 const webpack = require("webpack"),
     path = require("path"),
@@ -16,7 +17,7 @@ const plugins = [
     new webpack.DefinePlugin({
         'process.env': {
             'ENV': JSON.stringify(ENV),
-            'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+            'GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY)
         }
     }),
     new CopyWebpackPlugin({
