@@ -8,6 +8,13 @@ import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from
 import { sayHelloByGemini, generate, setKey } from './gemini_api'; 
 import { parse } from 'marked'
 
+let videoId = null;
+function getVideoId() {
+    if (!videoId) {
+        videoId = getSearchParam(window.location.href).v;
+    }
+    return videoId;
+}
 
 export function insertSummaryBtn() {
 
@@ -131,10 +138,33 @@ export function insertSummaryBtn() {
     });
 }
 
+async function getVideoTitle() {
+    // Select the div that contains the title
+    const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
+
+    // Check if the title div exists
+    if (titleDiv) {
+        // Find the h1 element within the title div
+        const h1Element = titleDiv.querySelector('h1.style-scope.ytd-watch-metadata');
+
+        // Check if the h1 element exists and find the yt-formatted-string element
+        if (h1Element) {
+            const titleElement = h1Element.querySelector('yt-formatted-string.style-scope.ytd-watch-metadata');
+
+            // Check if the yt-formatted-string element exists and extract the title text
+            if (titleElement) {
+                const videoTitle = titleElement.textContent.trim();
+
+                return videoTitle;
+            }
+        }
+    }
+    return "Can not get Title";
+}
+
 async function getTranscriptText() {
      // Get Transcript Language Options & Create Language Select Btns
-     const videoId = getSearchParam(window.location.href).v;
-     const langOptionsWithLink = await getLangOptionsWithLink(videoId);
+     const langOptionsWithLink = await getLangOptionsWithLink(getVideoId());
      if (!langOptionsWithLink) {
          noTranscriptionAlert();
          return null;
@@ -150,14 +180,17 @@ async function generateSummary() {
         return;        
     }
 
+    const videoTitle = await getVideoTitle();
     const prompt = `Summarize the following CONTENT(delimited by XML tags <CONTENT> and </CONTENT>) into brief sentences of key points, then provide complete highlighted information in a list, choosing an appropriate emoji for each highlight.
 Your output should use the following format: 
+### Title
+${videoTitle}
+### keyword
+Include 3 to 5 keywords, those are incorporating trending and popular search terms.
 ### Summary
 {brief summary of this content}
 ### Highlights
 - [Emoji] Bullet point with complete explanation
-### keyword
-Suggest up to 3 tags related to video content.
 
 <CONTENT>
  ${textTranscript}
@@ -175,16 +208,6 @@ Suggest up to 3 tags related to video content.
     }).catch(error => {
         console.error('Error generating text:', error);
     });
-}
-
-function playVideoAtTimestamp(seconds) {
-    // Assuming you have an iframe with id 'video' that contains the YouTube video
-    var iframe = document.getElementById('video');
-    var player = new YT.Player(iframe);
-
-    // Seek to the specified timestamp
-    player.seekTo(seconds, true);
-    player.playVideo();
 }
 
 function sanitizeWidget() {
