@@ -25,7 +25,7 @@ const geminiConfig = {
   maxOutputTokens: 8192,
 };
 
-const geminiModel = googleAI.getGenerativeModel({
+ geminiModel = googleAI.getGenerativeModel({
   model: "gemini-1.5-flash",
   geminiConfig,
 });
