@@ -6,6 +6,7 @@ import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
 import { sayHelloByGemini, generate, setKey } from './gemini_api'; 
+import { parse } from 'marked'
 
 
 export function insertSummaryBtn() {
@@ -27,13 +28,7 @@ export function insertSummaryBtn() {
             <div class="yt_ai_summary_container">     
                        
                 <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);">
-                    <div class="ytbs_content">summary content1</div>
-                    <div class="ytbs_highlight_content_container">
-                        <div class="ytbs_highlight_content">highlight</div>
-                        <div class="ytbs_highlight_content">highlight</div>
-                        <div class="ytbs_highlight_content">highlight</div>
-                    </div>
-                    <div class="ytbs_keyword">keyword1, keyword2, keyword3</div>
+                    <div class="ytbs_content"> </div>                    
                 </div>
 
 
@@ -155,13 +150,27 @@ async function generateSummary() {
         return;        
     }
 
+    const prompt = `Summarize the following CONTENT(delimited by XML tags <CONTENT> and </CONTENT>) into brief sentences of key points, then provide complete highlighted information in a list, choosing an appropriate emoji for each highlight.
+Your output should use the following format: 
+### Summary
+{brief summary of this content}
+### Highlights
+- [Emoji] Bullet point with complete explanation
+### keyword
+Suggest up to 3 tags related to video content.
+
+<CONTENT>
+ ${textTranscript}
+</CONTENT>
+`
+
     // Call the generate function and update the content dynamically
     const gemini_api_key = process.env.GEMINI_API_KEY;
     setKey(gemini_api_key);
-    generate(`Summary for: {{{ ${textTranscript} }}}`).then((response_text) => {
+    generate(prompt).then((response_text) => {
         const contentElement = document.querySelector(".ytbs_content");
         if (contentElement) {
-            contentElement.textContent = response_text; // Update the content with the generated text
+            contentElement.innerHTML = parse(response_text); // Update the content with the generated text
         }
     }).catch(error => {
         console.error('Error generating text:', error);

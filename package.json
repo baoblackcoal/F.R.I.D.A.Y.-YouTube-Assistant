@@ -41,6 +41,7 @@
     "@google/generative-ai": "^0.17.1",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "jquery": "^3.6.2"
+    "jquery": "^3.6.2",
+    "marked": "^14.1.1"
   }
 }
