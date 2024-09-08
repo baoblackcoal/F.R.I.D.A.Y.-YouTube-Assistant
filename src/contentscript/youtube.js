@@ -23,17 +23,19 @@ export function insertSummaryBtn() {
 
         // Place Script Div
         document.querySelector("#secondary.style-scope.ytd-watch-flexy").insertAdjacentHTML("afterbegin", `
-            <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);">
-                <div class="ytbs_content">summary content</div>
-                <div class="ytbs_highlight_content_container">
-                    <div class="ytbs_highlight_content">highlight</div>
-                    <div class="ytbs_highlight_content">highlight</div>
-                    <div class="ytbs_highlight_content">highlight</div>
+            <div class="yt_ai_summary_container">     
+                       
+                <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);">
+                    <div class="ytbs_content">summary content1</div>
+                    <div class="ytbs_highlight_content_container">
+                        <div class="ytbs_highlight_content">highlight</div>
+                        <div class="ytbs_highlight_content">highlight</div>
+                        <div class="ytbs_highlight_content">highlight</div>
+                    </div>
+                    <div class="ytbs_keyword">keyword1, keyword2, keyword3</div>
                 </div>
-                <div class="ytbs_keyword">keyword1, keyword2, keyword3</div>
-            </div>
-   
-            <div class="yt_ai_summary_container">
+
+
                 <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <a href="https://glasp.co/youtube-summary" target="_blank" style="width: 24px;height: 24px;">
                         ${getLogoSvg()}
@@ -59,6 +61,7 @@ export function insertSummaryBtn() {
                     <div id="yt_ai_summary_text" class="yt_ai_summary_text"></div>
                 </div>
             </div>
+
         `);
 
         // Event Listener: Hover Label
