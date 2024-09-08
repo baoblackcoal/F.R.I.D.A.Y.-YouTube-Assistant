@@ -5,7 +5,7 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { sayHelloByGemini, generate, setKey } from './gemini_api'; 
+import { sayHelloByGemini, generate, setKey } from './gemini_api';
 import { parse } from 'marked'
 
 let videoId = null;
@@ -133,7 +133,7 @@ export function insertSummaryBtn() {
 
         })
 
-       
+
         generateSummary();
     });
 }
@@ -163,21 +163,21 @@ async function getVideoTitle() {
 }
 
 async function getTranscriptText() {
-     // Get Transcript Language Options & Create Language Select Btns
-     const langOptionsWithLink = await getLangOptionsWithLink(getVideoId());
-     if (!langOptionsWithLink) {
-         noTranscriptionAlert();
-         return null;
-     }
+    // Get Transcript Language Options & Create Language Select Btns
+    const langOptionsWithLink = await getLangOptionsWithLink(getVideoId());
+    if (!langOptionsWithLink) {
+        noTranscriptionAlert();
+        return null;
+    }
 
-     const text = await getRawTranscriptText(langOptionsWithLink[0].link);
-     return text;
+    const text = await getRawTranscriptText(langOptionsWithLink[0].link);
+    return text;
 }
 
 async function generateSummary() {
     const textTranscript = await getTranscriptText();
     if (textTranscript == null) {
-        return;        
+        return;
     }
 
     const videoTitle = await getVideoTitle();
@@ -193,7 +193,7 @@ Include 3 to 5 keywords, those are incorporating trending and popular search ter
 - [Emoji] Bullet point with complete explanation
 
 <CONTENT>
- ${textTranscript}
+${textTranscript}
 </CONTENT>
 `
 
