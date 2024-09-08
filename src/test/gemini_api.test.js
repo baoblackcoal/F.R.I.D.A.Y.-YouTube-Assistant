@@ -1,4 +1,4 @@
-import { sayHelloByGemini, generate } from './gemini_api'; // Import the function to test
+import { sayHelloByGemini, generate } from '../contentscript/gemini_api'; // Import the function to test
 
 const axios = require('axios');
 
