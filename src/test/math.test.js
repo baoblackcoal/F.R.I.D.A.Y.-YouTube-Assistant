@@ -1,5 +1,5 @@
 // math.test.js
-const add = require('../contentscript/math');
+import { add } from '../contentscript/math'; 
 
 test('adds 1 + 2 to equal 3', () => {
     expect(add(1, 2)).toBe(3);
