@@ -5,7 +5,7 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { sayHelloByGemini, generate } from './gemini_api'; 
+import { sayHelloByGemini, generate, setKey } from './gemini_api'; 
 
 
 export function insertSummaryBtn() {
@@ -136,6 +136,8 @@ export function insertSummaryBtn() {
 }
 
 // Call the generate function and update the content dynamically
+const gemini_api_key = process.env.GEMINI_API_KEY;
+setKey(gemini_api_key);
 generate("Hello").then((response_text) => {
     const contentElement = document.querySelector(".ytbs_content");
     if (contentElement) {
