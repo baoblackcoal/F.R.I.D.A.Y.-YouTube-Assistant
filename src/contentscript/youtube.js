@@ -27,7 +27,7 @@ export function insertSummaryBtn() {
         document.querySelector("#secondary.style-scope.ytd-watch-flexy").insertAdjacentHTML("afterbegin", `
             <div class="yt_ai_summary_container">     
                        
-                <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);">
+                <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
                     <div class="ytbs_content"> </div>                    
                 </div>
 
