@@ -1,13 +1,20 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
 // Load environment variables from .env file
-dotenv.config();
+// dotenv.config();
 
 // Use the API key from the environment variable
-const gemini_api_key = process.env.GEMINI_API_KEY;
+// const gemini_api_key = process.env.GEMINI_API_KEY;
+let gemini_api_key = null
+let googleAI = null;
+let geminiModel = null;
 
-const googleAI = new GoogleGenerativeAI(gemini_api_key);
+
+export const setKey = async (key) => {
+  gemini_api_key = key
+
+  googleAI = new GoogleGenerativeAI(gemini_api_key);
 
 
 // Set proxy configuration
@@ -22,6 +29,7 @@ const geminiModel = googleAI.getGenerativeModel({
   model: "gemini-1.5-flash",
   geminiConfig,
 });
+}
 
 export const sayHelloByGemini = async () => {
   try {

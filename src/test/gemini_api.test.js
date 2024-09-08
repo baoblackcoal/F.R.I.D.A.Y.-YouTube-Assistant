@@ -1,6 +1,12 @@
-import { sayHelloByGemini, generate } from '../contentscript/gemini_api'; // Import the function to test
+import { sayHelloByGemini, generate, setKey } from '../contentscript/gemini_api'; // Import the function to test
+import dotenv from "dotenv";
+// Load environment variables from .env file
+const gemini_api_key = process.env.GEMINI_API_KEY;
+dotenv.config();
 
 const axios = require('axios');
+
+setKey(gemini_api_key);
 
 test('sayHelloByGemini test real api call', (done) => {
   sayHelloByGemini().then(() => {
