@@ -1,0 +1,2 @@
+npm install --save-dev jest-puppeteer
+npm install jest --save-dev
