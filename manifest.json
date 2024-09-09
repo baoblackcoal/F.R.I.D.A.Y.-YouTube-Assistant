@@ -8,13 +8,16 @@
     "type": "module"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_icon": {
       "48": "images/48.png"
     }
   },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "options_page": "options.html",
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*", "https://chat.openai.com/*"],
+      "matches": ["https://www.youtube.com/*", "https://chat.openai.com/*", "https://www.example.com/*"],
       "js": ["contentscript/index.bundle.js"],
       "css": ["contentscript/yt_ai_summary.css"],
       "all_frames": false

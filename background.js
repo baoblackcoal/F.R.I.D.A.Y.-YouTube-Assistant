@@ -20,4 +20,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse({ prompt: prompt });
         prompt = ""; // Reset prompt
     }
+
+    if (request.action === 'fetchData') {
+        // Perform some background tasks like fetching data from an API
+        // fetch('https://api.example.com/data')
+        fetch('https://www.example.com')
+            .then((response) => response.json())
+            .then((data) => {
+                sendResponse({ data });
+            })
+            .catch((error) => {
+                sendResponse({ error: error.message });
+            });
+        return true; // Will respond asynchronously
+    }
 });

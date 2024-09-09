@@ -5,9 +5,9 @@ import { insertSummaryBtn } from "./youtube";
 let oldHref = "";
 
 window.onload = async () => {
-        
+
     if (window.location.hostname === "www.youtube.com") {
-        
+
         // if (window.location.search !== "" && window.location.search.includes("v=")) {
         //     insertSummaryBtn();
         // }
@@ -35,11 +35,27 @@ window.onload = async () => {
                     document.getElementsByTagName("textarea")[0].value = response.prompt;
                     if (response.prompt !== "") {
                         document.getElementsByTagName("textarea")[0].focus();
-                        document.getElementsByTagName("button")[document.getElementsByTagName("button").length-1].click();
+                        document.getElementsByTagName("button")[document.getElementsByTagName("button").length - 1].click();
                     }
                 });
             }
         }
     }
-    
+
+    if (window.location.hostname === "www.example.com") {
+        document.body.style.border = "5px solid red";
+
+        // Send a message to the background worker
+        chrome.runtime.sendMessage({ action: 'fetchData' }, (response) => {
+            if (!response) {
+                console.error('No response received from background script');
+                return;
+            } else if (response.error) {
+                console.log(response.error);
+            } else {
+                console.log('Data received from background:', response.data);
+            }
+        });
+    }
+
 }
