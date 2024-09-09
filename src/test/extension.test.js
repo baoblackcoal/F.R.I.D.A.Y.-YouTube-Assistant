@@ -16,6 +16,7 @@ describe('Chrome Extension Demo Tests', () => {
             args: [
                 `--disable-extensions-except=${pathToExtension}`,
                 `--load-extension=${pathToExtension}`,
+                // '--headless=new', // Use new headless mode for extensions
             ],
         });
 
