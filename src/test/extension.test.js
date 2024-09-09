@@ -17,6 +17,8 @@ describe('Chrome Extension Demo Tests', () => {
                 `--disable-extensions-except=${pathToExtension}`,
                 `--load-extension=${pathToExtension}`,
                 // '--headless=new', // Use new headless mode for extensions
+                // '--no-sandbox', // Optional
+                // '--disable-setuid-sandbox', // Optional
             ],
         });
 

@@ -174,6 +174,28 @@ async function getTranscriptText() {
     return text;
 }
 
+async function getApiKey(callback) {
+    // Get the API key from the browser storage
+    chrome.storage.sync.get('geminiApiKey', (data) => {
+        let geminiApiKey = null;
+
+        if (data.geminiApiKey) {
+            geminiApiKey = data.geminiApiKey;
+            console.log('Gemini API Key:', geminiApiKey);
+            // Now you can use geminiApiKey for your purposes
+        } else {
+            console.log('Gemini API Key not found.');
+        }
+
+        if (geminiApiKey == null) {
+            geminiApiKey = process.env.GEMINI_API_KEY;
+        }
+
+        if (callback) callback(geminiApiKey);
+    });
+}
+
+
 async function generateSummary() {
     const textTranscript = await getTranscriptText();
     if (textTranscript == null) {
@@ -198,15 +220,20 @@ ${textTranscript}
 `
 
     // Call the generate function and update the content dynamically
-    const gemini_api_key = process.env.GEMINI_API_KEY;
-    setKey(gemini_api_key);
-    generate(prompt).then((response_text) => {
+    getApiKey((geminiApiKey) => {
         const contentElement = document.querySelector(".ytbs_content");
-        if (contentElement) {
-            contentElement.innerHTML = parse(response_text); // Update the content with the generated text
+        if (geminiApiKey != null) {
+            setKey(geminiApiKey);
+            generate(prompt).then((response_text) => {
+                if (contentElement) {
+                    contentElement.innerHTML = parse(response_text); // Update the content with the generated text
+                }
+            }).catch(error => {
+                console.error('Error generating text:', error);
+            });
+        } else {
+            contentElement.innerHTML = "Please set API key in the extension settings"
         }
-    }).catch(error => {
-        console.error('Error generating text:', error);
     });
 }
 
