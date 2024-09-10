@@ -37,6 +37,12 @@ const plugins = [
         },{
             from: "popup.html",
             to: "popup.html"
+        },{
+            from: "popup.css",
+            to: "popup.css"
+        },{
+            from: "conf",
+            to: "conf"
         }]
     }),
     new WriteFilePlugin()
@@ -75,7 +81,7 @@ const config = {
         'contentscript/index': path.join(__dirname, "src", "contentscript", "index.js"),
         'background': path.join(__dirname, "background.js"),
         'options': path.join(__dirname, "options.js"),
-        'popup': path.join(__dirname, "popup.js")
+        'popup': path.join(__dirname, "popup.js"),
     },
     output: {
         path: path.join(__dirname, "dist"),
