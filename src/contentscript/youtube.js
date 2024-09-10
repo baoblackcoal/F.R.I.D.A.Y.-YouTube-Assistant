@@ -230,6 +230,7 @@ ${textTranscript}
                 }
             }).catch(error => {
                 console.error('Error generating text:', error);
+                contentElement.innerHTML = error;
             });
         } else {
             contentElement.innerHTML = "Please set API key in the extension settings"

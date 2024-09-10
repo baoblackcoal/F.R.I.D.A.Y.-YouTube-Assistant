@@ -17,18 +17,18 @@ export const setKey = async (key) => {
   googleAI = new GoogleGenerativeAI(gemini_api_key);
 
 
-// Set proxy configuration
-const geminiConfig = {
-  temperature: 0.9,
-  topP: 1,
-  topK: 1,
-  maxOutputTokens: 8192,
-};
+  // Set proxy configuration
+  const geminiConfig = {
+    temperature: 0.9,
+    topP: 1,
+    topK: 1,
+    maxOutputTokens: 8192,
+  };
 
- geminiModel = googleAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  geminiConfig,
-});
+  geminiModel = googleAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    geminiConfig,
+  });
 }
 
 export const sayHelloByGemini = async () => {
@@ -48,11 +48,12 @@ export const generate = async (prompt) => {
     const result = await geminiModel.generateContent(prompt);
     text = result.response.text();
   } catch (error) {
-    console.log("Response error:", error);
+    text = error.message;
+    console.log("Response error:", text);
   }
   return text
 }
- 
+
 // generate();
 
 
