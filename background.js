@@ -114,12 +114,12 @@ function sendTabMessage(tabId, message) {
 function getActiveTabId() {
     return new Promise((resolve, reject) => {
         if (!isFirefox) {
-            B.tabs.query({currentWindow: true, active: true}, tab => {
+            B.tabs.query({ currentWindow: true, active: true }, tab => {
                 let tabId = tab[0] && tab[0].url && resolve(tab[0].id)
                 resolve(tabId)
             })
         } else {
-            browser.tabs.query({currentWindow: true, active: true}).then(tab => {
+            browser.tabs.query({ currentWindow: true, active: true }).then(tab => {
                 let tabId = tab[0] && resolve(tab[0].id)
                 resolve(tabId)
             }, err => reject(err))
@@ -137,9 +137,9 @@ function getVoices() {
             for (let i = 0; i < voices.length; i++) {
                 let v = voices[i]
                 // debug('Voice:', i, JSON.stringify(v))
-                let {lang, voiceName, remote} = v
+                let { lang, voiceName, remote } = v
                 if (!list[lang]) list[lang] = []
-                list[lang].push({lang, voiceName, remote})
+                list[lang].push({ lang, voiceName, remote })
             }
             resolve(list)
         })
@@ -233,21 +233,22 @@ function debug(...data) {
 
 
 var setting = {}, speakObj = {}, playOptions = {}
-// let audio = new Audio()
-// document.addEventListener('DOMContentLoaded', async function () {
-//     await storageLocalGet(['setting']).then(r => {
-//         setting = r.setting || {} // 设置信息
-//     })
+let audio = new Audio()
+document.addEventListener('DOMContentLoaded', async function () {
+    await storageLocalGet(['setting']).then(r => {
+        setting = r.setting || {} // 设置信息
+    })
 
-//     await fetch('conf/speak.json').then(r => r.json()).then(r => {
-//         speakObj = r // 朗读配置
-//     })
-// })
+    await fetch('conf/speak.json').then(r => r.json()).then(r => {
+        speakObj = r // 朗读配置
+    })
+})
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'getSettings') {
         chrome.storage.local.get('setting', (result) => {
             sendResponse({ setting: result.setting || {} });
+            setting = result.setting || {} // 设置信息
         });
 
         fetch('conf/speak.json').then(r => r.json()).then(r => {

@@ -360,6 +360,12 @@ function removeSpeakHost() {
 function setSetting(key, value) {
     setting[key] = value;
     chrome.storage.local.set({ setting });
+
+    chrome.runtime.sendMessage({ action: 'getSettings' }, (response) => {
+        setting = response.setting || {};
+        console.log('Settings updated:', setting);
+        // initializeUI(); // Initialize the UI once settings are received
+    });
 }
 
 // Utility functions
