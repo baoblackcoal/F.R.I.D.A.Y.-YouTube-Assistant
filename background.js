@@ -233,16 +233,16 @@ function debug(...data) {
 
 
 var setting = {}, speakObj = {}, playOptions = {}
-let audio = new Audio()
-document.addEventListener('DOMContentLoaded', async function () {
-    await storageLocalGet(['setting']).then(r => {
-        setting = r.setting || {} // 设置信息
-    })
+// let audio = new Audio()
+// document.addEventListener('DOMContentLoaded', async function () {
+//     await storageLocalGet(['setting']).then(r => {
+//         setting = r.setting || {} // 设置信息
+//     })
 
-    await fetch('conf/speak.json').then(r => r.json()).then(r => {
-        speakObj = r // 朗读配置
-    })
-})
+//     await fetch('conf/speak.json').then(r => r.json()).then(r => {
+//         speakObj = r // 朗读配置
+//     })
+// })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'getSettings') {
