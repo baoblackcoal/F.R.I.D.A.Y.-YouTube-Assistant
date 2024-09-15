@@ -58,4 +58,9 @@ window.onload = async () => {
         });
     }
 
+    chrome.runtime.sendMessage({ action: 'getSettings' }, (response) => {
+        setting = response.setting || {};
+        // initializeUI(); // Initialize the UI once settings are received
+    });
+
 }
