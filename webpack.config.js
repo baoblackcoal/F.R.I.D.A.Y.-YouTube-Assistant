@@ -1,102 +1,99 @@
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const webpack = require("webpack"),
-    path = require("path"),
-    CopyWebpackPlugin = require("copy-webpack-plugin"),
-    HtmlWebpackPlugin = require("html-webpack-plugin"),
-    WriteFilePlugin = require("write-file-webpack-plugin");
-
-if (process.env.NODE_ENV == null) {
-    process.env.NODE_ENV = 'development';
-}
-const ENV = process.env.ENV = process.env.NODE_ENV;
-
-const plugins = [
-    new webpack.DefinePlugin({
-        'process.env': {
-            'ENV': JSON.stringify(ENV),
-            'GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY)
-        }
-    }),
-    new CopyWebpackPlugin({
-        patterns: [{
-            from: "manifest.json"
-        },{
-            from: "src/images",
-            to: "images"
-        },{
-            from: "src/css/*.css",
-            to({ context, absoluteFilename }) {
-                return "contentscript/[name][ext]";
-            }
-        },{
-            from: "options.html",
-            to: "options.html"
-        },{
-            from: "popup.html",
-            to: "popup.html"
-        },{
-            from: "popup.css",
-            to: "popup.css"
-        },{
-            from: "conf",
-            to: "conf"
-        }]
-    }),
-    new WriteFilePlugin()
-];
-
 const fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2"];
 const moduleRules = [
-    {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-        exclude: /node_modules/
+  {
+    test: /\.css$/,
+    use: ["style-loader", "css-loader"],
+    exclude: /node_modules/
+  },
+  {
+    test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
+    use: "file-loader?name=[name].[ext]",
+    exclude: /node_modules/
+  },
+  {
+    test: /\.html$/,
+    use: {
+      loader: "html-loader",
+      options: {
+        sources: false
+      }
     },
-    {
-        test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
-        use: "file-loader?name=[name].[ext]",
-        exclude: /node_modules/
-    },
-    {
-        test: /\.html$/,
-        use: {
-            loader: "html-loader",
-            options: {
-                sources: false
-            }
-        },
-        exclude: /node_modules/
-    }
+    exclude: /node_modules/
+  },
+  {
+    test: /\.tsx?$/,
+    use: 'ts-loader',
+    exclude: /node_modules/
+  }
 ];
 
-const config = {
-    target: 'web',
-    // devtool: "cheap-module-source-map",
-    devtool: 'inline-source-map', 
-    mode: process.env.NODE_ENV || "development",
+module.exports = (env, argv) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false : 'inline-source-map',
     entry: {
-        'contentscript/index': path.join(__dirname, "src", "contentscript", "index.js"),
-        'background': path.join(__dirname, "background.js"),
-        'options': path.join(__dirname, "options.js"),
-        'popup': path.join(__dirname, "popup.js"),
+      'contentscript/index': path.join(__dirname, "src", "contentscript", "index.js"),
+      popup: './src/popup.ts',
+      options: './src/options.js',
+      background: './src/background.ts',
+      common: './src/common.ts',
+      tts: './src/tts.ts'
     },
     output: {
-        path: path.join(__dirname, "dist"),
-        filename: "[name].bundle.js",
-        clean: true
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name].bundle.js'
     },
     module: {
-        rules: moduleRules
+      rules: moduleRules
     },
-    plugins: plugins
+    optimization: {
+      minimize: isProduction,
+      minimizer: [new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      })]
+    },
+    plugins: [
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: "src/css/*.css",
+            to({ context, absoluteFilename }) {
+              return "contentscript/[name][ext]";
+            }
+          },
+          { from: 'src/manifest.json', to: 'manifest.json' },
+          { from: 'src/popup.html', to: 'popup.html' },
+          { from: 'src/popup.css', to: 'popup.css' },
+          { from: 'src/languageStrings.json', to: 'languageStrings.json' },
+          { from: 'src/48.png', to: '48.png' },
+          { from: 'src/options.html', to: 'options.html' },
+        ]
+      }),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || (isProduction ? 'production' : 'development')),
+        'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY)
+      })
+    ],
+    resolve: {
+      extensions: ['.ts', '.js']
+    }
+  };
 };
-
-if (ENV === "development") {
-    config.devtool = 'inline-source-map'
-    // config.devtool = 'cheap-module-source-map';
-}
-
-module.exports = config;

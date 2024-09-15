@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TTS Settings</title>
+  <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+  <h2>TTS Settings</h2>
+  
+  <label for="language">Language:</label>
+  <select id="language"></select> 
+
+  <label for="voiceName">Voice Name:</label>
+  <select id="voiceName"></select>
+  
+  <label for="speed">Speed:</label>
+  <select id="speed"></select>
+  
+  <label for="pitch">Pitch:</label>
+  <select id="pitch"></select>
+  
+  <label for="volume">Volume:</label>
+  <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+  
+  <button id="test">Test</button>
+  <button id="stop">Stop</button>
+  <button id="reset">Reset</button>
+  
+  <script src="popup.bundle.js"></script>
+  <script src="tts.bundle.js"></script>
+</body>
+</html>

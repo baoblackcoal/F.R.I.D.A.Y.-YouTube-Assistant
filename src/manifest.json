@@ -1,26 +1,22 @@
 {
-  "name": "YoutubeSummary",
-  "version": "1.0.5",
   "manifest_version": 3,
-  "description": "Use ChatGPT to summarize YouTube videos",
+  "name": "YoutubeSummary",
+  "version": "0.0.1",
+  "description": "Reads selected text aloud with customizable settings",
+  "permissions": ["contextMenus", "tts", "storage"],
   "background": {
-    "service_worker": "background.bundle.js",
-    "type": "module"
+    "service_worker": "background.bundle.js"
   },
+  "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "48": "images/48.png"
+      "48": "48.png"
     }
   },
-  "permissions": [
-    "storage", 
-    "activeTab", 
-    "scripting",
-    "tts",
-    "contextMenus"
-  ],
-  "options_page": "options.html",
+  "icons": {
+    "48": "48.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*", "https://chat.openai.com/*", "https://www.example.com/*"],
@@ -31,8 +27,5 @@
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
-  },
-  "icons": {
-    "48": "images/48.png"
   }
 }

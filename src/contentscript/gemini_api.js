@@ -13,7 +13,7 @@ let geminiModel = null;
 
 export const setKey = async (key) => {
   gemini_api_key = key
-
+  
   googleAI = new GoogleGenerativeAI(gemini_api_key);
 
 

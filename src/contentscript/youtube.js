@@ -179,16 +179,20 @@ async function getApiKey(callback) {
     chrome.storage.sync.get('geminiApiKey', (data) => {
         let geminiApiKey = null;
 
-        if (data.geminiApiKey) {
-            geminiApiKey = data.geminiApiKey;
-            console.log('Gemini API Key:', geminiApiKey);
-            // Now you can use geminiApiKey for your purposes
-        } else {
-            console.log('Gemini API Key not found.');
-        }
-
-        if (geminiApiKey == null) {
-            geminiApiKey = process.env.GEMINI_API_KEY;
+        try {
+            if (data.geminiApiKey) {
+                geminiApiKey = data.geminiApiKey;
+                console.log('Gemini API Key:', geminiApiKey);
+                // Now you can use geminiApiKey for your purposes
+            } else {
+                console.log('Gemini API Key not found in browser storage.');
+            }
+        
+            if (geminiApiKey == null) {
+                geminiApiKey = process.env.GEMINI_API_KEY;
+            }
+        } catch (error) {
+            console.error('Error getting Gemini API Key:', error);
         }
 
         if (callback) callback(geminiApiKey);
@@ -229,7 +233,8 @@ ${textTranscript}
                     contentElement.innerHTML = parse(response_text); // Update the content with the generated text
                 }
             }).catch(error => {
-                console.error('Error generating text:', error);
+                // console.error('Error generating text:', error);
+                contentElement.innerHTML = `Error generating text:${error}`
             });
         } else {
             contentElement.innerHTML = "Please set API key in the extension settings"
