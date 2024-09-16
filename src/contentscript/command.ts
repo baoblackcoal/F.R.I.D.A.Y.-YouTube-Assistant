@@ -1,3 +1,5 @@
+import { geminiAPI } from './gemini_api';
+
 export async function sayHello(name = 'world') {
     //wait for 3 seconds
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -17,13 +19,26 @@ export function commandHandle() {
                 const input = (event.target as HTMLInputElement).value;
                 console.log(`Terminal input received: ${input}`);
                 let output;
-                if (input.startsWith('sayHello')) {
-                    const args = input.split(' ');
-                    const name = args[1] || undefined;
-                    output = await sayHello(name);
-                } else {
-                    output = 'Unknown command';
+                const [command, ...args] = input.split(' ');
+
+                switch (command) {
+                    case 'sayHello':
+                        output = await sayHello(args[0]);
+                        break;
+                    case 'setKey':
+                        await geminiAPI.setKey(args[0]);
+                        output = 'API key set successfully';
+                        break;
+                    case 'sayHelloByGemini':
+                        output = await geminiAPI.sayHelloByGemini();
+                        break;
+                    case 'generate':
+                        output = await geminiAPI.generate(args.join(' '));
+                        break;
+                    default:
+                        output = 'Unknown command';
                 }
+
                 outputElement.textContent = output;
                 (event.target as HTMLInputElement).value = ''; // Clear input after processing
             }

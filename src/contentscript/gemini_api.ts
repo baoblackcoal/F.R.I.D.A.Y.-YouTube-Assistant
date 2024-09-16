@@ -30,7 +30,7 @@ export const setKey = async (key: string): Promise<void> => {
 
 export const sayHelloByGemini = async (): Promise<string> => {
   try {
-    const prompt = "Tell me about google.";
+    const prompt = "hello";
     if (!geminiModel) throw new Error("Gemini model not initialized");
     console.log('Before generating content');
     const result = await geminiModel.generateContent(prompt);

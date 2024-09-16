@@ -7,7 +7,7 @@ import fs from 'fs';
 
 dotenv.config();
 
-const gemini_api_key = process.env.GEMINI_API_KEY;
+const gemini_api_key = process.env.GEMINI_API_KEY_TEST;
 
 if (!gemini_api_key) {
   throw new Error("GEMINI_API_KEY is not set in the environment variables");
@@ -47,11 +47,14 @@ describe('Gemini API Tests', () => {
     }
   });
 
-  test('should return "Hello, world!" from sayHello function without arguments', async () => {
+  test('sayHello for test terminal', async () => {
+    //clear the ytbs_test_output
+    await page.evaluate(() => {
+      document.querySelector('#ytbs_test_output')!.textContent = '';
+    }); 
     await page.type('#ytbs_test_command', 'sayHello');
     await page.keyboard.press('Enter');
 
-    // Wait for the result to appear (considering the 3-second delay)
     await page.waitForFunction(
       () => document.querySelector('#ytbs_test_output')!.textContent !== '',
       { timeout: 10000 }
@@ -59,8 +62,69 @@ describe('Gemini API Tests', () => {
 
     const result = await page.$eval('#ytbs_test_output', el => el.textContent);
     expect(result).toBe("Hello, world!");
-  }, 20000); // Increase timeout to 10 seconds
+  }, 20000);
 
+  test('should set API key and generate content', async () => {
+    //clear the ytbs_test_output
+    await page.evaluate(() => {
+      document.querySelector('#ytbs_test_output')!.textContent = '';
+    }); 
+    await page.type('#ytbs_test_command', `setKey ${gemini_api_key}`);
+    await page.keyboard.press('Enter');
+
+    await page.waitForFunction(
+      () => document.querySelector('#ytbs_test_output')!.textContent === 'API key set successfully',
+      { timeout: 5000 }
+    );
+
+    //clear the ytbs_test_output
+    await page.evaluate(() => {
+      document.querySelector('#ytbs_test_output')!.textContent = '';
+    }); 
+    await page.type('#ytbs_test_command', 'generate "Tell me a joke"');
+    await page.keyboard.press('Enter');
+
+    await page.waitForFunction(
+      () => document.querySelector('#ytbs_test_output')!.textContent !== '',
+      { timeout: 10000 }
+    );
+
+    const result = await page.$eval('#ytbs_test_output', el => el.textContent);
+    expect(result).toBeTruthy();
+    expect(result?.length).toBeGreaterThan(0);
+  }, 30000);
+
+  test('should call sayHelloByGemini', async () => {
+    //clear the ytbs_test_output
+    await page.evaluate(() => {
+      document.querySelector('#ytbs_test_output')!.textContent = '';
+    }); 
+
+    await page.type('#ytbs_test_command', `setKey ${gemini_api_key}`);
+    await page.keyboard.press('Enter');
+
+    await page.waitForFunction(
+      () => document.querySelector('#ytbs_test_output')!.textContent === 'API key set successfully',
+      { timeout: 5000 }
+    );
+
+
+    //clear the ytbs_test_output
+    await page.evaluate(() => {
+      document.querySelector('#ytbs_test_output')!.textContent = '';
+    }); 
+    await page.type('#ytbs_test_command', 'sayHelloByGemini');
+    await page.keyboard.press('Enter');
+
+    await page.waitForFunction(
+      () => document.querySelector('#ytbs_test_output')!.textContent !== '',
+      { timeout: 10000 }
+    );
+
+    const result = await page.$eval('#ytbs_test_output', el => el.textContent);
+    expect(result).toBeTruthy();
+    expect(result?.length).toBeGreaterThan(0);
+  }, 20000);
 
 });
 
