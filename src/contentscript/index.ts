@@ -1,20 +1,8 @@
 "use strict";
 
-declare global {
-    interface Window {
-        someFunction: () => string;
-    }
-}
-
 import { insertSummaryBtn } from "./youtube";
 
 let oldHref = "";
-// Define and attach someFunction immediately
-window.someFunction = function() {
-    return 'Hello from content script!';
-};
-
-
 
 window.onload = async () => {
 
@@ -23,8 +11,6 @@ window.onload = async () => {
         // if (window.location.search !== "" && window.location.search.includes("v=")) {
         //     insertSummaryBtn();
         // }
-        console.log(window.someFunction());
-
         const bodyList = document.querySelector("body");
         let observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -37,9 +23,6 @@ window.onload = async () => {
         if (bodyList) {
             observer.observe(bodyList, { childList: true, subtree: true });
         }
-
-      
-
     }
 
     if (window.location.hostname === "chat.openai.com") {

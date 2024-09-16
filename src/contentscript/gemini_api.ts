@@ -54,18 +54,3 @@ export const generate = async (prompt: string): Promise<string> => {
   }
   return text;
 }
-
-declare global {
-  interface Window {
-    setKey: typeof setKey;  // Add this line
-    sayHelloByGemini: typeof sayHelloByGemini;
-    generate: typeof generate;
-  }
-}
-
-// Only add to window if we're in a browser environment
-if (typeof window !== 'undefined') {
-  (window as any).setKey = setKey;  // Add this line
-  (window as any).sayHelloByGemini = sayHelloByGemini;
-  (window as any).generate = generate;
-}

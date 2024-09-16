@@ -7,6 +7,7 @@ import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
 import { sayHelloByGemini, generate, setKey } from './gemini_api';
 import { parse } from 'marked'
+import { commandHandle } from './command';
 
 let videoId = null;
 function getVideoId() {
@@ -15,15 +16,6 @@ function getVideoId() {
     }
     return videoId;
 }
-
-
-async function sayHello(name = 'world') {
-    //wait for 3 seconds
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log('sayHello function called');
-    return `Hello, ${name}!`;
-}
-
 
 export function insertSummaryBtn() {
     const commandContainerHTML = `
@@ -155,33 +147,6 @@ export function insertSummaryBtn() {
         commandHandle();
     });
 }
-
-
-
-function commandHandle() {
-    // Get references to the inserted elements
-    const inputElement = document.getElementById('ytbs_test_command');
-    const outputElement = document.getElementById('ytbs_test_output');
-
-    // Add event listener to input element
-    inputElement.addEventListener('keypress', async function (event) {
-        if (event.key === 'Enter') {
-            const input = event.target.value;
-            console.log(`Terminal input received: ${input}`);
-            let output;
-            if (input.startsWith('sayHello')) {
-                const args = input.split(' ');
-                const name = args[1] || undefined;
-                output = await sayHello(name);
-            } else {
-                output = 'Unknown command';
-            }
-            outputElement.textContent = output;
-            event.target.value = ''; // Clear input after processing
-        }
-    });
-}
-
 
 async function getVideoTitle() {
     // Select the div that contains the title
