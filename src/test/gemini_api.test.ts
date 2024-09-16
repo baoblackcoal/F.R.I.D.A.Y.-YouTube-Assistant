@@ -32,21 +32,21 @@ describe('Gemini API Tests', () => {
     const result = await runCommandAndGetOutput(page, 'generate "Tell me a joke"');
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
-  }, 30000);
+  }, 60000);
 
   test('should call sayHelloByGemini', async () => {
     await runCommandAndExpectOutput(page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
     const result = await runCommandAndGetOutput(page, 'sayHelloByGemini');
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
-  }, 20000);
+  }, 60000);
 
   test('should return error for invalid API key', async () => {
     const invalidKey = 'invalid_api_key_12345';
     await runCommandAndExpectOutput(page, `setKey ${invalidKey}`, 'API key set successfully');
     const result = await runCommandAndGetOutput(page, 'generate "Hello"');
     expect(result).toContain('Error');
-  }, 20000);
+  }, 60000);
 
   test('should handle multiple consecutive requests', async () => {
     await runCommandAndExpectOutput(page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
@@ -90,12 +90,14 @@ async function clearOutput(page: Page): Promise<void> {
 }
 
 async function runCommandAndExpectOutput(page: Page, command: string, expectedOutput: string): Promise<void> {
+  await clearOutput(page);
+
   await page.type('#ytbs_test_command', command);
   await page.keyboard.press('Enter');
 
   await page.waitForFunction(
     (expected) => document.querySelector('#ytbs_test_output')!.textContent === expected,
-    { timeout: 10000 },
+    { timeout: 30000 },
     expectedOutput
   );
 }
@@ -108,7 +110,7 @@ async function runCommandAndGetOutput(page: Page, command: string): Promise<stri
 
   await page.waitForFunction(
     () => document.querySelector('#ytbs_test_output')!.textContent !== '',
-    { timeout: 10000 }
+    { timeout: 30000 }
   );
 
   return page.$eval('#ytbs_test_output', el => el.textContent || '');
