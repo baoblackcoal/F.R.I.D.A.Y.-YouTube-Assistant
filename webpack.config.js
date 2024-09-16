@@ -42,7 +42,7 @@ module.exports = (env, argv) => {
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? false : 'inline-source-map',
     entry: {
-      'contentscript/index': path.join(__dirname, "src", "contentscript", "index.js"),
+      'contentscript/index': path.join(__dirname, "src", "contentscript", "index.ts"),
       popup: './src/popup.ts',
       options: './src/options.js',
       background: './src/background.ts',

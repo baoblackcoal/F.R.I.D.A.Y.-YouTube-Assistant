@@ -22,17 +22,19 @@ export const setKey = async (key: string): Promise<void> => {
   });
 }
 
-export const sayHelloByGemini = async (): Promise<string | undefined> => {
+export const sayHelloByGemini = async (): Promise<string> => {
   try {
     const prompt = "Tell me about google.";
     if (!geminiModel) throw new Error("Gemini model not initialized");
+    console.log('Before generating content');
     const result = await geminiModel.generateContent(prompt);
+    console.log('After generating content');
     const response = result.response.text();
     console.log(response);
-    return response; // Return the response
+    return response;
   } catch (error) {
     console.error("Response error:", error);
-    return undefined; // Ensure a value is always returned
+    return "An error occurred";
   }
 };
 
@@ -51,4 +53,19 @@ export const generate = async (prompt: string): Promise<string> => {
     console.log("Response error:", text);
   }
   return text;
+}
+
+declare global {
+  interface Window {
+    setKey: typeof setKey;  // Add this line
+    sayHelloByGemini: typeof sayHelloByGemini;
+    generate: typeof generate;
+  }
+}
+
+// Only add to window if we're in a browser environment
+if (typeof window !== 'undefined') {
+  (window as any).setKey = setKey;  // Add this line
+  (window as any).sayHelloByGemini = sayHelloByGemini;
+  (window as any).generate = generate;
 }

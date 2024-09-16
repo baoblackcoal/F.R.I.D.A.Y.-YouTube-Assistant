@@ -1,8 +1,20 @@
 "use strict";
 
+declare global {
+    interface Window {
+        someFunction: () => string;
+    }
+}
+
 import { insertSummaryBtn } from "./youtube";
 
 let oldHref = "";
+// Define and attach someFunction immediately
+window.someFunction = function() {
+    return 'Hello from content script!';
+};
+
+
 
 window.onload = async () => {
 
@@ -11,6 +23,7 @@ window.onload = async () => {
         // if (window.location.search !== "" && window.location.search.includes("v=")) {
         //     insertSummaryBtn();
         // }
+        console.log(window.someFunction());
 
         const bodyList = document.querySelector("body");
         let observer = new MutationObserver((mutations) => {
@@ -21,28 +34,32 @@ window.onload = async () => {
                 }
             });
         });
-        observer.observe(bodyList, { childList: true, subtree: true });
+        if (bodyList) {
+            observer.observe(bodyList, { childList: true, subtree: true });
+        }
+
+      
 
     }
 
     if (window.location.hostname === "chat.openai.com") {
-        if (document.getElementsByTagName("textarea")[0]) {
-            document.getElementsByTagName("textarea")[0].focus();
-            // If search query is "?ref=glasp"
+        const textarea = document.getElementsByTagName("textarea")[0];
+        if (textarea) {
+            textarea.focus();
             if (window.location.search === "?ref=glasp") {
-                // get prompt from background.js
-                chrome.runtime.sendMessage({ message: "getPrompt" }, (response) => {
-                    document.getElementsByTagName("textarea")[0].value = response.prompt;
+                chrome.runtime.sendMessage({ message: "getPrompt" }, (response: { prompt: string }) => {
+                    textarea.value = response.prompt;
                     if (response.prompt !== "") {
-                        document.getElementsByTagName("textarea")[0].focus();
-                        document.getElementsByTagName("button")[document.getElementsByTagName("button").length - 1].click();
+                        textarea.focus();
+                        const buttons = document.getElementsByTagName("button");
+                        buttons[buttons.length - 1].click();
                     }
                 });
             }
         }
     }
 
-    if (window.location.hostname === "www.example.com") {
+    if (window.location.hostname === "example.com") {
         document.body.style.border = "5px solid red";
 
         // Send a message to the background worker
@@ -58,9 +75,10 @@ window.onload = async () => {
         });
     }
 
-    chrome.runtime.sendMessage({ action: 'getSettings' }, (response) => {
-        setting = response.setting || {};
+    chrome.runtime.sendMessage({ action: 'getSettings' }, (response: { setting: any }) => {
+        const setting = response.setting || {};
         // initializeUI(); // Initialize the UI once settings are received
     });
 
 }
+

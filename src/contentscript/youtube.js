@@ -16,7 +16,22 @@ function getVideoId() {
     return videoId;
 }
 
+
+async function sayHello(name = 'world') {
+    //wait for 3 seconds
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    console.log('sayHello function called');
+    return `Hello, ${name}!`;
+}
+
+
 export function insertSummaryBtn() {
+    const commandContainerHTML = `
+    <div id="ytbs_test_container">
+        <input type="text" id="ytbs_test_command">
+        <div id="ytbs_test_output"></div>
+    </div>
+    `;
 
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }
@@ -32,8 +47,10 @@ export function insertSummaryBtn() {
 
         // Place Script Div
         document.querySelector("#secondary.style-scope.ytd-watch-flexy").insertAdjacentHTML("afterbegin", `
-            <div class="yt_ai_summary_container">     
-                       
+            <div class="yt_ai_summary_container">
+
+                ${commandContainerHTML}
+
                 <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
                     <div class="ytbs_content"> </div>                    
                 </div>
@@ -135,8 +152,36 @@ export function insertSummaryBtn() {
 
 
         generateSummary();
+        commandHandle();
     });
 }
+
+
+
+function commandHandle() {
+    // Get references to the inserted elements
+    const inputElement = document.getElementById('ytbs_test_command');
+    const outputElement = document.getElementById('ytbs_test_output');
+
+    // Add event listener to input element
+    inputElement.addEventListener('keypress', async function (event) {
+        if (event.key === 'Enter') {
+            const input = event.target.value;
+            console.log(`Terminal input received: ${input}`);
+            let output;
+            if (input.startsWith('sayHello')) {
+                const args = input.split(' ');
+                const name = args[1] || undefined;
+                output = await sayHello(name);
+            } else {
+                output = 'Unknown command';
+            }
+            outputElement.textContent = output;
+            event.target.value = ''; // Clear input after processing
+        }
+    });
+}
+
 
 async function getVideoTitle() {
     // Select the div that contains the title
@@ -187,7 +232,7 @@ async function getApiKey(callback) {
             } else {
                 console.log('Gemini API Key not found in browser storage.');
             }
-        
+
             if (geminiApiKey == null) {
                 geminiApiKey = process.env.GEMINI_API_KEY;
             }

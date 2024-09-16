@@ -11,8 +11,9 @@ describe('Popup Test', () => {
   const testTabId = 0;
 
   beforeAll(async () => {
-    jest.setTimeout(30000);
-
+    // do not delete this, it is used to build the extension or test the extension
+    let build = false;
+    // build = true;
     await new Promise<void>((resolve, reject) => {
       exec('npm run build', (error, stdout, stderr) => {
         if (error) {
