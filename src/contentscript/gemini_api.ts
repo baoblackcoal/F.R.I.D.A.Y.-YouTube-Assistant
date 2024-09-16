@@ -4,6 +4,12 @@ let gemini_api_key: string | null = null;
 let googleAI: GoogleGenerativeAI | null = null;
 let geminiModel: GenerativeModel | null = null;
 
+export interface GeminiAPI {
+  setKey: (key: string) => Promise<void>;
+  sayHelloByGemini: () => Promise<string>;
+  generate: (prompt: string) => Promise<string>;
+}
+
 export const setKey = async (key: string): Promise<void> => {
   gemini_api_key = key;
   
@@ -54,3 +60,9 @@ export const generate = async (prompt: string): Promise<string> => {
   }
   return text;
 }
+
+export const geminiAPI: GeminiAPI = {
+  setKey,
+  sayHelloByGemini,
+  generate
+};

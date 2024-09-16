@@ -5,7 +5,7 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { sayHelloByGemini, generate, setKey } from './gemini_api';
+import { geminiAPI } from './gemini_api';
 import { parse } from 'marked'
 import { commandHandle } from './command';
 
@@ -237,13 +237,12 @@ ${textTranscript}
     getApiKey((geminiApiKey) => {
         const contentElement = document.querySelector(".ytbs_content");
         if (geminiApiKey != null) {
-            setKey(geminiApiKey);
-            generate(prompt).then((response_text) => {
+            geminiAPI.setKey(geminiApiKey);
+            geminiAPI.generate(prompt).then((response_text) => {
                 if (contentElement) {
                     contentElement.innerHTML = parse(response_text); // Update the content with the generated text
                 }
             }).catch(error => {
-                // console.error('Error generating text:', error);
                 contentElement.innerHTML = `Error generating text:${error}`
             });
         } else {

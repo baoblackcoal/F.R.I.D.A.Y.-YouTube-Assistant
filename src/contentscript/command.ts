@@ -1,6 +1,6 @@
 export async function sayHello(name = 'world') {
     //wait for 3 seconds
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 100));
     console.log('sayHello function called');
     return `Hello, ${name}!`;
 }
