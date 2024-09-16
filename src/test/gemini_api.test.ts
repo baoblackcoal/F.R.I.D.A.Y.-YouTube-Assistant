@@ -40,6 +40,25 @@ describe('Gemini API Tests', () => {
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
   }, 20000);
+
+  test('should return error for invalid API key', async () => {
+    const invalidKey = 'invalid_api_key_12345';
+    await runCommandAndExpectOutput(page, `setKey ${invalidKey}`, 'API key set successfully');
+    const result = await runCommandAndGetOutput(page, 'generate "Hello"');
+    expect(result).toContain('Error');
+  }, 20000);
+
+  test('should handle multiple consecutive requests', async () => {
+    await runCommandAndExpectOutput(page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    const prompts = ['Tell me a joke', 'What is the capital of France?', 'Hello'];
+    for (const prompt of prompts) {
+      const result = await runCommandAndGetOutput(page, `generate "${prompt}"`);
+      console.log(prompt);
+      console.log(result);
+      expect(result).toBeTruthy();
+      expect(result.length).toBeGreaterThan(0);
+    }
+  }, 60000);
 });
 
 // Helper functions
