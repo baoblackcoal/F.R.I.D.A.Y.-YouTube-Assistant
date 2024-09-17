@@ -134,7 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     stopButton.addEventListener('click', () => {
-        chrome.tts.stop();
+        chrome.runtime.sendMessage({
+            action: 'ttsStop',
+        });
     });
 
     resetButton.addEventListener('click', () => {

@@ -11,19 +11,6 @@ describe('Popup Test', () => {
   const testTabId = 0;
 
   beforeAll(async () => {
-    // do not delete this, it is used to build the extension or test the extension
-    let build = false;
-    // build = true;
-    await new Promise<void>((resolve, reject) => {
-      exec('npm run build', (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return reject(error);
-        }
-        resolve();
-      });
-    });
-
     const extensionPath = '../../dist';
     browser = await puppeteer.launch({
       headless: false,

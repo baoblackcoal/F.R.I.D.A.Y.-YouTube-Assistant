@@ -14,6 +14,7 @@ chrome.runtime.onInstalled.addListener(() => {
 function speakText(text: string) {
   chrome.storage.sync.get('ttsSettings', (data: { [key: string]: any }) => {
     const settings: TtsSettings = data.ttsSettings || defaultTtsSettings;
+    console.log(`(Background)TTS Speaking text: ${text}`);
     chrome.tts.speak(text, {
       rate: settings.rate,
       pitch: settings.pitch,
@@ -38,5 +39,12 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
   if (message.action === 'speak') {
     const text = message.text;
     speakText(text);
+  }
+});
+
+// check if chrome.tts.isSpeaking status from message
+chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+  if (message.action === 'ttsStop') {
+    chrome.tts.stop();
   }
 });

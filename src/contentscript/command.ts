@@ -1,4 +1,5 @@
 import { geminiAPI } from './gemini_api';
+import { TTSInterface, TTSSpeak } from './ttsSpeak';
 
 export async function sayHello(name = 'world') {
     //wait for 3 seconds
@@ -8,6 +9,7 @@ export async function sayHello(name = 'world') {
 }
 
 export function commandHandle() {
+    const tts: TTSInterface = new TTSSpeak();
     // Get references to the inserted elements
     const inputElement = document.getElementById('ytbs_test_command');
     const outputElement = document.getElementById('ytbs_test_output');
@@ -34,6 +36,14 @@ export function commandHandle() {
                         break;
                     case 'generate':
                         output = await geminiAPI.generate(args.join(' '));
+                        break;
+                    case 'speak':
+                        tts.speak(args.join(' '));
+                        output = 'Speaking...';
+                        break;
+                    case 'stop':
+                        tts.stop();
+                        output = 'TTS stopped';
                         break;
                     default:
                         output = 'Unknown command';
