@@ -1,4 +1,4 @@
-import { sayHelloByGemini, generate, setKey } from '../contentscript/gemini_api';
+import { sayHelloByGemini, generate, setKey } from '../contentscript/geminiApi';
 import dotenv from "dotenv";
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';

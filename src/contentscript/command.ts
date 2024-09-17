@@ -1,4 +1,4 @@
-import { geminiAPI } from './gemini_api';
+import { geminiAPI } from './geminiApi';
 import { TTSInterface, TTSSpeak } from './ttsSpeak';
 
 export async function sayHello(name = 'world') {

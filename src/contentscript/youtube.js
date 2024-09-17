@@ -5,7 +5,7 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { geminiAPI } from './gemini_api';
+import { geminiAPI } from './geminiApi';
 import { parse } from 'marked'
 import { commandHandle } from './command';
 
