@@ -1,7 +1,7 @@
 import { sayHelloByGemini, generate, setKey } from '../contentscript/geminiApi';
 import dotenv from "dotenv";
-import { Browser, Page } from 'puppeteer';
-import { TestSetup, TestHelpers, setupBrowserAndPage, createTestHelpers } from './commonTest';
+import { TestSetup, TestHelpers } from './testUtils';
+import testUtils from './testUtils';
 
 dotenv.config();
 
@@ -15,8 +15,8 @@ describe('Gemini API Tests', () => {
   let helpers: TestHelpers;
 
   beforeAll(async () => {
-    testSetup = await setupBrowserAndPage({ url: 'https://www.youtube.com/watch?v=oc6RV5c1yd0' });
-    helpers = createTestHelpers();
+    testSetup = await testUtils.setupBrowserAndPage({ url: 'https://www.youtube.com/watch?v=oc6RV5c1yd0' });
+    helpers = testUtils.createTestHelpers();
   }, 60000);
 
   afterAll(async () => {

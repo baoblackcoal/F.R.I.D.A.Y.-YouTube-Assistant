@@ -1,16 +1,17 @@
-import { TestSetup, TestHelpers, setupBrowserAndPage, createTestHelpers } from './commonTest';
-import { Page } from 'puppeteer'; // Add this line
+import { TestSetup, TestHelpers } from './testUtils';
+import testUtils from './testUtils';
+import { Page } from 'puppeteer';
 
 describe('TTS Tests', () => {
   let testSetup: TestSetup;
   let helpers: TestHelpers;
 
   beforeAll(async () => {
-    testSetup = await setupBrowserAndPage({ 
+    testSetup = await testUtils.setupBrowserAndPage({ 
       usePopup: true, 
       url: 'https://www.youtube.com/watch?v=oc6RV5c1yd0' 
     });
-    helpers = createTestHelpers();
+    helpers = testUtils.createTestHelpers();
   }, 60000);
 
   afterAll(async () => {
