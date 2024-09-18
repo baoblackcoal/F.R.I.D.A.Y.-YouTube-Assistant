@@ -6,6 +6,17 @@ export interface TTSInterface {
 }
 
 export class TTSSpeak implements TTSInterface {
+    private static instance: TTSSpeak;
+
+    private constructor() {}
+
+    public static getInstance(): TTSSpeak {
+        if (!TTSSpeak.instance) {
+            TTSSpeak.instance = new TTSSpeak();
+        }
+        return TTSSpeak.instance;
+    }
+
     speak(text: string): void {
         chrome.runtime.sendMessage({
             action: 'speak',

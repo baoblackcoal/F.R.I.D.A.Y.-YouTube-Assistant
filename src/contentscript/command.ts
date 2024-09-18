@@ -9,7 +9,7 @@ export async function sayHello(name = 'world') {
 }
 
 export function commandHandle() {
-    const tts: TTSInterface = new TTSSpeak();
+    const tts: TTSInterface = TTSSpeak.getInstance();
     // Get references to the inserted elements
     const inputElement = document.getElementById('ytbs_test_command');
     const outputElement = document.getElementById('ytbs_test_output');

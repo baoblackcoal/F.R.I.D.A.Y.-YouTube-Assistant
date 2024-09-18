@@ -8,6 +8,7 @@ import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from
 import { geminiAPI } from './geminiApi';
 import { parse } from 'marked'
 import { commandHandle } from './command';
+import { generateSummary } from './subtitleSummary';
 
 let videoId = null;
 function getVideoId() {
@@ -143,111 +144,8 @@ export function insertSummaryBtn() {
         })
 
 
-        generateSummary();
+        generateSummary(getVideoId());
         commandHandle();
-    });
-}
-
-async function getVideoTitle() {
-    // Select the div that contains the title
-    const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
-
-    // Check if the title div exists
-    if (titleDiv) {
-        // Find the h1 element within the title div
-        const h1Element = titleDiv.querySelector('h1.style-scope.ytd-watch-metadata');
-
-        // Check if the h1 element exists and find the yt-formatted-string element
-        if (h1Element) {
-            const titleElement = h1Element.querySelector('yt-formatted-string.style-scope.ytd-watch-metadata');
-
-            // Check if the yt-formatted-string element exists and extract the title text
-            if (titleElement) {
-                const videoTitle = titleElement.textContent.trim();
-
-                return videoTitle;
-            }
-        }
-    }
-    return "Can not get Title";
-}
-
-async function getTranscriptText() {
-    // Get Transcript Language Options & Create Language Select Btns
-    const langOptionsWithLink = await getLangOptionsWithLink(getVideoId());
-    if (!langOptionsWithLink) {
-        noTranscriptionAlert();
-        return null;
-    }
-
-    const text = await getRawTranscriptText(langOptionsWithLink[0].link);
-    return text;
-}
-
-async function getApiKey(callback) {
-    // Get the API key from the browser storage
-    chrome.storage.sync.get('geminiApiKey', (data) => {
-        let geminiApiKey = null;
-
-        try {
-            if (data.geminiApiKey) {
-                geminiApiKey = data.geminiApiKey;
-                console.log('Gemini API Key:', geminiApiKey);
-                // Now you can use geminiApiKey for your purposes
-            } else {
-                console.log('Gemini API Key not found in browser storage.');
-            }
-
-            if (geminiApiKey == null) {
-                geminiApiKey = process.env.GEMINI_API_KEY;
-            }
-        } catch (error) {
-            console.error('Error getting Gemini API Key:', error);
-        }
-
-        if (callback) callback(geminiApiKey);
-    });
-}
-
-
-async function generateSummary() {
-    const textTranscript = await getTranscriptText();
-    if (textTranscript == null) {
-        return;
-    }
-
-    const videoTitle = await getVideoTitle();
-    const prompt = `Summarize the following CONTENT(delimited by XML tags <CONTENT> and </CONTENT>) into brief sentences of key points, then provide complete highlighted information in a list, choosing an appropriate emoji for each highlight.
-Your output should use the following format: 
-### Title
-${videoTitle}
-### keyword
-Include 3 to 5 keywords, those are incorporating trending and popular search terms.
-### Summary
-{brief summary of this content}
-### Highlights
-- [Emoji] Bullet point with complete explanation
-
-<CONTENT>
-${textTranscript}
-</CONTENT>
-`
-
-    // Call the generate function and update the content dynamically
-    getApiKey((geminiApiKey) => {
-        const contentElement = document.querySelector(".ytbs_content");
-        if (geminiApiKey != null) {
-            geminiAPI.setKey(geminiApiKey);
-            geminiAPI.generate(prompt).then((response_text) => {
-                if (contentElement) {
-                    contentElement.innerHTML = parse(response_text); // Update the content with the generated text
-                }
-            }).catch(error => {
-                contentElement.innerHTML = `Error generating text:${error}`
-            });
-        } else {
-            contentElement.innerHTML = "Please set API key in the extension settings"
-        }
     });
 }
 

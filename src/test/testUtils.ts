@@ -37,12 +37,10 @@ const testUtils: TestUtils = {
       ]
     });
 
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1500, height: 1000 });
-    await page.goto(options.url || 'https://www.youtube.com/watch?v=oc6RV5c1yd0');
+    
+    const pageExample = await browser.newPage();
+    await pageExample.goto('https://www.example.com');
 
-    await page.waitForSelector('#ytbs_test_command');
-    await page.waitForSelector('#ytbs_test_output');
 
     let extensionId: string | undefined;
     let popupPage: Page | undefined;
@@ -61,6 +59,13 @@ const testUtils: TestUtils = {
         throw new Error('Unable to find background page for the extension.');
       }
     }
+    
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1500, height: 1000 });
+    await page.goto(options.url || 'https://www.youtube.com/watch?v=oc6RV5c1yd0');
+
+    await page.waitForSelector('#ytbs_test_command');
+    await page.waitForSelector('#ytbs_test_output');
 
     return { browser, page, extensionId, popupPage };
   },
