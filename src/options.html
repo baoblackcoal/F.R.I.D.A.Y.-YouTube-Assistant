@@ -4,20 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Extension Options</title>
+    <link rel="stylesheet" href="options.css">
 </head>
 <body>
-    <h1>Extension Options</h1>
-    <label>
-        Background Color:
-        <input type="color" id="bgColor" />
-    </label>
-    <br>
-    <label>
-        Gemini API Key:
-        <input type="text" id="geminiApiKey" />
-    </label>
-    <br>
-    <button id="saveBtn">Save</button>
+    <div class="container">
+        <h1>Extension Options</h1>
+        <div class="option-group">
+            <label for="bgColor">Background Color:</label>
+            <input type="color" id="bgColor" />
+        </div>
+        <div class="option-group">
+            <label for="geminiApiKey">Gemini API Key:</label>
+            <input type="text" id="geminiApiKey" />
+        </div>
+        <div class="option-group">
+            <label for="promptType">Prompt Type:</label>
+            <select id="promptType">
+                <option value="0">Default</option>
+                <option value="1">Custom 1</option>
+                <option value="2">Custom 2</option>
+                <option value="3">Custom 3</option>
+            </select>
+        </div>
+        <div class="option-group">
+            <label for="defaultPromptText">Default Prompt (Read-only):</label>
+            <textarea id="defaultPromptText" rows="4" readonly></textarea>
+        </div>
+        <div class="option-group">
+            <label for="diyPromptText1">Custom Prompt 1:</label>
+            <textarea id="diyPromptText1" rows="4"></textarea>
+        </div>
+        <div class="option-group">
+            <label for="diyPromptText2">Custom Prompt 2:</label>
+            <textarea id="diyPromptText2" rows="4"></textarea>
+        </div>
+        <div class="option-group">
+            <label for="diyPromptText3">Custom Prompt 3:</label>
+            <textarea id="diyPromptText3" rows="4"></textarea>
+        </div>
+        <div class="info-box">
+            <p>When creating custom prompts, you can use the following variables:</p>
+            <ul>
+                <li><code>{videoTitle}</code>: The title of the YouTube video</li>
+                <li><code>{textTranscript}</code>: The full transcript of the video</li>
+            </ul>
+        </div>
+        <button id="saveBtn">Save</button>
+    </div>
     <script src="options.bundle.js"></script>
 </body>
 </html>

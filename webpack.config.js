@@ -85,6 +85,7 @@ module.exports = (env, argv) => {
           { from: 'src/languageStrings.json', to: 'languageStrings.json' },
           { from: 'src/48.png', to: '48.png' },
           { from: 'src/options.html', to: 'options.html' },
+          { from: 'src/options.css', to: 'options.css' }, // Add this line
         ]
       }),
       new webpack.DefinePlugin({

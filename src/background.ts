@@ -1,9 +1,10 @@
 /// <reference types="chrome"/>
-import { TtsSettings, defaultTtsSettings } from './common';
+import { TtsSettings, defaultTtsSettings, SummarySettings, defaultSummarySettings} from './common';
 
 // Initialize settings
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ ttsSettings: defaultTtsSettings });
+  chrome.storage.sync.set({ summarySettings: defaultSummarySettings });
   chrome.contextMenus.create({
     id: "readAloud",
     title: "Read with TTS",

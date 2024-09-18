@@ -2,6 +2,7 @@ import { getLangOptionsWithLink, getRawTranscriptText } from "./transcript";
 import { geminiAPI } from './geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from './ttsSpeak';
+import { SummarySettings, defaultSummarySettings, defaultPromptText } from '../common';
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
@@ -45,28 +46,41 @@ function getApiKey(callback: (key: string | null) => void): void {
     });
 }
 
-export async function generateSummary(videoId: string): Promise<void> {
+function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string): string {
+    return customPrompt.replace('{videoTitle}', videoTitle).replace('{textTranscript}', textTranscript);
+}
+
+async function generatePrompt(videoId: string): Promise<string> {
     const textTranscript = await getTranscriptText(videoId);
     if (textTranscript == null) {
-        return;
+        return "";
     }
 
     const videoTitle = await getVideoTitle();
-    const prompt = `Summarize the following CONTENT(delimited by XML tags <CONTENT> and </CONTENT>) into brief sentences of key points, then provide complete highlighted information in a list, choosing an appropriate emoji for each highlight.
-Your output should use the following format: 
-### Title
-${videoTitle}
-### keyword
-Include 3 to 5 keywords, those are incorporating trending and popular search terms.
-### Summary
-{brief summary of this content}
-### Highlights
-- [Emoji] Bullet point with complete explanation
 
-<CONTENT>
-${textTranscript}
-</CONTENT>
-`;
+    // Get summarySettings from chrome.storage.sync
+    const summarySettings: SummarySettings = await new Promise((resolve) => {
+        chrome.storage.sync.get('summarySettings', (data) => {
+            resolve(data.summarySettings || defaultSummarySettings);
+        });
+    });
+
+    let promptText = defaultPromptText;
+    if (summarySettings.promptType > 0) {
+        const diyPromptKey = `diyPromptText${summarySettings.promptType}`;
+        promptText = summarySettings[diyPromptKey as keyof SummarySettings] as string || defaultPromptText;
+    }
+
+    const prompt = diyPrompt(promptText, videoTitle, textTranscript);
+
+    return prompt;
+}
+
+export async function generateSummary(videoId: string): Promise<void> {
+    const prompt = await generatePrompt(videoId);
+    if (prompt == "") {
+        return;
+    }
 
     getApiKey(async (geminiApiKey) => {
         let parseText = "";
