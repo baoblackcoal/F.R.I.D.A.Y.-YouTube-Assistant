@@ -61,12 +61,22 @@ export interface SummarySettings {
   diyPromptText2: string;
   diyPromptText3: string;
   language: string;
+  stopVideoFirst: boolean; // stop video first after youtube video web page loaded, then tts speak summary, then continue play video
 }
 
+// export const defaultSummarySettings: SummarySettings = {
+//   promptType: 0,
+//   diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
+//   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
+//   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
+//   language: Language.English.toString(),
+//   stopVideoFirst: false,
+// };
 export const defaultSummarySettings: SummarySettings = {
-  promptType: 0,
-  diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
+  promptType: 1,
+  diyPromptText1: "hi",
   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
   language: Language.English.toString(),
+  stopVideoFirst: true,
 };

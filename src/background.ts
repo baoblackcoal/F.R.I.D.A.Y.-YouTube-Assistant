@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-function speakText(text: string) {
+function speakText(text: string, playVideo: () => void = () => {}) {
   chrome.storage.sync.get('ttsSettings', (data: { [key: string]: any }) => {
     const settings: TtsSettings = data.ttsSettings || defaultTtsSettings;
     console.log(`(Background)TTS Speaking text: ${text}`);
@@ -20,7 +20,13 @@ function speakText(text: string) {
       rate: settings.rate,
       pitch: settings.pitch,
       volume: settings.volume,
-      voiceName: settings.voiceName
+      voiceName: settings.voiceName,
+      onEvent: (event: chrome.tts.TtsEvent) => {
+        if (event.type === 'end') {
+          console.log('(Background)TTS Speaking finished');
+          playVideo();
+        }
+      }
     });
   });
 }
@@ -43,9 +49,39 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
   }
 });
 
+// Send message to content script to play the video
+chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+  if (message.action === 'speakAndPlayVideo') {
+    const text = message.text;
+    speakText(text, () => {
+              // Send message to content script to play the video
+              if (sender.tab && sender.tab.id !== undefined) {
+                  chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
+              }
+          });
+  }
+});
+
+
 // check if chrome.tts.isSpeaking status from message
 chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
   if (message.action === 'ttsStop') {
     chrome.tts.stop();
   }
 });
+
+// // Send message to content script to play the video
+// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+//     if (request.action === 'speakAndPlayVideo') {
+//         chrome.tts.speak(request.text, {
+//             onEvent: function(event) {
+//                 if (event.type === 'end') {
+//                     // Send message to content script to play the video
+//                     if (sender.tab && sender.tab.id !== undefined) {
+//                         chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
+//                     }
+//                 }
+//             }
+//         });
+//     }
+// });

@@ -76,15 +76,41 @@ async function generatePrompt(videoId: string): Promise<string> {
     return prompt;
 }
 
+// Add these new functions
+function pauseVideo() {
+    const video = document.querySelector('video');
+    if (video) {
+        video.pause();
+    }
+}
+
+function playVideo() {
+    const video = document.querySelector('video');
+    if (video) {
+        video.play();
+    }
+}
+
 export async function generateSummary(videoId: string): Promise<void> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
         return;
     }
 
+    // Get summarySettings
+    const summarySettings: SummarySettings = await new Promise((resolve) => {
+        chrome.storage.sync.get('summarySettings', (data) => {
+            resolve(data.summarySettings || defaultSummarySettings);
+        });
+    });
+
+    // Pause the video if stopVideoFirst is true
+    if (summarySettings.stopVideoFirst) {
+        pauseVideo();
+    }
+
     getApiKey(async (geminiApiKey) => {
         let parseText = "";
-        let text = "";
         const contentElement = document.querySelector(".ytbs_content");
         if (contentElement) {
             if (geminiApiKey != null) {
@@ -100,7 +126,20 @@ export async function generateSummary(videoId: string): Promise<void> {
             }
             contentElement.innerHTML = parseText;
             const ttsSpeak = TTSSpeak.getInstance();
-            ttsSpeak.speak((contentElement as HTMLElement).innerText);
+            
+            // Speak the summary and play the video after speaking if stopVideoFirst is true
+            if (summarySettings.stopVideoFirst) {
+                ttsSpeak.speakAndPlayVideo((contentElement as HTMLElement).innerText);
+            } else {
+                ttsSpeak.speak((contentElement as HTMLElement).innerText);
+            }
         }
     });
 }
+
+// Add this message listener at the end of the file
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'playVideo') {
+        playVideo();
+    }
+});

@@ -2,6 +2,7 @@ import { TtsSettings } from '../common';
 
 export interface TTSInterface {
     speak(text: string): void;
+    speakAndPlayVideo(text: string): void;
     stop(): void;
 }
 
@@ -23,6 +24,13 @@ export class TTSSpeak implements TTSInterface {
             text: text,
         });
     }
+
+    speakAndPlayVideo(text: string): void {
+        chrome.runtime.sendMessage({
+            action: 'speakAndPlayVideo',
+            text: text,
+        });
+    }   
 
     stop(): void {
         chrome.runtime.sendMessage({

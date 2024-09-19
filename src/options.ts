@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const diyPromptText2Input = document.getElementById('diyPromptText2') as HTMLTextAreaElement;
     const diyPromptText3Input = document.getElementById('diyPromptText3') as HTMLTextAreaElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
+    const stopVideoFirstCheckbox = document.getElementById('stopVideoFirst') as HTMLInputElement;
 
     populateLanguageSelect();
 
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText2Input.value = data.summarySettings.diyPromptText2 || defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = data.summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
             languageSelect.value = data.summarySettings.language || defaultSummarySettings.language;
+            stopVideoFirstCheckbox.checked = data.summarySettings.stopVideoFirst || false;
         } else {
             // If no saved settings, use default values
             diyPromptText1Input.value = defaultSummarySettings.diyPromptText1;
@@ -58,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText2: diyPromptText2Input.value,
             diyPromptText3: diyPromptText3Input.value,
             language: languageSelect.value,
+            stopVideoFirst: stopVideoFirstCheckbox.checked,
         };
 
         chrome.storage.sync.set({ bgColor, geminiApiKey, summarySettings }, () => {
