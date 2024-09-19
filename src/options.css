@@ -59,7 +59,7 @@ button:hover {
     background-color: #2980b9;
 }
 
-.info-box {
+.prompt-settings-box {
     background-color: #e8f4f8;
     border: 1px solid #b8e0ed;
     border-radius: 4px;
@@ -67,11 +67,11 @@ button:hover {
     margin-bottom: 20px;
 }
 
-.info-box p {
+.prompt-settings-box p {
     margin-top: 0;
 }
 
-.info-box ul {
+.prompt-settings-box ul {
     padding-left: 20px;
 }
 
@@ -90,4 +90,31 @@ button:hover {
     0% { opacity: 1; }
     90% { opacity: 1; }
     100% { opacity: 0; }
+}
+
+.truncate-wrapper {
+    position: relative;
+}
+
+textarea {
+    width: 100%;
+    resize: none;
+    transition: height 0.3s ease;
+}
+
+textarea:not(.expanded) {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.expand-btn {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    cursor: pointer;
 }

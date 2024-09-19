@@ -75,4 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     });
+
+    const expandButtons = document.querySelectorAll('.expand-btn');
+
+    // Function to toggle textarea expansion
+    function toggleExpand(event) {
+        const targetId = event.target.getAttribute('data-target');
+        const textarea = document.getElementById(targetId);
+        const isExpanded = textarea.classList.toggle('expanded');
+        event.target.textContent = isExpanded ? 'Collapse' : 'Expand';
+        textarea.rows = isExpanded ? 6 : 2;
+    }
+
+    // Add click event listeners to expand buttons
+    expandButtons.forEach(button => {
+        button.addEventListener('click', toggleExpand);
+    });
 });

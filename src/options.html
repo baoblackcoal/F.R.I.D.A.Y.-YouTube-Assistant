@@ -18,43 +18,59 @@
             <input type="text" id="geminiApiKey" />
         </div>
         <div class="option-group">
-            <label for="promptType">Prompt Type:</label>
-            <select id="promptType">
-                <option value="0">Default</option>
-                <option value="1">Custom 1</option>
-                <option value="2">Custom 2</option>
-                <option value="3">Custom 3</option>
-            </select>
-        </div>
-        <div class="option-group">
-            <label for="language">Language:</label>
+            <label for="language">Summary Language:</label>
             <select id="language"></select>
         </div>
-        <div class="option-group">
-            <label for="defaultPromptText">Default Prompt (Read-only):</label>
-            <textarea id="defaultPromptText" rows="4" readonly></textarea>
-        </div>
-        <div class="option-group">
-            <label for="diyPromptText1">Custom Prompt 1:</label>
-            <textarea id="diyPromptText1" rows="4"></textarea>
-        </div>
-        <div class="option-group">
-            <label for="diyPromptText2">Custom Prompt 2:</label>
-            <textarea id="diyPromptText2" rows="4"></textarea>
-        </div>
-        <div class="option-group">
-            <label for="diyPromptText3">Custom Prompt 3:</label>
-            <textarea id="diyPromptText3" rows="4"></textarea>
+        
+        <div id="prompt-settings"  class="prompt-settings-box" >
+            <div class="option-group">
+                <label for="promptType">Prompt Type:</label>
+                <select id="promptType">
+                    <option value="0">Default</option>
+                    <option value="1">Custom Prompt 1</option>
+                    <option value="2">Custom Prompt 2</option>
+                    <option value="3">Custom Prompt 3</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="defaultPromptText">Default Prompt (Read-only):</label>
+                <div class="truncate-wrapper">
+                    <textarea id="defaultPromptText" rows="2" readonly></textarea>
+                    <button class="expand-btn" data-target="defaultPromptText">Expand</button>
+                </div>
+            </div>
+            <div class="option-group">
+                <label for="diyPromptText1">Custom Prompt 1:</label>
+                <div class="truncate-wrapper">
+                    <textarea id="diyPromptText1" rows="2"></textarea>
+                    <button class="expand-btn" data-target="diyPromptText1">Expand</button>
+                </div>
+            </div>
+            <div class="option-group">
+                <label for="diyPromptText2">Custom Prompt 2:</label>
+                <div class="truncate-wrapper">
+                    <textarea id="diyPromptText2" rows="2"></textarea>
+                    <button class="expand-btn" data-target="diyPromptText2">Expand</button>
+                </div>
+            </div>
+            <div class="option-group">
+                <label for="diyPromptText3">Custom Prompt 3:</label>
+                <div class="truncate-wrapper">
+                    <textarea id="diyPromptText3" rows="2"></textarea>
+                    <button class="expand-btn" data-target="diyPromptText3">Expand</button>
+                </div>
+            </div>
+
+            <div id="prompt-info">
+                <p>When creating custom prompts, you can use the following variables:</p>
+                <ul>
+                    <li><code>{videoTitle}</code>: The title of the YouTube video</li>
+                    <li><code>{textTranscript}</code>: The full transcript of the video</li>
+                    <li><code>{language}</code>: The language of the video</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="info-box">
-            <p>When creating custom prompts, you can use the following variables:</p>
-            <ul>
-                <li><code>{videoTitle}</code>: The title of the YouTube video</li>
-                <li><code>{textTranscript}</code>: The full transcript of the video</li>
-                <li><code>{language}</code>: The language of the video</li>
-            </ul>
-        </div>
         <button id="saveBtn">Save</button>
     </div>
     <script src="options.bundle.js"></script>
