@@ -27,6 +27,10 @@
             </select>
         </div>
         <div class="option-group">
+            <label for="language">Language:</label>
+            <select id="language"></select>
+        </div>
+        <div class="option-group">
             <label for="defaultPromptText">Default Prompt (Read-only):</label>
             <textarea id="defaultPromptText" rows="4" readonly></textarea>
         </div>
@@ -42,11 +46,13 @@
             <label for="diyPromptText3">Custom Prompt 3:</label>
             <textarea id="diyPromptText3" rows="4"></textarea>
         </div>
+
         <div class="info-box">
             <p>When creating custom prompts, you can use the following variables:</p>
             <ul>
                 <li><code>{videoTitle}</code>: The title of the YouTube video</li>
                 <li><code>{textTranscript}</code>: The full transcript of the video</li>
+                <li><code>{language}</code>: The language of the video</li>
             </ul>
         </div>
         <button id="saveBtn">Save</button>

@@ -1,4 +1,4 @@
-import { defaultSummarySettings, defaultPromptText } from './common';
+import { Language, defaultSummarySettings, defaultPromptText } from './common';
 
 document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('saveBtn');
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const diyPromptText1Input = document.getElementById('diyPromptText1');
     const diyPromptText2Input = document.getElementById('diyPromptText2');
     const diyPromptText3Input = document.getElementById('diyPromptText3');
+    const languageSelect = document.getElementById('language');
 
     // Set the default prompt text
     defaultPromptTextInput.value = defaultPromptText;
@@ -26,13 +27,29 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText1Input.value = data.summarySettings.diyPromptText1 || defaultSummarySettings.diyPromptText1;
             diyPromptText2Input.value = data.summarySettings.diyPromptText2 || defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = data.summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
+            languageSelect.value = data.summarySettings.language || defaultSummarySettings.language;
         } else {
             // If no saved settings, use default values
             diyPromptText1Input.value = defaultSummarySettings.diyPromptText1;
             diyPromptText2Input.value = defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = defaultSummarySettings.diyPromptText3;
+            languageSelect.value = defaultSummarySettings.language;
+        }
+        
+        populateLanguageSelect();
+        if (data.Language) {
+            languageSelect.value = data.Language;
         }
     });
+
+    function populateLanguageSelect() {
+        Object.entries(Language).forEach(([key, value]) => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = key;
+            languageSelect.appendChild(option);
+        });
+    }
 
     // Save options
     saveBtn.addEventListener('click', () => {
@@ -43,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText1: diyPromptText1Input.value,
             diyPromptText2: diyPromptText2Input.value,
             diyPromptText3: diyPromptText3Input.value,
+            language: languageSelect.value,
         };
 
         chrome.storage.sync.set({ bgColor, geminiApiKey, summarySettings }, () => {

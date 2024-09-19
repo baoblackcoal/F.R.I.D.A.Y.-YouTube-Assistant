@@ -2,7 +2,7 @@ import { getLangOptionsWithLink, getRawTranscriptText } from "./transcript";
 import { geminiAPI } from './geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from './ttsSpeak';
-import { SummarySettings, defaultSummarySettings, defaultPromptText } from '../common';
+import { SummarySettings, defaultSummarySettings, defaultPromptText, Language } from '../common';
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
@@ -46,8 +46,8 @@ function getApiKey(callback: (key: string | null) => void): void {
     });
 }
 
-function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string): string {
-    return customPrompt.replace('{videoTitle}', videoTitle).replace('{textTranscript}', textTranscript);
+function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string, language: string): string {
+    return customPrompt.replace('{videoTitle}', videoTitle).replace('{textTranscript}', textTranscript).replace('{language}', language);
 }
 
 async function generatePrompt(videoId: string): Promise<string> {
@@ -71,7 +71,7 @@ async function generatePrompt(videoId: string): Promise<string> {
         promptText = summarySettings[diyPromptKey as keyof SummarySettings] as string || defaultPromptText;
     }
 
-    const prompt = diyPrompt(promptText, videoTitle, textTranscript);
+    const prompt = diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
 
     return prompt;
 }
