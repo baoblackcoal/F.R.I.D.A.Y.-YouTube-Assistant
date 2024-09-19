@@ -44,7 +44,7 @@ module.exports = (env, argv) => {
     entry: {
       'contentscript/index': path.join(__dirname, "src", "contentscript", "index.ts"),
       popup: './src/popup.ts',
-      options: './src/options.js',
+      options: './src/options.ts',
       background: './src/background.ts',
       common: './src/common.ts',
       tts: './src/tts.ts'

@@ -1,15 +1,17 @@
 import { Language, defaultSummarySettings, defaultPromptText } from './common';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const saveBtn = document.getElementById('saveBtn');
-    const bgColorInput = document.getElementById('bgColor');
-    const geminiApiKeyInput = document.getElementById('geminiApiKey');
-    const promptTypeSelect = document.getElementById('promptType');
-    const defaultPromptTextInput = document.getElementById('defaultPromptText');
-    const diyPromptText1Input = document.getElementById('diyPromptText1');
-    const diyPromptText2Input = document.getElementById('diyPromptText2');
-    const diyPromptText3Input = document.getElementById('diyPromptText3');
-    const languageSelect = document.getElementById('language');
+    const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+    const bgColorInput = document.getElementById('bgColor') as HTMLInputElement;
+    const geminiApiKeyInput = document.getElementById('geminiApiKey') as HTMLInputElement;
+    const promptTypeSelect = document.getElementById('promptType') as HTMLSelectElement;
+    const defaultPromptTextInput = document.getElementById('defaultPromptText') as HTMLTextAreaElement;
+    const diyPromptText1Input = document.getElementById('diyPromptText1') as HTMLTextAreaElement;
+    const diyPromptText2Input = document.getElementById('diyPromptText2') as HTMLTextAreaElement;
+    const diyPromptText3Input = document.getElementById('diyPromptText3') as HTMLTextAreaElement;
+    const languageSelect = document.getElementById('language') as HTMLSelectElement;
+
+    populateLanguageSelect();
 
     // Set the default prompt text
     defaultPromptTextInput.value = defaultPromptText;
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             geminiApiKeyInput.value = data.geminiApiKey;
         }
         if (data.summarySettings) {
-            promptTypeSelect.value = data.summarySettings.promptType;
+            promptTypeSelect.value = data.summarySettings.promptType.toString();
             diyPromptText1Input.value = data.summarySettings.diyPromptText1 || defaultSummarySettings.diyPromptText1;
             diyPromptText2Input.value = data.summarySettings.diyPromptText2 || defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = data.summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
@@ -34,11 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText2Input.value = defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = defaultSummarySettings.diyPromptText3;
             languageSelect.value = defaultSummarySettings.language;
-        }
-        
-        populateLanguageSelect();
-        if (data.Language) {
-            languageSelect.value = data.Language;
         }
     });
 
@@ -79,12 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const expandButtons = document.querySelectorAll('.expand-btn');
 
     // Function to toggle textarea expansion
-    function toggleExpand(event) {
-        const targetId = event.target.getAttribute('data-target');
-        const textarea = document.getElementById(targetId);
-        const isExpanded = textarea.classList.toggle('expanded');
-        event.target.textContent = isExpanded ? 'Collapse' : 'Expand';
-        textarea.rows = isExpanded ? 6 : 2;
+    function toggleExpand(event: Event) {
+        const target = event.target as HTMLElement;
+        const targetId = target.getAttribute('data-target');
+        if (targetId) {
+            const textarea = document.getElementById(targetId) as HTMLTextAreaElement;
+            const isExpanded = textarea.classList.toggle('expanded');
+            target.textContent = isExpanded ? 'Collapse' : 'Expand';
+            textarea.rows = isExpanded ? 6 : 2;
+        }
     }
 
     // Add click event listeners to expand buttons
