@@ -5,8 +5,6 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { geminiAPI } from './geminiApi';
-import { parse } from 'marked'
 import { commandHandle } from './command';
 import { generateSummary } from './subtitleSummary';
 
@@ -19,12 +17,15 @@ function getVideoId() {
 }
 
 export function insertSummaryBtn() {
-    const commandContainerHTML = `
-    <div id="ytbs_test_container">
-        <input type="text" id="ytbs_test_command">
-        <div id="ytbs_test_output"></div>
-    </div>
-    `;
+
+    const commandContainerHTML = ""
+    // do not delete this comment, for testing
+    // const commandContainerHTML = `
+    // <div id="ytbs_test_container">
+    //     <input type="text" id="ytbs_test_command">
+    //     <div id="ytbs_test_output"></div>
+    // </div>
+    // `;
 
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }
@@ -33,14 +34,14 @@ export function insertSummaryBtn() {
 
     if (!getSearchParam(window.location.href).v) { return; }
 
-    waitForElm('#secondary.style-scope.ytd-watch-flexy').then(() => {
+    waitForElm('#bottom-row').then(() => {
 
         // Sanitize
         Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
 
         // Place Script Div
-        document.querySelector("#secondary.style-scope.ytd-watch-flexy").insertAdjacentHTML("afterbegin", `
-            <div class="yt_ai_summary_container">
+        document.querySelector("#bottom-row").insertAdjacentHTML("afterbegin", `
+            <div class="yt_ai_summary_container" style="width: 100%;">
 
                 ${commandContainerHTML}
 
