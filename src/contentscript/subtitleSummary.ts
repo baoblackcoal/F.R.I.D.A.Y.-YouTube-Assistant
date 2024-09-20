@@ -131,13 +131,15 @@ export async function generateSummary(videoId: string): Promise<void> {
                 parseText = "Please set API key in the extension settings";
             }
             contentElement.innerHTML = parseText;
-            const ttsSpeak = TTSSpeak.getInstance();
-            
+
             // Speak the summary and play the video after speaking if stopVideoFirst is true
-            if (summarySettings.stopVideoFirst) {
-                ttsSpeak.speakAndPlayVideo((contentElement as HTMLElement).innerText);
-            } else {
-                ttsSpeak.speak((contentElement as HTMLElement).innerText);
+            if (summarySettings.ttsSpeak) {
+                const ttsSpeak = TTSSpeak.getInstance();
+                if (summarySettings.stopVideoFirst) {
+                    ttsSpeak.speakAndPlayVideo((contentElement as HTMLElement).innerText);
+                } else {
+                    ttsSpeak.speak((contentElement as HTMLElement).innerText);
+                }
             }
         }
     });

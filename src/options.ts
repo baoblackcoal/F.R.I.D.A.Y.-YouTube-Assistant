@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const diyPromptText2Input = document.getElementById('diyPromptText2') as HTMLTextAreaElement;
     const diyPromptText3Input = document.getElementById('diyPromptText3') as HTMLTextAreaElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
+    const ttsSpeakCheckbox = document.getElementById('ttsSpeak') as HTMLInputElement;
     const stopVideoFirstCheckbox = document.getElementById('stopVideoFirst') as HTMLInputElement;
 
     populateLanguageSelect();
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText2: diyPromptText2Input.value,
             diyPromptText3: diyPromptText3Input.value,
             language: languageSelect.value,
+            ttsSpeak: ttsSpeakCheckbox.checked,
             stopVideoFirst: stopVideoFirstCheckbox.checked,
         };
 
