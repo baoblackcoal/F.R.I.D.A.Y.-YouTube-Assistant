@@ -95,6 +95,8 @@ export const defaultSummarySettings: SummarySettings = {
   language: Language.English.toString(),
   stopVideoFirst: false,
 };
+
+// test, do not delete
 // export const defaultSummarySettings: SummarySettings = {
 //   promptType: 1,
 //   diyPromptText1: "hi",
