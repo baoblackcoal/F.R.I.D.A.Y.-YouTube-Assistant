@@ -32,7 +32,6 @@ function getApiKey(callback: (key: string | null) => void): void {
         try {
             if (data.geminiApiKey) {
                 geminiApiKey = data.geminiApiKey;
-                console.log('Gemini API Key:', geminiApiKey);
             } else {
                 console.log('Gemini API Key not found in browser storage.');
             }
@@ -47,7 +46,13 @@ function getApiKey(callback: (key: string | null) => void): void {
 }
 
 function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string, language: string): string {
-    return customPrompt.replace('{videoTitle}', videoTitle).replace('{textTranscript}', textTranscript).replace('{language}', language);
+    const replacements: Record<string, string> = {
+        '{language}': language,
+        '{videoTitle}': videoTitle,
+        '{textTranscript}': textTranscript
+    };
+
+    return customPrompt.replace(/{language}|{videoTitle}|{textTranscript}/g, match => replacements[match] || match);
 }
 
 async function generatePrompt(videoId: string): Promise<string> {
@@ -116,7 +121,8 @@ export async function generateSummary(videoId: string): Promise<void> {
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
                 try {
-                    const response_text = await geminiAPI.generate(prompt);
+                    let response_text = await geminiAPI.generate(prompt);                    
+                    response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
                     parseText = parse(response_text).toString();
                 } catch (error) {
                     parseText = `Error generating text: ${error}`;
