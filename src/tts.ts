@@ -1,4 +1,4 @@
-import { TtsSettings, defaultTtsSettings } from './common';
+import { TtsSettings, defaultTtsSettings } from './settings';
 
 document.addEventListener('DOMContentLoaded', () => {
     const languageSelect = document.getElementById('language') as HTMLSelectElement;

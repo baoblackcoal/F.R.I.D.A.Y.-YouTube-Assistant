@@ -2,7 +2,7 @@ import { getLangOptionsWithLink, getRawTranscriptText } from "./transcript";
 import { geminiAPI } from './geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from './ttsSpeak';
-import { SummarySettings, defaultSummarySettings, defaultPromptText, Language } from '../common';
+import { SummarySettings, defaultSummarySettings, defaultPromptText, Language } from '../settings';
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');

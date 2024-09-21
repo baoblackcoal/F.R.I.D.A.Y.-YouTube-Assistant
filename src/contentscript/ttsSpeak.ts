@@ -1,4 +1,4 @@
-import { TtsSettings } from '../common';
+import { TtsSettings } from '../settings';
 
 export interface TTSInterface {
     speak(text: string): void;

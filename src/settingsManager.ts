@@ -1,4 +1,4 @@
-import { TtsSettings, SummarySettings, LlmSettings, Language, defaultTtsSettings, defaultSummarySettings, defaultLlmModel } from './common';
+import { TtsSettings, SummarySettings, LlmSettings, Language, defaultTtsSettings, defaultSummarySettings, defaultLlmModel } from './settings';
 
 export interface SettingsManager {
   setTtsSettings(settings: TtsSettings): Promise<void>;

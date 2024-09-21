@@ -46,7 +46,6 @@ module.exports = (env, argv) => {
       popup: './src/popup.ts',
       options: './src/options.ts',
       background: './src/background.ts',
-      common: './src/common.ts',
       tts: './src/tts.ts'
     },
     output: {

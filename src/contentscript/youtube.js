@@ -18,14 +18,14 @@ function getVideoId() {
 
 export function insertSummaryBtn() {
 
-    const commandContainerHTML = ""
+    // const commandContainerHTML = ""
     // do not delete this comment, for testing
-    // const commandContainerHTML = `
-    // <div id="ytbs_test_container">
-    //     <input type="text" id="ytbs_test_command">
-    //     <div id="ytbs_test_output"></div>
-    // </div>
-    // `;
+    const commandContainerHTML = `
+    <div id="ytbs_test_container">
+        <input type="text" id="ytbs_test_command">
+        <div id="ytbs_test_output"></div>
+    </div>
+    `;
 
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }

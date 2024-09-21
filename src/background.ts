@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { TtsSettings, defaultTtsSettings, SummarySettings, defaultSummarySettings} from './common';
+import { TtsSettings, defaultTtsSettings, SummarySettings, defaultSummarySettings} from './settings';
 import { settingsManager } from "./settingsManager";
 
 // extension first installed

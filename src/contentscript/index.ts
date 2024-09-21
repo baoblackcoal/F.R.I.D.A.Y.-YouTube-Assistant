@@ -1,7 +1,6 @@
 "use strict";
 
 import { insertSummaryBtn } from "./youtube";
-import { settingsManager } from "../settingsManager";
 
 let oldHref = "";
 
