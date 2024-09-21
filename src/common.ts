@@ -88,22 +88,49 @@ export interface SummarySettings {
   stopVideoFirst: boolean; // stop video first after youtube video web page loaded, then tts speak summary, then continue play video
 }
 
-export const defaultSummarySettings: SummarySettings = {
-  promptType: 0,
-  diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
-  diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
-  diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
-  language: Language.English.toString(),
-  ttsSpeak: false,
-  stopVideoFirst: false,
+// Declare the variable outside the if statement
+export let defaultSummarySettings: SummarySettings;
+let testSummarySettings = false;
+testSummarySettings = true;//do not delete, this is for testing
+if (testSummarySettings) {
+  defaultSummarySettings = {
+    promptType: 1,
+    diyPromptText1: "hi",
+    diyPromptText2: "",
+    diyPromptText3: "",
+    language: Language.English.toString(),
+    ttsSpeak: true,
+    stopVideoFirst: true,
+  };
+} else {
+  defaultSummarySettings = {
+    promptType: 0,
+    diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
+    diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
+    diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
+    language: Language.English.toString(),
+    ttsSpeak: false,
+    stopVideoFirst: false,
+  };  
+}
+
+export interface LlmSettings {
+  modelName: string;
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+  apiKey: string;
+}
+
+export const defaultLlmModel: LlmSettings = {
+  modelName: "gemini-1.5-flash",
+  maxTokens: 4096,
+  temperature: 0,
+  topP: 1,
+  frequencyPenalty: 0,
+  presencePenalty: 0,
+  apiKey: "",
 };
 
-// test, do not delete
-// export const defaultSummarySettings: SummarySettings = {
-//   promptType: 1,
-//   diyPromptText1: "hi",
-//   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
-//   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
-//   language: Language.English.toString(),
-//   stopVideoFirst: true,
-// };

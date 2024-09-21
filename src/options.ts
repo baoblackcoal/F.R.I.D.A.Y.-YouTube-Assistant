@@ -32,13 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
             diyPromptText2Input.value = data.summarySettings.diyPromptText2 || defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = data.summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
             languageSelect.value = data.summarySettings.language || defaultSummarySettings.language;
-            stopVideoFirstCheckbox.checked = data.summarySettings.stopVideoFirst || false;
+            ttsSpeakCheckbox.checked = data.summarySettings.ttsSpeak || defaultSummarySettings.ttsSpeak;
+            stopVideoFirstCheckbox.checked = data.summarySettings.stopVideoFirst || defaultSummarySettings.stopVideoFirst;
         } else {
             // If no saved settings, use default values
             diyPromptText1Input.value = defaultSummarySettings.diyPromptText1;
             diyPromptText2Input.value = defaultSummarySettings.diyPromptText2;
             diyPromptText3Input.value = defaultSummarySettings.diyPromptText3;
             languageSelect.value = defaultSummarySettings.language;
+            ttsSpeakCheckbox.checked = defaultSummarySettings.ttsSpeak;
+            stopVideoFirstCheckbox.checked = defaultSummarySettings.stopVideoFirst;
         }
     });
 

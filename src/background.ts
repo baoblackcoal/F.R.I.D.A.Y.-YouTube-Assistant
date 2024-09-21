@@ -1,5 +1,12 @@
 /// <reference types="chrome"/>
 import { TtsSettings, defaultTtsSettings, SummarySettings, defaultSummarySettings} from './common';
+import { settingsManager } from "./settingsManager";
+
+// extension first installed
+chrome.runtime.onInstalled.addListener(() => {
+    console.log("Extension installed");
+    settingsManager.initializeDefaultSettings();
+});
 
 // Initialize settings
 chrome.runtime.onInstalled.addListener(() => {

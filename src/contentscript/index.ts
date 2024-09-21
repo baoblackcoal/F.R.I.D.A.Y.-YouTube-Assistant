@@ -1,6 +1,7 @@
 "use strict";
 
 import { insertSummaryBtn } from "./youtube";
+import { settingsManager } from "../settingsManager";
 
 let oldHref = "";
 
@@ -58,10 +59,10 @@ window.onload = async () => {
         });
     }
 
-    chrome.runtime.sendMessage({ action: 'getSettings' }, (response: { setting: any }) => {
-        const setting = response.setting || {};
-        // initializeUI(); // Initialize the UI once settings are received
-    });
+    // chrome.runtime.sendMessage({ action: 'getSettings' }, (response: { setting: any }) => {
+    //     const setting = response.setting || {};
+    //     // initializeUI(); // Initialize the UI once settings are received
+    // });
 
 }
 
