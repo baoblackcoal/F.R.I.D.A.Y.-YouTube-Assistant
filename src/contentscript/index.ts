@@ -2,7 +2,7 @@
 
 import { settingsManager } from "../settingsManager";
 import { insertSummaryBtn } from "./youtube";
-
+import { logTime } from "./youtube";
 let oldHref = "";
 
 
@@ -10,6 +10,8 @@ window.onload = async () => {
 
     if (window.location.hostname === "www.youtube.com") {
 
+        logTime("window.onload");
+        // insertSummaryBtn();
         // if (window.location.search !== "" && window.location.search.includes("v=")) {
         //     insertSummaryBtn();
         // }

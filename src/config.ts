@@ -2,10 +2,10 @@ import { InitialSettingsType } from "./settings";
 
 
 export const globalConfig  = {
-    initialSettingsType : InitialSettingsType.TEST,
-    // initialSettingsType : InitialSettingsType.DEFAULT,
+    devInitialSettingsType : InitialSettingsType.TEST,
+    // devInitialSettingsType : InitialSettingsType.DEFAULT,
 
-    testCommandOpen : true,
-    // testCommandOpen : fase,
+    devTestCommandOpen : true,
+    // devInitialSettingsType : fase,
     
 }

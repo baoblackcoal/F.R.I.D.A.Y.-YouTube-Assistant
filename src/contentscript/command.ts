@@ -9,8 +9,8 @@ export async function sayHello(name = 'world') {
     return `Hello, ${name}!`;
 }
 
-export function commandHandle() {
-    if (!globalConfig.testCommandOpen) 
+export async function commandHandle() {
+    if (!globalConfig.devTestCommandOpen) 
         return;
 
     const tts: TTSInterface = TTSSpeak.getInstance();

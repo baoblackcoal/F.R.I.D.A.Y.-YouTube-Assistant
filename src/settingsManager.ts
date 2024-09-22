@@ -22,19 +22,11 @@ class ChromeSettingsManager implements SettingsManager {
     if (env == Env.Prod) {
       this.initSettings = getInitSettings(InitialSettingsType.DEFAULT);
     } else {
-      if (globalConfig.initialSettingsType == InitialSettingsType.TEST) {
-        this.initSettings = getInitSettings(InitialSettingsType.TEST);
-      } else {
-        this.initSettings = getInitSettings(InitialSettingsType.DEFAULT);
-      }
-      this.initializeSettingsWhenInstalled();
+      this.initSettings = getInitSettings(globalConfig.devInitialSettingsType);
     }
   }
 
   async initializeSettingsWhenInstalled(): Promise<void> {   
-    console.log("initializeSettingsWhenInstalled");
-    // clear all settings
-    await chrome.storage.sync.clear();
     await this.setSummarySettings(this.initSettings.summary);
     await this.setLlmSettings(this.initSettings.llm);
     await this.setTtsSettings(this.initSettings.tts);

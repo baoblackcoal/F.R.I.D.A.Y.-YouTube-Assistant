@@ -86,11 +86,20 @@ function pauseVideo() {
     }
 }
 
+let playPauseFlag = false;
 function playVideo() {
     const video = document.querySelector('video');
     if (video) {
+        playPauseFlag = false;
         video.play();
     }
+}
+export async function resetPlayPauseFlag(): Promise<void> {
+    const summarySettings = await settingsManager.getSummarySettings();
+    playPauseFlag = summarySettings.autoTtsSpeak;
+}
+export async function getPlayPauseFlag(): Promise<boolean> {
+    return playPauseFlag;
 }
 
 export async function generateSummary(videoId: string): Promise<void> {
@@ -101,11 +110,6 @@ export async function generateSummary(videoId: string): Promise<void> {
 
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
-
-    // Pause the video if stopVideoFirst is true
-    if (summarySettings.stopVideoFirst) {
-        pauseVideo();
-    }
 
     getApiKey(async (geminiApiKey) => {
         let parseText = "";
@@ -125,15 +129,10 @@ export async function generateSummary(videoId: string): Promise<void> {
             }
             contentElement.innerHTML = parseText;
 
-            // Speak the summary and play the video after speaking if stopVideoFirst is true
-            if (summarySettings.ttsSpeak) {
-                const ttsSpeak = TTSSpeak.getInstance();
-                if (summarySettings.stopVideoFirst) {
-                    ttsSpeak.speakAndPlayVideo((contentElement as HTMLElement).innerText);
-                } else {
-                    ttsSpeak.speak((contentElement as HTMLElement).innerText);
-                }
+            if (summarySettings.autoTtsSpeak) {
+                TTSSpeak.getInstance().speakAndPlayVideo((contentElement as HTMLElement).innerText);
             }
+
         }
     });
 }

@@ -1,4 +1,4 @@
-import { Language, defaultSummarySettings, defaultPromptText } from './settings';
+import { Language, defaultSummarySettings, defaultPromptText, SummarySettings } from './settings';
 import { settingsManager } from './settingsManager';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const diyPromptText2Input = document.getElementById('diyPromptText2') as HTMLTextAreaElement;
     const diyPromptText3Input = document.getElementById('diyPromptText3') as HTMLTextAreaElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
-    const ttsSpeakCheckbox = document.getElementById('ttsSpeak') as HTMLInputElement;
-    const stopVideoFirstCheckbox = document.getElementById('stopVideoFirst') as HTMLInputElement;
+    const stopVideoFirstCheckbox = document.getElementById('autoTtsSpeak') as HTMLInputElement;
 
     populateLanguageSelect();
 
@@ -29,8 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     diyPromptText2Input.value = summarySettings.diyPromptText2 || defaultSummarySettings.diyPromptText2;
     diyPromptText3Input.value = summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
     languageSelect.value = summarySettings.language || defaultSummarySettings.language;
-    ttsSpeakCheckbox.checked = summarySettings.ttsSpeak || defaultSummarySettings.ttsSpeak;
-    stopVideoFirstCheckbox.checked = summarySettings.stopVideoFirst || defaultSummarySettings.stopVideoFirst;
+    stopVideoFirstCheckbox.checked = summarySettings.autoTtsSpeak || defaultSummarySettings.autoTtsSpeak;
 
     function populateLanguageSelect() {
         Object.entries(Language).forEach(([key, value]) => {
@@ -44,15 +42,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Save options
     saveBtn.addEventListener('click', async () => {
         const geminiApiKey = geminiApiKeyInput.value;
-        const summarySettings = {
+        //  implement SummarySettings
+        const summarySettings: SummarySettings = {
             promptType: parseInt(promptTypeSelect.value),
             diyPromptText1: diyPromptText1Input.value,
             diyPromptText2: diyPromptText2Input.value,
             diyPromptText3: diyPromptText3Input.value,
             language: languageSelect.value,
-            ttsSpeak: ttsSpeakCheckbox.checked,
-            stopVideoFirst: stopVideoFirstCheckbox.checked,
+            autoTtsSpeak: stopVideoFirstCheckbox.checked,
         };
+
 
         await settingsManager.setLlmSettings({ ...llmSettings, apiKey: geminiApiKey });
         await settingsManager.setSummarySettings(summarySettings);

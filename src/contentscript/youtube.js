@@ -6,7 +6,7 @@ import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
 import { commandHandle } from './command';
-import { generateSummary } from './subtitleSummary';
+import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
 import { globalConfig } from '../config';
 
 let videoId = null;
@@ -17,10 +17,81 @@ function getVideoId() {
     return videoId;
 }
 
-export function insertSummaryBtn() {
+async function waitForPlayer() {
+    let hasEnterWaitForPlayer = false;
+
+    async function checkVideoAndPause(name) {
+        if (hasEnterWaitForPlayer) {
+            return;
+        }   
+
+        hasEnterWaitForPlayer = true;
+        await resetPlayPauseFlag();
+        // loop pause video, cause call video.pause() may not work first time.
+        while (true) {
+            const playPauseFlag = await getPlayPauseFlag();
+            if (!playPauseFlag) {
+                break;
+            } else {
+                const video = document.querySelector('video');
+                if (video) {
+                    video.pause();
+                    // console.log('ytbs: video pause');
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                } else {
+                    //sleep for 1 ms
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+            }
+        }
+    }        
+
+    // may be #search-input loaded first
+    waitForElm('#search-input').then(() => {
+        logTime("search-input1");
+        checkVideoAndPause("search-input1");
+    });
+    // may be #container(video) loaded first
+    waitForElm('#container').then(async () => {
+        logTime("container_video2");
+        checkVideoAndPause("container_video2");
+    });
+
+
+    // console.log("Waiting for player.....");
+    // waitForElm('#search-input').then(() => {
+    //     logTime("waitForPlayer");
+    //      const playerDiv = document.getElementById('search-input');
+    //      console.log("Player found.....111");
+    //      playerDiv.innerHTML +=
+    //          `
+    //          <div> 
+    //                  Hi there! How can I help you today?........
+    //              </div>        
+    //          `;
+    //  });
+}
+
+export function logTime(name) {
+    const now = new Date();
+    
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const performanceTime = performance.now();
+    const milliseconds = Math.floor(performanceTime * 1000) % 1000; // milliseconds from page load
+    // const microseconds = Math.floor(performanceTime * 1000000) % 1000; // microseconds from page load
+    // const nanoseconds = Math.floor(performanceTime * 1000000000) % 1000; // nanoseconds from page load
+
+    // console.log(`${name}: ${hours}:${minutes}:${seconds}.${milliseconds}.${microseconds}.${nanoseconds}`);
+    console.log(`${name}: ${hours}:${minutes}:${seconds}.${milliseconds}`);
+}
+
+export async function insertSummaryBtn() {
 
     let commandContainerHTML = "";
-    if (globalConfig.testCommandOpen) {
+    if (globalConfig.devTestCommandOpen) {
         commandContainerHTML = `
         <div id="ytbs_test_container">
             <input type="text" id="ytbs_test_command">
@@ -31,6 +102,13 @@ export function insertSummaryBtn() {
         commandContainerHTML = ""
     }
 
+    // log time ms   
+    logTime("insertSummaryBtn");
+
+    waitForPlayer();
+
+
+
 
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }
@@ -40,6 +118,7 @@ export function insertSummaryBtn() {
     if (!getSearchParam(window.location.href).v) { return; }
 
     waitForElm('#bottom-row').then(() => {
+        logTime("bottom-row");
 
         // Sanitize
         Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
