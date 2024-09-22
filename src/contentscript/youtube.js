@@ -7,6 +7,7 @@ import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
 import { commandHandle } from './command';
 import { generateSummary } from './subtitleSummary';
+import { globalConfig } from '../config';
 
 let videoId = null;
 function getVideoId() {
@@ -18,14 +19,18 @@ function getVideoId() {
 
 export function insertSummaryBtn() {
 
-    // const commandContainerHTML = ""
-    // do not delete this comment, for testing
-    const commandContainerHTML = `
-    <div id="ytbs_test_container">
-        <input type="text" id="ytbs_test_command">
-        <div id="ytbs_test_output"></div>
-    </div>
-    `;
+    let commandContainerHTML = "";
+    if (globalConfig.testCommandOpen) {
+        commandContainerHTML = `
+        <div id="ytbs_test_container">
+            <input type="text" id="ytbs_test_command">
+            <div id="ytbs_test_output"></div>
+        </div>
+        `;
+    } else {
+        commandContainerHTML = ""
+    }
+
 
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }

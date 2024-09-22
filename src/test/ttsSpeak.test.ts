@@ -32,7 +32,7 @@ describe('TTS Tests', () => {
   test('should stop speaking', async () => {
     await helpers.runCommandAndExpectOutput(
       testSetup.page, 
-      'speak "This is a long sentence that should be interrupted"', 
+      'speak "This is a long sentence that should be interrupted, This is a long sentence that should be interrupted, This is a long sentence that should be interrupted."', 
       'Speaking...'
     );
     const result = await helpers.runCommandAndGetOutput(testSetup.page, 'stop');

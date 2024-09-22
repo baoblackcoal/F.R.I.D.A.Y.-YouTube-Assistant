@@ -1,6 +1,7 @@
-import { TtsSettings, defaultTtsSettings } from './settings';
+import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './settings';
+import { settingsManager } from './settingsManager';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
     const voiceSelect = document.getElementById('voiceName') as HTMLSelectElement;
     const speedSelect = document.getElementById('speed') as HTMLSelectElement;
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stopButton = document.getElementById('stop') as HTMLButtonElement;
     const resetButton = document.getElementById('reset') as HTMLButtonElement;
 
-    let settingsTemp: TtsSettings = { ...defaultTtsSettings };
+    let settingsTemp: TtsSettings = await settingsManager.getTtsSettings();
 
     chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
         populateLanguageOptions(voices);
@@ -64,19 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateSpeedAndPitchOptions() {
-        const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
-        const pitchOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
         speedSelect.innerHTML = '';
         pitchSelect.innerHTML = '';
 
-        speedOptions.forEach((value) => {
+        TtsSpeedOptions.forEach((value) => {
             const speedOption = document.createElement('option');
             speedOption.value = value.toString();
             speedOption.textContent = `${value}X`;
             speedSelect.appendChild(speedOption);
         });
 
-        pitchOptions.forEach((value) => {
+        TtsPitchOptions.forEach((value) => {
             const pitchOption = document.createElement('option');
             pitchOption.value = value.toString();
             pitchOption.textContent = `${value}X`;
@@ -87,21 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
         pitchSelect.value = settingsTemp.pitch.toString();
     }
 
-    function loadSavedSettings() {
-        chrome.storage.sync.get(['ttsSettings'], (items) => {
-            const settings = items.ttsSettings as TtsSettings || { ...defaultTtsSettings };
-            languageSelect.value = settings.language || '';
-            voiceSelect.value = settings.voiceName || '';
-            speedSelect.value = settings.rate.toString();
-            pitchSelect.value = settings.pitch.toString();
-            volumeInput.value = settings.volume.toString();
-            settingsTemp = settings;
+    async function loadSavedSettings() {
+        const settings = await settingsManager.getTtsSettings();
+        languageSelect.value = settings.language || '';
+        voiceSelect.value = settings.voiceName || '';
+        speedSelect.value = settings.rate.toString();
+        pitchSelect.value = settings.pitch.toString();
+        volumeInput.value = settings.volume.toString();
+        settingsTemp = settings;
 
-            chrome.tts.getVoices((voices) => populateVoiceOptions(voices));
-        });
+        chrome.tts.getVoices((voices) => populateVoiceOptions(voices));
     }
 
-    function saveSettings() {
+    async function saveSettings() {
         const settings: TtsSettings = {
             language: languageSelect.value,
             voiceName: languageSelect.value === '' ? '' : voiceSelect.value,
@@ -110,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             volume: parseFloat(volumeInput.value)
         };
         settingsTemp = settings;
-        chrome.storage.sync.set({ ttsSettings: settings });
+        await settingsManager.setTtsSettings(settings);
     }
 
     [languageSelect, voiceSelect, speedSelect, pitchSelect, volumeInput].forEach(
@@ -139,18 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    resetButton.addEventListener('click', () => {
+    resetButton.addEventListener('click', async () => {
         const defaultSettings: TtsSettings = { ...defaultTtsSettings };
-        chrome.storage.sync.set({ ttsSettings: defaultSettings }, () => {
-            languageSelect.value = defaultSettings.language;
-            voiceSelect.value = defaultSettings.voiceName;
-            speedSelect.value = defaultSettings.rate.toString();
-            pitchSelect.value = defaultSettings.pitch.toString();
-            volumeInput.value = defaultSettings.volume.toString();
-            chrome.tts.getVoices((voices) => {
-                populateLanguageOptions(voices);
-                populateVoiceOptions(voices);
-            });
+        await settingsManager.setTtsSettings(defaultSettings);
+        languageSelect.value = defaultSettings.language;
+        voiceSelect.value = defaultSettings.voiceName;
+        speedSelect.value = defaultSettings.rate.toString();
+        pitchSelect.value = defaultSettings.pitch.toString();
+        volumeInput.value = defaultSettings.volume.toString();
+        chrome.tts.getVoices((voices) => {
+            populateLanguageOptions(voices);
+            populateVoiceOptions(voices);
         });
     });
 });

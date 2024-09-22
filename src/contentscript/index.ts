@@ -1,8 +1,10 @@
 "use strict";
 
+import { settingsManager } from "../settingsManager";
 import { insertSummaryBtn } from "./youtube";
 
 let oldHref = "";
+
 
 window.onload = async () => {
 

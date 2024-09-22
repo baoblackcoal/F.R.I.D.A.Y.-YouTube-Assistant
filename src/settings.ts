@@ -1,3 +1,5 @@
+import { Env } from "./common";
+
 // Define the TTS settings interface
 export interface TtsSettings {
   language: string;
@@ -8,11 +10,13 @@ export interface TtsSettings {
 }
 
 // Default TTS settings
+export const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
+export const pitchOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 export const defaultTtsSettings: TtsSettings = {
   language: '',
   voiceName: '',
-  rate: 1.0,
-  pitch: 1.0,
+  rate: 1.0, //only set to speedOptions
+  pitch: 1.0, //only set to pitchOptions
   volume: 1.0
 };
 
@@ -77,7 +81,6 @@ export enum Language {
   Thai = 'Thai',
 }
 
-// Default summary settings
 export interface SummarySettings {
   promptType: number; // 0: default, 1: diy1, 2: diy2, 3: diy3
   diyPromptText1: string;
@@ -88,31 +91,16 @@ export interface SummarySettings {
   stopVideoFirst: boolean; // stop video first after youtube video web page loaded, then tts speak summary, then continue play video
 }
 
-// Declare the variable outside the if statement
-export let defaultSummarySettings: SummarySettings;
-let testSummarySettings = false;
-testSummarySettings = true;//do not delete, this is for testing
-if (testSummarySettings) {
-  defaultSummarySettings = {
-    promptType: 1,
-    diyPromptText1: "hi",
-    diyPromptText2: "",
-    diyPromptText3: "",
-    language: Language.English.toString(),
-    ttsSpeak: true,
-    stopVideoFirst: true,
-  };
-} else {
-  defaultSummarySettings = {
-    promptType: 0,
-    diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
-    diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
-    diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
-    language: Language.English.toString(),
-    ttsSpeak: false,
-    stopVideoFirst: false,
-  };  
-}
+export const defaultSummarySettings: SummarySettings = {
+  promptType: 0,
+  diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
+  diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
+  diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
+  language: Language.English.toString(),
+  ttsSpeak: false,
+  stopVideoFirst: false,
+};  
+
 
 export interface LlmSettings {
   modelName: string;
@@ -133,4 +121,50 @@ export const defaultLlmModel: LlmSettings = {
   presencePenalty: 0,
   apiKey: "",
 };
+
+
+// Abstract interface for settings
+export interface AbstractSettings {
+  summary: SummarySettings;
+  llm: LlmSettings;
+  tts: TtsSettings;
+}
+
+export const defaultSettings: AbstractSettings = {
+  summary: defaultSummarySettings,
+  llm: defaultLlmModel,
+  tts: defaultTtsSettings,
+};
+
+// change settings for testing, must update extension in chrome://extensions after change, or it will not take effect!!!
+export const testSettings: AbstractSettings = {
+  summary: {
+    ...defaultSummarySettings,
+    promptType: 1,
+    diyPromptText1: "hi",
+    diyPromptText2: "hi",
+    diyPromptText3: "hello",
+    language: Language.English.toString(),
+    ttsSpeak: true,
+    stopVideoFirst: false
+  },
+  llm: {
+    ...defaultLlmModel,
+    apiKey: "test-api-key",
+  },
+  tts: {
+    ...defaultTtsSettings,
+    rate: 2,
+  },
+};
+
+export enum InitialSettingsType {
+  TEST = "test",
+  DEFAULT = "default",
+} 
+
+export function getInitSettings(settingsType: InitialSettingsType): AbstractSettings {
+  return settingsType === InitialSettingsType.TEST ? testSettings : defaultSettings;
+}
+
 

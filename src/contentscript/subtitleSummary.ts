@@ -3,6 +3,7 @@ import { geminiAPI } from './geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from './ttsSpeak';
 import { SummarySettings, defaultSummarySettings, defaultPromptText, Language } from '../settings';
+import { settingsManager } from '../settingsManager';
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
@@ -63,12 +64,8 @@ async function generatePrompt(videoId: string): Promise<string> {
 
     const videoTitle = await getVideoTitle();
 
-    // Get summarySettings from chrome.storage.sync
-    const summarySettings: SummarySettings = await new Promise((resolve) => {
-        chrome.storage.sync.get('summarySettings', (data) => {
-            resolve(data.summarySettings || defaultSummarySettings);
-        });
-    });
+    // Get summarySettings using settingsManager
+    const summarySettings = await settingsManager.getSummarySettings();
 
     let promptText = defaultPromptText;
     if (summarySettings.promptType > 0) {
@@ -102,12 +99,8 @@ export async function generateSummary(videoId: string): Promise<void> {
         return;
     }
 
-    // Get summarySettings
-    const summarySettings: SummarySettings = await new Promise((resolve) => {
-        chrome.storage.sync.get('summarySettings', (data) => {
-            resolve(data.summarySettings || defaultSummarySettings);
-        });
-    });
+    // Get summarySettings using settingsManager
+    const summarySettings = await settingsManager.getSummarySettings();
 
     // Pause the video if stopVideoFirst is true
     if (summarySettings.stopVideoFirst) {

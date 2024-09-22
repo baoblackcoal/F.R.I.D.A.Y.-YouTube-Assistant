@@ -1,3 +1,4 @@
+import { globalConfig } from '../config';
 import { geminiAPI } from './geminiApi';
 import { TTSInterface, TTSSpeak } from './ttsSpeak';
 
@@ -9,6 +10,9 @@ export async function sayHello(name = 'world') {
 }
 
 export function commandHandle() {
+    if (!globalConfig.testCommandOpen) 
+        return;
+
     const tts: TTSInterface = TTSSpeak.getInstance();
     // Get references to the inserted elements
     const inputElement = document.getElementById('ytbs_test_command');
