@@ -4,6 +4,7 @@
     "@babel/preset-env": "^7.16.4",
     "@types/chrome": "^0.0.270",
     "@types/jest": "^29.5.13",
+    "@types/jquery": "^3.5.30",
     "@types/node": "^16.18.108",
     "@types/puppeteer": "^5.4.7",
     "babel-loader": "^8.2.5",

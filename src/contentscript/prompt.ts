@@ -1,4 +1,9 @@
-export function getSummaryPrompt(transcript) {
+interface TextData {
+  text: string;
+  index: number;
+}
+
+export function getSummaryPrompt(transcript: string): string {
   return `Title: "${document.title
     .replace(/\n+/g, " ")
     .trim()}"\nVideo Transcript: "${truncateTranscript(transcript)
@@ -9,8 +14,7 @@ export function getSummaryPrompt(transcript) {
 // Seems like 15,000 bytes is the limit for the prompt
 const limit = 14000; // 1000 is a buffer
 
-export function getChunckedTranscripts(textData, textDataOriginal) {
-
+export function getChunckedTranscripts(textData: TextData[], textDataOriginal: TextData[]): string {
   // [Thought Process]
   // (1) If text is longer than limit, then split it into chunks (even numbered chunks) 
   // (2) Repeat until it's under limit
@@ -60,10 +64,9 @@ export function getChunckedTranscripts(textData, textDataOriginal) {
 
   const originalText = textDataOriginal.sort((a, b) => a.index - b.index).map(t => t.text).join(" ");
   return (result == "") ? originalText : result; // Just in case the result is empty
-  
 }
 
-function truncateTranscript(str) {
+function truncateTranscript(str: string): string {
   const bytes = textToBinaryString(str).length;
   if (bytes > limit) {
     const ratio = limit / bytes;
@@ -73,7 +76,7 @@ function truncateTranscript(str) {
   return str;
 }
 
-function textToBinaryString(str) {
+function textToBinaryString(str: string): string {
   let escstr = decodeURIComponent(encodeURIComponent(escape(str)));
   let binstr = escstr.replace(/%([0-9A-F]{2})/gi, function (match, hex) {
     let i = parseInt(hex, 16);

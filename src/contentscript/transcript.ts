@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-export async function getLangOptionsWithLink(videoId) {
+export async function getLangOptionsWithLink(videoId: string) {
   
   // Get a transcript URL
   const videoPageResponse = await fetch("https://www.youtube.com/watch?v=" + videoId);
@@ -11,14 +11,14 @@ export async function getLangOptionsWithLink(videoId) {
 
   const captions_json = JSON.parse(splittedHtml[1].split(',"videoDetails')[0].replace('\n', ''));
   const captionTracks = captions_json.playerCaptionsTracklistRenderer.captionTracks;
-  const languageOptions = Array.from(captionTracks).map(i => { return i.name.simpleText; })
+  const languageOptions = Array.from(captionTracks).map((i: any) => { return i.name.simpleText; })
   
   const first = "English"; // Sort by English first
   languageOptions.sort(function(x,y){ return x.includes(first) ? -1 : y.includes(first) ? 1 : 0; });
   languageOptions.sort(function(x,y){ return x == first ? -1 : y == first ? 1 : 0; });
 
-  return Array.from(languageOptions).map((langName, index) => {
-    const link = captionTracks.find(i => i.name.simpleText === langName).baseUrl;
+  return Array.from(languageOptions).map((langName: string, index: number) => {
+    const link = captionTracks.find((i: any) => i.name.simpleText === langName).baseUrl;
     return {
       language: langName,
       link: link
@@ -27,14 +27,14 @@ export async function getLangOptionsWithLink(videoId) {
 
 }
 
-export async function getTranscript(langOption) {
+export async function getTranscript(langOption: { link: string }): Promise<string> {
   const rawTranscript = await getRawTranscript(langOption.link);
   const transcript = rawTranscript.map((item) => { return item.text; }).join(' ');
   return transcript;
 }
 
 
-async function fetchAndParseTranscript(link) {
+async function fetchAndParseTranscript(link: string) {
   // Get Transcript
   const transcriptPageResponse = await fetch(link);
   const transcriptPageXml = await transcriptPageResponse.text();
@@ -46,7 +46,7 @@ async function fetchAndParseTranscript(link) {
   return textNodes;
 }
 
-export async function getRawTranscriptText(link) {
+export async function getRawTranscriptText(link: string): Promise<string> {
   const textNodes = await fetchAndParseTranscript(link);
 
   // Extract text content and concatenate it into a single string
@@ -55,23 +55,23 @@ export async function getRawTranscriptText(link) {
     .join(' '); // Join all text content with a space in between
 }
 
-export async function getRawTranscript(link) {
+export async function getRawTranscript(link: string): Promise<{ start: string | null, duration: string | null, text: string | null }[]> {
   const textNodes = await fetchAndParseTranscript(link);
 
   // Return an array of objects with start, duration, and text properties
   return Array.from(textNodes).map(i => ({
-    start: i.getAttribute("start"),
-    duration: i.getAttribute("dur"),
+    start: (i as HTMLElement).getAttribute("start"),
+    duration: (i as HTMLElement).getAttribute("dur"),
     text: i.textContent
   }));
 }
 
-export async function getTranscriptHTML(link, videoId) {
+export async function getTranscriptHTML(link: string, videoId: string): Promise<string> {
 
   const rawTranscript = await getRawTranscript(link);
 
-  const scriptObjArr = [], timeUpperLimit = 60, charInitLimit = 300, charUpperLimit = 500;
-  let loop = 0, chars = [], charCount = 0, timeSum = 0, tempObj = {}, remaining = {};
+  const scriptObjArr: any[] = [], timeUpperLimit = 60, charInitLimit = 300, charUpperLimit = 500;
+  let loop = 0, chars: any[] = [], charCount = 0, timeSum = 0, tempObj: any = {}, remaining: any = {};
 
   // Sum-up to either total 60 seconds or 300 chars.
   Array.from(rawTranscript).forEach((obj, i, arr) => {
@@ -91,10 +91,12 @@ export async function getTranscriptHTML(link, videoId) {
       loop++;
 
       const startSeconds = Math.round(tempObj.start);
-      const seconds = Math.round(obj.start);
+      const seconds = Math.round(Number(obj.start));
       timeSum = (seconds - startSeconds);
-      charCount += obj.text.length;
-      chars.push(obj.text);
+      if (obj.text) {
+          charCount += obj.text.length;
+          chars.push(obj.text);
+      }
 
       if (i == arr.length - 1) {
           tempObj.text = chars.join(" ").replace(/\n/g, " ");
@@ -113,8 +115,7 @@ export async function getTranscriptHTML(link, videoId) {
       if (charCount > charInitLimit) {
 
           if (charCount < charUpperLimit) {
-              if (obj.text.includes(".")) {
-
+              if (obj.text && obj.text.includes(".")) { // Added null check for obj.text
                   const splitStr = obj.text.split(".");
 
                   // Case: the last letter is . => Process regulary
@@ -171,7 +172,7 @@ export async function getTranscriptHTML(link, videoId) {
 
 }
 
-function convertIntToHms(num) {
+function convertIntToHms(num: number) {
   const h = (num < 3600) ? 14 : 12;
   return (new Date(num * 1000).toISOString().substring(h, 19)).toString();
 }
