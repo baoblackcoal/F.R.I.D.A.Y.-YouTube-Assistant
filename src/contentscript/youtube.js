@@ -5,7 +5,7 @@ import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { commandHandle } from './command';
+import { sayHello, commandHandle } from './command/command.ts'; // Ensure the correct file extension
 import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
 import { globalConfig } from '../config';
 
