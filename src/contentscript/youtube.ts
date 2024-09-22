@@ -4,19 +4,19 @@ import { getLangOptionsWithLink, getTranscriptHTML, getRawTranscriptText } from 
 import { getSearchParam } from "./searchParam";
 import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
-import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs.js';
-import { sayHello, commandHandle } from './command/command.ts'; // Ensure the correct file extension
+import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs';
+import { commandHandle } from './command/command';
 import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
 import { globalConfig } from '../config';
 
-function getVideoId() {
-    return getSearchParam(window.location.href).v;
+function getVideoId(): string {
+    return getSearchParam(window.location.href).v || '';
 }
 
-async function waitForPlayer() {
+async function waitForPlayer(): Promise<void> {
     let hasEnterWaitForPlayer = false;
 
-    async function checkVideoAndPause(name) {
+    async function checkVideoAndPause(name: string): Promise<void> {
         if (hasEnterWaitForPlayer) {
             return;
         }   
@@ -52,23 +52,9 @@ async function waitForPlayer() {
         logTime("container_video2");
         checkVideoAndPause("container_video2");
     });
-
-
-    // console.log("Waiting for player.....");
-    // waitForElm('#search-input').then(() => {
-    //     logTime("waitForPlayer");
-    //      const playerDiv = document.getElementById('search-input');
-    //      console.log("Player found.....111");
-    //      playerDiv.innerHTML +=
-    //          `
-    //          <div> 
-    //                  Hi there! How can I help you today?........
-    //              </div>        
-    //          `;
-    //  });
 }
 
-export function logTime(name) {
+export function logTime(name: string): void {
     const now = new Date();
     
     const hours = now.getHours();
@@ -77,15 +63,11 @@ export function logTime(name) {
 
     const performanceTime = performance.now();
     const milliseconds = Math.floor(performanceTime * 1000) % 1000; // milliseconds from page load
-    // const microseconds = Math.floor(performanceTime * 1000000) % 1000; // microseconds from page load
-    // const nanoseconds = Math.floor(performanceTime * 1000000000) % 1000; // nanoseconds from page load
 
-    // console.log(`${name}: ${hours}:${minutes}:${seconds}.${milliseconds}.${microseconds}.${nanoseconds}`);
     console.log(`${name}: ${hours}:${minutes}:${seconds}.${milliseconds}`);
 }
 
-export async function insertSummaryBtn() {
-
+export async function insertSummaryBtn(): Promise<void> {
     let commandContainerHTML = "";
     if (globalConfig.devTestCommandOpen) {
         commandContainerHTML = `
@@ -103,14 +85,11 @@ export async function insertSummaryBtn() {
 
     waitForPlayer();
 
-
-
-
     // Sanitize Transcript Div
-    if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }
-    if (document.querySelector("#yt_ai_summary_summary")) { document.querySelector("#yt_ai_summary_summary").innerHTML = ""; }
+    if (document.querySelector("#yt_ai_summary_lang_select")) { (document.querySelector("#yt_ai_summary_lang_select") as HTMLElement).innerHTML = ""; }
+    if (document.querySelector("#yt_ai_summary_summary")) { (document.querySelector("#yt_ai_summary_summary") as HTMLElement).innerHTML = ""; }
 
-    if (document.querySelector("#ytbs_container")) { document.querySelector("#ytbs_container").innerHTML = ""; }
+    if (document.querySelector("#ytbs_container")) { (document.querySelector("#ytbs_container") as HTMLElement).innerHTML = ""; }
 
     Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
 
@@ -123,7 +102,7 @@ export async function insertSummaryBtn() {
         Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
 
         // Place Script Div
-        document.querySelector("#bottom-row").insertAdjacentHTML("afterbegin", `
+        document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", `
             <div class="yt_ai_summary_container" style="width: 100%;">
 
                 ${commandContainerHTML}
@@ -131,7 +110,6 @@ export async function insertSummaryBtn() {
                 <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
                     <div class="ytbs_content"> </div>                    
                 </div>
-
 
                 <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <a href="https://glasp.co/youtube-summary" target="_blank" style="width: 24px;height: 24px;">
@@ -158,7 +136,6 @@ export async function insertSummaryBtn() {
                     <div id="yt_ai_summary_text" class="yt_ai_summary_text"></div>
                 </div>
             </div>
-
         `);
 
         // Event Listener: Hover Label
@@ -179,14 +156,14 @@ export async function insertSummaryBtn() {
         })
 
         // Event Listener: Copy Transcript
-        document.querySelector("#yt_ai_summary_header_copy").addEventListener("click", (e) => {
+        document.querySelector("#yt_ai_summary_header_copy")!.addEventListener("click", (e) => {
             e.stopPropagation();
-            const videoId = getSearchParam(window.location.href).v;
+            const videoId = getSearchParam(window.location.href).v || "";
             copyTranscript(videoId);
         })
 
         // Event Listener: AI Summary
-        document.querySelector("#yt_ai_summary_header_summary").addEventListener("click", (e) => {
+        document.querySelector("#yt_ai_summary_header_summary")!.addEventListener("click", (e) => {
             e.stopPropagation();
             const prompt = copyTranscriptAndPrompt();
             setTimeout(() => {
@@ -196,15 +173,14 @@ export async function insertSummaryBtn() {
         })
 
         // Event Listener: Jump to Current Timestamp
-        document.querySelector("#yt_ai_summary_header_track").addEventListener("click", (e) => {
+        document.querySelector("#yt_ai_summary_header_track")!.addEventListener("click", (e) => {
             e.stopPropagation();
             scrollIntoCurrTimeDiv();
         })
 
         // Event Listener: Toggle Transcript Body
-        document.querySelector("#yt_ai_summary_header").addEventListener("click", async (e) => {
-
-            const videoId = getSearchParam(window.location.href).v;
+        document.querySelector("#yt_ai_summary_header")!.addEventListener("click", async (e) => {
+            const videoId = getSearchParam(window.location.href).v || "";
             sanitizeWidget();
 
             if (!isWidgetOpen()) { return; }
@@ -215,50 +191,48 @@ export async function insertSummaryBtn() {
                 noTranscriptionAlert();
                 return;
             }
-            createLangSelectBtns(langOptionsWithLink);
+            createLangSelectBtns(langOptionsWithLink as { language: string, link: string }[]);
 
             // Create Transcript HTML & Add Event Listener
             const transcriptHTML = await getTranscriptHTML(langOptionsWithLink[0].link, videoId);
-            document.querySelector("#yt_ai_summary_text").innerHTML = transcriptHTML;
+            (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = transcriptHTML;
             evtListenerOnTimestamp();
 
             // Event Listener: Language Select Btn Click
-            evtListenerOnLangBtns(langOptionsWithLink, videoId);
-
+            evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
         })
-
 
         generateSummary(getVideoId());
         commandHandle();
     });
 }
 
-function sanitizeWidget() {
+function sanitizeWidget(): void {
     // Sanitize Transcript Div
-    document.querySelector("#yt_ai_summary_lang_select").innerHTML = "";
-    document.querySelector("#yt_ai_summary_text").innerHTML = "";
+    (document.querySelector("#yt_ai_summary_lang_select") as HTMLElement).innerHTML = "";
+    (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = "";
 
     // Height Adjust
-    document.querySelector("#yt_ai_summary_body").style.maxHeight = window.innerHeight - 160 + "px";
-    document.querySelector("#yt_ai_summary_text").innerHTML = `
+    (document.querySelector("#yt_ai_summary_body") as HTMLElement).style.maxHeight = window.innerHeight - 160 + "px";
+    (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = `
     <svg class="yt_ai_summary_loading" style="display: block;width: 48px;margin: 40px auto;" width="48" height="48" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 36C59.9995 36 37 66 37 99C37 132 61.9995 163.5 100 163.5C138 163.5 164 132 164 99" stroke="#5C94FF" stroke-width="6"/>
     </svg>`;
 
     // Toggle Class List
-    document.querySelector("#yt_ai_summary_body").classList.toggle("yt_ai_summary_body_show");
-    document.querySelector("#yt_ai_summary_header_copy").classList.toggle("yt_ai_summary_header_icon_show");
-    document.querySelector("#yt_ai_summary_header_summary").classList.toggle("yt_ai_summary_header_icon_show");
-    document.querySelector("#yt_ai_summary_header_track").classList.toggle("yt_ai_summary_header_icon_show");
-    document.querySelector("#yt_ai_summary_header_toggle").classList.toggle("yt_ai_summary_header_toggle_rotate");
+    (document.querySelector("#yt_ai_summary_body") as HTMLElement).classList.toggle("yt_ai_summary_body_show");
+    (document.querySelector("#yt_ai_summary_header_copy") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
+    (document.querySelector("#yt_ai_summary_header_summary") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
+    (document.querySelector("#yt_ai_summary_header_track") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
+    (document.querySelector("#yt_ai_summary_header_toggle") as HTMLElement).classList.toggle("yt_ai_summary_header_toggle_rotate");
 }
 
-function isWidgetOpen() {
-    return document.querySelector("#yt_ai_summary_body").classList.contains("yt_ai_summary_body_show");
+function isWidgetOpen(): boolean {
+    return (document.querySelector("#yt_ai_summary_body") as HTMLElement).classList.contains("yt_ai_summary_body_show");
 }
 
-function noTranscriptionAlert() {
-    document.querySelector("#yt_ai_summary_text").innerHTML = `
+function noTranscriptionAlert(): void {
+    (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = `
         <div style="margin: 40px auto;text-align: center;">
             <p>No Transcription Available... 😢</p>
             <p>Try <a href="https://huggingface.co/spaces/jeffistyping/Youtube-Whisperer" target="_blank">Huggingface Youtube Whisperer</a> to transcribe!</p>
@@ -266,23 +240,23 @@ function noTranscriptionAlert() {
     `;
 }
 
-function createLangSelectBtns(langOptionsWithLink) {
-    document.querySelector("#yt_ai_summary_lang_select").innerHTML = Array.from(langOptionsWithLink).map((langOption, index) => {
+function createLangSelectBtns(langOptionsWithLink: { language: string, link: string }[]): void {
+    (document.querySelector("#yt_ai_summary_lang_select") as HTMLElement).innerHTML = Array.from(langOptionsWithLink).map((langOption, index) => {
         return `<button class="yt_ai_summary_lang ${(index == 0) ? "yt_ai_summary_lange_selected" : ""}" data-yt-transcript-lang="${langOption.language}">${langOption.language}</button>`;
     }).join("");
 }
 
-function evtListenerOnLangBtns(langOptionsWithLink, videoId) {
+function evtListenerOnLangBtns(langOptionsWithLink: { language: string, link: string }[], videoId: string): void {
     Array.from(document.getElementsByClassName("yt_ai_summary_lang")).forEach((langBtn) => {
         langBtn.addEventListener("click", async (e) => {
-            const lang = e.target.getAttribute("data-yt-transcript-lang");
+            const lang = (e.target as HTMLElement).getAttribute("data-yt-transcript-lang");
             const targetBtn = document.querySelector(`.yt_ai_summary_lang[data-yt-transcript-lang="${lang}"]`);
-            const link = langOptionsWithLink.find((langOption) => langOption.language === lang).link;
+            const link = langOptionsWithLink.find((langOption) => langOption.language === lang)!.link;
             // Create Transcript HTML & Event Listener
             const transcriptHTML = await getTranscriptHTML(link, videoId);
-            document.querySelector("#yt_ai_summary_text").innerHTML = transcriptHTML;
+            (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = transcriptHTML;
             evtListenerOnTimestamp()
-            targetBtn.classList.add("yt_ai_summary_lange_selected");
+            targetBtn!.classList.add("yt_ai_summary_lange_selected");
             Array.from(document.getElementsByClassName("yt_ai_summary_lang")).forEach((langBtn) => {
                 if (langBtn !== targetBtn) { langBtn.classList.remove("yt_ai_summary_lange_selected"); }
             })
@@ -290,63 +264,61 @@ function evtListenerOnLangBtns(langOptionsWithLink, videoId) {
     })
 }
 
-function getTYCurrentTime() {
-    return document.querySelector("#movie_player > div.html5-video-container > video").currentTime ?? 0;
+function getTYCurrentTime(): number {
+    return (document.querySelector("#movie_player > div.html5-video-container > video") as HTMLVideoElement).currentTime ?? 0;
 }
 
-function getTYEndTime() {
-    return document.querySelector("#movie_player > div.html5-video-container > video").duration ?? 0;
+function getTYEndTime(): number {
+    return (document.querySelector("#movie_player > div.html5-video-container > video") as HTMLVideoElement).duration ?? 0;
 }
 
-function scrollIntoCurrTimeDiv() {
+function scrollIntoCurrTimeDiv(): void {
     const currTime = getTYCurrentTime();
     Array.from(document.getElementsByClassName("yt_ai_summary_transcript_text_timestamp")).forEach((el, i, arr) => {
-        const startTimeOfEl = el.getAttribute("data-start-time");
-        const startTimeOfNextEl = (i === arr.length - 1) ? getTYEndTime() : arr[i + 1].getAttribute("data-start-time") ?? 0;
+        const startTimeOfEl = parseFloat(el.getAttribute("data-start-time")!);
+        const startTimeOfNextEl = (i === arr.length - 1) ? getTYEndTime() : parseFloat(arr[i + 1].getAttribute("data-start-time") ?? "0");
         if (currTime >= startTimeOfEl && currTime < startTimeOfNextEl) {
             el.scrollIntoView({ behavior: 'auto', block: 'start' });
-            document.querySelector("#secondary > div.yt_ai_summary_container").scrollIntoView({ behavior: 'auto', block: 'end' });
+            (document.querySelector("#secondary > div.yt_ai_summary_container") as HTMLElement).scrollIntoView({ behavior: 'auto', block: 'end' });
         }
     })
 }
 
-function evtListenerOnTimestamp() {
+function evtListenerOnTimestamp(): void {
     Array.from(document.getElementsByClassName("yt_ai_summary_transcript_text_timestamp")).forEach(el => {
         el.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const starttime = el.getAttribute("data-start-time");
-            const ytVideoEl = document.querySelector("#movie_player > div.html5-video-container > video");
+            const starttime = parseFloat(el.getAttribute("data-start-time")!);
+            const ytVideoEl = document.querySelector("#movie_player > div.html5-video-container > video") as HTMLVideoElement;
             ytVideoEl.currentTime = starttime;
             ytVideoEl.play();
         })
     })
 }
 
-function copyTranscript(videoId) {
+function copyTranscript(videoId: string): void {
     let contentBody = "";
     const url = `https://www.youtube.com/watch?v=${videoId}`;
     contentBody += `${document.title}\n`;
     contentBody += `${url}\n\n`;
-    // contentBody += `![](${url})\n`;
     contentBody += `Transcript:\n`;
-    Array.from(document.getElementById("yt_ai_summary_text").children).forEach(el => {
+    Array.from(document.getElementById("yt_ai_summary_text")!.children).forEach(el => {
         if (!el) { return; }
         if (el.children.length < 2) { return; }
-        const timestamp = el.querySelector(".yt_ai_summary_transcript_text_timestamp").innerText;
-        const timestampHref = el.querySelector(".yt_ai_summary_transcript_text_timestamp").getAttribute("data-timestamp-href");
-        const text = el.querySelector(".yt_ai_summary_transcript_text").innerText;
-        // contentBody += `- [${timestamp}](${`https://www.youtube.com${timestampHref}`}) ${text}\n`;
+        const timestamp = (el.querySelector(".yt_ai_summary_transcript_text_timestamp") as HTMLElement).innerText;
+        const timestampHref = el.querySelector(".yt_ai_summary_transcript_text_timestamp")!.getAttribute("data-timestamp-href");
+        const text = (el.querySelector(".yt_ai_summary_transcript_text") as HTMLElement).innerText;
         contentBody += `(${timestamp}) ${text}\n`;
     })
     copyTextToClipboard(contentBody);
 }
 
-function copyTranscriptAndPrompt() {
+function copyTranscriptAndPrompt(): string {
     const textEls = document.getElementsByClassName("yt_ai_summary_transcript_text");
     const textData = Array.from(textEls).map((textEl, i) => {
         return {
-            text: textEl.textContent.trim(),
+            text: (textEl as HTMLElement).textContent!.trim(),
             index: i,
         }
     })
@@ -356,15 +328,15 @@ function copyTranscriptAndPrompt() {
     return prompt;
 }
 
-function waitForElm(selector) {
+function waitForElm(selector: string): Promise<Element> {
     return new Promise(resolve => {
         if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
+            return resolve(document.querySelector(selector)!);
         }
 
         const observer = new MutationObserver(mutations => {
             if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector));
+                resolve(document.querySelector(selector)!);
                 observer.disconnect();
             }
         });
