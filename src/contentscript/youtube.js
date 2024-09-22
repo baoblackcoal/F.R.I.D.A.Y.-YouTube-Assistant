@@ -9,12 +9,8 @@ import { commandHandle } from './command';
 import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
 import { globalConfig } from '../config';
 
-let videoId = null;
 function getVideoId() {
-    if (!videoId) {
-        videoId = getSearchParam(window.location.href).v;
-    }
-    return videoId;
+    return getSearchParam(window.location.href).v;
 }
 
 async function waitForPlayer() {
@@ -113,6 +109,9 @@ export async function insertSummaryBtn() {
     // Sanitize Transcript Div
     if (document.querySelector("#yt_ai_summary_lang_select")) { document.querySelector("#yt_ai_summary_lang_select").innerHTML = ""; }
     if (document.querySelector("#yt_ai_summary_summary")) { document.querySelector("#yt_ai_summary_summary").innerHTML = ""; }
+
+    if (document.querySelector("#ytbs_container")) { document.querySelector("#ytbs_container").innerHTML = ""; }
+
     Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
 
     if (!getSearchParam(window.location.href).v) { return; }
