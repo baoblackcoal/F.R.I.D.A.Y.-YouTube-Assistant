@@ -2,7 +2,7 @@
 
 import { settingsManager } from "../settingsManager";
 import { insertSummaryBtn } from "./youtube";
-import { logTime } from "./youtube";
+import { logTime } from "./utils";
 let oldHref = "";
 
 

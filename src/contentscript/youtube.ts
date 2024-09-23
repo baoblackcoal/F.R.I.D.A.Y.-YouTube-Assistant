@@ -8,6 +8,7 @@ import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from
 import { commandHandle } from './command/command';
 import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
 import { globalConfig } from '../config';
+import { logTime } from "./utils";
 
 function getVideoId(): string {
     return getSearchParam(window.location.href).v || '';
@@ -24,8 +25,14 @@ async function waitForPlayer(): Promise<void> {
         hasEnterWaitForPlayer = true;
         await resetPlayPauseFlag();
         // loop pause video, cause call video.pause() may not work first time.
+        const startTime = performance.now();
         while (true) {
             const playPauseFlag = await getPlayPauseFlag();
+            // break the loop if 5 seconds passed
+            if (performance.now() - startTime > 5000) {
+                console.log("ytbs: video pause timeout");
+                break;
+            }
             if (!playPauseFlag) {
                 break;
             } else {
@@ -52,19 +59,6 @@ async function waitForPlayer(): Promise<void> {
         logTime("container_video2");
         checkVideoAndPause("container_video2");
     });
-}
-
-export function logTime(name: string): void {
-    const now = new Date();
-    
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-
-    const performanceTime = performance.now();
-    const milliseconds = Math.floor(performanceTime * 1000) % 1000; // milliseconds from page load
-
-    console.log(`${name}: ${hours}:${minutes}:${seconds}.${milliseconds}`);
 }
 
 export async function insertSummaryBtn(): Promise<void> {
