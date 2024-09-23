@@ -1,16 +1,16 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Run Clean and Build", // A friendly name for your task
-        "type": "shell",
-        "command": "npm run build", // The command to run
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": [],
-        "detail": "A task to clean the build directory and run webpack"
-      }
-    ]
-  }
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Clean and Build", // A friendly name for your task
+      "type": "shell",
+      "command": "npm run build", // The command to run
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "A task to clean the build directory and run webpack"
+    }
+  ]
+}

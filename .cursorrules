@@ -1,0 +1,15 @@
+# Technical Architecture
+- Chrome Extension: Manifest V3
+- TypeScript: ES6, commonjs
+- Testing: Jest, Puppeteer
+- Tool: Webpack
+- Linting: ESLint
+
+# Best Practices
+- **Abstract Interfaces**: Define interfaces for key components and use dependency injection.
+- **Modularization**: Break down the project into smaller, self-contained modules.
+- **Configuration Management**: Centralize environment-specific settings.
+- **Error Handling and Logging**: Implement robust error handling and logging mechanisms.
+- **Testing Strategy**: Ensure comprehensive integration and end-to-end tests.
+- **Code Quality**: Enforce strict linting rules and use tools like Prettier.
+
