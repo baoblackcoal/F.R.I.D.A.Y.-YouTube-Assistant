@@ -1,9 +1,11 @@
-import { getLangOptionsWithLink, getRawTranscriptText } from "./transcript";
-import { geminiAPI } from './geminiApi';
+import { getLangOptionsWithLink, getRawTranscriptText } from "../transcript";
+import { geminiAPI } from '../geminiApi';
 import { parse } from 'marked';
-import { TTSSpeak } from './ttsSpeak';
-import { SummarySettings, defaultSummarySettings, defaultPromptText, Language } from '../settings';
-import { settingsManager } from '../settingsManager';
+import { TTSSpeak } from '../ttsSpeak';
+import { SummarySettings, defaultSummarySettings, Language } from '../../settings';
+import { defaultPromptText } from "../../defaultPromptText";
+import { settingsManager } from '../../settingsManager';
+import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
@@ -101,6 +103,12 @@ export async function resetPlayPauseFlag(): Promise<void> {
 export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
 }
+
+export async function subtitleSummaryHandler(videoId: string): Promise<void> {
+    generateSummary(videoId);
+    handleSubtitleSummaryView(videoId);
+}
+
 
 export async function generateSummary(videoId: string): Promise<void> {
     const prompt = await generatePrompt(videoId);

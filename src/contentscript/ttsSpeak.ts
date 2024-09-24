@@ -4,6 +4,7 @@ export interface TTSInterface {
     speak(text: string): void;
     speakAndPlayVideo(text: string): void;
     stop(): void;
+    isSpeaking(): Promise<boolean>;
 }
 
 export class TTSSpeak implements TTSInterface {
@@ -35,6 +36,14 @@ export class TTSSpeak implements TTSInterface {
     stop(): void {
         chrome.runtime.sendMessage({
             action: 'ttsStop',
+        });
+    }
+
+    isSpeaking(): Promise<boolean> {
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({ action: 'ttsCheckSpeaking' }, (response) => {
+                resolve(response.isSpeaking);
+            });
         });
     }
 }

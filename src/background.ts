@@ -76,21 +76,22 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
 chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
     if (message.action === 'ttsStop') {
         chrome.tts.stop();
+    } else if (message.action === 'ttsCheckSpeaking') {
+        chrome.tts.isSpeaking((isSpeaking) => {
+            sendResponse({ isSpeaking });
+        });
+        return true; // Indicates that the response will be sent asynchronously
     }
 });
 
-// // Send message to content script to play the video
-// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-//     if (request.action === 'speakAndPlayVideo') {
-//         chrome.tts.speak(request.text, {
-//             onEvent: function(event) {
-//                 if (event.type === 'end') {
-//                     // Send message to content script to play the video
-//                     if (sender.tab && sender.tab.id !== undefined) {
-//                         chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
-//                     }
-//                 }
-//             }
-//         });
-//     }
-// });
+// Open options page on message
+chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+    if (message.action === 'openOptionsPage') {
+        if (chrome.runtime.openOptionsPage) {
+            chrome.runtime.openOptionsPage();
+        } else {
+            window.open(chrome.runtime.getURL('options.html'));
+        }
+    }
+});
+

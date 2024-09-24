@@ -10,6 +10,7 @@ export interface SettingsManager {
   setLlmSettings(settings: LlmSettings): Promise<void>;
   getLlmSettings(): Promise<LlmSettings>;
   initializeSettingsWhenInstalled(): Promise<void>;
+  getSettings(): Promise<AbstractSettings>;
 }
 
 class ChromeSettingsManager implements SettingsManager {
@@ -24,6 +25,20 @@ class ChromeSettingsManager implements SettingsManager {
     } else {
       this.initSettings = getInitSettings(globalConfig.devInitialSettingsType);
     }
+  }
+
+  async getSettings(): Promise<AbstractSettings> {
+    const ttsSettings = await this.getTtsSettings();
+    const summarySettings = await this.getSummarySettings();
+    const llmSettings = await this.getLlmSettings();
+
+    const settings: AbstractSettings = {
+      tts: ttsSettings,
+      summary: summarySettings,
+      llm: llmSettings
+    };
+
+    return settings;
   }
 
   async initializeSettingsWhenInstalled(): Promise<void> {   

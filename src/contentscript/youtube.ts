@@ -6,9 +6,10 @@ import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs';
 import { commandHandle } from './command/command';
-import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag } from './subtitleSummary';
+import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag, subtitleSummaryHandler as subtitleSummaryHandle } from './subtitleSummary/subtitleSummary';
 import { globalConfig } from '../config';
 import { logTime } from "./utils";
+import { getSubtitleSummaryView } from "./subtitleSummary/subtitleSummaryView";
 
 function getVideoId(): string {
     return getSearchParam(window.location.href).v || '';
@@ -101,9 +102,7 @@ export async function insertSummaryBtn(): Promise<void> {
 
                 ${commandContainerHTML}
 
-                <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
-                    <div class="ytbs_content"> </div>                    
-                </div>
+                ${getSubtitleSummaryView()}
 
                 <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <a href="https://glasp.co/youtube-summary" target="_blank" style="width: 24px;height: 24px;">
@@ -196,7 +195,7 @@ export async function insertSummaryBtn(): Promise<void> {
             evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
         })
 
-        generateSummary(getVideoId());
+        subtitleSummaryHandle(getVideoId());
         commandHandle();
     });
 }
