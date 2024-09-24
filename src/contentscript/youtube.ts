@@ -6,61 +6,16 @@ import { getChunckedTranscripts, getSummaryPrompt } from "./prompt";
 import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs';
 import { commandHandle } from './command/command';
-import { generateSummary, getPlayPauseFlag, resetPlayPauseFlag, subtitleSummaryHandler as subtitleSummaryHandle } from './subtitleSummary/subtitleSummary';
+import { waitForPlayer } from './subtitleSummary/subtitleSummary';
+
 import { globalConfig } from '../config';
-import { logTime } from "./utils";
-import { getSubtitleSummaryView } from "./subtitleSummary/subtitleSummaryView";
+import { logTime, waitForElm } from "./utils";
+import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/subtitleSummaryView";
 
 function getVideoId(): string {
     return getSearchParam(window.location.href).v || '';
 }
 
-async function waitForPlayer(): Promise<void> {
-    let hasEnterWaitForPlayer = false;
-
-    async function checkVideoAndPause(name: string): Promise<void> {
-        if (hasEnterWaitForPlayer) {
-            return;
-        }   
-
-        hasEnterWaitForPlayer = true;
-        await resetPlayPauseFlag();
-        // loop pause video, cause call video.pause() may not work first time.
-        const startTime = performance.now();
-        while (true) {
-            const playPauseFlag = await getPlayPauseFlag();
-            // break the loop if 5 seconds passed
-            if (performance.now() - startTime > 5000) {
-                console.log("ytbs: video pause timeout");
-                break;
-            }
-            if (!playPauseFlag) {
-                break;
-            } else {
-                const video = document.querySelector('video');
-                if (video) {
-                    video.pause();
-                    // console.log('ytbs: video pause');
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                } else {
-                    //sleep for 1 ms
-                    await new Promise(resolve => setTimeout(resolve, 10));
-                }
-            }
-        }
-    }        
-
-    // may be #search-input loaded first
-    waitForElm('#search-input').then(() => {
-        logTime("search-input1");
-        checkVideoAndPause("search-input1");
-    });
-    // may be #container(video) loaded first
-    waitForElm('#container').then(async () => {
-        logTime("container_video2");
-        checkVideoAndPause("container_video2");
-    });
-}
 
 export async function insertSummaryBtn(): Promise<void> {
     let commandContainerHTML = "";
@@ -78,6 +33,8 @@ export async function insertSummaryBtn(): Promise<void> {
     // log time ms   
     logTime("insertSummaryBtn");
 
+    insertSummaryButtonView();
+    
     waitForPlayer();
 
     // Sanitize Transcript Div
@@ -195,7 +152,7 @@ export async function insertSummaryBtn(): Promise<void> {
             evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
         })
 
-        subtitleSummaryHandle(getVideoId());
+        handleSubtitleSummaryView(getVideoId());
         commandHandle();
     });
 }
@@ -319,24 +276,4 @@ function copyTranscriptAndPrompt(): string {
     const prompt = getSummaryPrompt(text);
     copyTextToClipboard(prompt);
     return prompt;
-}
-
-function waitForElm(selector: string): Promise<Element> {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector)!);
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector)!);
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
 }

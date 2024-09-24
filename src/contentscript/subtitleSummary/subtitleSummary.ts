@@ -6,6 +6,55 @@ import { SummarySettings, defaultSummarySettings, Language } from '../../setting
 import { defaultPromptText } from "../../defaultPromptText";
 import { settingsManager } from '../../settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
+import { logTime, waitForElm } from "../utils";
+
+export async function waitForPlayer(): Promise<void> {
+    let hasEnterWaitForPlayer = false;
+
+    async function checkVideoAndPause(name: string): Promise<void> {
+        if (hasEnterWaitForPlayer) {
+            return;
+        }   
+
+        hasEnterWaitForPlayer = true;
+        await resetPlayPauseFlag();
+        // loop pause video, cause call video.pause() may not work first time.
+        const startTime = performance.now();
+        while (true) {
+            const playPauseFlag = await getPlayPauseFlag();
+            // break the loop if 5 seconds passed
+            if (performance.now() - startTime > 5000) {
+                console.log("ytbs: video pause timeout");
+                break;
+            }
+            if (!playPauseFlag) {
+                break;
+            } else {
+                const video = document.querySelector('video');
+                if (video) {
+                    video.pause();
+                    // console.log('ytbs: video pause');
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                } else {
+                    //sleep for 1 ms
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+            }
+        }
+    }        
+
+    // may be #search-input loaded first
+    waitForElm('#search-input').then(() => {
+        logTime("search-input1");
+        checkVideoAndPause("search-input1");
+    });
+    // may be #container(video) loaded first
+    waitForElm('#container').then(async () => {
+        logTime("container_video2");
+        checkVideoAndPause("container_video2");
+    });
+}
+
 
 async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
@@ -104,9 +153,8 @@ export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
 }
 
-export async function subtitleSummaryHandler(videoId: string): Promise<void> {
+export async function subtitleSummaryHandle(videoId: string): Promise<void> {
     generateSummary(videoId);
-    handleSubtitleSummaryView(videoId);
 }
 
 

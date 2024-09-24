@@ -1,7 +1,15 @@
 import { AbstractSettings, Language } from '../../settings';
 import { TTSSpeak } from '../ttsSpeak';
 import { settingsManager } from '../../settingsManager';
+import { subtitleSummaryHandle } from './subtitleSummary';
+import { waitForElm } from '../utils';
 
+export function insertSummaryButtonView() {
+    const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`
+    waitForElm('#top-level-buttons-computed').then(() => {
+        (document.querySelector("#top-level-buttons-computed") as HTMLElement).insertAdjacentHTML("afterbegin", butttonHtml);
+    });
+}
 
 export function getSubtitleSummaryView() {
     return `<div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
@@ -20,10 +28,13 @@ const tts = TTSSpeak.getInstance();
 
 // Handle the view of subtitle summary
 export function handleSubtitleSummaryView(videoId: string): void {
+    subtitleSummaryHandle(videoId);
+
     buttonSpeakHandle();
     buttonAutoSpeakHandle();
     buttonLanguageHandle();
     buttonSettingsHandle();
+    buttonSummaryToggleHandle();
 }
 
 async function getSettings(): Promise<AbstractSettings> {
@@ -111,6 +122,18 @@ function buttonSettingsHandle(): void {
     if (buttonSettings) {
         buttonSettings.addEventListener("click", () => {
             chrome.runtime.sendMessage({ action: 'openOptionsPage' });
+        });
+    }
+}
+
+function buttonSummaryToggleHandle(): void {
+    const buttonContainerHide = document.getElementById("ytbs_summary_btn");
+    if (buttonContainerHide) {
+        buttonContainerHide.addEventListener("click", () => {
+            const container = document.querySelector(".yt_ai_summary_container");
+            if (container) {
+                (container as HTMLElement).style.display = (container as HTMLElement).style.display === "none" ? "block" : "none";
+            }
         });
     }
 }
