@@ -188,7 +188,13 @@ export async function generateSummary(videoId: string): Promise<void> {
                         response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
                         parseText = parse(response_text).toString();
                         contentElement.innerHTML = parseText;
+                        if (summarySettings.autoTtsSpeak) {
+                            // remove # , * and xml tags    
+                            const textStream = text.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
+                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
+                        }
                     });
+                    TTSSpeak.getInstance().speakAndPlayVideo('\n', true);//speak a new line to make sure last line is spoken
                 } catch (error) {
                     parseText = `Error generating text: ${error}`;
                     contentElement.innerHTML = parseText;
@@ -197,11 +203,6 @@ export async function generateSummary(videoId: string): Promise<void> {
                 parseText = "Please set API key in the extension settings";
                 contentElement.innerHTML = parseText;
             }
-
-            if (summarySettings.autoTtsSpeak) {
-                TTSSpeak.getInstance().speakAndPlayVideo((contentElement as HTMLElement).innerText);
-            }
-
         }
     });
 }

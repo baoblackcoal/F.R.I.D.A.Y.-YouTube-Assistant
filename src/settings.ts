@@ -100,7 +100,7 @@ export const defaultSettings: AbstractSettings = {
 export const testSettings: AbstractSettings = {
   summary: {
     ...defaultSummarySettings,
-    promptType: 1,
+    promptType: 0,
     diyPromptText1: "hi",
     diyPromptText2: "hi",
     diyPromptText3: "hello",

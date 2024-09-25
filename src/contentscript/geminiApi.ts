@@ -75,6 +75,7 @@ export const streamGenerate = async (prompt: string, callback: (text: string) =>
     }
   } catch (error) {
     console.error("Response error:", error);
+    callback("Error: " + error);
   }
 }
 
