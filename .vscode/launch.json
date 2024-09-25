@@ -10,6 +10,14 @@
         ],
         "url": "https://www.youtube.com/watch?v=oc6RV5c1yd0", // Your project's web access URL during webpack startup
         "preLaunchTask": "Run Clean and Build" // The task label defined in tasks.json
+      },
+      {
+        "type": "node",
+        "name": "npm run build",
+        "request": "launch",
+        "program": "npm",
+        "args": ["-v"],
+        "preLaunchTask": "Run Clean and Build" // The task label defined in tasks.json
       }
     ]
   }

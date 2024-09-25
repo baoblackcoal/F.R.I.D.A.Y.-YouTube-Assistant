@@ -174,16 +174,29 @@ export async function generateSummary(videoId: string): Promise<void> {
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
                 try {
-                    let response_text = await geminiAPI.generate(prompt);                    
-                    response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
-                    parseText = parse(response_text).toString();
+                    // let response_text = await geminiAPI.generate(prompt);                    
+                    // response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
+                    // parseText = parse(response_text).toString();
+                    // contentElement.innerHTML = parseText;
+
+
+                    // streamGenerate
+                    let response_text = "";
+                    geminiAPI.streamGenerate(prompt, (text) => {
+                        //append text to response_text
+                        response_text += text;
+                        response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
+                        parseText = parse(response_text).toString();
+                        contentElement.innerHTML = parseText;
+                    });
                 } catch (error) {
                     parseText = `Error generating text: ${error}`;
+                    contentElement.innerHTML = parseText;
                 }
             } else {
                 parseText = "Please set API key in the extension settings";
+                contentElement.innerHTML = parseText;
             }
-            contentElement.innerHTML = parseText;
 
             if (summarySettings.autoTtsSpeak) {
                 TTSSpeak.getInstance().speakAndPlayVideo((contentElement as HTMLElement).innerText);

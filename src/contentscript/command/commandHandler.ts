@@ -22,4 +22,8 @@ export class CommandHandler {
             return 'Unknown command';
         }
     }
+
+    getCommands(): string[] {
+        return Array.from(this.commands.keys());
+    }
 }

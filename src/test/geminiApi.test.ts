@@ -23,6 +23,11 @@ describe('Gemini API Tests', () => {
     await testSetup.browser?.close();
   });
 
+  test('test log', async () => {
+    console.log('test log');
+    await new Promise(resolve => setTimeout(resolve, 2000000));
+  }, 2000000);
+
   test('sayHello for test terminal', async () => {
     await helpers.runCommandAndExpectOutput(testSetup.page, 'sayHello', "Hello, world!");
   }, 20000);
@@ -58,6 +63,13 @@ describe('Gemini API Tests', () => {
       expect(result).toBeTruthy();
       expect(result.length).toBeGreaterThan(0);
     }
+  }, 60000);
+
+  test('should handle streamGenerate', async () => {
+    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    const result = await helpers.runCommandAndGetOutput(testSetup.page, 'streamGenerate "Tell me about the future of AI"');
+    expect(result).toBeTruthy();
+    expect(result.length).toBeGreaterThan(0);
   }, 60000);
 });
 

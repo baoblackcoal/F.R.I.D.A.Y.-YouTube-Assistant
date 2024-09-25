@@ -17,6 +17,7 @@ export async function commandHandle() {
     const api = geminiAPI;
     const commandHandler = new CommandHandler(tts, api);
 
+    // gemini commands
     commandHandler.registerCommand('sayHello', async (args) => await sayHello(args[0]));
     commandHandler.registerCommand('setKey', async (args) => {
         await api.setKey(args[0]);
@@ -24,6 +25,14 @@ export async function commandHandle() {
     });
     commandHandler.registerCommand('sayHelloByGemini', async () => await api.sayHelloByGemini());
     commandHandler.registerCommand('generate', async (args) => await api.generate(args.join(' ')));
+    commandHandler.registerCommand('streamGenerate', async (args) => {
+        await api.streamGenerate(args.join(' '), (text) => {
+            console.log(text);
+        });
+        return 'Stream command executed successfully';
+    });
+    
+    // tts commands
     commandHandler.registerCommand('speak', (args) => {
         tts.speak(args.join(' '));
         return 'Speaking...';
@@ -31,6 +40,11 @@ export async function commandHandle() {
     commandHandler.registerCommand('stop', () => {
         tts.stop();
         return 'TTS stopped';
+    });
+
+    //help command to list all commands
+    commandHandler.registerCommand('help', () => {
+        return commandHandler.getCommands().join('\n');
     });
 
     const inputElement = document.getElementById('ytbs_test_command');
