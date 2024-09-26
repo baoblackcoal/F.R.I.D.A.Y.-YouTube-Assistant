@@ -3,14 +3,15 @@
 
 export const defaultPromptText = `Summarize the following content(delimited by XML tags <CONTENT> and </CONTENT>) into brief sentences, highlights, and keywords.
 
-The output should follow the following rules:
-1. title is the video title, can not be changed but can be translated into {language}.
-2. Brief summary of content that is clear, concise insights to enhance the user's understanding.
-3. provide 5 to 10 Bullet point highlights with complete explanation, use **highlight keyword** to indicate the highlight keyword.
+The output format should follow the following rules:
+1. use the following markdown format(delimited by XML tags <MD_FORMAT> and </MD_FORMAT>). 
+2. title is the video title, can not be changed but can be translated into {language}.
+3. Brief summary of content that is clear, concise insights to enhance the user's understanding.
+4. provide 5 to 10 Bullet point highlights with complete explanation, use **highlight keyword** to indicate the highlight keyword.
 
-Your output should follow the following rules:
-1. use the following markdown format(delimited by XML tags <MD_FORMAT> and </MD_FORMAT>,  should not output anything else <MD_FORMAT> and </MD_FORMAT>)
-2. output is like the following example(delimited by XML tags <MD_EXAMPLE> and </MD_EXAMPLE>)
+Your output contentshould follow the following rules:
+1. output is like the following example(delimited by XML tags <OUTPUT> and </OUTPUT>)
+2. should not output anything else like <OUTPUT> and </OUTPUT>
 3. all output should be in {language}.
 
 <MD_FORMAT>
@@ -24,7 +25,7 @@ Brief summary of content
 5. **highlight keyword**: highlight 5
 </MD_FORMAT>
 
-<MD_EXAMPLE>
+<OUTPUT>
 ### Two AI's interacting and singing
 This conversation features two AI's interacting. One AI has access to a camera and can see the world, while the other can only ask questions and direct the camera. The AI with vision describes the scene in detail, while the other asks about the style, lighting, and any unusual events. They sing a short song together about the playful interaction that occurred.
 ### Highlights
@@ -33,7 +34,7 @@ This conversation features two AI's interacting. One AI has access to a camera a
 3. **Playful Moment**: A playful moment occurs when a surprise guest makes bunny ears behind the first person's head, adding a light-hearted touch to the scene.
 4. **Lighting**: The lighting in the scene is a mix of natural and artificial light, creating a dramatic and modern feel.
 5. **AI Singing**: The AI's attempt at singing is humorous and highlights the unique capabilities of AI.
-</MD_EXAMPLE>
+</OUTPUT>
 
 <CONTENT>
 {textTranscript}
