@@ -23,10 +23,11 @@ describe('Gemini API Tests', () => {
     await testSetup.browser?.close();
   });
 
-  test('test log', async () => {
-    console.log('test log');
-    await new Promise(resolve => setTimeout(resolve, 2000000));
-  }, 2000000);
+  // do not delete this test, as it is used to test fast install extension
+  // test('test log', async () => {
+  //   console.log('test log');
+  //   await new Promise(resolve => setTimeout(resolve, 2000000));
+  // }, 2000000);
 
   test('sayHello for test terminal', async () => {
     await helpers.runCommandAndExpectOutput(testSetup.page, 'sayHello', "Hello, world!");

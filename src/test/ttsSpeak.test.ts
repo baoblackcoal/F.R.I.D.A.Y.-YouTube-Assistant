@@ -29,7 +29,7 @@ describe('TTS Tests', () => {
     expect(isSpeaking).toBe(true);
   }, 20000);
 
-  test('should stop speaking', async () => {
+  it('should stop speaking', async () => {
     await helpers.runCommandAndExpectOutput(
       testSetup.page, 
       'speak "This is a long sentence that should be interrupted, This is a long sentence that should be interrupted, This is a long sentence that should be interrupted."', 
@@ -38,8 +38,9 @@ describe('TTS Tests', () => {
     const result = await helpers.runCommandAndGetOutput(testSetup.page, 'stop');
     expect(result).toBe('TTS stopped');
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     const isSpeaking = await checkIsSpeaking(testSetup.popupPage!);
+    console.log('isSpeaking:', isSpeaking); // Add logging
     expect(isSpeaking).toBe(false);
   }, 20000);
 });

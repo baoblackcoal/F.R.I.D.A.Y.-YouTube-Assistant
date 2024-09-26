@@ -28,6 +28,7 @@ const tts = TTSSpeak.getInstance();
 
 // Handle the view of subtitle summary
 export function handleSubtitleSummaryView(videoId: string): void {
+    chrome.runtime.sendMessage({ action: 'resetWhenPageChange' });
     subtitleSummaryHandle(videoId);
 
     buttonSpeakHandle();
