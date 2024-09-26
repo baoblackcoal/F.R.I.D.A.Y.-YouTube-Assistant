@@ -67,13 +67,9 @@ async function handleStreamText(text: string, streamTextIndex: number, playVideo
     }
 
     if (text.length == 0) {
-        console.log('(Background)TTS Stream Speaking text is empty');
         return;
     }
-    console.log('(Background)TTS Stream Speaking started');
     lastStreamText += text;
-    console.log(`(Background)TTS Stream Speaking text: ${text}`);
-    console.log(`(Background)TTS Stream Speaking streamTextIndex: ${streamTextIndex}`);
 
     // if lastStreamText include '\n', then push to speakTextArray
     if (lastStreamText.includes('\n')) {
@@ -81,7 +77,6 @@ async function handleStreamText(text: string, streamTextIndex: number, playVideo
         lastStreamText = textSegments[textSegments.length - 1];
         for (let i = 0; i < textSegments.length - 1; i++) {
             speakTextArray.push(textSegments[i]);
-            console.log(`(Background)TTS Stream Speaking speakTextArray0 length: ${speakTextArray.length}`);
             speakNextText();
         }
     }
@@ -110,23 +105,18 @@ async function handleStreamText(text: string, streamTextIndex: number, playVideo
                             if (event.type === 'end') {
                                 if (speakTextArray.length > 0) {
                                     speakNextText();
-                                    console.log('-------(Background)TTS Stream Speaking tts get end event, but still have text to speak');
                                 } else {
-                                    console.log('-------(Background)TTS Stream Speaking finished');
                                     lastStreamText = '';
                                     playVideo();
                                 }
                             } else {
-                                console.log('-------(Background)TTS Stream Speaking tts get event type: ' + event.type);
+                                // console.log('-------(Background)TTS Stream Speaking tts get event type: ' + event.type);
                             }
                         }
                     });
-
             }
         }
-
         isProcessing = false;
-
     }
 }
 
