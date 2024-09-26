@@ -25,7 +25,7 @@ describe('TTS Tests', () => {
     );
     expect(result).toBe('Speaking...');
 
-    const isSpeaking = await waitForSpeaking(testSetup.popupPage!);
+    const isSpeaking = await waitForSpeaking();
     expect(isSpeaking).toBe(true);
   }, 20000);
 
@@ -39,28 +39,25 @@ describe('TTS Tests', () => {
     expect(result).toBe('TTS stopped');
 
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const isSpeaking = await checkIsSpeaking(testSetup.popupPage!);
+    const isSpeaking = await checkIsSpeaking();
     console.log('isSpeaking:', isSpeaking); // Add logging
     expect(isSpeaking).toBe(false);
   }, 20000);
+
+  async function waitForSpeaking(timeout = 10000): Promise<boolean> {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+      const isSpeaking = await checkIsSpeaking();
+      if (isSpeaking) {
+        return true;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    return false;
+  }
+  
+  async function checkIsSpeaking(): Promise<boolean> {
+    return await helpers.runCommandAndGetOutput(testSetup.page, 'checkSpeaking') === 'true';        
+  }
 });
 
-async function waitForSpeaking(popupPage: Page, timeout = 10000): Promise<boolean> {
-  const startTime = Date.now();
-  while (Date.now() - startTime < timeout) {
-    const isSpeaking = await checkIsSpeaking(popupPage);
-    if (isSpeaking) {
-      return true;
-    }
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-  return false;
-}
-
-async function checkIsSpeaking(popupPage: Page): Promise<boolean> {
-  return popupPage.evaluate(() => {
-    return new Promise<boolean>(resolve => {
-      chrome.tts.isSpeaking((speaking) => resolve(speaking));
-    });
-  });
-}

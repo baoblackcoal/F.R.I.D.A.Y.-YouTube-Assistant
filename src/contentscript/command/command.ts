@@ -41,6 +41,9 @@ export async function commandHandle() {
         tts.stop();
         return 'TTS stopped';
     });
+    commandHandler.registerCommand('checkSpeaking', async () => {
+        return await tts.isSpeaking().then(isSpeaking => isSpeaking.toString());
+    });
 
     //help command to list all commands
     commandHandler.registerCommand('help', () => {
