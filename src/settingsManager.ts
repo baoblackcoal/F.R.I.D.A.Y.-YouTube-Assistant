@@ -2,7 +2,7 @@ import { Env, getEnvironment } from './common';
 import { globalConfig } from './config';
 import { TtsSettings, SummarySettings, LlmSettings, Language, defaultTtsSettings, defaultSummarySettings, defaultLlmModel, getInitSettings, AbstractSettings, InitialSettingsType } from './settings';
 
-export interface SettingsManager {
+export interface ISettingsManager {
   setTtsSettings(settings: TtsSettings): Promise<void>;
   getTtsSettings(): Promise<TtsSettings>;
   setSummarySettings(settings: SummarySettings): Promise<void>;
@@ -13,7 +13,7 @@ export interface SettingsManager {
   getSettings(): Promise<AbstractSettings>;
 }
 
-class ChromeSettingsManager implements SettingsManager {
+class ChromeSettingsManager implements ISettingsManager {
   //constructor
   private initSettings: AbstractSettings;
 
@@ -93,4 +93,4 @@ class ChromeSettingsManager implements SettingsManager {
 }
 
 
-export const settingsManager: SettingsManager = new ChromeSettingsManager();
+export const settingsManager: ISettingsManager = new ChromeSettingsManager();
