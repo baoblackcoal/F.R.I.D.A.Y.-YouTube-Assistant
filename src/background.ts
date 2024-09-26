@@ -137,24 +137,33 @@ chrome.contextMenus.onClicked.addListener((info: chrome.contextMenus.OnClickData
     }
 });
 
+function respondToSenderSuccess(sendResponse: (response?: any) => void) {
+    sendResponse({ status: "success" });
+}
+
+
+
 chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
     switch (message.action) {
         case 'resetWhenPageChange':
             ttsService.resetStreamSpeak();
+            respondToSenderSuccess(sendResponse);
             break;
         case 'speak':
             ttsService.speakText(message.text);
+            respondToSenderSuccess(sendResponse);
             break;
         case 'speakAndPlayVideo':
-            ttsService.speakText(message.text, message.streamTextIndex || 0, () => {
+            ttsService.speakText(message.text, message.streamTextIndex || 0,  () => {
                 if (sender.tab && sender.tab.id !== undefined) {
                     chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
                 }
             }, message.isStream || false);
-            sendResponse({ status: "success" });
+            respondToSenderSuccess(sendResponse);
             break;
         case 'ttsStop':
             ttsService.stopStreamSpeak();
+            respondToSenderSuccess(sendResponse);
             break;
         case 'ttsCheckSpeaking':
             chrome.tts.isSpeaking((isSpeaking) => {
@@ -167,6 +176,7 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
             } else {
                 window.open(chrome.runtime.getURL('options.html'));
             }
+            respondToSenderSuccess(sendResponse);
             break;
         default:
             console.log(`(Background)Unknown message action: ${message.action}`);
