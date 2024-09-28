@@ -14,6 +14,7 @@ export function insertSummaryButtonView() {
 
 export function getSubtitleSummaryView() {
     return `<div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
+                    <div id="ytbs_summary_status"  style="margin-bottom: 20px;"> </div>
                     <div class="ytbs_content"> </div>    
                     <button id="ytbs_speak">Speak</button>
                     <button id="ytbs_auto_speak">Auto Speak</button>
@@ -28,16 +29,16 @@ const tts = TTSSpeak.getInstance();
 
 
 // Handle the view of subtitle summary
-export function handleSubtitleSummaryView(videoId: string): void {
+export async function handleSubtitleSummaryView(videoId: string): Promise<void> {
     chrome.runtime.sendMessage({ action: 'resetWhenPageChange' });
-    // subtitleSummaryHandle(videoId);
-    subtitleTranslate(videoId);
 
     buttonSpeakHandle();
     buttonAutoSpeakHandle();
     buttonLanguageHandle();
     buttonSettingsHandle();
     buttonSummaryToggleHandle();
+
+    subtitleSummaryHandle(videoId, subtitleTranslate);
 }
 
 async function getSettings(): Promise<AbstractSettings> {

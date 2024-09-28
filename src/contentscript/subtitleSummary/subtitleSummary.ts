@@ -153,12 +153,18 @@ export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
 }
 
-export async function subtitleSummaryHandle(videoId: string): Promise<void> {
-    generateSummary(videoId);
+export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
+    generateSummary(videoId, subtitleTranslate);
 }
 
+export function updateSummaryStatus(status: string): void {
+    const summaryStatus = document.getElementById("ytbs_summary_status");
+    if (summaryStatus) {
+        summaryStatus.textContent = "Generating status: " + status;
+    }
+}
 
-export async function generateSummary(videoId: string): Promise<void> {
+export async function generateSummary(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
         return;
@@ -174,6 +180,7 @@ export async function generateSummary(videoId: string): Promise<void> {
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
                 try {
+                    updateSummaryStatus("Generating summary...");
                     let response_text = "";
                     geminiAPI.streamGenerate(prompt, (text) => {
                         //append text to response_text
@@ -186,11 +193,18 @@ export async function generateSummary(videoId: string): Promise<void> {
                             const textStream = text.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
                             TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
                         }
+                    }).then(() => {
+                        TTSSpeak.getInstance().speakAndPlayVideo('\n', true); // speak a new line to make sure last line is spoken
+                        updateSummaryStatus("Translate subtitle...");
+                        subtitleTranslate(videoId);
+                        
+                    }).catch((error) => {
+                        parseText = `Error generating text: ${error}`;
+                        contentElement.innerHTML = parseText;
                     });
-                    TTSSpeak.getInstance().speakAndPlayVideo('\n', true);//speak a new line to make sure last line is spoken
                 } catch (error) {
-                    parseText = `Error generating text: ${error}`;
-                    contentElement.innerHTML = parseText;
+                    console.error('An error occurred:', error);
+                    contentElement.innerHTML = `Error generating text: ${error}`;
                 }
             } else {
                 parseText = "Please set API key in the extension settings";
