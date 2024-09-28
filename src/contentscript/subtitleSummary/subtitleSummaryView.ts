@@ -33,7 +33,7 @@ const tts = TTSSpeak.getInstance();
 
 // Handle the view of subtitle summary
 export async function handleSubtitleSummaryView(videoId: string): Promise<void> {
-    chrome.runtime.sendMessage({ action: 'resetWhenPageChange' });
+    resetWhenPageChange();   
 
     buttonSpeakHandle();
     buttonAutoSpeakHandle();
@@ -44,6 +44,17 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     subtitleSummaryHandle(videoId, subtitleTranslate);
 }
 
+async function resetWhenPageChange(): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: 'resetWhenPageChange' }, (response) => {
+            if (response.status === 'success') {
+                resolve();
+            } else {
+                reject(new Error('Failed to reset when page change'));
+            }
+        });
+    });
+}
 async function getSettings(): Promise<AbstractSettings> {
     return await settingsManager.getSettings();
 }
@@ -75,7 +86,7 @@ function buttonSpeakHandle(): void {
             } else {
                 //get text from ytbs_content    
                 const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
-                tts.speak(text);
+                tts.speak(text, true);
                 buttonSpeak.textContent = "Speaking...";
             }
         });

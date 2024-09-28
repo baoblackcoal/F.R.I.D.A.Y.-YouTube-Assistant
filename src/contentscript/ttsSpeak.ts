@@ -2,7 +2,7 @@ import { TtsSettings } from '../settings';
 import { messageQueue } from '../utils/messageQueue';
 
 export interface TTSInterface {
-    speak(text: string): void;
+    speak(text: string, isStream: boolean): void;
     speakAndPlayVideo(text: string, isStream: boolean): Promise<void>;
     stop(): void;
     isSpeaking(): Promise<boolean>;
@@ -21,10 +21,11 @@ export class TTSSpeak implements TTSInterface {
         return TTSSpeak.instance;
     }
 
-    speak(text: string): void {
+    speak(text: string, isStream: boolean = false): void {
         chrome.runtime.sendMessage({
             action: 'speak',
             text: text,
+            isStream: isStream,
         });
     }
 

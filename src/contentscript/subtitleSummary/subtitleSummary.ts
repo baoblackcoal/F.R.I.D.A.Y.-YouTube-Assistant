@@ -75,7 +75,9 @@ export async function getTranscriptText(videoId: string): Promise<string | null>
     if (!langOptionsWithLink) {
         return null;
     }
-    return await getRawTranscriptText(langOptionsWithLink[0].link);
+    const textTranscript = await getRawTranscriptText(langOptionsWithLink[0].link);
+    //delete '\n' in textTranscript
+    return textTranscript.replace(/\n/g, '');
 }
 
 export function getApiKey(callback: (key: string | null) => void): void {
@@ -184,6 +186,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                     let response_text = "";
                     geminiAPI.streamGenerate(prompt, (text) => {
                         //append text to response_text
+                        text = text.replace(/MD_FORMAT/g, '');
                         response_text += text;
                         response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
                         parseText = parse(response_text).toString();

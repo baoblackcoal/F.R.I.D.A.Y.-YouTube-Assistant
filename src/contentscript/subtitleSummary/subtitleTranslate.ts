@@ -8,6 +8,7 @@ import { settingsManager } from '../../settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus } from "./subtitleSummary";
+import { error } from "console";
 
 async function generatePrompt(videoId: string): Promise<string> {
     const textTranscript = await getTranscriptText(videoId);
@@ -28,7 +29,6 @@ async function generatePrompt(videoId: string): Promise<string> {
 }
 
 export async function subtitleTranslate(videoId: string): Promise<void> {
-    let prompt = await generatePrompt(videoId);
     const summarySettings = await settingsManager.getSummarySettings();
 
     getApiKey(async (geminiApiKey) => {
@@ -42,15 +42,13 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     const newElement = document.createElement('div');   
                     newElement.innerHTML = '<h3 style="margin-top: 20px;">Subtitle</h3>';
                     contentElement.appendChild(newElement);
+                    // save contentElement.innerHTML to oldHtml
+                    const oldHtml = contentElement.innerHTML;
                     
-                    let isFirstConversation = true;
                     
-                    async function getTranslateAndSpeakText(): Promise<boolean> {
+                    async function getTranslateAndSpeakText(prompt: string, isFirstConversation: boolean): Promise<[boolean, boolean]> {
                         const text = await geminiAPI.chat(prompt, isFirstConversation);
-                        if (isFirstConversation) {
-                            prompt = "continue";
-                            isFirstConversation = false;
-                        } 
+                       
                         //get translate text in {{content_is_easy_to_read}} and {{/content_is_easy_to_read}}
                         const translateTextArray = text.match(/{{content_is_easy_to_read}}([\s\S]*?){{\/content_is_easy_to_read}}/g);
                         console.log("translateTextArray=", translateTextArray);
@@ -65,9 +63,11 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         //delete /n in lastTaskStatusText
                         lastTaskStatusText = lastTaskStatusText.replace(/\n/g, '');
                         let finish = lastTaskStatusText == 'task_is_finish';
+                        let isError = false;
                         console.log(lastTaskStatusText);
                         
                         let translateText = '';
+                        let onlyGetAnd = false;
                         if (translateTextArray) {
                             // using for loop to get translateText, bacause gemini sometimes return multiple translateText in one response
                             for (const item of translateTextArray) {
@@ -76,10 +76,12 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                 translateText = itemArray ? itemArray[1] : '';
                                 //translateText is ' and ', because gemini repeat task, so skip it.
                                 if (translateText == 'and' || translateText == ' and ') {
+                                    onlyGetAnd = true;
                                     continue;
                                 }
                                 console.log(translateText);
                                 if (contentElement && translateText !== 'task_is_finish' && translateText !== '') {
+                                    onlyGetAnd = false;
                                     // display html when get new line
                                     const lines = translateText.split('\n');    
                                     let html = '';
@@ -105,37 +107,66 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                             }
                         }
 
-                        if (translateText == '' || lastTaskStatusText == '') {
+                        // if translateText is empty or lastTaskStatusText is empty, indecate end or error. translateText not include '\n'
+                        // the times of '\n' in translateText  must be larger than 5
+                        const countOfNewLine = (translateText.match(/\n/g) || []).length;
+                        const isNewLineMarkCountEnough = countOfNewLine > 2;
+                        const formatError = translateText == '' || lastTaskStatusText == '';
+                        if (formatError || !isNewLineMarkCountEnough || onlyGetAnd) {
                             console.log("these are empty translateText or lastTaskStatusText");
                             console.log("translateText=", translateText);
                             console.log("lastTaskStatusText=", lastTaskStatusText);
                             if (contentElement) {
                                 // append text to contentElement
                                 const newElement = document.createElement('div');   
-                                newElement.innerHTML = text;
+                                if (onlyGetAnd) {
+                                    newElement.innerHTML = 'Error: get error text from gemini, try again.';
+                                } else if (!isNewLineMarkCountEnough) {
+                                    newElement.innerHTML = 'Error: output text not include new line, try again.';
+                                } else {
+                                    newElement.innerHTML = text;
+                                }
                                 contentElement.appendChild(newElement);
-                                finish = true;//set finish to break while loop
+                                isError = true;
+                                finish = false;
                             }   
                         }
 
-                        if (summarySettings.autoTtsSpeak) { 
+                        if (!isError && summarySettings.autoTtsSpeak) { 
                             TTSSpeak.getInstance().speakAndPlayVideo(translateText, true);
                         }
-                        return finish;
+                        return [finish, isError];
                     }
 
+                    let isFinish = false;
+                    let isFirstConversation = true;
+                    const translatePrompt = await generatePrompt(videoId);
                     while (true) {
-                        const finish = await getTranslateAndSpeakText();
-                        console.log(finish);
-                        //sleep 5 seconds
-                        await new Promise(resolve => setTimeout(resolve, 5000));
-                        if (finish) {
-                            updateSummaryStatus("Finish.");                            
+                        const prompt = isFirstConversation ? translatePrompt : 'continue';
+                        const [finish, isError] = await getTranslateAndSpeakText(prompt, isFirstConversation);
+                        isFirstConversation = false;
+                        console.log("finish=", finish, "isError=", isError);
+                        if (isError) {
+                            updateSummaryStatus("Translate Subtitle error. Try again.");
+                            contentElement.innerHTML = oldHtml;
+                            isFirstConversation = true;
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                            continue;
+                        }
+                        if (finish) {                            
+                            isFinish = true;
+                            //speak a new line to make sure last line is spoken
+                            TTSSpeak.getInstance().speakAndPlayVideo('\n', true);
+                            updateSummaryStatus("Translate Subtitle Finish.");                            
                             break;
+                        } else {
+                            //sleep 5 seconds
+                            updateSummaryStatus("Translate subtitle...");
+                            await new Promise(resolve => setTimeout(resolve, 2000));
                         }
                     }
 
-                    if (summarySettings.autoTtsSpeak) { 
+                    if (isFinish && summarySettings.autoTtsSpeak) { 
                         TTSSpeak.getInstance().speakAndPlayVideo('\n', true);//speak a new line to make sure last line is spoken
                     }
                 } catch (error) {

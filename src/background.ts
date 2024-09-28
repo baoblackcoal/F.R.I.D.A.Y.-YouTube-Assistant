@@ -104,8 +104,9 @@ class TtsService implements ITtsService {
     }
 
     resetStreamSpeak() {
-        this.speakTextArray = [];
         this.stopStreamSpeakFlag = false;
+        this.speakTextArray = [];
+        chrome.tts.stop();
     }
 }
 

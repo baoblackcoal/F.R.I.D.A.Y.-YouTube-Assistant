@@ -1,39 +1,21 @@
 export const defaultTranslatePrompt = `
-Please finish a task that make following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read in {language}.
+Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read in {language}.
 
-The output format should follow the following rules:
-1.should output 500 words every your response follow format(delimited by XML tags <FORMAT> and </FORMAT>), becasue your output size is limited.
-2.content is easy to read (delimited by tags {{content_is_easy_to_read}} and {{/content_is_easy_to_read}}) that should not modify the original words, but change error words, add New Line Symbol for split paragraph or excpet {language} != ORIGINAL_CONTENT language.
-3.task_finish_status(delimited by tags {{task_status}} and {{/task_status}}) that should be "task_is_not_finish" or "task_is_finish". "task_is_not_finish" meas you have not finish the task, "task_is_finish" meas you have finish the task.
-4.repeat your task(delimited by tags {{repeat_your_task}} and {{/repeat_your_task}}) that should not be change.
+the following is output format(delimited by XML tags <FORMAT> and </FORMAT>).
+content_is_easy_to_read(delimited by XML tags <content_is_easy_to_read> and </content_is_easy_to_read>) is just adding punctuation marks or line breaks '\n' to ORIGINAL_CONTENT and should not change any words.
+task_finish_status(delimited by XML tags <task_finish_status> and </task_finish_status>) that should be "task_is_not_finish" or "task_is_finish". "task_is_not_finish" indicates that all ORIGINAL_CONTENT is translated. "task_is_not_finish" indicates that all ORIGINAL_CONTENT is not translated.
 
 Your output content should follow the following rules:
-1.should not output anything else like <FORMAT> and </FORMAT>.
-2.when I say "continue", you must continue output content like <FORMAT> and </FORMAT>.
-3.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
-4.your ouput should be include just include 1 time of <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
-5.Segment the output to make it easier to read.
+1.should output 500 words every your response , becasue your output size is limited.
+2.should not output anything else but only include 1 time of like <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
+3.when I say "continue", you must continue output next 500 easy to read words content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
+4.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
+5.Segment the output to make it easier to read, maximum words of each paragraph should less than 100 words.
 6.all output should be in {language}.
 
 <FORMAT>
-{{repeat_your_task}}
-The output format should follow the following rules:
-1.should output 500 words every your response follow format(delimited by XML tags <FORMAT> and </FORMAT>), becasue your output size is limited.
-2.content is easy to read (delimited by tags {{content_is_easy_to_read}} and {{/content_is_easy_to_read}}) that should not modify the original words, but change error words, add New Line Symbol for split paragraph or excpet {language} != ORIGINAL_CONTENT language.
-3.task_finish_status(delimited by tags {{task_status}} and {{/task_status}}) that should be "task_is_not_finish" or "task_is_finish". "task_is_not_finish" meas you have not finish the task, "task_is_finish" meas you have finish the task.
-4.repeat your task(delimited by tags {{repeat_your_task}} and {{/repeat_your_task}}) that should not be change.
-
-Your output content should follow the following rules:
-1.should not output anything else like <FORMAT> and </FORMAT>.
-2.when I say "continue", you must continue output content like <FORMAT> and </FORMAT>.
-3.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
-4.your ouput should be include just include 1 time of <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
-5.Segment the output to make it easier to read.
-6.all output should be in {language}.
-{{/repeat_your_task}}
-
 {{content_is_easy_to_read}}
-content is easy to read.
+content_is_easy_to_read
 {{/content_is_easy_to_read}}
 
 {{task_status}}
