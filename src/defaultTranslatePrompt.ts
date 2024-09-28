@@ -10,7 +10,7 @@ Your output content should follow the following rules:
 2.should not output anything else but only include 1 time of like <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
 3.when I say "continue", you must continue output next 500 easy to read words content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
 4.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
-5.Segment the output to make it easier to read, maximum words of each paragraph should less than 100 words.
+5.maximum words of each paragraph should less than 100 words.
 6.all output should be in {language}.
 
 <FORMAT>

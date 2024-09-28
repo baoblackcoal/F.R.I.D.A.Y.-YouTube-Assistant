@@ -110,7 +110,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         // if translateText is empty or lastTaskStatusText is empty, indecate end or error. translateText not include '\n'
                         // the times of '\n' in translateText  must be larger than 5
                         const countOfNewLine = (translateText.match(/\n/g) || []).length;
-                        const isNewLineMarkCountEnough = countOfNewLine > 2;
+                        const isNewLineMarkCountEnough = countOfNewLine > 1;
                         const formatError = translateText == '' || lastTaskStatusText == '';
                         if (formatError || !isNewLineMarkCountEnough || onlyGetAnd) {
                             console.log("these are empty translateText or lastTaskStatusText");
@@ -146,13 +146,6 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         const [finish, isError] = await getTranslateAndSpeakText(prompt, isFirstConversation);
                         isFirstConversation = false;
                         console.log("finish=", finish, "isError=", isError);
-                        if (isError) {
-                            updateSummaryStatus("Translate Subtitle error. Try again.");
-                            contentElement.innerHTML = oldHtml;
-                            isFirstConversation = true;
-                            await new Promise(resolve => setTimeout(resolve, 2000));
-                            continue;
-                        }
                         if (finish) {                            
                             isFinish = true;
                             //speak a new line to make sure last line is spoken
@@ -163,6 +156,13 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                             //sleep 5 seconds
                             updateSummaryStatus("Translate subtitle...");
                             await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
+                        if (isError) {
+                            updateSummaryStatus("Translate Subtitle error. Try again.");
+                            contentElement.innerHTML = oldHtml;
+                            isFirstConversation = true;
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                            continue;
                         }
                     }
 
