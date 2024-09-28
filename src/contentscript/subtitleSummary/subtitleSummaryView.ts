@@ -14,12 +14,15 @@ export function insertSummaryButtonView() {
 
 export function getSubtitleSummaryView() {
     return `<div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
-                    <div id="ytbs_summary_status"  style="margin-bottom: 20px;"> </div>
+                    <div id="ytbs_control_panel" style="justify-content: space-between; margin-bottom: 10px;">
+                        <button id="ytbs_speak">Speak</button>
+                        <button id="ytbs_auto_speak">Auto Speak</button>
+                        <button id="ytbs_language">English</button>
+                        <button id="ytbs_settings">Settings</button>
+                    </div>
+                     <div id="ytbs_summary_status"  style="margin-bottom: 10px;"> </div>
+
                     <div class="ytbs_content"> </div>    
-                    <button id="ytbs_speak">Speak</button>
-                    <button id="ytbs_auto_speak">Auto Speak</button>
-                    <button id="ytbs_language">English</button>
-                    <button id="ytbs_settings">Settings</button>
                 </div>`;
 }
 
