@@ -56,7 +56,7 @@ export async function waitForPlayer(): Promise<void> {
 }
 
 
-async function getVideoTitle(): Promise<string> {
+export async function getVideoTitle(): Promise<string> {
     const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
     if (titleDiv) {
         const h1Element = titleDiv.querySelector('h1.style-scope.ytd-watch-metadata');
@@ -70,7 +70,7 @@ async function getVideoTitle(): Promise<string> {
     return "Can not get Title";
 }
 
-async function getTranscriptText(videoId: string): Promise<string | null> {
+export async function getTranscriptText(videoId: string): Promise<string | null> {
     const langOptionsWithLink = await getLangOptionsWithLink(videoId);
     if (!langOptionsWithLink) {
         return null;
@@ -78,7 +78,7 @@ async function getTranscriptText(videoId: string): Promise<string | null> {
     return await getRawTranscriptText(langOptionsWithLink[0].link);
 }
 
-function getApiKey(callback: (key: string | null) => void): void {
+export function getApiKey(callback: (key: string | null) => void): void {
     chrome.storage.sync.get('geminiApiKey', (data) => {
         let geminiApiKey: string | null = null;
         try {
@@ -97,7 +97,7 @@ function getApiKey(callback: (key: string | null) => void): void {
     });
 }
 
-function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string, language: string): string {
+export function diyPrompt(customPrompt: string, videoTitle: string, textTranscript: string, language: string): string {
     const replacements: Record<string, string> = {
         '{language}': language,
         '{videoTitle}': videoTitle,
@@ -174,13 +174,6 @@ export async function generateSummary(videoId: string): Promise<void> {
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
                 try {
-                    // let response_text = await geminiAPI.generate(prompt);                    
-                    // response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
-                    // parseText = parse(response_text).toString();
-                    // contentElement.innerHTML = parseText;
-
-
-                    // streamGenerate
                     let response_text = "";
                     geminiAPI.streamGenerate(prompt, (text) => {
                         //append text to response_text

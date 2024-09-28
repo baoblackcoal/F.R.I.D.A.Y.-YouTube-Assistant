@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel, ChatSession } from "@google/generative-ai";
 
 let gemini_api_key: string | null = null;
 let googleAI: GoogleGenerativeAI | null = null;
@@ -9,6 +9,7 @@ export interface GeminiAPI {
   sayHelloByGemini: () => Promise<string>;
   generate: (prompt: string) => Promise<string>;
   streamGenerate: (prompt: string, callback: (text: string) => void) => Promise<void>;
+  chat: (prompt: string, isFirstConversation: boolean) => Promise<string>;
 }
 
 export const setKey = async (key: string): Promise<void> => {
@@ -24,7 +25,8 @@ export const setKey = async (key: string): Promise<void> => {
   };
 
   geminiModel = googleAI.getGenerativeModel({
-    model: "gemini-1.5-flash-002",
+    // model: "gemini-1.5-flash-002",
+    model: "gemini-1.5-flash",
     generationConfig: geminiConfig,
   });
 }
@@ -79,9 +81,27 @@ export const streamGenerate = async (prompt: string, callback: (text: string) =>
   }
 }
 
+let chatSession: ChatSession | null = null;
+export const chat = async (prompt: string, isFirstConversation: boolean): Promise<string> => {
+  let text: string;
+  try {
+    if (!geminiModel) throw new Error("Gemini model not initialized");
+    if (isFirstConversation) {
+      chatSession = geminiModel.startChat();
+    }
+    if (!chatSession) throw new Error("Chat session not initialized");
+    const result = await chatSession.sendMessage(prompt);
+    text = result.response.text();
+  } catch (error) {
+    text = "Error: " + error;
+  }
+  return text;
+}
+
 export const geminiAPI: GeminiAPI = {
   setKey,
   sayHelloByGemini,
   generate,
-  streamGenerate
+  streamGenerate,
+  chat,
 };

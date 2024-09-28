@@ -39,3 +39,4 @@ This conversation features two AI's interacting. One AI has access to a camera a
 <CONTENT>
 {textTranscript}
 </CONTENT>`;
+
