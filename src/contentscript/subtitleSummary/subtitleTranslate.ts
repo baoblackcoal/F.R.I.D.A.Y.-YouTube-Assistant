@@ -45,43 +45,57 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     // save contentElement.innerHTML to oldHtml
                     const oldHtml = contentElement.innerHTML;
                     
-                    
-                    async function getTranslateAndSpeakText(prompt: string, isFirstConversation: boolean): Promise<[boolean, boolean]> {
+                    enum ErrorType {
+                        NotError = "NotError",
+                        FormatError = "FormatError",
+                        OutputTextSizeTooLarge = "OutputTextSizeTooLarge",
+                    }
+
+                    async function getTranslateAndSpeakText(prompt: string, isFirstConversation: boolean): Promise<[boolean, boolean, ErrorType]> {
                         const text = await geminiAPI.chat(prompt, isFirstConversation);
                        
-                        //get translate text in {{content_is_easy_to_read}} and {{/content_is_easy_to_read}}
-                        const translateTextArray = text.match(/{{content_is_easy_to_read}}([\s\S]*?){{\/content_is_easy_to_read}}/g);
+                        //get translate text in <content_is_easy_to_read> and {{/content_is_easy_to_read}}
+                        const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
                         console.log("translateTextArray=", translateTextArray);
+                        if (translateTextArray == null) {
+                            console.log("translateTextArray is null, text=", text);
+                        }
                         
-                        //get task status in {{task_status}} and {{/task_status}}
-                        const taskStatusArray = text.match(/{{task_status}}([\s\S]*?){{\/task_status}}/g);
+                        //get task status in <task_status> and {{/task_status}}
+                        const taskStatusArray = text.match(/<task_status>([\s\S]*?)<\/task_status>/g);
                         let lastTaskStatusText = taskStatusArray ? taskStatusArray[taskStatusArray.length - 1] : '';
-                        //get content in lastTaskStatusText that between {{task_status}} and {{/task_status}}
-                        const lastTaskStatusTextArray = lastTaskStatusText.match(/{{task_status}}([\s\S]*?){{\/task_status}}/);
+                        //get content in lastTaskStatusText that between <task_status> and {{/task_status}}
+                        const lastTaskStatusTextArray = lastTaskStatusText.match(/<task_status>([\s\S]*?)<\/task_status>/);
                         lastTaskStatusText = lastTaskStatusTextArray ? lastTaskStatusTextArray[1] : '';
-                        lastTaskStatusText = lastTaskStatusText.replace(/{{task_status}}/g, '').replace(/{{\/task_status}}/g, '');
+                        lastTaskStatusText = lastTaskStatusText.replace(/<task_status>/g, '').replace(/<\/task_status>/g, '');
                         //delete /n in lastTaskStatusText
                         lastTaskStatusText = lastTaskStatusText.replace(/\n/g, '');
                         let finish = lastTaskStatusText == 'task_is_finish';
                         let isError = false;
                         console.log(lastTaskStatusText);
-                        
+
                         let translateText = '';
-                        let onlyGetAnd = false;
+                        let isOuptutTextSizeTooLarge = false;
+                        let errorType = ErrorType.NotError;
                         if (translateTextArray) {
                             // using for loop to get translateText, bacause gemini sometimes return multiple translateText in one response
                             for (const item of translateTextArray) {
-                                //get content in item that between {{content_is_easy_to_read}} and {{/content_is_easy_to_read}}
-                                const itemArray = item.match(/{{content_is_easy_to_read}}([\s\S]*?){{\/content_is_easy_to_read}}/);
+                                //get content in item that between <content_is_easy_to_read> and {{/content_is_easy_to_read}}
+                                const itemArray = item.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/);
                                 translateText = itemArray ? itemArray[1] : '';
-                                //translateText is ' and ', because gemini repeat task, so skip it.
-                                if (translateText == 'and' || translateText == ' and ') {
-                                    onlyGetAnd = true;
-                                    continue;
-                                }
+
+                                // check if output text size is too large
+                                // if (await geminiAPI.countTokens(translateText) > 2048) {
+                                //     isOuptutTextSizeTooLarge = true;
+                                //     return [finish=false, isError=true, errorType=ErrorType.OutputTextSizeTooLarge];
+                                // }
+
+                                // add \n after get . or 。 
+                                translateText = translateText.replace(/\。/g, '。\n');
+                                translateText = translateText.replace(/\./g, '.\n');    
+                                
                                 console.log(translateText);
                                 if (contentElement && translateText !== 'task_is_finish' && translateText !== '') {
-                                    onlyGetAnd = false;
                                     // display html when get new line
                                     const lines = translateText.split('\n');    
                                     let html = '';
@@ -112,16 +126,14 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         const countOfNewLine = (translateText.match(/\n/g) || []).length;
                         const isNewLineMarkCountEnough = countOfNewLine > 1;
                         const formatError = translateText == '' || lastTaskStatusText == '';
-                        if (formatError || !isNewLineMarkCountEnough || onlyGetAnd) {
+                        if (formatError || !isNewLineMarkCountEnough) {
                             console.log("these are empty translateText or lastTaskStatusText");
                             console.log("translateText=", translateText);
                             console.log("lastTaskStatusText=", lastTaskStatusText);
                             if (contentElement) {
                                 // append text to contentElement
                                 const newElement = document.createElement('div');   
-                                if (onlyGetAnd) {
-                                    newElement.innerHTML = 'Error: get error text from gemini, try again.';
-                                } else if (!isNewLineMarkCountEnough) {
+                                if (!isNewLineMarkCountEnough) {
                                     newElement.innerHTML = 'Error: output text not include new line, try again.';
                                 } else {
                                     newElement.innerHTML = text;
@@ -129,13 +141,14 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                 contentElement.appendChild(newElement);
                                 isError = true;
                                 finish = false;
+                                errorType = ErrorType.FormatError;
                             }   
                         }
 
                         if (!isError && summarySettings.autoTtsSpeak) { 
                             TTSSpeak.getInstance().speakAndPlayVideo(translateText, true);
                         }
-                        return [finish, isError];
+                        return [finish, isError, errorType];
                     }
 
                     let isFinish = false;
@@ -143,9 +156,9 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     const translatePrompt = await generatePrompt(videoId);
                     while (true) {
                         const prompt = isFirstConversation ? translatePrompt : 'continue';
-                        const [finish, isError] = await getTranslateAndSpeakText(prompt, isFirstConversation);
+                        const [finish, isError, errorType] = await getTranslateAndSpeakText(prompt, isFirstConversation);
                         isFirstConversation = false;
-                        console.log("finish=", finish, "isError=", isError);
+                        console.log("finish=", finish, "isError=", isError, "errorType=", errorType);
                         if (finish) {                            
                             isFinish = true;
                             //speak a new line to make sure last line is spoken
@@ -158,7 +171,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                             await new Promise(resolve => setTimeout(resolve, 2000));
                         }
                         if (isError) {
-                            updateSummaryStatus("Translate Subtitle error. Try again.");
+                            updateSummaryStatus("Translate Subtitle " + errorType + " error, Try again.");
                             contentElement.innerHTML = oldHtml;
                             isFirstConversation = true;
                             await new Promise(resolve => setTimeout(resolve, 2000));

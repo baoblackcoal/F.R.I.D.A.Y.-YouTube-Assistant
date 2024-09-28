@@ -6,32 +6,29 @@ content_is_easy_to_read(delimited by XML tags <content_is_easy_to_read> and </co
 task_finish_status(delimited by XML tags <task_finish_status> and </task_finish_status>) that should be "task_is_not_finish" or "task_is_finish". "task_is_not_finish" indicates that all ORIGINAL_CONTENT is translated. "task_is_not_finish" indicates that all ORIGINAL_CONTENT is not translated.
 
 Your output content should follow the following rules:
-1.should output 500 words every your response , becasue your output size is limited.
-2.should not output anything else but only include 1 time of like <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
-3.when I say "continue", you must continue output next 500 easy to read words content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
-4.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
-5.maximum words of each paragraph should less than 100 words.
+1.should not output anything else but only include 1 time of like <FORMAT> and </FORMAT> or <FORMAT_FINISH> and </FORMAT_FINISH>.
+2.when I say "continue", you must continue output next easy to read content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
+3.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
+4.maximum tokens of each paragraph should less than 50 tokens.
+5.maximum tokens of each your response should less than 300 tokens.
 6.all output should be in {language}.
 
 <FORMAT>
-{{content_is_easy_to_read}}
+<content_is_easy_to_read>
 content_is_easy_to_read
-{{/content_is_easy_to_read}}
+</content_is_easy_to_read>
 
-{{task_status}}
+<task_status>
 task_finish_status
-{{/task_status}}
+</task_status>
 <FORMAT>
 
 <FORMAT_FINISH>
-{{content_is_easy_to_read}}
-task_is_finish
-{{/content_is_easy_to_read}}
-
-{{task_status}}
+<task_status>
 task_finish_status
-{{/task_status}}
+</task_status>
 </FORMAT_FINISH>
+
 
 <ORIGINAL_CONTENT>
 {textTranscript}

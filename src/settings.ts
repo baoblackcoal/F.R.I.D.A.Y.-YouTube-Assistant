@@ -25,8 +25,8 @@ export const defaultTtsSettings: TtsSettings = {
 // multi-language enum
 export enum Language {
   English = 'English',
-  Chinese = 'Chinese',
-  Spanish = 'Spanish',
+  Simplified_Chinese = 'Simplified Chinese',
+  Traditional_Chinese = 'Traditional Chinese',
   French = 'French',
   German = 'German',
   Italian = 'Italian',
@@ -34,13 +34,6 @@ export enum Language {
   Japanese = 'Japanese',
   Korean = 'Korean',
   Russian = 'Russian',
-  Arabic = 'Arabic',
-  Hindi = 'Hindi',
-  Bengali = 'Bengali',
-  Punjabi = 'Punjabi',
-  Turkish = 'Turkish',
-  Vietnamese = 'Vietnamese',
-  Thai = 'Thai',
 }
 
 export interface SummarySettings {

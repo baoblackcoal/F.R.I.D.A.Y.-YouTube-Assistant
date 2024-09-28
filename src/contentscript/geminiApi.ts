@@ -10,6 +10,7 @@ export interface GeminiAPI {
   generate: (prompt: string) => Promise<string>;
   streamGenerate: (prompt: string, callback: (text: string) => void) => Promise<void>;
   chat: (prompt: string, isFirstConversation: boolean) => Promise<string>;
+  countTokens: (prompt: string) => Promise<number>;
 }
 
 export const setKey = async (key: string): Promise<void> => {
@@ -69,7 +70,7 @@ export const streamGenerate = async (prompt: string, callback: (text: string) =>
   let text: string;
   try {
     if (!geminiModel) throw new Error("Gemini model not initialized");
-
+    
     const result = await geminiModel.generateContentStream(prompt);
     for await (const chunk of result.stream) {
         console.log(chunk.text());
@@ -98,10 +99,17 @@ export const chat = async (prompt: string, isFirstConversation: boolean): Promis
   return text;
 }
 
+export const countTokens = async (prompt: string): Promise<number> => {
+  if (!geminiModel) throw new Error("Gemini model not initialized");
+  const result = await geminiModel.countTokens(prompt);
+  return result.totalTokens;
+}
+
 export const geminiAPI: GeminiAPI = {
   setKey,
   sayHelloByGemini,
   generate,
   streamGenerate,
   chat,
+  countTokens,
 };
