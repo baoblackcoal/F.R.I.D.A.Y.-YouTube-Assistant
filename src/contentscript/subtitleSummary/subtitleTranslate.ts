@@ -42,6 +42,9 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     const newElement = document.createElement('div');   
                     newElement.innerHTML = '<h3 style="margin-top: 20px;">Subtitle</h3>';
                     contentElement.appendChild(newElement);
+                    if (summarySettings.autoTtsSpeak) {
+                        TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', true);
+                    }
                     // save contentElement.innerHTML to oldHtml
                     const oldHtml = contentElement.innerHTML;
                     
@@ -75,7 +78,6 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         console.log(lastTaskStatusText);
 
                         let translateText = '';
-                        let isOuptutTextSizeTooLarge = false;
                         let errorType = ErrorType.NotError;
                         if (translateTextArray) {
                             // using for loop to get translateText, bacause gemini sometimes return multiple translateText in one response
@@ -84,16 +86,12 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                 const itemArray = item.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/);
                                 translateText = itemArray ? itemArray[1] : '';
 
-                                // check if output text size is too large
-                                // if (await geminiAPI.countTokens(translateText) > 2048) {
-                                //     isOuptutTextSizeTooLarge = true;
-                                //     return [finish=false, isError=true, errorType=ErrorType.OutputTextSizeTooLarge];
-                                // }
-
                                 // add \n after get . or 。 
                                 translateText = translateText.replace(/\。/g, '。\n');
-                                translateText = translateText.replace(/\./g, '.\n');    
-                                
+                                translateText = translateText.replace(/\. /g, '.\n'); 
+                                translateText = translateText.replace(/&#39;/g, "'");   
+                                //replace &quot; to "
+                                translateText = translateText.replace(/&quot;/g, '');
                                 console.log(translateText);
                                 if (contentElement && translateText !== 'task_is_finish' && translateText !== '') {
                                     // display html when get new line

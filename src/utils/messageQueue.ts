@@ -1,33 +1,49 @@
+
+export interface IMessage {
+    action: string;
+    text?: string;
+    isStream?: boolean;
+}
+
 export interface IMessageQueue {
-    enqueue(message: any): void;
+    enqueue(message: IMessage, mockSendMessage?: (message: IMessage) => void): void;
 }
 
 class MessageQueue implements IMessageQueue {
     private queue: any[] = [];
     private isProcessing: boolean = false;
 
-    enqueue(message: any): void {
+    enqueue(message: IMessage, mockSendMessage?: (message: IMessage) => void): void {
         this.queue.push(message);
-        this.processQueue();
+        this.processQueue(mockSendMessage);
     }
 
-    private async processQueue(): Promise<void> {
+    private async processQueue(mockSendMessage?: (message: IMessage) => void): Promise<void> {
         if (this.isProcessing) return;
         this.isProcessing = true;
 
         while (this.queue.length > 0) {
             const message = this.queue.shift();
-            try {
-                await this.sendMessage(message);
-            } catch (error) {
-                console.error('Failed to send message:', error);
+            // split the message text into lines
+            const lines = message.text?.split('\n') || [];
+            for (const line of lines) {
+                message.text = line;
+                try {   
+                    if (mockSendMessage) {
+                        mockSendMessage(message);
+                    } else {
+                        await this.sendMessage(message);
+                    }
+                } catch (error) {
+                    console.error('Failed to send message:', error);
+                }
             }
         }
 
         this.isProcessing = false;
     }
 
-    private async sendMessage(message: any): Promise<void> {
+    private async sendMessage(message: IMessage): Promise<void> {
         return new Promise((resolve, reject) => {
             let retries = 5; // number of retries
             const trySendMessage = () => {                    

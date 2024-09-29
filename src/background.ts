@@ -31,25 +31,6 @@ class TtsService implements ITtsService {
 
     async speakText(text: string, playVideo: () => void = () => {}): Promise<void> {
         await this.handleStreamText(text, playVideo);
-        // if (isStream) {
-        //     await this.handleStreamText(text, streamTextIndex, playVideo);
-        // } else {
-        //     const settings = await this.settingsManager.getTtsSettings();
-        //     console.log(`(Background)TTS Speaking text: ${text}`);
-        //     chrome.tts.stop();
-        //     chrome.tts.speak(text, {
-        //         rate: settings.rate,
-        //         pitch: settings.pitch,
-        //         volume: settings.volume,
-        //         voiceName: settings.voiceName,
-        //         onEvent: (event: chrome.tts.TtsEvent) => {
-        //             if (event.type === 'end') {
-        //                 console.log('(Background)TTS Speaking finished');
-        //                 playVideo();
-        //             }
-        //         }
-        //     });
-        // }
     }
 
     async handleStreamText(text: string, playVideo: () => void): Promise<void> {
@@ -60,16 +41,20 @@ class TtsService implements ITtsService {
         if (text.length == 0) {
             return;
         }
-        this.lastStreamText += text;
 
-        if (this.lastStreamText.includes('\n')) {
-            const textSegments = this.lastStreamText.split('\n');
-            this.lastStreamText = textSegments[textSegments.length - 1];
-            for (let i = 0; i < textSegments.length - 1; i++) {
-                this.speakTextArray.push(textSegments[i]);
-                this.speakNextText(playVideo);
-            }
-        }
+        this.speakTextArray.push(text);
+        this.speakNextText(playVideo);
+
+        // this.lastStreamText += text;
+
+        // if (this.lastStreamText.includes('\n')) {
+        //     const textSegments = this.lastStreamText.split('\n');
+        //     this.lastStreamText = textSegments[textSegments.length - 1];
+        //     for (let i = 0; i < textSegments.length - 1; i++) {
+        //         this.speakTextArray.push(textSegments[i]);
+        //         this.speakNextText(playVideo);
+        //     }
+        // }
     }
 
     private async speakNextText(playVideo: () => void): Promise<void> {
@@ -84,6 +69,7 @@ class TtsService implements ITtsService {
             }
             const settings = await this.settingsManager.getTtsSettings();
             const text = this.speakTextArray.shift();
+            console.log("speakNextText: ", text);
             if (text != null) {
                 chrome.tts.speak(text, {
                     rate: settings.rate,

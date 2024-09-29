@@ -1,5 +1,5 @@
 import { TtsSettings } from '../settings';
-import { messageQueue } from '../utils/messageQueue';
+import { messageQueue, IMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
     speak(text: string, isStream: boolean): void;
@@ -10,7 +10,6 @@ export interface TTSInterface {
 
 export class TTSSpeak implements TTSInterface {
     private static instance: TTSSpeak;
-    private streamTextIndex = 0;
 
     private constructor() {}
 
@@ -30,31 +29,20 @@ export class TTSSpeak implements TTSInterface {
     }
 
     async speakAndPlayVideo(text: string, isStream: boolean = false): Promise<void> {
-        // return new Promise((resolve, reject) => {
-        //     try {
-        //         chrome.runtime.sendMessage({
-        //             action: 'speakAndPlayVideo',
-        //             text: text,
-        //             isStream: isStream,
-        //         });
-        //     } catch (error) {
-        //         reject(error);
-        //     }
-        // }); 
         return new Promise((resolve, reject) => {
             try {
-                messageQueue.enqueue({
+                const message: IMessage = {
                     action: 'speakAndPlayVideo',
                     text: text,
                     isStream: isStream,
-                    streamTextIndex: this.streamTextIndex,
-                });
+                };
+                messageQueue.enqueue(message);
+                resolve();
             } catch (error) {
+                console.error('Error in speakAndPlayVideo:', error);
                 reject(error);
             }
-            this.streamTextIndex++;
         });
-
     }   
 
     stop(): void {

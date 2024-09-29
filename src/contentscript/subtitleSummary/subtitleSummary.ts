@@ -178,6 +178,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
     getApiKey(async (geminiApiKey) => {
         let parseText = "";
         const contentElement = document.querySelector(".ytbs_content");
+        let reavStreamText = "";
         if (contentElement) {
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
@@ -189,15 +190,26 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                         text = text.replace(/MD_FORMAT/g, '');
                         response_text += text;
                         response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
+                        //replace &#39; to '
+                        response_text = response_text.replace(/&#39;/g, "'");
                         parseText = parse(response_text).toString();
                         contentElement.innerHTML = parseText;
                         if (summarySettings.autoTtsSpeak) {
                             // remove # , * and xml tags    
                             const textStream = text.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
-                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
+                            reavStreamText += textStream;
+                            //split reavStreamText by \n or . or 。 if reavStream include
+                            if (reavStreamText.includes('\n')) {
+                                //split reavStreamText by \n
+                                const splitTextArray = reavStreamText.split('\n');
+                                reavStreamText = splitTextArray[splitTextArray.length - 1];
+                                for (let i = 0; i < splitTextArray.length - 1; i++) {                                    
+                                    TTSSpeak.getInstance().speakAndPlayVideo(splitTextArray[i], true);
+                                }                                
+                            }
                         }
                     }).then(() => {
-                        TTSSpeak.getInstance().speakAndPlayVideo('\n', true); // speak a new line to make sure last line is spoken
+                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', true); // speak a new line to make sure last line is spoken
                         updateSummaryStatus("Translate subtitle...");
                         subtitleTranslate(videoId);
                         
