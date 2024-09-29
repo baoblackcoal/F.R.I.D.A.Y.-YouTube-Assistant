@@ -1,5 +1,5 @@
 import { Language, defaultSummarySettings, SummarySettings } from './settings';
-import { defaultPromptText } from "./defaultPromptText";
+import { defaultPromptText } from "./prompts/defaultPromptText";
 import { settingsManager } from './settingsManager';
 
 document.addEventListener('DOMContentLoaded', async () => {

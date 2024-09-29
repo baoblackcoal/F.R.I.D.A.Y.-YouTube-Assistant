@@ -3,7 +3,7 @@ import { geminiAPI } from '../geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from '../ttsSpeak';
 import { SummarySettings, defaultSummarySettings, Language } from '../../settings';
-import { defaultPromptText } from "../../defaultPromptText";
+import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";

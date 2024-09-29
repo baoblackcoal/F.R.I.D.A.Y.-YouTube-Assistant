@@ -3,7 +3,7 @@ import { geminiAPI } from '../geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from '../ttsSpeak';
 import { SummarySettings, defaultSummarySettings, Language } from '../../settings';
-import { defaultTranslatePrompt } from "../../defaultTranslatePrompt";
+import { defaultTranslatePrompt } from "../../prompts/defaultTranslatePrompt";
 import { settingsManager } from '../../settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
@@ -40,7 +40,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                 try {
                     // append h3 to contentElement for display title
                     const newElement = document.createElement('div');   
-                    newElement.innerHTML = '<h3 style="margin-top: 20px;">Subtitle</h3>';
+                    newElement.innerHTML = '<h3 style="margin-top: 20px;">\nSubtitle</h3>';
                     contentElement.appendChild(newElement);
                     if (summarySettings.autoTtsSpeak) {
                         TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', true);
