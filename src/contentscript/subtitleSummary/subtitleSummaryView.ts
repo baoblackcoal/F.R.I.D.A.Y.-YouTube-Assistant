@@ -4,6 +4,7 @@ import { settingsManager } from '../../settingsManager';
 import { subtitleSummaryHandle } from './subtitleSummary';
 import { waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';
+import { copyTextToClipboard } from '../copy';
 
 export function insertSummaryButtonView() {
     const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`
@@ -17,6 +18,7 @@ export function getSubtitleSummaryView() {
                     <div id="ytbs_control_panel" style="justify-content: space-between; margin-bottom: 10px;">
                         <button id="ytbs_speak">Speak</button>
                         <button id="ytbs_auto_speak">Auto Speak</button>
+                        <button id="ytbs_copy">Copy</button>
                         <button id="ytbs_language">English</button>
                         <button id="ytbs_settings">Settings</button>
                     </div>
@@ -40,8 +42,19 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonLanguageHandle();
     buttonSettingsHandle();
     buttonSummaryToggleHandle();
+    buttonCopyHandle();
 
     subtitleSummaryHandle(videoId, subtitleTranslate);
+}
+
+function buttonCopyHandle(): void {
+    const buttonCopy = document.getElementById("ytbs_copy");
+    if (buttonCopy) {
+        buttonCopy.addEventListener("click", () => {
+            const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+            copyTextToClipboard(text);
+        });
+    }
 }
 
 async function resetWhenPageChange(): Promise<void> {
