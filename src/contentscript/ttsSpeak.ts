@@ -2,10 +2,11 @@ import { TtsSettings } from '../settings';
 import { messageQueue, IMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
-    speak(text: string, isStream: boolean): void;
-    speakAndPlayVideo(text: string, isStream: boolean): Promise<void>;
+    speak(text: string): Promise<void>;
+    speakAndPlayVideo(text: string): Promise<void>;
     stop(): void;
     isSpeaking(): Promise<boolean>;
+    resetStreamSpeak(): Promise<void>;
 }
 
 export class TTSSpeak implements TTSInterface {
@@ -20,21 +21,12 @@ export class TTSSpeak implements TTSInterface {
         return TTSSpeak.instance;
     }
 
-    speak(text: string, isStream: boolean = false): void {
-        chrome.runtime.sendMessage({
-            action: 'speak',
-            text: text,
-            isStream: isStream,
-        });
-    }
-
-    async speakAndPlayVideo(text: string, isStream: boolean = false): Promise<void> {
+    speak(text: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 const message: IMessage = {
-                    action: 'speakAndPlayVideo',
+                    action: 'speak',
                     text: text,
-                    isStream: isStream,
                 };
                 messageQueue.enqueue(message);
                 resolve();
@@ -43,7 +35,37 @@ export class TTSSpeak implements TTSInterface {
                 reject(error);
             }
         });
-    }   
+    }
+
+    resetStreamSpeak(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.runtime.sendMessage({
+                    action: 'resetStreamSpeak',
+                });
+                resolve();
+            } catch (error) {
+                console.error('Error in resetStreamSpeak:', error);
+                reject(error);
+            }
+        });
+    }
+
+    async speakAndPlayVideo(text: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                const message: IMessage = {
+                    action: 'speakAndPlayVideo',
+                    text: text,
+                };
+                messageQueue.enqueue(message);
+                resolve();
+            } catch (error) {
+                console.error('Error in speakAndPlayVideo:', error);
+                reject(error);
+            }
+        });
+    }
 
     stop(): void {
         chrome.runtime.sendMessage({

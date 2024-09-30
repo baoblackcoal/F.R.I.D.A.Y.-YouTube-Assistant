@@ -43,7 +43,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     newElement.innerHTML = '<h3 style="margin-top: 20px;">\nSubtitle</h3>';
                     contentElement.appendChild(newElement);
                     if (summarySettings.autoTtsSpeak) {
-                        TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', true);
+                        TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n');
                     }
 
                     // change oldHtml childNodes background color to white, becase tts speak will highlight text
@@ -144,7 +144,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
 
                         if (!isError && summarySettings.autoTtsSpeak) { 
                             const textStream = parser.parseFromString(translateText, 'text/html').documentElement.textContent ?? '';
-                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
+                            TTSSpeak.getInstance().speakAndPlayVideo(textStream);
                         }
                         return [finish, isError, errorType];
                     }
@@ -160,7 +160,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         if (finish) {                            
                             isFinish = true;
                             //speak a new line to make sure last line is spoken
-                            TTSSpeak.getInstance().speakAndPlayVideo('\n', true);
+                            TTSSpeak.getInstance().speakAndPlayVideo('\n');
                             updateSummaryStatus("Translate Subtitle Finish.");                            
                             break;
                         } else {
@@ -178,7 +178,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     }
 
                     if (isFinish && summarySettings.autoTtsSpeak) { 
-                        TTSSpeak.getInstance().speakAndPlayVideo('\n', true);//speak a new line to make sure last line is spoken
+                        TTSSpeak.getInstance().speakAndPlayVideo('\n');//speak a new line to make sure last line is spoken
                     }
                 } catch (error) {
                     parseText = `Error generating text: ${error}`;

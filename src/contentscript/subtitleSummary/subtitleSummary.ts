@@ -198,13 +198,13 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                                 contentElement.innerHTML += splitText;
                                 if (summarySettings.autoTtsSpeak) {
                                     const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
-                                    TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
+                                    TTSSpeak.getInstance().speakAndPlayVideo(textStream);
                                 }
                             }                                
                         }
                        
                     }).then(() => {
-                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', true); // speak a new line to make sure last line is spoken
+                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n'); // speak a new line to make sure last line is spoken
                         updateSummaryStatus("Translate subtitle...");
                         subtitleTranslate(videoId);
                         

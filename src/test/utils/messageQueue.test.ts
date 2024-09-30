@@ -40,7 +40,6 @@ describe('MessageQueue Tests', () => {
         const message: IMessage = {
             action: 'speakAndPlayVideo',
             text: text,
-            isStream: true,
         };
         queue.enqueue(message, (message) => {         
             // expect.assertions(1);

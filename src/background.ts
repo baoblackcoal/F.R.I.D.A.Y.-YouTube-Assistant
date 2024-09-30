@@ -5,8 +5,7 @@ import {  ISettingsManager } from './settingsManager'; // Import interfaces
 
 // Define interfaces for key components
 interface ITtsService {
-    speakText(text: string, sender: chrome.runtime.MessageSender, playVideo?: () => void, isStream?: boolean): Promise<void>;
-    speakTextAgain(text: string, playVideo?: () => void, isStream?: boolean): Promise<void>;
+    speakText(text: string, sender: chrome.runtime.MessageSender, playVideo?: () => void): Promise<void>;
     handleStreamText(text: string, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void>;
 }
 
@@ -21,13 +20,6 @@ class TtsService implements ITtsService {
 
     constructor(settingsManager: ISettingsManager) {
         this.settingsManager = settingsManager;
-    }
-
-    async speakTextAgain(text: string, playVideo: () => void = () => {}): Promise<void> {
-        this.speakTextArray = [];
-        this.lastStreamText = '';
-        this.stopStreamSpeakFlag = false;
-        await this.handleStreamText(text, this.defaultSender, playVideo);
     }
 
     async speakText(text: string, sender: chrome.runtime.MessageSender = this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
@@ -142,8 +134,12 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
             ttsService.resetStreamSpeak();
             respondToSenderSuccess(sendResponse);
             break;
+        case 'resetStreamSpeak':
+            ttsService.resetStreamSpeak();
+            respondToSenderSuccess(sendResponse);
+            break;
         case 'speak':
-            ttsService.speakTextAgain(message.text);
+            ttsService.speakText(message.text,  sender);
             respondToSenderSuccess(sendResponse);
             break;
         case 'speakAndPlayVideo':

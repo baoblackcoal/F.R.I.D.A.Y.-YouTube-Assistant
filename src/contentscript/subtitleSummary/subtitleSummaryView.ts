@@ -51,9 +51,8 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
 
 let currentHightlightIndex = 0;
 let isHandTtsSpeakingText = false;
+let currentHightlightNode: HTMLElement | null = null;
 function handleTtsSpeakingText(): void {
-    //listen to ttsSpeakingText event
-
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
         if (message.action === 'ttsSpeakingText') {
             if (isHandTtsSpeakingText) {
@@ -72,13 +71,14 @@ function handleTtsSpeakingText(): void {
             let preHtmlNode: ChildNode | null = null;
             for (let i = 0; i < ytbs_content.childNodes.length; i++) {
                 let node = ytbs_content.childNodes[i];
-                if (i < currentHightlightIndex) {
+                let textContent = node.textContent;
+                if (i < currentHightlightIndex || textContent == " ") {
                     continue;
                 } else {    
-                    let textContent = node.textContent;
                     if (textContent && textContent.includes(ttsText)) {
                         currentHightlightIndex = i;
-                        (node as HTMLElement).style.backgroundColor = "grey";
+                        currentHightlightNode = node as HTMLElement;
+                        currentHightlightNode.style.backgroundColor = "grey";
                         break;
                     }
                     try {   
@@ -91,6 +91,13 @@ function handleTtsSpeakingText(): void {
             isHandTtsSpeakingText = false;
         }
     });
+}
+
+function resetHighlightText(): void {
+    currentHightlightIndex = 0;
+    if (currentHightlightNode) {
+        currentHightlightNode.style.backgroundColor = "white";
+    }
 }
 
 function buttonCopyHandle(): void {
@@ -141,13 +148,23 @@ function buttonSpeakHandle(): void {
     if (buttonSpeak) {
         buttonSpeak.addEventListener("click", async () => {
             console.log("ytbs_speak clicked");
+            const parser = new DOMParser();
+
             if (await tts.isSpeaking()) {
+                resetHighlightText();
                 tts.stop();
                 buttonSpeak.textContent = "Speak";
             } else {
-                //get text from ytbs_content    
-                const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
-                tts.speak(text, true);
+                await tts.resetStreamSpeak();
+                const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
+                const childNodes = tempElement.childNodes;
+                for (let i = 0; i < childNodes.length; i++) {
+                    const node = childNodes[i];
+                    if (node instanceof HTMLElement) {
+                        const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
+                        tts.speak(textStream);
+                    }
+                }
                 buttonSpeak.textContent = "Speaking...";
             }
         });
