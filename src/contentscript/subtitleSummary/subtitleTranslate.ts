@@ -96,23 +96,22 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                 if (contentElement && translateText !== 'task_is_finish' && translateText !== '') {
                                     // display html when get new line
                                     const lines = translateText.split('\n');    
-                                    let html = '';
+                                    let htmlString = '';
                                     for (const line of lines) {
-                                        html += `<p>${line}</p>`;
+                                        const newElement = document.createElement('p');
+                                        newElement.innerHTML = line;
+                                        newElement.style.marginBottom = '20px';
+                                        contentElement.appendChild(newElement);
                                     }
-                                    // append html to contentElement
-                                    const newElement = document.createElement('div');   
-                                    newElement.innerHTML = html;
-                                    contentElement.appendChild(newElement);
                                     //set margin bottom for each paragraph
-                                    const paragraphs = document.querySelectorAll('.ytbs_content p');                            
-                                    paragraphs.forEach(paragraph => {
-                                        if (paragraph instanceof HTMLElement) {
-                                            paragraph.style.marginBottom = '20px';
-                                        } else {
-                                            console.error('Element is not an HTMLElement:', paragraph);
-                                        }
-                                    });
+                                    // const paragraphs = document.querySelectorAll('.ytbs_content p');                            
+                                    // paragraphs.forEach(paragraph => {
+                                    //     if (paragraph instanceof HTMLElement) {
+                                    //         paragraph.style.marginBottom = '20px';
+                                    //     } else {
+                                    //         console.error('Element is not an HTMLElement:', paragraph);
+                                    //     }
+                                    // });
                                 } else {
                                     console.error('contentElement is null');
                                 }

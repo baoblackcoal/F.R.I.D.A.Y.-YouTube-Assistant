@@ -44,7 +44,56 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonSummaryToggleHandle();
     buttonCopyHandle();
 
+    handleTtsSpeakingText();
+
     subtitleSummaryHandle(videoId, subtitleTranslate);
+}
+
+let currentHightlightIndex = 0;
+let isHandTtsSpeakingText = false;
+function handleTtsSpeakingText(): void {
+    //listen to ttsSpeakingText event
+
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
+        if (message.action === 'ttsSpeakingText') {
+            if (isHandTtsSpeakingText) {
+                return;
+            }
+            isHandTtsSpeakingText = true;   
+
+            let ttsText = message.text;
+            // delete ttsText ' ' at the beginning and the end
+            ttsText = ttsText.trim();   
+
+            //search text from ytbs_content all content, and highlight font color to red of the text
+            const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
+            //get element from ytbs_content paragraph, div, span, etc, that has text content
+            //loop through all child elements of ytbs_content
+            let preHtmlNode: ChildNode | null = null;
+            for (let i = 0; i < ytbs_content.childNodes.length; i++) {
+                let node = ytbs_content.childNodes[i];
+                if (i < currentHightlightIndex) {
+                    continue;
+                } else {    
+                    let textContent = node.textContent;
+                    if (textContent) {
+                        textContent = textContent.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
+                    }
+                    if (textContent && textContent.includes(ttsText)) {
+                        currentHightlightIndex = i;
+                        (node as HTMLElement).style.backgroundColor = "grey";
+                        break;
+                    }
+                    try {   
+                        (node as HTMLElement).style.backgroundColor = "white";
+                    } catch (error) {
+                        // console.error("Error setting background color to white", error);
+                    }
+                }
+            };
+            isHandTtsSpeakingText = false;
+        }
+    });
 }
 
 function buttonCopyHandle(): void {
@@ -58,6 +107,8 @@ function buttonCopyHandle(): void {
 }
 
 async function resetWhenPageChange(): Promise<void> {
+    currentHightlightIndex = 0;
+
     await new Promise<void>((resolve, reject) => {
         chrome.runtime.sendMessage({ action: 'resetWhenPageChange' }, (response) => {
             if (response.status === 'success') {

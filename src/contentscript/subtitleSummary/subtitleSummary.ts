@@ -187,12 +187,15 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                     let response_text = "";
                     geminiAPI.streamGenerate(prompt, (text) => {
                         //append text to response_text
-                        text = text.replace(/MD_FORMAT/g, '');
+                        text = text.replace(/HTML_FORMAT/g, '');
                         response_text += text;
-                        response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
+                        // response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
                         //replace &#39; to '
                         response_text = response_text.replace(/&#39;/g, "'");
-                        parseText = parse(response_text).toString();
+                        // response_text = response_text.replace(/- /g, "");
+                        // response_text = response_text.replace(/-/g, "");
+                        parseText = response_text;
+                        // parseText = parse(response_text).toString();
                         contentElement.innerHTML = parseText;
                         if (summarySettings.autoTtsSpeak) {
                             // remove # , * and xml tags    
