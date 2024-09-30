@@ -76,9 +76,6 @@ function handleTtsSpeakingText(): void {
                     continue;
                 } else {    
                     let textContent = node.textContent;
-                    if (textContent) {
-                        textContent = textContent.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
-                    }
                     if (textContent && textContent.includes(ttsText)) {
                         currentHightlightIndex = i;
                         (node as HTMLElement).style.backgroundColor = "grey";

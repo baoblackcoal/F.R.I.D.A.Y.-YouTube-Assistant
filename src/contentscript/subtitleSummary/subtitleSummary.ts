@@ -185,32 +185,24 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                 try {
                     updateSummaryStatus("Generating summary...");
                     let response_text = "";
+                    const parser = new DOMParser();
                     geminiAPI.streamGenerate(prompt, (text) => {
-                        //append text to response_text
                         text = text.replace(/HTML_FORMAT/g, '');
-                        response_text += text;
-                        // response_text = response_text.replace(/<[^>]*>/g, '');// Remove XML tags from the response_text
-                        //replace &#39; to '
-                        response_text = response_text.replace(/&#39;/g, "'");
-                        // response_text = response_text.replace(/- /g, "");
-                        // response_text = response_text.replace(/-/g, "");
-                        parseText = response_text;
-                        // parseText = parse(response_text).toString();
-                        contentElement.innerHTML = parseText;
-                        if (summarySettings.autoTtsSpeak) {
-                            // remove # , * and xml tags    
-                            const textStream = text.replace(/<[^>]*>/g, '').replace(/[#*]/g, '');
-                            reavStreamText += textStream;
-                            //split reavStreamText by \n or . or 。 if reavStream include
-                            if (reavStreamText.includes('\n')) {
-                                //split reavStreamText by \n
-                                const splitTextArray = reavStreamText.split('\n');
-                                reavStreamText = splitTextArray[splitTextArray.length - 1];
-                                for (let i = 0; i < splitTextArray.length - 1; i++) {                                    
-                                    TTSSpeak.getInstance().speakAndPlayVideo(splitTextArray[i], true);
-                                }                                
-                            }
+                        reavStreamText += text;
+                        if (reavStreamText.includes('\n')) {
+                            //split reavStreamText by \n
+                            const splitTextArray = reavStreamText.split('\n');
+                            reavStreamText = splitTextArray[splitTextArray.length - 1];
+                            for (let i = 0; i < splitTextArray.length - 1; i++) { 
+                                const splitText = splitTextArray[i];             
+                                contentElement.innerHTML += splitText;
+                                if (summarySettings.autoTtsSpeak) {
+                                    const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
+                                    TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
+                                }
+                            }                                
                         }
+                       
                     }).then(() => {
                         TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', true); // speak a new line to make sure last line is spoken
                         updateSummaryStatus("Translate subtitle...");

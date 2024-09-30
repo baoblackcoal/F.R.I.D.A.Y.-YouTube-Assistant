@@ -45,8 +45,18 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                     if (summarySettings.autoTtsSpeak) {
                         TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', true);
                     }
-                    // save contentElement.innerHTML to oldHtml
-                    const oldHtml = contentElement.innerHTML;
+
+                    // change oldHtml childNodes background color to white, becase tts speak will highlight text
+                    const tempElement = contentElement.cloneNode(true) as HTMLElement;
+                    const childNodes = tempElement.childNodes;
+                    for (let i = 0; i < childNodes.length; i++) {
+                        const node = childNodes[i];
+                        if (node instanceof HTMLElement && node.style.backgroundColor != "white") {
+                            node.style.backgroundColor = "white";
+                        }
+                    }
+                    const oldHtml = tempElement.innerHTML;
+                    
                     
                     enum ErrorType {
                         NotError = "NotError",
@@ -79,6 +89,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
 
                         let translateText = '';
                         let errorType = ErrorType.NotError;
+                        const parser = new DOMParser();
                         if (translateTextArray) {
                             // using for loop to get translateText, bacause gemini sometimes return multiple translateText in one response
                             for (const item of translateTextArray) {
@@ -89,9 +100,7 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                 // add \n after get . or 。 
                                 translateText = translateText.replace(/\。/g, '。\n');
                                 translateText = translateText.replace(/\. /g, '.\n'); 
-                                translateText = translateText.replace(/&#39;/g, "'");   
-                                //replace &quot; to "
-                                translateText = translateText.replace(/&quot;/g, '');
+
                                 console.log(translateText);
                                 if (contentElement && translateText !== 'task_is_finish' && translateText !== '') {
                                     // display html when get new line
@@ -103,15 +112,6 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                                         newElement.style.marginBottom = '20px';
                                         contentElement.appendChild(newElement);
                                     }
-                                    //set margin bottom for each paragraph
-                                    // const paragraphs = document.querySelectorAll('.ytbs_content p');                            
-                                    // paragraphs.forEach(paragraph => {
-                                    //     if (paragraph instanceof HTMLElement) {
-                                    //         paragraph.style.marginBottom = '20px';
-                                    //     } else {
-                                    //         console.error('Element is not an HTMLElement:', paragraph);
-                                    //     }
-                                    // });
                                 } else {
                                     console.error('contentElement is null');
                                 }
@@ -143,7 +143,8 @@ export async function subtitleTranslate(videoId: string): Promise<void> {
                         }
 
                         if (!isError && summarySettings.autoTtsSpeak) { 
-                            TTSSpeak.getInstance().speakAndPlayVideo(translateText, true);
+                            const textStream = parser.parseFromString(translateText, 'text/html').documentElement.textContent ?? '';
+                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, true);
                         }
                         return [finish, isError, errorType];
                     }

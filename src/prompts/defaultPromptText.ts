@@ -17,11 +17,11 @@ Your output contentshould follow the following rules:
 <h3>title_content</h3>
 <p>brief_summary_of_content</p>
 <h3>Highlights</h3>
-<p><strong>highlight_keyword</strong>: highlight_1</p>
-<p><strong>highlight_keyword</strong>: highlight_2</p>
-<p><strong>highlight_keyword</strong>: highlight_3</p>
-<p><strong>highlight_keyword</strong>: highlight_4</p>
-<p><strong>highlight_keyword</strong>: highlight_5</p>
+<p><strong>1. highlight_keyword</strong>: highlight_1</p>
+<p><strong>2. highlight_keyword</strong>: highlight_2</p>
+<p><strong>3. highlight_keyword</strong>: highlight_3</p>
+<p><strong>4. highlight_keyword</strong>: highlight_4</p>
+<p><strong>5. highlight_keyword</strong>: highlight_5</p>
 </HTML_FORMAT>
 
 <ORIGINAL_CONTENT>
