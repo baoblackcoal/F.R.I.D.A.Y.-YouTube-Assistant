@@ -196,7 +196,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                             reavStreamText = splitTextArray[splitTextArray.length - 1];
                             for (let i = 0; i < splitTextArray.length - 1; i++) { 
                                 const splitText = splitTextArray[i];                                 
-                                contentElement.innerHTML += '<p style="margin-bottom: 10px;">' + splitText + '</p>';
+                                contentElement.innerHTML += '<p style="margin-bottom: 15px;">' + splitText + '</p>';
                                 if (summarySettings.autoTtsSpeak) {
                                     const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
                                     TTSSpeak.getInstance().speakAndPlayVideo(textStream);
