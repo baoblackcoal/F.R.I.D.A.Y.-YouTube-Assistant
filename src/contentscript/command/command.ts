@@ -26,7 +26,7 @@ export async function commandHandle() {
     commandHandler.registerCommand('sayHelloByGemini', async () => await api.sayHelloByGemini());
     commandHandler.registerCommand('generate', async (args) => await api.generate(args.join(' ')));
     commandHandler.registerCommand('streamGenerate', async (args) => {
-        await api.streamGenerate(args.join(' '), (text) => {
+        await api.streamGenerate(args.join(' '), async (text) => {
             console.log(text);
         });
         return 'Stream command executed successfully';

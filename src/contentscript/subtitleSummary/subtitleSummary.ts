@@ -186,16 +186,17 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                     updateSummaryStatus("Generating summary...");
                     let response_text = "";
                     const parser = new DOMParser();
-                    geminiAPI.streamGenerate(prompt, (text) => {
-                        text = text.replace(/HTML_FORMAT/g, '');
+                    let replaceNewLineCount = 0;
+                    geminiAPI.streamGenerate(prompt, async (text) => {
                         reavStreamText += text;
+                        reavStreamText = reavStreamText.replace(/\. /g, '. \n').replace(/。/g, '。\n');
                         if (reavStreamText.includes('\n')) {
-                            //split reavStreamText by \n
+                            reavStreamText = reavStreamText.replace(/HTML_FORMAT/g, '');                        
                             const splitTextArray = reavStreamText.split('\n');
                             reavStreamText = splitTextArray[splitTextArray.length - 1];
                             for (let i = 0; i < splitTextArray.length - 1; i++) { 
-                                const splitText = splitTextArray[i];             
-                                contentElement.innerHTML += splitText;
+                                const splitText = splitTextArray[i];                                 
+                                contentElement.innerHTML += '<p style="margin-bottom: 10px;">' + splitText + '</p>';
                                 if (summarySettings.autoTtsSpeak) {
                                     const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
                                     TTSSpeak.getInstance().speakAndPlayVideo(textStream);

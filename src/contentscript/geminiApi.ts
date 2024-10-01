@@ -8,7 +8,7 @@ export interface GeminiAPI {
   setKey: (key: string) => Promise<void>;
   sayHelloByGemini: () => Promise<string>;
   generate: (prompt: string) => Promise<string>;
-  streamGenerate: (prompt: string, callback: (text: string) => void) => Promise<void>;
+  streamGenerate: (prompt: string, callback: (text: string) => Promise<void>) => Promise<void>;
   chat: (prompt: string, isFirstConversation: boolean) => Promise<string>;
   countTokens: (prompt: string) => Promise<number>;
 }
@@ -66,7 +66,7 @@ export const generate = async (prompt: string): Promise<string> => {
 }
 
 //stream the response from the gemini model
-export const streamGenerate = async (prompt: string, callback: (text: string) => void): Promise<void> => {
+export const streamGenerate = async (prompt: string, callback: (text: string) => Promise<void>): Promise<void> => {
   let text: string;
   try {
     if (!geminiModel) throw new Error("Gemini model not initialized");
@@ -74,7 +74,7 @@ export const streamGenerate = async (prompt: string, callback: (text: string) =>
     const result = await geminiModel.generateContentStream(prompt);
     for await (const chunk of result.stream) {
         console.log(chunk.text());
-        callback(chunk.text());
+        await callback(chunk.text());
     }
   } catch (error) {
     console.error("Response error:", error);
