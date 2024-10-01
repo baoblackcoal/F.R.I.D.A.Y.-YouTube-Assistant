@@ -3,10 +3,12 @@ import { messageQueue, IMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
     speak(text: string): Promise<void>;
+    speakFinsh(): void;
     speakAndPlayVideo(text: string): Promise<void>;
     stop(): void;
     isSpeaking(): Promise<boolean>;
     resetStreamSpeak(): Promise<void>;
+    speakAndPlayVideoFinsh(): void;
 }
 
 export class TTSSpeak implements TTSInterface {
@@ -37,7 +39,12 @@ export class TTSSpeak implements TTSInterface {
         });
     }
 
+    speakFinsh(): void {
+        this.speak('\n');
+    }
+
     resetStreamSpeak(): Promise<void> {
+        messageQueue.clear();
         return new Promise((resolve, reject) => {
             try {
                 chrome.runtime.sendMessage({
@@ -65,6 +72,10 @@ export class TTSSpeak implements TTSInterface {
                 reject(error);
             }
         });
+    }
+
+    speakAndPlayVideoFinsh(): void {
+        this.speakAndPlayVideo('\n');
     }
 
     stop(): void {

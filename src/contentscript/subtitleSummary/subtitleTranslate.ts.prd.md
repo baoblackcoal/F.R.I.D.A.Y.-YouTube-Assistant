@@ -28,7 +28,7 @@ The subtitle translation feature is designed to translate video subtitles into a
   - Returns a string prompt for the translation API.
 
 #### 2. Translate Subtitles
-- **Function**: `subtitleTranslate(videoId: string): Promise<void>`
+- **Function**: `translateSubtitles(videoId: string): Promise<void>`
 - **Description**: Translates the subtitles of the specified video and displays them on the video player. Optionally, reads the subtitles aloud using TTS.
 - **Inputs**:
   - `videoId`: The ID of the video to translate.
@@ -64,6 +64,7 @@ The subtitle translation feature is designed to translate video subtitles into a
 2. **As a user, I want the translated subtitles to be displayed on the video player so that I can read them while watching the video.**
 3. **As a user, I want the translated subtitles to be read aloud so that I can listen to them while watching the video.**
 4. **As a user, I want to be notified if there is an error during the translation process so that I can take appropriate action.**
+5. **As a user, I want to be able to click on paragraphs to read them aloud, highlight them, and automatically speak all paragraphs until the end of the subtitles.**
 
 ### Technical Architecture
 - **Chrome Extension**: Manifest V3

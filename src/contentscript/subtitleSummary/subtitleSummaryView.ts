@@ -78,7 +78,7 @@ function handleTtsSpeakingText(): void {
                     if (textContent && textContent.includes(ttsText)) {
                         currentHightlightIndex = i;
                         currentHightlightNode = node as HTMLElement;
-                        currentHightlightNode.style.backgroundColor = "grey";
+                        currentHightlightNode.style.backgroundColor = "yellow";
                         break;
                     }
                     try {   
@@ -93,7 +93,7 @@ function handleTtsSpeakingText(): void {
     });
 }
 
-function resetHighlightText(): void {
+export function resetHighlightText(): void {
     currentHightlightIndex = 0;
     if (currentHightlightNode) {
         currentHightlightNode.style.backgroundColor = "white";

@@ -1,5 +1,6 @@
 /// <reference types="chrome"/>
 import { Env, getEnvironment } from './common';
+import { defaultTtsSettings, TtsSettings } from './settings';
 import { settingsManager } from "./settingsManager";
 import {  ISettingsManager } from './settingsManager'; // Import interfaces
 
@@ -17,9 +18,16 @@ class TtsService implements ITtsService {
     private stopStreamSpeakFlag: boolean = false;
     private settingsManager: ISettingsManager;
     private defaultSender: chrome.runtime.MessageSender = {};
+    private ttsSettings: TtsSettings = defaultTtsSettings;
+    private speakingText: string = 'start_speak_flag';
 
     constructor(settingsManager: ISettingsManager) {
         this.settingsManager = settingsManager;
+        this.initializeTtsSettings();
+    }
+
+    private async initializeTtsSettings(): Promise<void> {
+        this.ttsSettings = await this.settingsManager.getTtsSettings();
     }
 
     async speakText(text: string, sender: chrome.runtime.MessageSender = this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
@@ -35,6 +43,7 @@ class TtsService implements ITtsService {
             return;
         }
 
+        this.ttsSettings = await this.settingsManager.getTtsSettings();
         this.speakTextArray.push(text);
         this.speakNextText(sender, playVideo);
     }
@@ -45,51 +54,79 @@ class TtsService implements ITtsService {
         }
         this.isProcessing = true;
 
-        while (this.speakTextArray.length > 0) {
-            while (await new Promise(resolve => chrome.tts.isSpeaking(resolve))) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            const settings = await this.settingsManager.getTtsSettings();
-            const text = this.speakTextArray.shift();
-            console.log("speakNextText: ", text);
-            if (text != null) {
-                //sent current text to content-script
-                if (sender.tab && sender.tab.id !== undefined) {    
-                    chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', text: text });
+        while (this.speakTextArray.length > 0 || this.speakingText.length > 0) {
+            if (this.speakingText.length > 0 || this.speakingText == 'start_speak_flag') {
+                let text = ''
+                if (this.speakingText == 'start_speak_flag') {
+                    this.speakingText = '';
+                    text = ' ';
                 }
-
+                if (this.speakingText.length > 0) {
+                    text = this.speakingText;
+                    this.speakingText = '';
+                }
                 chrome.tts.speak(text, {
-                    rate: settings.rate,
-                    pitch: settings.pitch,
-                    volume: settings.volume,
-                    voiceName: settings.voiceName,
+                    rate: this.ttsSettings.rate,
+                    pitch: this.ttsSettings.pitch,
+                    volume: this.ttsSettings.volume,
+                    voiceName: this.ttsSettings.voiceName,
                     onEvent: (event: chrome.tts.TtsEvent) => {
+                        // console.log("event.type : ", event.type);
                         if (event.type === 'end') {
                             if (this.speakTextArray.length > 0) {
-                                this.speakNextText(sender, playVideo);
+                                //get next text, but check if it's not empty
+                                let getNextText = false;
+                                while(true) {
+                                    this.speakingText = this.speakTextArray.shift() || '';                                    
+                                    if (this.speakingText.length > 0) {
+                                        getNextText = true;
+                                        break;
+                                    } else if (this.speakTextArray.length == 0) {
+                                        break;
+                                    }
+                                }
+                                if (getNextText) {
+                                    console.log("speakNextText: ", this.speakingText);
+                                    //sent current text to content-script
+                                    if (sender.tab && sender.tab.id !== undefined) {    
+                                        chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', text: this.speakingText });
+                                    }
+                                    this.speakNextText(sender, playVideo);
+                                }
                             } else {
+                                this.speakingText = '';
                                 this.lastStreamText = '';
                                 playVideo();
                             }
+                        } else {
+
                         }
                     }
                 });
             }
+            //wait tts speak finish
+            while (await new Promise(resolve => chrome.tts.isSpeaking(resolve))) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }            
         }
         this.isProcessing = false;
     }
 
     stopStreamSpeak() {
         this.stopStreamSpeakFlag = true;
+        this.isProcessing = false;
         this.speakTextArray = [];
         this.lastStreamText = '';
+        this.speakingText = '';
         chrome.tts.stop();
     }
 
     resetStreamSpeak() {
+        this.isProcessing = false;
         this.stopStreamSpeakFlag = false;
         this.speakTextArray = [];
         this.lastStreamText = '';
+        this.speakingText = 'start_speak_flag';
         chrome.tts.stop();
     }
 }

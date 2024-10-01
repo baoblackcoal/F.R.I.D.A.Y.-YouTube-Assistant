@@ -3,6 +3,8 @@ import { TTSSpeak } from '../ttsSpeak';
 import { defaultTranslatePrompt } from "../../prompts/defaultTranslatePrompt";
 import { settingsManager } from '../../settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus } from "./subtitleSummary";
+import { resetHighlightText } from './subtitleSummaryView';
+import { parser } from 'marked';
 
 interface ISubtitleTranslator {
     generatePrompt(videoId: string): Promise<string>;
@@ -23,8 +25,17 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
     }
 
+    addSummaryParagraphsClickHandlers(): void {
+        const contentElement = document.querySelector(".ytbs_content");
+        if (contentElement) {
+            this.addParagraphsClickHandlers(contentElement);
+        }
+    }
+
     async translateSubtitles(videoId: string): Promise<void> {
         const summarySettings = await settingsManager.getSummarySettings();
+
+        this.addSummaryParagraphsClickHandlers();
 
         getApiKey(async (geminiApiKey) => {
             if (!geminiApiKey) {
@@ -81,13 +92,14 @@ class SubtitleTranslator implements ISubtitleTranslator {
             if (isError) {
                 updateSummaryStatus(`Translate Subtitle ${errorType} error, Try again.`);
                 contentElement.innerHTML = oldHtml;
+                this.addSummaryParagraphsClickHandlers();
                 isFirstConversation = true;
                 await this.sleep(2000);
                 continue;
             }
 
             if (finish) {
-                TTSSpeak.getInstance().speakAndPlayVideo('\n');
+                TTSSpeak.getInstance().speakAndPlayVideoFinsh();
                 updateSummaryStatus("Translate Subtitle Finish.");
                 break;
             }
@@ -142,6 +154,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             newElement.innerHTML = line;
             newElement.style.marginBottom = '15px';
             contentElement.appendChild(newElement);
+            this.addParagraphClickHandlers(newElement);
         });
     }
 
@@ -157,6 +170,52 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
     private sleep(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    private addParagraphClickHandlers(paragraph: Element): void {
+        // paragraph.removeEventListener('click', this.handleParagraphClick.bind(this, paragraph));
+        paragraph.addEventListener('click', this.handleParagraphClick.bind(this, paragraph));
+    }
+
+    private addParagraphsClickHandlers(paragraphsElement: Element): void {
+        const paragraphs = paragraphsElement.querySelectorAll('p, h3');
+        paragraphs.forEach((paragraph) => {           
+            // paragraph.removeEventListener('click', this.handleParagraphClick.bind(this, paragraph));
+            paragraph.addEventListener('click', this.handleParagraphClick.bind(this, paragraph));
+        });
+    }
+
+    private async handleParagraphClick(paragraph: Element): Promise<void> {
+        const paragraphStart = paragraph;
+        const tts = TTSSpeak.getInstance();
+
+        resetHighlightText();
+        await tts.resetStreamSpeak();
+        // automatically speak from current paragraph to the end of the ".ytbs_content" element.
+        const contentElement = document.querySelector(".ytbs_content");
+        if (contentElement) {
+            //query all paragraphs or h3 in the content element
+            const paragraphs = contentElement.querySelectorAll('p, h3');
+            let isStart = false;
+            const parser = new DOMParser();
+            for (let i = 0; i < paragraphs.length; i++) {
+                const paragraph = paragraphs[i] as HTMLElement;
+                paragraph.style.backgroundColor = 'white';
+                // skip the before paragraph
+                if (paragraph === paragraphStart) {
+                    isStart = true;
+                }
+                if (!isStart) {
+                    continue;
+                }
+                const text = parser.parseFromString(paragraph.innerHTML, 'text/html').documentElement.textContent ?? '';
+                await tts.speak(text);
+            }
+            tts.speakFinsh();
+        }
+        if (paragraphStart instanceof HTMLElement) {
+            paragraphStart.style.backgroundColor = 'yellow';
+        }
     }
 }
 

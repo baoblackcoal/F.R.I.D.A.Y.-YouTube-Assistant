@@ -18,6 +18,10 @@ class MessageQueue implements IMessageQueue {
         this.processQueue(mockSendMessage);
     }
 
+    clear(): void {
+        this.queue = [];
+    }
+
     private async processQueue(mockSendMessage?: (message: IMessage) => void): Promise<void> {
         if (this.isProcessing) return;
         this.isProcessing = true;
@@ -28,6 +32,9 @@ class MessageQueue implements IMessageQueue {
             const lines = message.text?.split('\n') || [];
             for (const line of lines) {
                 message.text = line;
+                if (message.text.length == 0) {
+                    continue;
+                } 
                 try {   
                     if (mockSendMessage) {
                         mockSendMessage(message);
