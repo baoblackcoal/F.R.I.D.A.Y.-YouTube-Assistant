@@ -8,6 +8,7 @@ import { settingsManager } from '../../settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 
+let pauseVideoFlag = false;
 export async function waitForPlayer(): Promise<void> {
     let hasEnterWaitForPlayer = false;
 
@@ -22,8 +23,10 @@ export async function waitForPlayer(): Promise<void> {
         const startTime = performance.now();
         while (true) {
             const playPauseFlag = await getPlayPauseFlag();
+            pauseVideoFlag = playPauseFlag;
             // break the loop if 5 seconds passed
-            if (performance.now() - startTime > 5000) {
+            if (performance.now() - startTime > 10000) {
+                pauseVideoFlag = false;
                 console.log("ytbs: video pause timeout");
                 break;
             }
@@ -228,6 +231,8 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
 // Add this message listener at the end of the file
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'playVideo') {
-        playVideo();
+        if (!pauseVideoFlag) {
+            playVideo();
+        }
     }
 });
