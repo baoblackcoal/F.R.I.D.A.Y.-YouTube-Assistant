@@ -45,11 +45,11 @@ class TtsService implements ITtsService {
 
         this.ttsSettings = await this.settingsManager.getTtsSettings();
         this.speakTextArray.push(text);
-        this.speakNextText(sender, playVideo);
+        this.speakNextText(false, sender, playVideo);
     }
 
-    private async speakNextText(sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void> {
-        if (this.isProcessing) {
+    private async speakNextText(isTtsSpeakEndCallback: boolean, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void> {
+        if (this.isProcessing && !isTtsSpeakEndCallback) {
             return;
         }
         this.isProcessing = true;
@@ -59,7 +59,7 @@ class TtsService implements ITtsService {
                 let text = ''
                 if (this.speakingText == 'start_speak_flag') {
                     this.speakingText = '';
-                    text = ' ';
+                    text = ' ';//for tts speak finish callback
                 }
                 if (this.speakingText.length > 0) {
                     text = this.speakingText;
@@ -91,11 +91,13 @@ class TtsService implements ITtsService {
                                     if (sender.tab && sender.tab.id !== undefined) {    
                                         chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', text: this.speakingText });
                                     }
-                                    this.speakNextText(sender, playVideo);
+                                    this.speakNextText(true, sender, playVideo);
                                 }
                             } else {
                                 this.speakingText = '';
                                 this.lastStreamText = '';
+                                this.isProcessing = false;
+                                this.speakingText = 'start_speak_flag';
                                 playVideo();
                             }
                         } else {
@@ -109,7 +111,6 @@ class TtsService implements ITtsService {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }            
         }
-        this.isProcessing = false;
     }
 
     stopStreamSpeak() {
