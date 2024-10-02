@@ -52,6 +52,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
             try {
                 this.appendTitle(contentElement, "Subtitle");
+                this.addParagraphsClickHandlers(contentElement);
                 if (summarySettings.autoTtsSpeak) {
                     TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n');
                 }

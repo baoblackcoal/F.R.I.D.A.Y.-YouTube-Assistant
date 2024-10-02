@@ -1,6 +1,6 @@
 "use strict";
 
-export function logTime(name: string): void {
+export async function logTime(name: string): Promise<void> {
     const now = new Date();
 
     const hours = now.getHours();

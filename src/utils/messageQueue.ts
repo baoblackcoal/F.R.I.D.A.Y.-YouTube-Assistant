@@ -1,3 +1,4 @@
+import { logTime } from "../contentscript/utils";
 
 export interface IMessage {
     action: string;
@@ -50,8 +51,8 @@ class MessageQueue implements IMessageQueue {
         this.isProcessing = false;
     }
 
-    private async sendMessage(message: IMessage): Promise<void> {
-        return new Promise((resolve, reject) => {
+    private sendMessage(message: IMessage): Promise<void> {
+        return new Promise(async (resolve, reject) => {
             let retries = 5; // number of retries
             const trySendMessage = () => {                    
                 chrome.runtime.sendMessage(message, async (response) => {
@@ -67,9 +68,14 @@ class MessageQueue implements IMessageQueue {
                     } else {
                         resolve(response);
                     }
-                });
+                });   
+                //sleep 100ms for the next message to be sent
+                // logTime('sleep 100ms 0');
+                new Promise(resolve => setTimeout(resolve, 100));
+                // logTime('sleep 100ms 1');             
             };
             trySendMessage(); // Initiate the first attempt
+
         });
     }    
 }
