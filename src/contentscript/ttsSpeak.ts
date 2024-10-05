@@ -6,6 +6,8 @@ export interface TTSInterface {
     speakFinsh(index: number): void;
     speakAndPlayVideo(text: string, index: number): Promise<void>;
     stop(): void;
+    markIndexForDelete(index: number): void;
+    deleteQueueLargerThanMarkIndex(): void;
     isSpeaking(): Promise<boolean>;
     resetStreamSpeak(): Promise<void>;
     speakAndPlayVideoFinsh(index: number): void;
@@ -74,6 +76,14 @@ export class TTSSpeak implements TTSInterface {
                 reject(error);
             }
         });
+    }
+
+    markIndexForDelete(index: number): void {
+        messageQueue.markIndexForDelete(index);
+    }
+
+    deleteQueueLargerThanMarkIndex(): void {
+        messageQueue.deleteQueueLargerThanMarkIndex();
     }
 
     speakAndPlayVideoFinsh(index: number): void {

@@ -12,6 +12,12 @@ interface ISubtitleTranslator {
 }
 
 class SubtitleTranslator implements ISubtitleTranslator {
+    private tts: TTSSpeak;
+
+    constructor() {
+        this.tts = TTSSpeak.getInstance();
+    }
+
     async generatePrompt(videoId: string): Promise<string> {
         const textTranscript = await getTranscriptText(videoId);
         if (textTranscript == null) {
@@ -59,7 +65,8 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 contentElement.appendChild(newElement);
                 this.addParagraphClickHandlers(newElement);
                 if (summarySettings.autoTtsSpeak) {
-                    TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', speakIndex);
+                    this.tts.speakAndPlayVideo('Subtitle\n', speakIndex);
+                    this.tts.markIndexForDelete(speakIndex);
                 }
 
                 const oldHtml = this.cloneAndResetContent(contentElement);
@@ -92,6 +99,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             if (isError) {
                 updateSummaryStatus(`Translate Subtitle ${errorType} error, Try again.`);
                 contentElement.innerHTML = oldHtml;
+                this.tts.deleteQueueLargerThanMarkIndex();
                 this.addSummaryParagraphsClickHandlers();
                 isFirstConversation = true;
                 await this.sleep(2000);
@@ -99,7 +107,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             }
 
             if (finish) {
-                TTSSpeak.getInstance().speakAndPlayVideoFinsh(getTtsSpeakIndex());
+                this.tts.speakAndPlayVideoFinsh(getTtsSpeakIndex());
                 updateSummaryStatus("Translate Subtitle Finish.");
                 break;
             }
@@ -132,7 +140,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
                             const speakIndex = getTtsSpeakIndex();
                             node.setAttribute('speak-index', speakIndex.toString());
                             const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
-                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);
+                            this.tts.speakAndPlayVideo(textStream, speakIndex);
                         }
                     }
                 }
@@ -204,7 +212,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
     private async handleParagraphClick(paragraph: Element): Promise<void> {
         const paragraphStart = paragraph;
         const speakIndexParagraphStart = Number(paragraphStart.getAttribute('speak-index') ?? -1);
-        const tts = TTSSpeak.getInstance();
+        const tts = this.tts;
 
         resetHighlightText();
         await tts.resetStreamSpeak();

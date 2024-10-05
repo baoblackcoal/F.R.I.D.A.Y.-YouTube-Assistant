@@ -14,6 +14,7 @@ export interface IMessageQueue {
 class MessageQueue implements IMessageQueue {
     private queue: any[] = [];
     private isProcessing: boolean = false;
+    private indexForDelete: number = -1;
 
     enqueue(message: IMessage, mockSendMessage?: (message: IMessage) => void): void {
         this.queue.push(message);
@@ -22,6 +23,17 @@ class MessageQueue implements IMessageQueue {
 
     clear(): void {
         this.queue = [];
+    }
+
+    markIndexForDelete(index: number): void {
+        this.indexForDelete = index;
+    }
+
+    deleteQueueLargerThanMarkIndex(): void {
+        if (this.indexForDelete != -1) {
+            this.queue = this.queue.filter(message => message.index <= this.indexForDelete);
+            chrome.runtime.sendMessage({ action: 'ttsDeleteQueueLargerThanMarkIndex', index: this.indexForDelete });
+        }
     }
 
     private async processQueue(mockSendMessage?: (message: IMessage) => void): Promise<void> {

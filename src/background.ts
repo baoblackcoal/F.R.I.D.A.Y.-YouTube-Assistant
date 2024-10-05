@@ -8,6 +8,7 @@ import {  ISettingsManager } from './settingsManager'; // Import interfaces
 interface ITtsService {
     speakText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo?: () => void): Promise<void>;
     handleStreamText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void>;
+    deleteQueueLargerThanMarkIndex(index: number): void;
 }
 
 interface ITtsSpeakingText {
@@ -52,6 +53,10 @@ class TtsService implements ITtsService {
         this.ttsSettings = await this.settingsManager.getTtsSettings();
         this.speakTextArray.push({text: text, index: index});
         this.speakNextText(false, sender, playVideo);
+    }
+
+    deleteQueueLargerThanMarkIndex(index: number): void {
+        this.speakTextArray = this.speakTextArray.filter(text => text.index <= index);
     }
 
     private async speakNextText(isTtsSpeakEndCallback: boolean, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void> {
@@ -99,6 +104,7 @@ class TtsService implements ITtsService {
                                     //sent current text to content-script
                                     if (sender.tab && sender.tab.id !== undefined) {    
                                         chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', index: index });
+                                        chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsEnableAccpetMessage', index: index });
                                     }
                                     this.speakNextText(true, sender, playVideo);
                                 }
@@ -195,6 +201,10 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
                     chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
                 }
             });
+            respondToSenderSuccess(sendResponse);
+            break;
+        case 'ttsDeleteQueueLargerThanMarkIndex':
+            ttsService.deleteQueueLargerThanMarkIndex(message.index);
             respondToSenderSuccess(sendResponse);
             break;
         case 'ttsStop':
