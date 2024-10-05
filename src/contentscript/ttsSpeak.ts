@@ -3,12 +3,12 @@ import { messageQueue, IMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;
-    speakFinsh(): void;
+    speakFinsh(index: number): void;
     speakAndPlayVideo(text: string, index: number): Promise<void>;
     stop(): void;
     isSpeaking(): Promise<boolean>;
     resetStreamSpeak(): Promise<void>;
-    speakAndPlayVideoFinsh(): void;
+    speakAndPlayVideoFinsh(index: number): void;
 }
 
 export class TTSSpeak implements TTSInterface {
@@ -40,8 +40,8 @@ export class TTSSpeak implements TTSInterface {
         });
     }
 
-    speakFinsh(): void {
-        this.speak('\n', -1);
+    speakFinsh(index: number): void {
+        this.speak('\n', index);
     }
 
     resetStreamSpeak(): Promise<void> {
@@ -76,8 +76,8 @@ export class TTSSpeak implements TTSInterface {
         });
     }
 
-    speakAndPlayVideoFinsh(): void {
-        this.speakAndPlayVideo('\n', -1);
+    speakAndPlayVideoFinsh(index: number): void {
+        this.speakAndPlayVideo('\n', index);
     }
 
     stop(): void {

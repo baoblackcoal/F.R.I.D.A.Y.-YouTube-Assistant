@@ -99,7 +99,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             }
 
             if (finish) {
-                TTSSpeak.getInstance().speakAndPlayVideoFinsh();
+                TTSSpeak.getInstance().speakAndPlayVideoFinsh(getTtsSpeakIndex());
                 updateSummaryStatus("Translate Subtitle Finish.");
                 break;
             }
@@ -120,7 +120,22 @@ class SubtitleTranslator implements ISubtitleTranslator {
         if (!isError && summarySettings.autoTtsSpeak) {
             const textStream = new DOMParser().parseFromString(translateTextArray?.join('\n') ?? '', 'text/html').documentElement.textContent ?? '';
             const speakIndex = Number(contentElement.getAttribute('speak-index') ?? -1);
-            TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);
+
+            const parser = new DOMParser();
+            const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
+                const childNodes = tempElement.children;
+                for (let i = 0; i < childNodes.length; i++) {
+                    const node = childNodes[i];
+                    if (node instanceof HTMLElement) {
+                        const speakIndex = Number(node.getAttribute('speak-index') ?? -1);
+                        if (speakIndex == -1) {
+                            const speakIndex = getTtsSpeakIndex();
+                            node.setAttribute('speak-index', speakIndex.toString());
+                            const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
+                            TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);
+                        }
+                    }
+                }
         }
 
         return [finish, isError, isError ? ErrorType.FormatError : ErrorType.NotError];
@@ -154,7 +169,6 @@ class SubtitleTranslator implements ISubtitleTranslator {
             const newElement = document.createElement('p');
             newElement.innerHTML = line;
             newElement.style.marginBottom = '15px';
-            newElement.setAttribute('speak-index', getTtsSpeakIndex().toString());
             contentElement.appendChild(newElement);
             this.addParagraphClickHandlers(newElement);
         });
@@ -215,7 +229,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 const text = parser.parseFromString(paragraph.innerHTML, 'text/html').documentElement.textContent ?? '';
                 await tts.speak(text, speakIndex);
             }
-            tts.speakFinsh();
+            tts.speakFinsh(getTtsSpeakIndex());
         }
         if (paragraphStart instanceof HTMLElement) {
             paragraphStart.style.backgroundColor = 'yellow';

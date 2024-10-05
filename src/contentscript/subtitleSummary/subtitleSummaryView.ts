@@ -72,7 +72,7 @@ function handleTtsSpeakingText(): void {
                 // Check if the node is an HTMLElement
                 if (node instanceof HTMLElement) {
                     let speakIndex = node.getAttribute('speak-index');
-                    if (speakIndex == ttsTextIndex) {
+                    if (Number(speakIndex) == ttsTextIndex) {
                         currentHightlightNode = node;
                         currentHightlightNode.style.backgroundColor = "yellow";
                     } else {

@@ -97,7 +97,7 @@ export const testSettings: AbstractSettings = {
     diyPromptText1: "hi",
     diyPromptText2: "hi",
     diyPromptText3: "hello",
-    language: Language.English.toString(),
+    language: Language.Simplified_Chinese.toString(),
     autoTtsSpeak: true
   },
   llm: {
