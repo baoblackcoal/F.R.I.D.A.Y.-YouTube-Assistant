@@ -2,6 +2,7 @@ import { globalConfig } from '../../config';
 import { geminiAPI } from '../geminiApi';
 import { TTSSpeak } from '../ttsSpeak';
 import { CommandHandler } from './commandHandler';
+import { MsTtsApi } from '../msTtsApi';
 
 export async function sayHello(name = 'world') {
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -15,6 +16,7 @@ export async function commandHandle() {
 
     const tts = TTSSpeak.getInstance();
     const api = geminiAPI;
+    const msTtsApi = MsTtsApi.getInstance(); 
     const commandHandler = new CommandHandler(tts, api);
 
     // gemini commands
@@ -43,6 +45,12 @@ export async function commandHandle() {
     });
     commandHandler.registerCommand('checkSpeaking', async () => {
         return await tts.isSpeaking().then(isSpeaking => isSpeaking.toString());
+    });
+
+    // Register msTtsSpeak command
+    commandHandler.registerCommand('msTtsSpeak', async (args) => {
+        await msTtsApi.synthesizeSpeech(args.join(' '));
+        return 'Speaking...';
     });
 
     //help command to list all commands

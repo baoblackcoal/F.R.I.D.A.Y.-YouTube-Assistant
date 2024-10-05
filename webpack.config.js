@@ -89,7 +89,9 @@ module.exports = (env, argv) => {
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || (isProduction ? 'production' : 'development')),
-        'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY)
+        'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
+        'process.env.SPEECH_KEY': JSON.stringify(process.env.SPEECH_KEY),
+        'process.env.SPEECH_REGION': JSON.stringify(process.env.SPEECH_REGION)
       })
     ],
     resolve: {
