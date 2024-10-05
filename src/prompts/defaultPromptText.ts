@@ -15,10 +15,10 @@ Your output contentshould follow the following rules:
 
 <HTML_FORMAT>
 <h3>title_content</h3>
-<p>brief_summary_of_content</p>
+brief_summary_of_content
 <h3>Highlights</h3>
-<p>1 **highlight_keyword**: highlight_1</p> 
-<p>2 **highlight_keyword**: highlight_2</p>
+1 **highlight_keyword**: highlight_1
+2 **highlight_keyword**: highlight_2
 </HTML_FORMAT>
 
 <ORIGINAL_CONTENT>

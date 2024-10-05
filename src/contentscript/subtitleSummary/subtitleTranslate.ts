@@ -2,7 +2,7 @@ import { geminiAPI } from '../geminiApi';
 import { TTSSpeak } from '../ttsSpeak';
 import { defaultTranslatePrompt } from "../../prompts/defaultTranslatePrompt";
 import { settingsManager } from '../../settingsManager';
-import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus } from "./subtitleSummary";
+import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
 import { resetHighlightText } from './subtitleSummaryView';
 import { parser } from 'marked';
 
@@ -51,10 +51,15 @@ class SubtitleTranslator implements ISubtitleTranslator {
             }
 
             try {
-                this.appendTitle(contentElement, "Subtitle");
-                this.addParagraphsClickHandlers(contentElement);
+                const newElement = document.createElement('h3');
+                const speakIndex = getTtsSpeakIndex();
+                newElement.style.marginTop = '20px';
+                newElement.setAttribute('speak-index', speakIndex.toString());
+                newElement.textContent = "Subtitle";
+                contentElement.appendChild(newElement);
+                this.addParagraphClickHandlers(newElement);
                 if (summarySettings.autoTtsSpeak) {
-                    TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n');
+                    TTSSpeak.getInstance().speakAndPlayVideo('Subtitle\n', speakIndex);
                 }
 
                 const oldHtml = this.cloneAndResetContent(contentElement);
@@ -64,12 +69,6 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 this.displayError(`Error generating text: ${error}`);
             }
         });
-    }
-
-    private appendTitle(contentElement: Element, title: string): void {
-        const newElement = document.createElement('div');
-        newElement.innerHTML = `<h3 style="margin-top: 20px;">\n${title}</h3>`;
-        contentElement.appendChild(newElement);
     }
 
     private cloneAndResetContent(contentElement: Element): string {
@@ -120,7 +119,8 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
         if (!isError && summarySettings.autoTtsSpeak) {
             const textStream = new DOMParser().parseFromString(translateTextArray?.join('\n') ?? '', 'text/html').documentElement.textContent ?? '';
-            TTSSpeak.getInstance().speakAndPlayVideo(textStream);
+            const speakIndex = Number(contentElement.getAttribute('speak-index') ?? -1);
+            TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);
         }
 
         return [finish, isError, isError ? ErrorType.FormatError : ErrorType.NotError];
@@ -154,6 +154,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             const newElement = document.createElement('p');
             newElement.innerHTML = line;
             newElement.style.marginBottom = '15px';
+            newElement.setAttribute('speak-index', getTtsSpeakIndex().toString());
             contentElement.appendChild(newElement);
             this.addParagraphClickHandlers(newElement);
         });
@@ -188,6 +189,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
     private async handleParagraphClick(paragraph: Element): Promise<void> {
         const paragraphStart = paragraph;
+        const speakIndexParagraphStart = Number(paragraphStart.getAttribute('speak-index') ?? -1);
         const tts = TTSSpeak.getInstance();
 
         resetHighlightText();
@@ -202,15 +204,16 @@ class SubtitleTranslator implements ISubtitleTranslator {
             for (let i = 0; i < paragraphs.length; i++) {
                 const paragraph = paragraphs[i] as HTMLElement;
                 paragraph.style.backgroundColor = 'white';
+                let speakIndex = Number(paragraph.getAttribute('speak-index') ?? -1);
                 // skip the before paragraph
-                if (paragraph === paragraphStart) {
+                if (speakIndex === speakIndexParagraphStart) {
                     isStart = true;
                 }
                 if (!isStart) {
                     continue;
                 }
                 const text = parser.parseFromString(paragraph.innerHTML, 'text/html').documentElement.textContent ?? '';
-                await tts.speak(text);
+                await tts.speak(text, speakIndex);
             }
             tts.speakFinsh();
         }

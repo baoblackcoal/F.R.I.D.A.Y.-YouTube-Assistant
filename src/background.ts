@@ -6,13 +6,18 @@ import {  ISettingsManager } from './settingsManager'; // Import interfaces
 
 // Define interfaces for key components
 interface ITtsService {
-    speakText(text: string, sender: chrome.runtime.MessageSender, playVideo?: () => void): Promise<void>;
-    handleStreamText(text: string, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void>;
+    speakText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo?: () => void): Promise<void>;
+    handleStreamText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void>;
+}
+
+interface ITtsSpeakingText {
+    text: string;
+    index: number;
 }
 
 // TTS Service Implementation
 class TtsService implements ITtsService {
-    private speakTextArray: string[] = [];
+    private speakTextArray: ITtsSpeakingText[] = [];
     private lastStreamText: string = '';
     private isProcessing: boolean = false;
     private stopStreamSpeakFlag: boolean = false;
@@ -20,6 +25,7 @@ class TtsService implements ITtsService {
     private defaultSender: chrome.runtime.MessageSender = {};
     private ttsSettings: TtsSettings = defaultTtsSettings;
     private speakingText: string = 'start_speak_flag';
+
 
     constructor(settingsManager: ISettingsManager) {
         this.settingsManager = settingsManager;
@@ -30,11 +36,11 @@ class TtsService implements ITtsService {
         this.ttsSettings = await this.settingsManager.getTtsSettings();
     }
 
-    async speakText(text: string, sender: chrome.runtime.MessageSender = this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
-        await this.handleStreamText(text, sender, playVideo);
+    async speakText(text: string, index: number, sender: chrome.runtime.MessageSender = this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
+        await this.handleStreamText(text, index, sender, playVideo);
     }
 
-    async handleStreamText(text: string, sender: chrome.runtime.MessageSender=this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
+    async handleStreamText(text: string, index: number, sender: chrome.runtime.MessageSender=this.defaultSender, playVideo: () => void = () => {}): Promise<void> {
         if (this.stopStreamSpeakFlag) {
             return;
         }
@@ -44,7 +50,7 @@ class TtsService implements ITtsService {
         }
 
         this.ttsSettings = await this.settingsManager.getTtsSettings();
-        this.speakTextArray.push(text);
+        this.speakTextArray.push({text: text, index: index});
         this.speakNextText(false, sender, playVideo);
     }
 
@@ -76,8 +82,11 @@ class TtsService implements ITtsService {
                             if (this.speakTextArray.length > 0) {
                                 //get next text, but check if it's not empty
                                 let getNextText = false;
+                                let index = 0;
                                 while(true) {
-                                    this.speakingText = this.speakTextArray.shift() || '';                                    
+                                    const nextText = this.speakTextArray.shift();
+                                    this.speakingText = nextText?.text || '';    
+                                    index = nextText?.index || 0;                                
                                     if (this.speakingText.length > 0) {
                                         getNextText = true;
                                         break;
@@ -89,7 +98,7 @@ class TtsService implements ITtsService {
                                     console.log("speakNextText: ", this.speakingText);
                                     //sent current text to content-script
                                     if (sender.tab && sender.tab.id !== undefined) {    
-                                        chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', text: this.speakingText });
+                                        chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', index: index });
                                     }
                                     this.speakNextText(true, sender, playVideo);
                                 }
@@ -155,7 +164,7 @@ chrome.contextMenus.onClicked.addListener((info: chrome.contextMenus.OnClickData
     if (info.menuItemId === "readAloud") {
         const text = info.selectionText;
         if (text) {
-            ttsService.speakText(text);
+            ttsService.speakText(text, 0);
         }
     }
 });
@@ -177,11 +186,11 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
             respondToSenderSuccess(sendResponse);
             break;
         case 'speak':
-            ttsService.speakText(message.text,  sender);
+            ttsService.speakText(message.text, message.index, sender);
             respondToSenderSuccess(sendResponse);
             break;
         case 'speakAndPlayVideo':
-            ttsService.speakText(message.text,  sender, () => {
+            ttsService.speakText(message.text, message.index, sender, () => {
                 if (sender.tab && sender.tab.id !== undefined) {
                     chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
                 }

@@ -2,9 +2,9 @@ import { TtsSettings } from '../settings';
 import { messageQueue, IMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
-    speak(text: string): Promise<void>;
+    speak(text: string, index: number): Promise<void>;
     speakFinsh(): void;
-    speakAndPlayVideo(text: string): Promise<void>;
+    speakAndPlayVideo(text: string, index: number): Promise<void>;
     stop(): void;
     isSpeaking(): Promise<boolean>;
     resetStreamSpeak(): Promise<void>;
@@ -23,12 +23,13 @@ export class TTSSpeak implements TTSInterface {
         return TTSSpeak.instance;
     }
 
-    speak(text: string): Promise<void> {
+    speak(text: string, index: number = -1): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 const message: IMessage = {
                     action: 'speak',
                     text: text,
+                    index: index,
                 };
                 messageQueue.enqueue(message);
                 resolve();
@@ -40,7 +41,7 @@ export class TTSSpeak implements TTSInterface {
     }
 
     speakFinsh(): void {
-        this.speak('\n');
+        this.speak('\n', -1);
     }
 
     resetStreamSpeak(): Promise<void> {
@@ -58,12 +59,13 @@ export class TTSSpeak implements TTSInterface {
         });
     }
 
-    async speakAndPlayVideo(text: string): Promise<void> {
+    async speakAndPlayVideo(text: string, index: number = -1): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 const message: IMessage = {
                     action: 'speakAndPlayVideo',
                     text: text,
+                    index: index,
                 };
                 messageQueue.enqueue(message);
                 resolve();
@@ -75,7 +77,7 @@ export class TTSSpeak implements TTSInterface {
     }
 
     speakAndPlayVideoFinsh(): void {
-        this.speakAndPlayVideo('\n');
+        this.speakAndPlayVideo('\n', -1);
     }
 
     stop(): void {

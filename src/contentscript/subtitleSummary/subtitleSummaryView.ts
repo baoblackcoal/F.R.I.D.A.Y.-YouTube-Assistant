@@ -60,9 +60,7 @@ function handleTtsSpeakingText(): void {
             }
             isHandTtsSpeakingText = true;   
 
-            let ttsText = message.text;
-            // delete ttsText ' ' at the beginning and the end
-            ttsText = ttsText.trim();   
+            let ttsTextIndex = message.index;
 
             //search text from ytbs_content all content, and highlight font color to red of the text
             const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
@@ -70,23 +68,24 @@ function handleTtsSpeakingText(): void {
             //loop through all child elements of ytbs_content
             let preHtmlNode: ChildNode | null = null;
             for (let i = 0; i < ytbs_content.childNodes.length; i++) {
-                let node = ytbs_content.childNodes[i];
-                let textContent = node.textContent;
-                if (i < currentHightlightIndex || textContent == " ") {
-                    continue;
-                } else {    
-                    if (textContent && textContent.includes(ttsText)) {
-                        currentHightlightIndex = i;
-                        currentHightlightNode = node as HTMLElement;
+                let node = ytbs_content.childNodes[i] as HTMLElement;
+                // Check if the node is an HTMLElement
+                if (node instanceof HTMLElement) {
+                    let speakIndex = node.getAttribute('speak-index');
+                    if (speakIndex == ttsTextIndex) {
+                        currentHightlightNode = node;
                         currentHightlightNode.style.backgroundColor = "yellow";
-                        break;
-                    }
-                    try {   
-                        (node as HTMLElement).style.backgroundColor = "white";
-                    } catch (error) {
-                        // console.error("Error setting background color to white", error);
-                    }
-                }
+                    } else {
+                        try {   
+                            const element = node as HTMLElement;
+                            if (element.style.backgroundColor != "white") {                        
+                                element.style.backgroundColor = "white";
+                            }
+                        } catch (error) {
+                            // console.error("Error setting background color to white", error);
+                        }
+                    }                     
+                } 
             };
             isHandTtsSpeakingText = false;
         }
@@ -157,12 +156,13 @@ function buttonSpeakHandle(): void {
             } else {
                 await tts.resetStreamSpeak();
                 const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
-                const childNodes = tempElement.childNodes;
+                const childNodes = tempElement.children;
                 for (let i = 0; i < childNodes.length; i++) {
                     const node = childNodes[i];
                     if (node instanceof HTMLElement) {
+                        const speakIndex = Number(node.getAttribute('speak-index') ?? -1);
                         const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
-                        tts.speak(textStream);
+                        tts.speak(textStream, speakIndex);
                     }
                 }
                 buttonSpeak.textContent = "Speaking...";

@@ -169,6 +169,11 @@ export function updateSummaryStatus(status: string): void {
     }
 }
 
+let paragraphIndex = 0;
+export function getTtsSpeakIndex(): number {
+    return paragraphIndex++;
+}
+
 export async function generateSummary(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
@@ -198,17 +203,28 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                             const splitTextArray = reavStreamText.split('\n');
                             reavStreamText = splitTextArray[splitTextArray.length - 1];
                             for (let i = 0; i < splitTextArray.length - 1; i++) { 
-                                const splitText = splitTextArray[i];                                 
+                                const splitText = splitTextArray[i];    
                                 contentElement.innerHTML += '<p style="margin-bottom: 15px;">' + splitText + '</p>';
-                                if (summarySettings.autoTtsSpeak) {
-                                    const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
-                                    TTSSpeak.getInstance().speakAndPlayVideo(textStream);
+
+                            }  
+                            // add speak-index and speak to all child node of contentElement
+                            const childNodes = contentElement.childNodes;
+                            for (let i = 0; i < childNodes.length; i++) {
+                                const node = childNodes[i];
+                                if (node instanceof HTMLElement && node.getAttribute('speak-index') == null) {
+                                    const speakIndex = getTtsSpeakIndex();
+                                    node.setAttribute('speak-index', speakIndex.toString());
+                                    if (summarySettings.autoTtsSpeak) {
+                                        const splitText = node.textContent ?? '';
+                                        const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
+                                        TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);
+                                    }
                                 }
-                            }                                
+                            }                              
                         }
                        
                     }).then(() => {
-                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n'); // speak a new line to make sure last line is spoken
+                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', -1); // speak a new line to make sure last line is spoken
                         updateSummaryStatus("Translate subtitle...");
                         subtitleTranslate(videoId);
                         

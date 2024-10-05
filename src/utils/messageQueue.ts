@@ -3,6 +3,7 @@ import { logTime } from "../contentscript/utils";
 export interface IMessage {
     action: string;
     text?: string;
+    index: number;
     isStream?: boolean;
 }
 
