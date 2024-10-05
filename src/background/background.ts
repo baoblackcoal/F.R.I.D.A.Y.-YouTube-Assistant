@@ -1,8 +1,8 @@
 /// <reference types="chrome"/>
-import { Env, getEnvironment } from './common';
-import { defaultTtsSettings, TtsSettings } from './settings';
-import { settingsManager } from "./settingsManager";
-import {  ISettingsManager } from './settingsManager'; // Import interfaces
+import { Env, getEnvironment } from '../common';
+import { defaultTtsSettings, TtsSettings } from '../settings';
+import { settingsManager } from "../settingsManager";
+import {  ISettingsManager } from '../settingsManager'; // Import interfaces
 
 // Define interfaces for key components
 interface ITtsService {
