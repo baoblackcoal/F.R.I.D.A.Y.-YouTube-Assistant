@@ -1,3 +1,4 @@
+import { listenToMessages } from "../background/msTtsService";
 import { logTime } from "../contentscript/utils";
 
 export interface IMessage {

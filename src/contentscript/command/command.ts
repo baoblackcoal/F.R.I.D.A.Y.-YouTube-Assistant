@@ -44,7 +44,7 @@ export async function commandHandle() {
         return 'TTS stopped';
     });
     commandHandler.registerCommand('checkSpeaking', async () => {
-        return await tts.isSpeaking().then(isSpeaking => isSpeaking.toString());
+        return tts.isSpeaking().toString();
     });
 
     // Register msTtsSpeak command

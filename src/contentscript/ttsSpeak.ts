@@ -5,17 +5,17 @@ export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;
     speakFinsh(index: number): void;
     speakAndPlayVideo(text: string, index: number): Promise<void>;
-    stop(): void;
+    stop(): Promise<void>;
     markIndexForDelete(index: number): void;
     deleteQueueLargerThanMarkIndex(): void;
-    isSpeaking(): Promise<boolean>;
+    isSpeaking(): boolean;
     resetStreamSpeak(): Promise<void>;
     speakAndPlayVideoFinsh(index: number): void;
 }
 
 export class TTSSpeak implements TTSInterface {
     private static instance: TTSSpeak;
-
+    private _isSpeaking: boolean = false;
     private constructor() {}
 
     public static getInstance(): TTSSpeak {
@@ -52,8 +52,10 @@ export class TTSSpeak implements TTSInterface {
             try {
                 chrome.runtime.sendMessage({
                     action: 'resetStreamSpeak',
+                }, (response) => {
+                    this._isSpeaking = false;
+                    resolve();
                 });
-                resolve();
             } catch (error) {
                 console.error('Error in resetStreamSpeak:', error);
                 reject(error);
@@ -90,25 +92,28 @@ export class TTSSpeak implements TTSInterface {
         this.speakAndPlayVideo('\n', index);
     }
 
-    stop(): void {
-        chrome.runtime.sendMessage({
-            action: 'ttsStop',
-        });
-    }
-
-    isSpeaking(): Promise<boolean> {
+    stop(): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                chrome.runtime.sendMessage({ action: 'ttsCheckSpeaking' }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        reject(new Error(chrome.runtime.lastError.message));
-                    } else {
-                        resolve(response.isSpeaking);
-                    }
+                chrome.runtime.sendMessage({
+                    action: 'ttsStop',
+                }, (response) => {
+                    this._isSpeaking = false;
+                    resolve();
                 });
             } catch (error) {
+                console.error('Error in stop:', error);
                 reject(error);
             }
         });
+    }
+
+    isSpeaking(): boolean {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
+            if (message.action === 'ttsCheckSpeaking') {
+                this._isSpeaking = message.speaking;
+            }
+        });
+        return this._isSpeaking;
     }
 }

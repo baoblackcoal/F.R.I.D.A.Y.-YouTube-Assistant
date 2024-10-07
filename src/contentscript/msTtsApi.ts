@@ -42,7 +42,7 @@ export class MsTtsApi implements IMsTtsApi {
                 text,
                 async result => {
                     if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
-                        console.log("Synthesis finished.");
+                        console.log("Synthesis finished: ", text);
                         resolve();
                     } else {
                         console.error("Speech synthesis canceled: ", result.errorDetails);

@@ -2,9 +2,25 @@
 import { Env, getEnvironment } from '../common';
 import { settingsManager } from "../settingsManager";
 import { TtsService } from './ttsService';
+// import { MsTtsService } from './msTtsService';
+import { ITtsService } from './ITtsService';
 
-// Initialize TTS Service
-const ttsService = new TtsService(settingsManager);
+// Assuming TtsEngine is an enum
+enum TtsEngine {
+    Chrome = 'Chrome',
+    Microsoft = 'Microsoft',
+}
+
+// Ensure ttsEngine is of type TtsEngine
+let ttsEngine: TtsEngine = TtsEngine.Chrome; 
+
+let ttsService: ITtsService = new TtsService(settingsManager);
+
+// if (ttsEngine === TtsEngine.Microsoft) {
+//     ttsService = new MsTtsService(settingsManager);
+// } else {
+//     ttsService = new TtsService(settingsManager);
+// }
 
 // Extension first installed
 chrome.runtime.onInstalled.addListener(async () => {
@@ -26,7 +42,7 @@ chrome.contextMenus.onClicked.addListener((info: chrome.contextMenus.OnClickData
     if (info.menuItemId === "readAloud") {
         const text = info.selectionText;
         if (text) {
-            ttsService.speakText(text, 0);
+            ttsService.speakText(text, 0, {}, () => {});
         }
     }
 });
@@ -35,52 +51,86 @@ function respondToSenderSuccess(sendResponse: (response?: any) => void) {
     sendResponse({ status: "success" });
 }
 
+function sendTtsMessageToMsTts(action: string, message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
+    const id = sender.tab?.id || 0;
+    message.action = action+'Background';
+    chrome.tabs.sendMessage(id, message);
+    respondToSenderSuccess(sendResponse);
+}
 
-
-chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-    switch (message.action) {
+function handleTTSMessage(action: string, message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) : boolean {
+    switch (action) {
         case 'resetWhenPageChange':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.resetStreamSpeak();
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'resetStreamSpeak':
+        }
+        return true;
+    case 'resetStreamSpeak':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.resetStreamSpeak();
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'speak':
+        }
+        return true;
+    case 'speak':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.speakText(message.text, message.index, sender);
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'speakAndPlayVideo':
+        }
+        return true;
+    case 'speakAndPlayVideo':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.speakText(message.text, message.index, sender, () => {
                 if (sender.tab && sender.tab.id !== undefined) {
                     chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
                 }
             });
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'ttsDeleteQueueLargerThanMarkIndex':
+        }
+        return true;
+    case 'ttsDeleteQueueLargerThanMarkIndex':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.deleteQueueLargerThanMarkIndex(message.index);
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'ttsStop':
+        }
+        return true;
+    case 'ttsStop':
+        if (ttsEngine === TtsEngine.Microsoft) {
+            sendTtsMessageToMsTts(action, message, sender, sendResponse);
+        } else {
             ttsService.stopStreamSpeak();
             respondToSenderSuccess(sendResponse);
-            break;
-        case 'ttsCheckSpeaking':
-            chrome.tts.isSpeaking((isSpeaking) => {
-                sendResponse({ isSpeaking });
-            });
-            return true;
-        case 'openOptionsPage':
-            if (chrome.runtime.openOptionsPage) {
-                chrome.runtime.openOptionsPage();
-            } else {
-                window.open(chrome.runtime.getURL('options.html'));
-            }
-            respondToSenderSuccess(sendResponse);
-            break;
-        default:
-            console.log(`(Background)Unknown message action: ${message.action}`);
+        }
+        return true;
+    }
+
+    return false;   
+}
+
+chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+    const handled = handleTTSMessage(message.action, message, sender, sendResponse);
+    if (!handled) {
+        switch (message.action) {    
+            case 'openOptionsPage':
+                if (chrome.runtime.openOptionsPage) {
+                    chrome.runtime.openOptionsPage();
+                } else {
+                    window.open(chrome.runtime.getURL('options.html'));
+                }
+                respondToSenderSuccess(sendResponse);
+                break;
+            default:
+                console.log(`(Background)Unknown message action: ${message.action}`);
+        }
     }
 });

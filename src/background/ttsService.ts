@@ -1,12 +1,7 @@
 import { TtsSettings, defaultTtsSettings } from "../settings";
 import { ISettingsManager } from "../settingsManager";
+import { ITtsService } from "./ITtsService";
 
-// Define interfaces for key components
-interface ITtsService {
-    speakText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo?: () => void): Promise<void>;
-    handleStreamText(text: string, index: number, sender: chrome.runtime.MessageSender, playVideo: () => void): Promise<void>;
-    deleteQueueLargerThanMarkIndex(index: number): void;
-}
 interface ITtsSpeakingText {
     text: string;
     index: number;
@@ -20,7 +15,7 @@ export class TtsService implements ITtsService {
     private settingsManager: ISettingsManager;
     private defaultSender: chrome.runtime.MessageSender = {};
     private ttsSettings: TtsSettings = defaultTtsSettings;
-    private speakingText: string = 'start_speak_flag';
+    private speakingText: string = 'start_speak_flag'; // 'start_speak_flag', 'end_speak_flag' or speaking text
 
 
     constructor(settingsManager: ISettingsManager) {
@@ -81,7 +76,10 @@ export class TtsService implements ITtsService {
             if (this.speakTextArray.length > 0) {
                 this.processNextText(sender, playVideo);
             } else {
-                this.resetSpeakingState(playVideo);
+                this.setEndSpeak(playVideo);
+                if (sender.tab && sender.tab.id !== undefined) {
+                    chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsCheckSpeaking', speaking: false });
+                }
             }
         }
     }
@@ -108,16 +106,17 @@ export class TtsService implements ITtsService {
             if (sender.tab && sender.tab.id !== undefined) {
                 chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsSpeakingText', index });
                 chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsEnableAccpetMessage', index });
+                chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsCheckSpeaking', speaking: true });
             }
             this.speakNextText(true, sender, playVideo);
         }
     }
 
-    private resetSpeakingState(playVideo: () => void): void {
+    private setEndSpeak(playVideo: () => void): void {
         this.speakingText = '';
         this.lastStreamText = '';
         this.isProcessing = false;
-        this.speakingText = 'start_speak_flag';
+        this.speakingText = 'end_speak_flag';
         playVideo();
     }
 

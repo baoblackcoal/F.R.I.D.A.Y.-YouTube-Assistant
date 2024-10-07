@@ -2,9 +2,10 @@ import { AbstractSettings, Language } from '../../settings';
 import { TTSSpeak } from '../ttsSpeak';
 import { settingsManager } from '../../settingsManager';
 import { subtitleSummaryHandle } from './subtitleSummary';
-import { waitForElm } from '../utils';
+import { logTime, waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';
 import { copyTextToClipboard } from '../copy';
+import { listenToMessages } from '../../background/msTtsService';
 
 export function insertSummaryButtonView() {
     const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`
@@ -35,8 +36,10 @@ const tts = TTSSpeak.getInstance();
 
 // Handle the view of subtitle summary
 export async function handleSubtitleSummaryView(videoId: string): Promise<void> {
-    resetWhenPageChange();   
-
+    await listenToMessages();  
+    logTime('handleSubtitleSummaryView 0');
+    await resetWhenPageChange();   
+    logTime('handleSubtitleSummaryView 1');
     buttonSpeakHandle();
     buttonAutoSpeakHandle();
     buttonLanguageHandle();
@@ -151,7 +154,7 @@ function buttonSpeakHandle(): void {
 
             if (await tts.isSpeaking()) {
                 resetHighlightText();
-                tts.stop();
+                await tts.stop();
                 buttonSpeak.textContent = "Speak";
             } else {
                 await tts.resetStreamSpeak();
