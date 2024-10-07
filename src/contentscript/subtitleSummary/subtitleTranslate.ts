@@ -125,10 +125,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         const finish = lastTaskStatusText === 'task_is_finish';
         const isError = this.checkForErrors(translateTextArray, lastTaskStatusText, contentElement);
 
-        if (!isError && summarySettings.autoTtsSpeak) {
-            const textStream = new DOMParser().parseFromString(translateTextArray?.join('\n') ?? '', 'text/html').documentElement.textContent ?? '';
-            const speakIndex = Number(contentElement.getAttribute('speak-index') ?? -1);
-
+        if (!isError) {
             const parser = new DOMParser();
             const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
                 const childNodes = tempElement.children;
@@ -139,8 +136,11 @@ class SubtitleTranslator implements ISubtitleTranslator {
                         if (speakIndex == -1) {
                             const speakIndex = getTtsSpeakIndex();
                             node.setAttribute('speak-index', speakIndex.toString());
-                            const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
-                            this.tts.speakAndPlayVideo(textStream, speakIndex);
+
+                            if (summarySettings.autoTtsSpeak) { 
+                                const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
+                                this.tts.speakAndPlayVideo(textStream, speakIndex);
+                            }
                         }
                     }
                 }
@@ -226,7 +226,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             for (let i = 0; i < paragraphs.length; i++) {
                 const paragraph = paragraphs[i] as HTMLElement;
                 paragraph.style.backgroundColor = 'white';
-                let speakIndex = Number(paragraph.getAttribute('speak-index') ?? -1);
+                let speakIndex = Number(paragraph.getAttribute('speak-index')!);
                 // skip the before paragraph
                 if (speakIndex === speakIndexParagraphStart) {
                     isStart = true;

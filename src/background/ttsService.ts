@@ -15,7 +15,8 @@ export class TtsService implements ITtsService {
     private settingsManager: ISettingsManager;
     private defaultSender: chrome.runtime.MessageSender = {};
     private ttsSettings: TtsSettings = defaultTtsSettings;
-    private speakingText: string = 'start_speak_flag'; // 'start_speak_flag', 'end_speak_flag' or speaking text
+    private speakingText: string = ''; 
+    private firstSpeakToStartTts: boolean = true; //set tts content to ' ' when first speak, because speakingText is empty and set speakingText after tts got end event.
 
 
     constructor(settingsManager: ISettingsManager) {
@@ -51,19 +52,24 @@ export class TtsService implements ITtsService {
         }
         this.isProcessing = true;
 
-        while (this.speakTextArray.length > 0 || this.speakingText.length > 0) {
-            if (this.speakingText.length > 0 || this.speakingText === 'start_speak_flag') {
-                let text = this.speakingText === 'start_speak_flag' ? ' ' : this.speakingText;
-                this.speakingText = '';
-
-                chrome.tts.speak(text, {
-                    rate: this.ttsSettings.rate,
-                    pitch: this.ttsSettings.pitch,
-                    volume: this.ttsSettings.volume,
-                    voiceName: this.ttsSettings.voiceName,
-                    onEvent: (event: chrome.tts.TtsEvent) => this.handleTtsEvent(event, sender, playVideo)
-                });
+        while (this.speakTextArray.length > 0 || this.firstSpeakToStartTts || this.speakingText !== '') {      
+            let text = '';  
+            if (this.firstSpeakToStartTts) {
+                text = ' ';
+                this.firstSpeakToStartTts = false;
+            } else {
+                text = this.speakingText;
             }
+            
+
+            chrome.tts.speak(text, {
+                rate: this.ttsSettings.rate,
+                pitch: this.ttsSettings.pitch,
+                volume: this.ttsSettings.volume,
+                voiceName: this.ttsSettings.voiceName,
+                onEvent: (event: chrome.tts.TtsEvent) => this.handleTtsEvent(event, sender, playVideo)
+            });
+            
 
             while (await new Promise(resolve => chrome.tts.isSpeaking(resolve))) {
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -108,6 +114,7 @@ export class TtsService implements ITtsService {
                 chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsEnableAccpetMessage', index });
                 chrome.tabs.sendMessage(sender.tab.id, { action: 'ttsCheckSpeaking', speaking: true });
             }
+            this.isProcessing = false;
             this.speakNextText(true, sender, playVideo);
         }
     }
@@ -116,7 +123,7 @@ export class TtsService implements ITtsService {
         this.speakingText = '';
         this.lastStreamText = '';
         this.isProcessing = false;
-        this.speakingText = 'end_speak_flag';
+        this.firstSpeakToStartTts = false;
         playVideo();
     }
 
@@ -134,7 +141,7 @@ export class TtsService implements ITtsService {
         this.stopStreamSpeakFlag = false;
         this.speakTextArray = [];
         this.lastStreamText = '';
-        this.speakingText = 'start_speak_flag';
+        this.firstSpeakToStartTts = true;
         chrome.tts.stop();
     }
 }
