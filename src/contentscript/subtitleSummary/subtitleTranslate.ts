@@ -97,7 +97,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             isFirstConversation = false;//set to false for next translate
 
             if (isError) {
-                updateSummaryStatus(`Translate Subtitle ${errorType} error, Try again.`);
+                updateSummaryStatus(`Translate Subtitle Error: ${errorTypeMessage[errorType]}, Try again.`);
                 contentElement.innerHTML = oldHtml;
                 this.tts.deleteQueueLargerThanMarkIndex();
                 this.addSummaryParagraphsClickHandlers();
@@ -123,7 +123,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         const taskStatusArray = text.match(/<task_status>([\s\S]*?)<\/task_status>/g);
         const lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
         const finish = lastTaskStatusText === 'task_is_finish';
-        const isError = this.checkForErrors(translateTextArray, lastTaskStatusText, contentElement);
+        const [isError, errorType] = this.checkForErrors(isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
 
         if (!isError) {
             const parser = new DOMParser();
@@ -146,7 +146,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 }
         }
 
-        return [finish, isError, isError ? ErrorType.FormatError : ErrorType.NotError];
+        return [finish, isError, errorType];
     }
 
     private extractLastTaskStatus(taskStatusArray: RegExpMatchArray | null): string {
@@ -154,22 +154,43 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return lastTaskStatusText.replace(/<task_status>/g, '').replace(/<\/task_status>/g, '').replace(/\n/g, '');
     }
 
-    private checkForErrors(translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): boolean {
-        if (!translateTextArray || !lastTaskStatusText || !(lastTaskStatusText === 'task_is_finish' || lastTaskStatusText === 'task_is_not_finish')) {
-            this.displayError("Error: output text not include new line, try again.", contentElement);
-            return true;
+    private checkForErrors(isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): [boolean, ErrorType] {
+        let errorType: ErrorType = ErrorType.NotError;
+        let isError = false;
+        
+        if (isFirstConversation && !translateTextArray) {
+            isError = true;
+            errorType = ErrorType.OutputSizeEqual0;
         }
 
-        let translateText = translateTextArray.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
-        // add \n after ". " or "。" for break line to read easily
-        translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
-        if (translateText.split('\n').length <= 1) {
-            this.displayError("Error: output text not include new line, try again.", contentElement);
-            return true;
+        if (!isError && (!translateTextArray || !lastTaskStatusText || !(lastTaskStatusText === 'task_is_finish' || lastTaskStatusText === 'task_is_not_finish'))) {
+            isError = true;
+            errorType = ErrorType.FormatError;
         }
 
-        this.displayTranslatedText(translateText, contentElement);
-        return false;
+        let translateText = ''
+        if (!isError) {
+            translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
+            // add \n after ". " or "。" for break line to read easily
+            translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+            if (translateText.split('\n').length <= 1) {
+                isError = true;
+                errorType = ErrorType.OutputSizeNotEnouthNewLine;
+            }
+
+            const translateTextLength = translateText.length;
+            if (!isError && (isFirstConversation && !finish && (translateTextLength < 500 || translateTextLength > 4000))) {
+                console.log("translateTextLength=", translateTextLength);
+                isError = true;
+                errorType = ErrorType.FirstConversationOutputSizeError;
+            }
+        }      
+        
+        if (!isError) {
+            this.displayTranslatedText(translateText, contentElement);
+        }
+
+        return [isError, errorType];
     }
 
     private displayTranslatedText(translateText: string, contentElement: Element): void {
@@ -248,7 +269,18 @@ class SubtitleTranslator implements ISubtitleTranslator {
 enum ErrorType {
     NotError = "NotError",
     FormatError = "FormatError",
-    OutputTextSizeTooLarge = "OutputTextSizeTooLarge",
+    OutputSizeNotEnouthNewLine = "OutputSizeNotEnouthNewLine",
+    OutputSizeEqual0 = "OutputSizeEqual0",
+    FirstConversationLanguageError = "FirstConversationLanguageError",
+    FirstConversationOutputSizeError = "FirstConversationOutputSizeError",
+}
+const errorTypeMessage = {
+    [ErrorType.NotError]: "not error",
+    [ErrorType.FormatError]: "output format error",
+    [ErrorType.OutputSizeNotEnouthNewLine]: "output text not include enough new line",
+    [ErrorType.OutputSizeEqual0]: "output text size error, size is 0",
+    [ErrorType.FirstConversationLanguageError]: "first conversation language error",
+    [ErrorType.FirstConversationOutputSizeError]: "first conversation output size is too long or too short",
 }
 
 export const subtitleTranslate = async (videoId: string): Promise<void> => {

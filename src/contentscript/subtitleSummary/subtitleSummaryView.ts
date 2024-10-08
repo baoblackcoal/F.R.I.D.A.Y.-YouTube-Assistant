@@ -1,7 +1,7 @@
 import { AbstractSettings, Language } from '../../settings';
 import { TTSSpeak } from '../ttsSpeak';
 import { settingsManager } from '../../settingsManager';
-import { subtitleSummaryHandle } from './subtitleSummary';
+import { getVideoTitle, subtitleSummaryHandle } from './subtitleSummary';
 import { logTime, waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';
 import { copyTextToClipboard } from '../copy';
@@ -20,6 +20,7 @@ export function getSubtitleSummaryView() {
                         <button id="ytbs_speak">Speak</button>
                         <button id="ytbs_auto_speak">Auto Speak</button>
                         <button id="ytbs_copy">Copy</button>
+                        <button id="ytbs_download">Download</button>
                         <button id="ytbs_language">English</button>
                         <button id="ytbs_settings">Settings</button>
                     </div>
@@ -46,7 +47,7 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonSettingsHandle();
     buttonSummaryToggleHandle();
     buttonCopyHandle();
-
+    buttonDownloadHandle();
     handleTtsSpeakingText();
 
     subtitleSummaryHandle(videoId, subtitleTranslate);
@@ -112,6 +113,24 @@ function buttonCopyHandle(): void {
     }
 }
 
+function buttonDownloadHandle(): void {
+    const buttonDownload = document.getElementById("ytbs_download");
+    if (buttonDownload) {
+        buttonDownload.addEventListener("click", async () => {
+            const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const videoTitle = await getVideoTitle();
+            a.download = `${videoTitle}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);   
+        });
+    }
+}
 async function resetWhenPageChange(): Promise<void> {
     currentHightlightIndex = 0;
 

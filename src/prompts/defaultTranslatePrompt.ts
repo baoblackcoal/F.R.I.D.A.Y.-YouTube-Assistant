@@ -10,7 +10,7 @@ Your output content should follow the following rules:
 2.when I say "continue", you must continue output next easy to read content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
 3.when I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
 4.maximum tokens of each paragraph should less than 50 tokens.
-5.maximum tokens of each your response should less than 300 tokens.
+5.maximum tokens of each your response should less than 2000 and larger than 500 tokens.
 6.all output should be in {language}.
 
 <FORMAT>
