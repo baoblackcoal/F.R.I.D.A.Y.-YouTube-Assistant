@@ -26,8 +26,8 @@ export const setKey = async (key: string): Promise<void> => {
   };
 
   geminiModel = googleAI.getGenerativeModel({
-    // model: "gemini-1.5-flash-002",
-    model: "gemini-1.5-flash",
+    model: "gemini-1.5-flash-002",
+    // model: "gemini-1.5-flash",
     generationConfig: geminiConfig,
   });
 }

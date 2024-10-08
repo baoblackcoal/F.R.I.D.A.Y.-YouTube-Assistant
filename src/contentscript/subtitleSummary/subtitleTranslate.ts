@@ -120,7 +120,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
     private async getTranslateAndSpeakText(prompt: string, isFirstConversation: boolean, contentElement: Element, summarySettings: any): Promise<[boolean, boolean, ErrorType]> {
         const text = await geminiAPI.chat(prompt, isFirstConversation);
         const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
-        const taskStatusArray = text.match(/<task_status>([\s\S]*?)<\/task_status>/g);
+        const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
         const lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
         const finish = lastTaskStatusText === 'task_is_finish';
         const [isError, errorType] = this.checkForErrors(isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
@@ -151,7 +151,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
     private extractLastTaskStatus(taskStatusArray: RegExpMatchArray | null): string {
         const lastTaskStatusText = taskStatusArray ? taskStatusArray[taskStatusArray.length - 1] : '';
-        return lastTaskStatusText.replace(/<task_status>/g, '').replace(/<\/task_status>/g, '').replace(/\n/g, '');
+        return lastTaskStatusText.replace(/<task_finish_status>/g, '').replace(/<\/task_finish_status>/g, '').replace(/\n/g, '');
     }
 
     private checkForErrors(isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): [boolean, ErrorType] {
