@@ -5,7 +5,8 @@
   "description": "Reads selected text aloud with customizable settings",
   "permissions": ["contextMenus", "tts", "storage", "tabs", "activeTab"],
   "background": {
-    "service_worker": "background.bundle.js"
+    "service_worker": "background.bundle.js",
+    "persistent": true
   },
   "options_page": "options.html",
   "action": {

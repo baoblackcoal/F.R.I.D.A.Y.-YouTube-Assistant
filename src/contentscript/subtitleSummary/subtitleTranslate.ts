@@ -1,6 +1,6 @@
 import { geminiAPI } from '../geminiApi';
 import { TTSSpeak } from '../ttsSpeak';
-import { defaultTranslatePrompt } from "../../prompts/defaultTranslatePrompt";
+import { defaultTranslatePrompt, translatePrompt } from "../../prompts/defaultTranslatePrompt";
 import { settingsManager } from '../../settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
 import { resetHighlightText } from './subtitleSummaryView';
@@ -123,7 +123,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
         const lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
         const finish = lastTaskStatusText === 'task_is_finish';
-        const [isError, errorType] = this.checkForErrors(isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
+        const [isError, errorType] = await this.checkForErrors(isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
 
         if (!isError) {
             const parser = new DOMParser();
@@ -154,7 +154,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return lastTaskStatusText.replace(/<task_finish_status>/g, '').replace(/<\/task_finish_status>/g, '').replace(/\n/g, '');
     }
 
-    private checkForErrors(isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): [boolean, ErrorType] {
+    private async checkForErrors(isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): Promise<[boolean, ErrorType]> {
         let errorType: ErrorType = ErrorType.NotError;
         let isError = false;
         
@@ -187,20 +187,40 @@ class SubtitleTranslator implements ISubtitleTranslator {
         }      
         
         if (!isError) {
-            this.displayTranslatedText(translateText, contentElement);
+            isError = !await this.displayTranslatedText(translateText, contentElement);
+            if (isError) {
+                errorType = ErrorType.TranslateError;
+            }
         }
 
         return [isError, errorType];
     }
 
-    private displayTranslatedText(translateText: string, contentElement: Element): void {
-        translateText.split('\n').forEach(line => {
-            const newElement = document.createElement('p');
-            newElement.innerHTML = line;
-            newElement.style.marginBottom = '15px';
-            contentElement.appendChild(newElement);
-            this.addParagraphClickHandlers(newElement);
-        });
+    private async displayTranslatedText(translateText: string, contentElement: Element): Promise<boolean> {
+        const summarySettings = await settingsManager.getSummarySettings();
+        const replacements: Record<string, string> = {
+            '{language}': summarySettings.language,
+            '{textTranscript}': translateText
+        };
+        const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
+        const result = await geminiAPI.generate(prompt);
+        const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
+        if (translatedTextArray?.length != 1) {
+            return false;
+        } else {    
+            //get the first translated_content from translatedTextArray
+            let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
+            translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+            translatedText.split('\n').forEach(line => {
+                const newElement = document.createElement('p');
+                newElement.innerHTML = line;
+                newElement.style.marginBottom = '15px';
+                contentElement.appendChild(newElement);
+                this.addParagraphClickHandlers(newElement);
+            });
+
+            return true;
+        }
     }
 
     private displayError(message: string, contentElement?: Element): void {
@@ -273,6 +293,7 @@ enum ErrorType {
     OutputSizeEqual0 = "OutputSizeEqual0",
     FirstConversationLanguageError = "FirstConversationLanguageError",
     FirstConversationOutputSizeError = "FirstConversationOutputSizeError",
+    TranslateError = "TranslateError",
 }
 const errorTypeMessage = {
     [ErrorType.NotError]: "not error",
@@ -281,6 +302,7 @@ const errorTypeMessage = {
     [ErrorType.OutputSizeEqual0]: "output text size error, size is 0",
     [ErrorType.FirstConversationLanguageError]: "first conversation language error",
     [ErrorType.FirstConversationOutputSizeError]: "first conversation output size is too long or too short",
+    [ErrorType.TranslateError]: "translate error",
 }
 
 export const subtitleTranslate = async (videoId: string): Promise<void> => {

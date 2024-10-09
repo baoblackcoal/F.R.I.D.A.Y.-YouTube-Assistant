@@ -1,5 +1,5 @@
 export const defaultTranslatePrompt = `
-Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read in {language}.
+Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read.
 
 output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain content_is_easy_to_read, task_finish_status.
 content_is_easy_to_read(delimited by XML tags <content_is_easy_to_read> and </content_is_easy_to_read>) is just adding punctuation marks or line breaks '
@@ -12,7 +12,6 @@ Your output content should follow the following rules:
 3.When I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
 4.Should include content_is_easy_to_read and task_finish_status when output <FORMAT> and </FORMAT>.
 5.Maximum worlds of each paragraph should less than 50 tokens.
-6.Your all output should be in Simplified {language}.
 
 <FORMAT>
 <content_is_easy_to_read>
@@ -35,3 +34,26 @@ task_finish_status
 
 Each time you output no more than 2000 words and no less than 500, divided into multiple outputs.
 `;
+
+
+export const translatePrompt = `
+Please translate the following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into {language}.
+
+output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain translated_content.
+translated_content(delimited by XML tags <translated_content> and </translated_content>) is the translated content.
+
+Your output content should follow the following rules:
+1.Should not output anything else but only include 1 time of like <FORMAT> and </FORMAT>.
+
+
+<FORMAT>
+<translated_content>
+translated_content
+</translated_content>
+</FORMAT>
+
+<ORIGINAL_CONTENT>
+{textTranscript}
+</ORIGINAL_CONTENT>
+`;
+
