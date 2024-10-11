@@ -10,7 +10,7 @@ export interface TestSetup {
 
 export interface TestHelpers {
   clearOutput: (page: Page) => Promise<void>;
-  runCommandAndExpectOutput: (page: Page, command: string, expectedOutput: string) => Promise<void>;
+  runCommandAndExpectOutput: (page: Page, command: string, expectedOutput: string, timeout?: number) => Promise<void>;
   runCommandAndGetOutput: (page: Page, command: string) => Promise<string>;
 }
 
@@ -78,7 +78,7 @@ const testUtils: TestUtils = {
         });
       },
 
-      runCommandAndExpectOutput: async function (page: Page, command: string, expectedOutput: string): Promise<void> {
+      runCommandAndExpectOutput: async function (page: Page, command: string, expectedOutput: string, timeout = 30000): Promise<void> {
         await this.clearOutput(page);
 
         await page.type('#ytbs_test_command', command);
@@ -86,7 +86,7 @@ const testUtils: TestUtils = {
 
         await page.waitForFunction(
           (expected) => document.querySelector('#ytbs_test_output')!.textContent === expected,
-          { timeout: 30000 },
+          { timeout },
           expectedOutput
         );
       },

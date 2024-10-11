@@ -3,6 +3,8 @@ import { geminiAPI } from '../geminiApi';
 import { TTSSpeak } from '../ttsSpeak';
 import { CommandHandler } from './commandHandler';
 import { MsTtsApi } from '../msTtsApi';
+import { MessageObserver } from '../../utils/messageObserver';
+import { ITtsMessage } from '../../utils/messageQueue';
 
 export async function sayHello(name = 'world') {
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -18,6 +20,7 @@ export async function commandHandle() {
     const api = geminiAPI;
     const msTtsApi = MsTtsApi.getInstance(); 
     const commandHandler = new CommandHandler(tts, api);
+    const messageObserver = MessageObserver.getInstance();
 
     // gemini commands
     commandHandler.registerCommand('sayHello', async (args) => await sayHello(args[0]));
@@ -56,6 +59,32 @@ export async function commandHandle() {
     //help command to list all commands
     commandHandler.registerCommand('help', () => {
         return commandHandler.getCommands().join('\n');
+    });
+
+    // Register TTS message observer command
+    commandHandler.registerCommand('addTtsObserver', (args) => {
+        const action = args[0];
+        const message: ITtsMessage = {
+            action: action,
+            text: 'test',
+            index: 0,
+        };
+        messageObserver.addObserverTtsMessage(message, (message) => {
+            console.log(`TTS Observer received message:`, message);
+        });
+        return `Observer added for action: ${action}`;
+    });
+
+    // Notify TTS message observers command
+    commandHandler.registerCommand('notifyTtsObserver', (args) => {
+        const action = args[0];
+        const message: ITtsMessage = {
+            action: action,
+            text: 'test',
+            index: 0,
+        };
+        messageObserver.notifyObserversTtsMessage(message);
+        return `Notified observers for action: ${action}`;
     });
 
     const inputElement = document.getElementById('ytbs_test_command');

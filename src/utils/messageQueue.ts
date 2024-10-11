@@ -1,7 +1,7 @@
 import { listenToMessages } from "../background/msTtsService";
 import { logTime } from "../contentscript/utils";
 
-export interface IMessage {
+export interface ITtsMessage {
     action: string;
     text?: string;
     index: number;
@@ -9,7 +9,7 @@ export interface IMessage {
 }
 
 export interface IMessageQueue {
-    enqueue(message: IMessage, mockSendMessage?: (message: IMessage) => void): void;
+    enqueue(message: ITtsMessage, mockSendMessage?: (message: ITtsMessage) => void): void;
 }
 
 class MessageQueue implements IMessageQueue {
@@ -17,7 +17,7 @@ class MessageQueue implements IMessageQueue {
     private isProcessing: boolean = false;
     private indexForDelete: number = -1;
 
-    enqueue(message: IMessage, mockSendMessage?: (message: IMessage) => void): void {
+    enqueue(message: ITtsMessage, mockSendMessage?: (message: ITtsMessage) => void): void {
         this.queue.push(message);
         this.processQueue(mockSendMessage);
     }
@@ -37,7 +37,7 @@ class MessageQueue implements IMessageQueue {
         }
     }
 
-    private async processQueue(mockSendMessage?: (message: IMessage) => void): Promise<void> {
+    private async processQueue(mockSendMessage?: (message: ITtsMessage) => void): Promise<void> {
         if (this.isProcessing) return;
         this.isProcessing = true;
 
@@ -65,7 +65,7 @@ class MessageQueue implements IMessageQueue {
         this.isProcessing = false;
     }
 
-    private sendMessage(message: IMessage): Promise<void> {
+    private sendMessage(message: ITtsMessage): Promise<void> {
         return new Promise(async (resolve, reject) => {
             let retries = 5; // number of retries
             const trySendMessage = () => {                    

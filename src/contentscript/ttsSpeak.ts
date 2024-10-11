@@ -1,5 +1,5 @@
 import { TtsSettings } from '../settings';
-import { messageQueue, IMessage } from '../utils/messageQueue';
+import { messageQueue, ITtsMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;
@@ -28,7 +28,7 @@ export class TTSSpeak implements TTSInterface {
     speak(text: string, index: number = -1): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                const message: IMessage = {
+                const message: ITtsMessage = {
                     action: 'speak',
                     text: text,
                     index: index,
@@ -66,7 +66,7 @@ export class TTSSpeak implements TTSInterface {
     async speakAndPlayVideo(text: string, index: number = -1): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                const message: IMessage = {
+                const message: ITtsMessage = {
                     action: 'speakAndPlayVideo',
                     text: text,
                     index: index,

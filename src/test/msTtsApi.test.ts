@@ -21,7 +21,6 @@ describe('MsTtsApi End-to-End', () => {
     test('should handle msTtsSpeak command', async () => {
         const text = "Hello, this is a test.";
         const command = `msTtsSpeak "${text}"`;
-
         await helpers.runCommandAndExpectOutput(testSetup.page, command, 'Speaking...');
         await new Promise(resolve => setTimeout(resolve, 2000));
     }, 30000);

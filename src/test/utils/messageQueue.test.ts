@@ -1,5 +1,5 @@
 import { error } from 'console';
-import { IMessage, IMessageQueue, messageQueue } from '../../utils/messageQueue';
+import { ITtsMessage, IMessageQueue, messageQueue } from '../../utils/messageQueue';
 import { TestSetup, TestHelpers } from '../testUtils';
 import testUtils from '../testUtils';
 
@@ -37,7 +37,7 @@ describe('MessageQueue Tests', () => {
     let expectedMessageIndex = 0;
     let errorThrown = false;
     textArray.forEach(text => {
-        const message: IMessage = {
+        const message: ITtsMessage = {
             action: 'speakAndPlayVideo',
             text: text,
             index: 0,
