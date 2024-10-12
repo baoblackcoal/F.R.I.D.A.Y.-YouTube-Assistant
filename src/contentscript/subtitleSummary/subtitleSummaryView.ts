@@ -5,7 +5,7 @@ import { getVideoTitle, subtitleSummaryHandle } from './subtitleSummary';
 import { logTime, waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';
 import { copyTextToClipboard } from '../copy';
-import { listenToMessages } from '../../background/msTtsService';
+import { listenToMessages } from '../../contentscript/msTtsService';
 
 export function insertSummaryButtonView() {
     const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`

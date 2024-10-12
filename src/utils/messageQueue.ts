@@ -1,4 +1,4 @@
-import { listenToMessages } from "../background/msTtsService";
+import { listenToMessages } from "../contentscript/msTtsService";
 import { logTime } from "../contentscript/utils";
 
 export interface ITtsMessage {

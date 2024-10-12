@@ -3,7 +3,7 @@ import { Env, getEnvironment } from '../common';
 import { settingsManager } from "../settingsManager";
 import { TtsService } from './ttsService';
 // import { MsTtsService } from './msTtsService';
-import { ITtsService } from './ITtsService';
+import { ITtsService } from '../ITtsService';
 
 // Assuming TtsEngine is an enum
 enum TtsEngine {

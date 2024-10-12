@@ -1,7 +1,6 @@
-import { ITtsService } from './ITtsService';
+import { ITtsService } from '../ITtsService';
 import { ISettingsManager, settingsManager } from "../settingsManager";
 import { MsTtsApi } from '../contentscript/msTtsApi';
-import { TtsService } from './ttsService';
 import { logTime } from '../contentscript/utils';
 
 export class MsTtsService implements ITtsService {
@@ -78,7 +77,7 @@ let ttsService: ITtsService;
 if (ttsEngine === 'ms') {
     ttsService = new MsTtsService(settingsManager);
 } else {
-    ttsService = new TtsService(settingsManager);
+    // ttsService = new TtsService(settingsManager);
 }
 
 function respondToSenderSuccess(sendResponse: (response?: any) => void) {
