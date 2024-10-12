@@ -1,4 +1,4 @@
-import { TtsSettings } from '../settings';
+import { TtsSettings } from '../common/settings';
 import { messageQueue, ITtsMessage } from '../utils/messageQueue';
 
 export interface TTSInterface {

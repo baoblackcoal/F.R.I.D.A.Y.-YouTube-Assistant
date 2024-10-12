@@ -1,6 +1,6 @@
-import { Language, defaultSummarySettings, SummarySettings } from './settings';
+import { Language, defaultSummarySettings, SummarySettings } from './common/settings';
 import { defaultPromptText } from "./prompts/defaultPromptText";
-import { settingsManager } from './settingsManager';
+import { settingsManager } from './common/settingsManager';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;

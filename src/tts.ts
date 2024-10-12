@@ -1,5 +1,5 @@
-import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './settings';
-import { settingsManager } from './settingsManager';
+import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './common/settings';
+import { settingsManager } from './common/settingsManager';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const languageSelect = document.getElementById('language') as HTMLSelectElement;

@@ -1,5 +1,5 @@
-import { ITtsService } from '../ITtsService';
-import { ISettingsManager, settingsManager } from "../settingsManager";
+import { ITtsService } from '../common/ITtsService';
+import { ISettingsManager, settingsManager } from "../common/settingsManager";
 import { MsTtsApi } from '../contentscript/msTtsApi';
 import { logTime } from '../contentscript/utils';
 

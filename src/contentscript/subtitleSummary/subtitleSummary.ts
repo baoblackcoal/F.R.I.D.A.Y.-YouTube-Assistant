@@ -2,9 +2,9 @@ import { getLangOptionsWithLink, getRawTranscriptText } from "../transcript";
 import { geminiAPI } from '../geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from '../ttsSpeak';
-import { SummarySettings, defaultSummarySettings, Language } from '../../settings';
+import { SummarySettings, defaultSummarySettings, Language } from '../../common/settings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";
-import { settingsManager } from '../../settingsManager';
+import { settingsManager } from '../../common/settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 

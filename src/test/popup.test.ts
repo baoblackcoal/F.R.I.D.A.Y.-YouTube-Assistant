@@ -1,7 +1,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
 import { exec } from 'child_process';
-import { TtsSettings, defaultTtsSettings } from '../settings';
+import { TtsSettings, defaultTtsSettings } from '../common/settings';
 
 describe('Popup Test', () => {
   let browser: Browser;

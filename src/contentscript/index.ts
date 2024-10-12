@@ -1,6 +1,6 @@
 "use strict";
 
-import { settingsManager } from "../settingsManager";
+import { settingsManager } from "../common/settingsManager";
 import { insertSummaryBtn } from "./youtube";
 import { logTime } from "./utils";
 let oldHref = "";

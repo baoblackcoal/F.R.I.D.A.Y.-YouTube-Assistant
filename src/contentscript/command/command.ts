@@ -1,4 +1,4 @@
-import { globalConfig } from '../../config';
+import { globalConfig } from '../../common/config';
 import { geminiAPI } from '../geminiApi';
 import { TTSSpeak } from '../ttsSpeak';
 import { CommandHandler } from './commandHandler';

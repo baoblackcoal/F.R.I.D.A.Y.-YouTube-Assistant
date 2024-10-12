@@ -1,9 +1,9 @@
 /// <reference types="chrome"/>
-import { Env, getEnvironment } from '../common';
-import { settingsManager } from "../settingsManager";
+import { Env, getEnvironment } from '../common/common';
+import { settingsManager } from "../common/settingsManager";
 import { TtsService } from './ttsService';
 // import { MsTtsService } from './msTtsService';
-import { ITtsService } from '../ITtsService';
+import { ITtsService } from '../common/ITtsService';
 
 // Assuming TtsEngine is an enum
 enum TtsEngine {

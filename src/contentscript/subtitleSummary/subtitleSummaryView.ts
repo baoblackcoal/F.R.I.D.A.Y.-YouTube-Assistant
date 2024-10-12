@@ -1,6 +1,6 @@
-import { AbstractSettings, Language } from '../../settings';
+import { AbstractSettings, Language } from '../../common/settings';
 import { TTSSpeak } from '../ttsSpeak';
-import { settingsManager } from '../../settingsManager';
+import { settingsManager } from '../../common/settingsManager';
 import { getVideoTitle, subtitleSummaryHandle } from './subtitleSummary';
 import { logTime, waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';

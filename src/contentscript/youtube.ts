@@ -8,7 +8,7 @@ import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from
 import { commandHandle } from './command/command';
 import { waitForPlayer } from './subtitleSummary/subtitleSummary';
 
-import { globalConfig } from '../config';
+import { globalConfig } from '../common/config';
 import { logTime, waitForElm } from "./utils";
 import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/subtitleSummaryView";
 

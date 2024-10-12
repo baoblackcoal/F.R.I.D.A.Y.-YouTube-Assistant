@@ -1,6 +1,6 @@
-import { TtsSettings, defaultTtsSettings } from "../settings";
-import { ISettingsManager } from "../settingsManager";
-import { ITtsService } from "../ITtsService";
+import { TtsSettings, defaultTtsSettings } from "../common/settings";
+import { ISettingsManager } from "../common/settingsManager";
+import { ITtsService } from "../common/ITtsService";
 
 interface ITtsSpeakingText {
     text: string;
