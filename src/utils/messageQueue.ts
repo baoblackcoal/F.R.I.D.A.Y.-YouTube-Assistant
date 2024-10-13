@@ -1,11 +1,13 @@
 import { listenToMessages } from "../contentscript/msTtsService";
 import { logTime } from "../contentscript/utils";
+import { MessageObserver } from "./messageObserver";
 
 export interface ITtsMessage {
     action: string;
     text?: string;
-    index: number;
+    index?: number;
     isStream?: boolean;
+    speaking?: boolean;
 }
 
 export interface IMessageQueue {
@@ -16,6 +18,11 @@ class MessageQueue implements IMessageQueue {
     private queue: any[] = [];
     private isProcessing: boolean = false;
     private indexForDelete: number = -1;
+    private messageObserver: MessageObserver;
+
+    constructor() {
+        this.messageObserver = MessageObserver.getInstance();
+    }
 
     enqueue(message: ITtsMessage, mockSendMessage?: (message: ITtsMessage) => void): void {
         this.queue.push(message);
@@ -33,7 +40,8 @@ class MessageQueue implements IMessageQueue {
     deleteQueueLargerThanMarkIndex(): void {
         if (this.indexForDelete != -1) {
             this.queue = this.queue.filter(message => message.index <= this.indexForDelete);
-            chrome.runtime.sendMessage({ action: 'ttsDeleteQueueLargerThanMarkIndex', index: this.indexForDelete });
+            this.messageObserver.notifyObserversTtsMessage({ action: 'ttsDeleteQueueLargerThanMarkIndex', index: this.indexForDelete });
+            // chrome.runtime.sendMessage({ action: 'ttsDeleteQueueLargerThanMarkIndex', index: this.indexForDelete });
         }
     }
 
@@ -67,28 +75,32 @@ class MessageQueue implements IMessageQueue {
 
     private sendMessage(message: ITtsMessage): Promise<void> {
         return new Promise(async (resolve, reject) => {
-            let retries = 5; // number of retries
-            const trySendMessage = () => {                    
-                chrome.runtime.sendMessage(message, async (response) => {
-                    if (chrome.runtime.lastError) {
-                        if (retries > 0 && chrome.runtime.lastError?.message?.includes('message port closed')) {
-                            retries--;
-                            console.warn('Retrying to send message, attempts left:', retries);
-                            await new Promise(resolve => setTimeout(resolve, 3000));
-                            trySendMessage(); // Retry sending the message
-                        } else {
-                            reject(chrome.runtime.lastError);
-                        }
-                    } else {
-                        resolve(response);
-                    }
-                });   
-                //sleep 100ms for the next message to be sent
-                // logTime('sleep 100ms 0');
-                new Promise(resolve => setTimeout(resolve, 100));
-                // logTime('sleep 100ms 1');             
-            };
-            trySendMessage(); // Initiate the first attempt
+            await this.messageObserver.notifyObserversTtsMessage(message, async (response) => {
+                resolve(response);
+            });
+            
+            // let retries = 5; // number of retries
+            // const trySendMessage = () => {                    
+            //     chrome.runtime.sendMessage(message, async (response) => {
+            //         if (chrome.runtime.lastError) {
+            //             if (retries > 0 && chrome.runtime.lastError?.message?.includes('message port closed')) {
+            //                 retries--;
+            //                 console.warn('Retrying to send message, attempts left:', retries);
+            //                 await new Promise(resolve => setTimeout(resolve, 3000));
+            //                 trySendMessage(); // Retry sending the message
+            //             } else {
+            //                 reject(chrome.runtime.lastError);
+            //             }
+            //         } else {
+            //             resolve(response);
+            //         }
+            //     });   
+            //     //sleep 100ms for the next message to be sent
+            //     // logTime('sleep 100ms 0');
+            //     new Promise(resolve => setTimeout(resolve, 100));
+            //     // logTime('sleep 100ms 1');             
+            // };
+            // trySendMessage(); // Initiate the first attempt
 
         });
     }    

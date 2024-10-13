@@ -6,6 +6,8 @@ import { logTime, waitForElm } from '../utils';
 import { subtitleTranslate } from './subtitleTranslate';
 import { copyTextToClipboard } from '../copy';
 import { listenToMessages } from '../../contentscript/msTtsService';
+import { MessageObserver } from '../../utils/messageObserver';
+import { ITtsMessage } from '../../utils/messageQueue';
 
 export function insertSummaryButtonView() {
     const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`
@@ -53,46 +55,46 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     subtitleSummaryHandle(videoId, subtitleTranslate);
 }
 
+const messageObserver = MessageObserver.getInstance();
 let currentHightlightIndex = 0;
 let isHandTtsSpeakingText = false;
 let currentHightlightNode: HTMLElement | null = null;
 function handleTtsSpeakingText(): void {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
-        if (message.action === 'ttsSpeakingText') {
-            if (isHandTtsSpeakingText) {
-                return;
-            }
-            isHandTtsSpeakingText = true;   
-
-            let ttsTextIndex = message.index;
-
-            //search text from ytbs_content all content, and highlight font color to red of the text
-            const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
-            //get element from ytbs_content paragraph, div, span, etc, that has text content
-            //loop through all child elements of ytbs_content
-            let preHtmlNode: ChildNode | null = null;
-            for (let i = 0; i < ytbs_content.childNodes.length; i++) {
-                let node = ytbs_content.childNodes[i] as HTMLElement;
-                // Check if the node is an HTMLElement
-                if (node instanceof HTMLElement) {
-                    let speakIndex = node.getAttribute('speak-index');
-                    if (Number(speakIndex) == ttsTextIndex) {
-                        currentHightlightNode = node;
-                        currentHightlightNode.style.backgroundColor = "yellow";
-                    } else {
-                        try {   
-                            const element = node as HTMLElement;
-                            if (element.style.backgroundColor != "white") {                        
-                                element.style.backgroundColor = "white";
-                            }
-                        } catch (error) {
-                            // console.error("Error setting background color to white", error);
-                        }
-                    }                     
-                } 
-            };
-            isHandTtsSpeakingText = false;
+    messageObserver.addObserverTtsMessage({ action: 'ttsSpeakingText' }, (message: ITtsMessage) => {
+        if (isHandTtsSpeakingText) {
+            return;
         }
+        isHandTtsSpeakingText = true;   
+
+        let ttsTextIndex = message.index;
+
+        //search text from ytbs_content all content, and highlight font color to red of the text
+        const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
+        //get element from ytbs_content paragraph, div, span, etc, that has text content
+        //loop through all child elements of ytbs_content
+        let preHtmlNode: ChildNode | null = null;
+        for (let i = 0; i < ytbs_content.childNodes.length; i++) {
+            let node = ytbs_content.childNodes[i] as HTMLElement;
+            // Check if the node is an HTMLElement
+            if (node instanceof HTMLElement) {
+                let speakIndex = node.getAttribute('speak-index');
+                if (Number(speakIndex) == ttsTextIndex) {
+                    currentHightlightNode = node;
+                    currentHightlightNode.style.backgroundColor = "yellow";
+                } else {
+                    try {   
+                        const element = node as HTMLElement;
+                        if (element.style.backgroundColor != "white") {                        
+                            element.style.backgroundColor = "white";
+                        }
+                    } catch (error) {
+                        // console.error("Error setting background color to white", error);
+                    }
+                }                     
+            } 
+        };
+        isHandTtsSpeakingText = false;
+    
     });
 }
 
@@ -131,19 +133,30 @@ function buttonDownloadHandle(): void {
         });
     }
 }
+
+const timeoutPromise = new Promise<void>((_, reject) => {
+    setTimeout(() => reject(new Error('Operation timed out')), 5000); // 5000 ms timeout
+});
+
 async function resetWhenPageChange(): Promise<void> {
     currentHightlightIndex = 0;
 
-    await new Promise<void>((resolve, reject) => {
-        chrome.runtime.sendMessage({ action: 'resetWhenPageChange' }, (response) => {
-            if (response.status === 'success') {
-                resolve();
-            } else {
-                reject(new Error('Failed to reset when page change'));
-            }
-        });
-    });
+    await Promise.race([
+        new Promise<void>((resolve, reject) => {
+            const message: ITtsMessage = { action: 'resetWhenPageChange' };
+            messageObserver.notifyObserversTtsMessage(message, (response) => {
+            // chrome.runtime.sendMessage(message, (response) => {
+                if (response.status === 'success') {
+                    resolve();
+                } else {
+                    reject(new Error('Failed to reset when page change'));
+                }
+            });
+        }),
+        timeoutPromise
+    ]);
 }
+
 async function getSettings(): Promise<AbstractSettings> {
     return await settingsManager.getSettings();
 }
@@ -255,5 +268,6 @@ function buttonSummaryToggleHandle(): void {
         });
     }
 }
+
 
 

@@ -7,6 +7,8 @@ import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
 import { handleSubtitleSummaryView } from "./subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
+import { MessageObserver } from "../../utils/messageObserver";
+import { ITtsMessage } from "../../utils/messageQueue";
 
 let pauseVideoFlag = false;
 export async function waitForPlayer(): Promise<void> {
@@ -245,10 +247,9 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
 }
 
 // Add this message listener at the end of the file
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'playVideo') {
-        if (!pauseVideoFlag) {
-            playVideo();
-        }
+const messageObserver = MessageObserver.getInstance();
+messageObserver.addObserverTtsMessage({ action: 'playVideo' }, (message: ITtsMessage) => {
+    if (!pauseVideoFlag) {
+        playVideo();
     }
 });

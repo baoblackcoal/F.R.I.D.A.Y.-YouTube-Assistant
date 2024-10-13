@@ -1,5 +1,6 @@
 import { TtsSettings } from '../common/settings';
 import { messageQueue, ITtsMessage } from '../utils/messageQueue';
+import { MessageObserver } from '../utils/messageObserver';
 
 export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;
@@ -16,7 +17,10 @@ export interface TTSInterface {
 export class TTSSpeak implements TTSInterface {
     private static instance: TTSSpeak;
     private _isSpeaking: boolean = false;
-    private constructor() {}
+    private messageObserver: MessageObserver;
+    private constructor() {
+        this.messageObserver = MessageObserver.getInstance();
+    }
 
     public static getInstance(): TTSSpeak {
         if (!TTSSpeak.instance) {
@@ -36,7 +40,7 @@ export class TTSSpeak implements TTSInterface {
                 messageQueue.enqueue(message);
                 resolve();
             } catch (error) {
-                console.error('Error in speakAndPlayVideo:', error);
+                console.error('Error in speak:', error);
                 reject(error);
             }
         });
@@ -50,9 +54,8 @@ export class TTSSpeak implements TTSInterface {
         messageQueue.clear();
         return new Promise((resolve, reject) => {
             try {
-                chrome.runtime.sendMessage({
-                    action: 'resetStreamSpeak',
-                }, (response) => {
+                const message: ITtsMessage = { action: 'resetStreamSpeak' };
+                this.messageObserver.notifyObserversTtsMessage(message, (response) => {
                     this._isSpeaking = false;
                     resolve();
                 });
@@ -95,9 +98,8 @@ export class TTSSpeak implements TTSInterface {
     stop(): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                chrome.runtime.sendMessage({
-                    action: 'ttsStop',
-                }, (response) => {
+                const message: ITtsMessage = { action: 'ttsStop' };
+                this.messageObserver.notifyObserversTtsMessage(message, (response) => {
                     this._isSpeaking = false;
                     resolve();
                 });
@@ -109,11 +111,14 @@ export class TTSSpeak implements TTSInterface {
     }
 
     isSpeaking(): boolean {
-        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
-            if (message.action === 'ttsCheckSpeaking') {
-                this._isSpeaking = message.speaking;
-            }
+        this.messageObserver.addObserverTtsMessage({ action: 'ttsCheckSpeaking' }, (message: any) => {
+            this._isSpeaking = message!.speaking;
         });
+        // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
+        //     if (message.action === 'ttsCheckSpeaking') {
+        //         this._isSpeaking = message.speaking;
+        //     }
+        // });
         return this._isSpeaking;
     }
 }

@@ -1,5 +1,9 @@
 import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './common/settings';
 import { settingsManager } from './common/settingsManager';
+import { ITtsMessage } from './utils/messageQueue';
+import { TTSSpeak } from './contentscript/ttsSpeak';
+
+const tts = TTSSpeak.getInstance();                
 
 document.addEventListener('DOMContentLoaded', async () => {
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
@@ -122,18 +126,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const testText = languageStrings[selectedLanguage] || "Good day, world! May your moments be filled with peace.";
                 console.log(testText);
 
-                chrome.runtime.sendMessage({
+                const message: ITtsMessage = {
                     action: 'speak',
                     text: testText,
-                });
+                };
+                tts.speak(testText);
+                // chrome.runtime.sendMessage(message);
+                //     text: testText,
+                // });
             })
             .catch(error => console.error('Error loading language strings:', error));
     });
 
     stopButton.addEventListener('click', () => {
-        chrome.runtime.sendMessage({
-            action: 'ttsStop',
-        });
+        tts.stop();
+        // chrome.runtime.sendMessage({
+        //     action: 'ttsStop',
+        // });
     });
 
     resetButton.addEventListener('click', async () => {

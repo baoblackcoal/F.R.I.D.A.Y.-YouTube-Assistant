@@ -144,4 +144,5 @@ export class TtsService implements ITtsService {
         this.firstSpeakToStartTts = true;
         chrome.tts.stop();
     }
+
 }

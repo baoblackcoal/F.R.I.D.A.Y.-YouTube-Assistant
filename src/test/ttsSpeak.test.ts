@@ -44,7 +44,7 @@ describe('TTS Tests', () => {
     expect(isSpeaking).toBe(false);
   }, 20000);
 
-  async function waitForSpeaking(timeout = 10000): Promise<boolean> {
+  async function waitForSpeaking(timeout = 5000): Promise<boolean> {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isSpeaking = await checkIsSpeaking();
