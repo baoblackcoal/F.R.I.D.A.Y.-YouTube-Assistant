@@ -43,23 +43,22 @@ export class MsTtsService implements ITtsService {
         }
         this.isProcessing = true;
 
-        while (this.speakTextArray.length > 0) {
+        while (true) {
             const nextText = this.speakTextArray.shift();
             if (nextText) {
                 try {
                     this.isSpeaking = true;
-                    await this.msTtsApi.synthesizeSpeech(nextText.text);
-                    if (sender.tab && sender.tab.id !== undefined) {
-                        this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingText', index: nextText.index });
-                        this.messageObserver.notifyObserversTtsMessage({ action: 'ttsEnableAccpetMessage', index: nextText.index });
-                        this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: true });
-                    }
+                    this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingText', index: nextText.index });
+                    this.messageObserver.notifyObserversTtsMessage({ action: 'ttsEnableAccpetMessage', index: nextText.index });
+                    this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: true });     
+                    await this.msTtsApi.synthesizeSpeech(nextText.text);               
                 } catch (error) {
                     console.error("Error during speech synthesis: ", error);
                 }
             } else {
                 this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: false });
                 this.isSpeaking = false;
+                break;
             }   
         }
 
@@ -92,11 +91,6 @@ if (ttsEngine === 'ms') {
     // ttsService = new TtsService(settingsManager);
 }
 
-function respondToSenderSuccess(sendResponse: (response?: any) => void) {
-    sendResponse({ status: "success" });
-}
-
-
 // Assuming TtsEngine is an enum
 enum TtsEngine {
     Chrome = 'Chrome',
@@ -119,13 +113,6 @@ export async function listenToMessages() {
         ttsService.stopStreamSpeak();
     });
 
-    // message = { action: 'ttsCheckSpeaking' };
-    // messageObserver.addObserverTtsMessage(message, (message: ITtsMessage) => {
-    //     const isSpeaking = ttsService.checkSpeaking();
-    //     console.log(`(msTtsService)ttsCheckSpeaking: ${isSpeaking}`);
-    //     const messageReturn = { "speaking": isSpeaking };
-    //     return messageReturn;
-    // });
 
     message = { action: 'resetStreamSpeak' };
     messageObserver.addObserverTtsMessage(message, (message: ITtsMessage) => {
@@ -148,50 +135,5 @@ export async function listenToMessages() {
     messageObserver.addObserverTtsMessage(message, (message: ITtsMessage) => {
         ttsService.deleteQueueLargerThanMarkIndex(message.index!);
     });
-
-
-    // logTime('msTtsService 0');
-    // chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-    //     if (ttsEngine1 !== TtsEngine.Microsoft) {
-    //         return;
-    //     }
-
-    //     console.log(`(msTtsService)Received message: ${message.action}`);
-    //     switch (message.action) {
-    //         case 'resetWhenPageChange'+'Background':
-    //             // ttsService.resetStreamSpeak();
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;
-    //         case 'resetStreamSpeak'+'Background':
-    //             // ttsService.resetStreamSpeak();
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;
-    //         case 'speak'+'Background':
-    //             // ttsService.speakText(message.text, message.index, sender);
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;
-    //         case 'speakAndPlayVideo'+'Background':
-    //             // ttsService.speakText(message.text, message.index, sender, () => {
-    //             //     if (sender.tab && sender.tab.id !== undefined) {
-    //             //         chrome.tabs.sendMessage(sender.tab.id, { action: 'playVideo' });
-    //             //     }
-    //             // });
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;
-    //         case 'ttsDeleteQueueLargerThanMarkIndex'+'Background':
-    //             // ttsService.deleteQueueLargerThanMarkIndex(message.index);
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;
-    //         case 'ttsStop'+'Background':
-    //             // ttsService.stopStreamSpeak();
-    //             // respondToSenderSuccess(sendResponse);
-    //             break;          
-    //         default:
-    //             break;
-    //     }
-    //     return true;
-    // });
-    // //wait for 3000ms
-    // logTime('msTtsService 1');
 }
 

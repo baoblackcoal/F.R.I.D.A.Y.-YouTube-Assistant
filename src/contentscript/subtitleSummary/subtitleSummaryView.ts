@@ -8,6 +8,7 @@ import { copyTextToClipboard } from '../copy';
 import { listenToMessages } from '../../contentscript/msTtsService';
 import { MessageObserver } from '../../utils/messageObserver';
 import { ITtsMessage } from '../../utils/messageQueue';
+import { responseOk } from '../../common/common';
 
 export function insertSummaryButtonView() {
     const butttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`
@@ -146,7 +147,7 @@ async function resetWhenPageChange(): Promise<void> {
             const message: ITtsMessage = { action: 'resetWhenPageChange' };
             messageObserver.notifyObserversTtsMessage(message, (response) => {
             // chrome.runtime.sendMessage(message, (response) => {
-                if (response.status === 'success') {
+                if (response === responseOk) {
                     resolve();
                 } else {
                     reject(new Error('Failed to reset when page change'));

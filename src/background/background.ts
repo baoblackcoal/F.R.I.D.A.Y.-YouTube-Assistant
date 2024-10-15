@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { Env, getEnvironment } from '../common/common';
+import { Env, getEnvironment, responseOk } from '../common/common';
 import { settingsManager } from "../common/settingsManager";
 import { TtsService } from './ttsService';
 // import { MsTtsService } from './msTtsService';
@@ -48,7 +48,7 @@ chrome.contextMenus.onClicked.addListener((info: chrome.contextMenus.OnClickData
 });
 
 function respondToSenderSuccess(sendResponse: (response?: any) => void) {
-    sendResponse({ status: "success" });
+    sendResponse(responseOk);
 }
 
 function sendTtsMessageToMsTts(action: string, message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {

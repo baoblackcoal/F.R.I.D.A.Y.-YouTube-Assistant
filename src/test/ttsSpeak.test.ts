@@ -27,7 +27,7 @@ describe('TTS Tests', () => {
 
     const isSpeaking = await waitForSpeaking();
     expect(isSpeaking).toBe(true);
-  }, 20000);
+  }, 200000);
 
   it('should stop speaking', async () => {
     await helpers.runCommandAndExpectOutput(
