@@ -1,6 +1,8 @@
-import { TtsSettings } from '../common/settings';
+import { ApiType } from '../common/settings';
 import { messageQueue, ITtsMessage } from '../utils/messageQueue';
 import { MessageObserver } from '../utils/messageObserver';
+import { MsTtsApi } from './msTtsApi';
+import { settingsManager } from '../common/settingsManager';
 
 export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;
@@ -12,6 +14,17 @@ export interface TTSInterface {
     isSpeaking(): boolean;
     resetStreamSpeak(): Promise<void>;
     speakAndPlayVideoFinsh(index: number): void;
+    getVoiceNames(callback: (voices: VoiceInfo[]) => void): void;
+}
+
+export interface VoiceInfo {
+    voiceName: string;
+    lang: string;
+    // gender: string;
+    // locale: string;
+    // styleList: string[];
+    // sampleRateHertz: number;
+    // status: string;
 }
 
 export class TTSSpeak implements TTSInterface {
@@ -20,6 +33,20 @@ export class TTSSpeak implements TTSInterface {
     private messageObserver: MessageObserver;
     private constructor() {
         this.messageObserver = MessageObserver.getInstance();
+    }
+
+    async getVoiceNames(callback: (voices: VoiceInfo[]) => void): Promise<void> {
+        const ttsSettings = await settingsManager.getTtsSettings();
+        if (ttsSettings.apiType === ApiType.Azure) {
+            const msTtsApi = MsTtsApi.getInstance();
+            msTtsApi.getVoices().then(voices => {
+                callback(voices.map(voice => ({ voiceName: voice.name, lang: voice.locale })));
+            });
+        } else {
+            chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
+                callback(voices.map(voice => ({ voiceName: voice.voiceName || '', lang: voice.lang || '' })));
+            });
+        }
     }
 
     public static getInstance(): TTSSpeak {

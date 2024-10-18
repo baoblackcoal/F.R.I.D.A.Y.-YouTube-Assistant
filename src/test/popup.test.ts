@@ -1,7 +1,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
 import { exec } from 'child_process';
-import { TtsSettings, defaultTtsSettings } from '../common/settings';
+import { ApiType, TtsSettings, defaultTtsSettings } from '../common/settings';
 
 describe('Popup Test', () => {
   let browser: Browser;
@@ -68,6 +68,7 @@ describe('Popup Test', () => {
 
   it('should save settings when changed', async () => {
     const settings: TtsSettings = {
+      apiType: ApiType.Azure,
       volume: 0.8,
       pitch: 1.25,
       rate: 1.5,

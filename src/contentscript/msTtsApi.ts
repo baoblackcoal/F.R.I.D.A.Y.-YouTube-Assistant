@@ -4,6 +4,7 @@ import { settingsManager } from '../common/settingsManager';
 
 export interface IMsTtsApi {
     synthesizeSpeech(text: string): Promise<void>;
+    getVoices(): Promise<sdk.VoiceInfo[]>;
 }
 
 export class MsTtsApi implements IMsTtsApi {
@@ -41,6 +42,16 @@ export class MsTtsApi implements IMsTtsApi {
         // });
     }
 
+    async getVoices(): Promise<sdk.VoiceInfo[]> {
+        const voicesResult = await this.synthesizer?.getVoicesAsync();
+        if (!voicesResult) {
+            return [];
+        }
+        const voices = voicesResult.voices;
+        return voices;
+    }
+
+
     private initializeAudioConfig(): void {
         try {
             this.player = new sdk.SpeakerAudioDestination();
@@ -52,14 +63,6 @@ export class MsTtsApi implements IMsTtsApi {
         }
     }
 
-    private updateSynthesizer(): void {
-        // if (this.synthesizer) {
-        //     this.synthesizer.close();
-        // }
-        this.speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoyuMultilingualNeural";
-        // this.speechConfig.speechSynthesisVoiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
-        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);
-    }
 
     async synthesizeSpeech(text: string): Promise<void> {
         await this.updateTtsSettings();
@@ -104,8 +107,7 @@ export class MsTtsApi implements IMsTtsApi {
 
     private async updateTtsSettings(): Promise<void> {
         this.ttsSettings = await settingsManager.getTtsSettings();
-        this.ttsSettings.voiceName = "zh-CN-XiaoyuMultilingualNeural";
-        //this.updateSynthesizer();
+        this.ttsSettings.voiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
     }
 
     private generateSsml(text: string): string {

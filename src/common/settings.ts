@@ -1,5 +1,10 @@
 import { Env } from "./common";
 
+export enum ApiType {
+  Azure = "Azure",
+  Chrome = "Chrome",
+}
+
 // Define the TTS settings interface
 export interface TtsSettings {
   language: string;
@@ -7,6 +12,7 @@ export interface TtsSettings {
   rate: number;
   pitch: number;
   volume: number;
+  apiType: ApiType;
 }
 
 // Default TTS settings
@@ -17,7 +23,8 @@ export const defaultTtsSettings: TtsSettings = {
   voiceName: '',
   rate: 1.0, //only set to speedOptions
   pitch: 1.0, //only set to pitchOptions
-  volume: 1.0
+  volume: 1.0,
+  apiType: ApiType.Azure,
 };
 
 
@@ -107,6 +114,7 @@ export const testSettings: AbstractSettings = {
   tts: {
     ...defaultTtsSettings,
     rate: 1.25,
+    apiType: ApiType.Azure,
   },
 };
 

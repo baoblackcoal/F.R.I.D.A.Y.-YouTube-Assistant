@@ -1,8 +1,9 @@
-import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './common/settings';
+import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions, ApiType } from './common/settings';
 import { settingsManager } from './common/settingsManager';
 import { ITtsMessage } from './utils/messageQueue';
-import { TTSSpeak } from './contentscript/ttsSpeak';
+import { TTSSpeak, VoiceInfo } from './contentscript/ttsSpeak';
 import { listenToMessages } from './contentscript/msTtsService';
+import { MsTtsApi } from './contentscript/msTtsApi';
 
 const tts = TTSSpeak.getInstance();                
 
@@ -18,7 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let settingsTemp: TtsSettings = await settingsManager.getTtsSettings();
 
-    chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
+
+    tts.getVoiceNames((voices: VoiceInfo[]) => {
         listenToMessages();
         populateLanguageOptions(voices);
         populateVoiceOptions(voices);
@@ -30,6 +32,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         loadSavedSettings();
     });
+
+    // chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
+    //     listenToMessages();
+    //     populateLanguageOptions(voices);
+    //     populateVoiceOptions(voices);
+    //     populateSpeedAndPitchOptions();
+    //     languageSelect.addEventListener('change', () => {
+    //         populateVoiceOptions(voices);
+    //         populateSpeedAndPitchOptions();
+    //         saveSettings();
+    //     });
+    //     loadSavedSettings();
+    // });
 
     function populateLanguageOptions(voices: chrome.tts.TtsVoice[]) {
         const languages = new Set<string>();
@@ -110,7 +125,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             voiceName: languageSelect.value === '' ? '' : voiceSelect.value,
             rate: parseFloat(speedSelect.value),
             pitch: parseFloat(pitchSelect.value),
-            volume: parseFloat(volumeInput.value)
+            volume: parseFloat(volumeInput.value),
+            apiType: ApiType.Azure
         };
         settingsTemp = settings;
         await settingsManager.setTtsSettings(settings);
