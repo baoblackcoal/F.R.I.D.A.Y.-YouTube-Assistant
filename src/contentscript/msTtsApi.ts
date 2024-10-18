@@ -1,10 +1,10 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
-
+import { defaultTtsSettings, TtsSettings } from '../common/settings';
+import { settingsManager } from '../common/settingsManager';
 
 export interface IMsTtsApi {
     synthesizeSpeech(text: string): Promise<void>;
 }
-
 
 export class MsTtsApi implements IMsTtsApi {
     private static instance: MsTtsApi;
@@ -12,6 +12,8 @@ export class MsTtsApi implements IMsTtsApi {
     private audioConfig: sdk.AudioConfig | undefined;
     private synthesizer: sdk.SpeechSynthesizer | undefined;
     private player: sdk.SpeakerAudioDestination | undefined;
+    private ttsSettings: TtsSettings = defaultTtsSettings;
+    private useDefaultAudioOutput: boolean = false;
 
     static getInstance(): MsTtsApi {
         if (!MsTtsApi.instance) {
@@ -19,7 +21,6 @@ export class MsTtsApi implements IMsTtsApi {
         }
         return MsTtsApi.instance;
     }
-
 
     constructor() {
         const speechKey = process.env.SPEECH_KEY;
@@ -30,61 +31,105 @@ export class MsTtsApi implements IMsTtsApi {
         }
 
         this.speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, speechRegion);
-        // this.speechConfig.speechSynthesisVoiceName = "en-US-AvaMultilingualNeural";
+        this.initializeAudioConfig();
         this.speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoyuMultilingualNeural";
+        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);
 
-        this.player =new sdk.SpeakerAudioDestination();
+        // settingsManager.getTtsSettings().then(settings => {
+        //     this.ttsSettings = settings;
+        //     this.updateSynthesizer();
+        // });
+    }
 
-        this.audioConfig = sdk.AudioConfig.fromSpeakerOutput(this.player);    
-        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);       
+    private initializeAudioConfig(): void {
+        try {
+            this.player = new sdk.SpeakerAudioDestination();
+            this.audioConfig = sdk.AudioConfig.fromSpeakerOutput(this.player);
+        } catch (error) {
+            console.warn("Failed to initialize SpeakerAudioDestination. Falling back to default audio output.", error);
+            this.useDefaultAudioOutput = true;
+            this.audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
+        }
+    }
 
-        this.synthesizer?.getVoicesAsync().then(result => {                    
-            console.log("result: ", result);
-        });
-    }    
+    private updateSynthesizer(): void {
+        // if (this.synthesizer) {
+        //     this.synthesizer.close();
+        // }
+        this.speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoyuMultilingualNeural";
+        // this.speechConfig.speechSynthesisVoiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
+        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);
+    }
 
     async synthesizeSpeech(text: string): Promise<void> {
+        await this.updateTtsSettings();
+        const ssml = this.generateSsml(text);
+        
         return new Promise(async (resolve, reject) => {
-            async function callback(result: sdk.SpeechSynthesisResult, synthesizer: sdk.SpeechSynthesizer | undefined) {
-                
+            const callback = (result: sdk.SpeechSynthesisResult) => {
                 if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
                     console.log("Synthesis finished: ", text);
-                    // Calculate  result.audioDuration(100ns unit) of the audio to ms
-                    let audioDurationMs = result.audioDuration / 10000;    
-                    audioDurationMs = audioDurationMs - 2000; // for synthesis next time
-                    if (audioDurationMs < 0) {
-                        audioDurationMs = 0;
-                    }                    
-                    // console.log(`Estimated audio duration: ${audioDurationMs} ms`);
-                    // Set a timeout to simulate the Audio Play End event
+                    let audioDurationMs = result.audioDuration / 10000 - 2000;
+                    audioDurationMs = Math.max(audioDurationMs, 0);
                     setTimeout(() => {
-                        console.log('Audio Play End: Audio playback finished.');        
+                        console.log('Audio Play End: Audio playback finished.');
                         resolve();
-                    }, audioDurationMs); // Wait for the estimated duration        
+                    }, audioDurationMs);
                 } else {
                     console.log("Speech synthesis canceled: ", result.errorDetails);
+                    reject(new Error(result.errorDetails));
                 }
-            }
-            
-            console.log("Starting new synthesis");
+            };
+
             try {
-                this.synthesizer?.speakTextAsync(
-                    text,
-                    result => callback(result, this.synthesizer),
+                this.synthesizer?.speakSsmlAsync(
+                    ssml,
+                // this.synthesizer?.speakTextAsync(
+                //     text,
+                    result => callback(result),
                     error => {
-                        console.error("Error during synthesis1: ", error);
+                        console.error("Error during synthesis 1: ", error);
                         this.synthesizer?.close();
                         this.synthesizer = undefined;
                         reject(error);
                     }
                 );
             } catch (error) {
-                console.error("Error during synthesis2: ", error);
+                console.error("Error during synthesis 2: ", error);
                 this.synthesizer?.close();
-                // reject(error);
+                //reject(error);
             }
-
         });
     }
-}
 
+    private async updateTtsSettings(): Promise<void> {
+        this.ttsSettings = await settingsManager.getTtsSettings();
+        this.ttsSettings.voiceName = "zh-CN-XiaoyuMultilingualNeural";
+        //this.updateSynthesizer();
+    }
+
+    private generateSsml(text: string): string {
+        // <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${this.ttsSettings.language}">
+
+        function formatPercentage(value: number): string {
+            const percentage = (value - 1) * 100;
+            const sign = percentage >= 0 ? '+' : '-';
+            return `${sign}${Math.abs(percentage).toFixed(0)}%`;
+        }
+
+        const rateString = formatPercentage(this.ttsSettings.rate);
+        const pitchString = formatPercentage(this.ttsSettings.pitch);
+        // change volume(0-1) to %
+        const volumeString = formatPercentage(this.ttsSettings.volume);
+
+        return `
+            <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN">
+                <voice name="${this.ttsSettings.voiceName}">
+                    <prosody rate="${rateString}" pitch="${pitchString}" volume="${volumeString}">
+                        ${text}
+                    </prosody>
+                </voice>
+            </speak>
+        `;
+    }
+}

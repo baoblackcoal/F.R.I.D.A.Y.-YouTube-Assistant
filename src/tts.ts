@@ -2,6 +2,7 @@ import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitch
 import { settingsManager } from './common/settingsManager';
 import { ITtsMessage } from './utils/messageQueue';
 import { TTSSpeak } from './contentscript/ttsSpeak';
+import { listenToMessages } from './contentscript/msTtsService';
 
 const tts = TTSSpeak.getInstance();                
 
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let settingsTemp: TtsSettings = await settingsManager.getTtsSettings();
 
     chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
+        listenToMessages();
         populateLanguageOptions(voices);
         populateVoiceOptions(voices);
         populateSpeedAndPitchOptions();
