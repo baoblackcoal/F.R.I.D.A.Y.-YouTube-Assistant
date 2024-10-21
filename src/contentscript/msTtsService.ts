@@ -9,15 +9,24 @@ export class MsTtsService implements ITtsService {
     private speakTextArray: { text: string, index: number }[] = [];
     private isProcessing: boolean = false;
     private stopStreamSpeakFlag: boolean = false;
+    private isFirstSpeak: boolean = true;
     private settingsManager: ISettingsManager;
     private msTtsApi: MsTtsApi;
     private messageObserver: MessageObserver;
     private isSpeaking: boolean = false;
+    private notifyTtsSpeakingTextFromAzureCallback: (index: number) => void;
 
     constructor(settingsManager: ISettingsManager) {
         this.settingsManager = settingsManager;
         this.msTtsApi = MsTtsApi.getInstance();
         this.messageObserver = MessageObserver.getInstance();
+        // this.messageObserver.addObserverTtsMessage({ action: 'ttsSpeakingTextFromAzure' }, (message: ITtsMessage) => {
+        //     this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingText', index: message.index! });
+        // });
+        this.notifyTtsSpeakingTextFromAzureCallback = (index: number) => {
+            this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingText', index: index! });
+            // this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingTextFromAzure', index: index });
+        }
     }
 
     async speakText(text: string, index: number, sender: chrome.runtime.MessageSender = {}, playVideo: () => void = () => { }): Promise<void> {
@@ -48,10 +57,20 @@ export class MsTtsService implements ITtsService {
             if (nextText) {
                 try {
                     this.isSpeaking = true;
-                    this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingText', index: nextText.index });
+
+                    // Delay 2000ms for the first time, and 0ms for the next time
+                    if (this.isFirstSpeak) {
+                        this.isFirstSpeak = false;
+                        // this.messageObserver.notifyObserversTtsMessage({ action: 'ttsSpeakingTextFromAzure', index: nextText.index });
+                        this.notifyTtsSpeakingTextFromAzureCallback(nextText.index);
+                    } else {
+                        this.msTtsApi.setHighlightIndex(nextText.index);
+                    } 
+
+
                     this.messageObserver.notifyObserversTtsMessage({ action: 'ttsEnableAccpetMessage', index: nextText.index });
                     this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: true });     
-                    await this.msTtsApi.synthesizeSpeech(nextText.text);               
+                    await this.msTtsApi.synthesizeSpeech(nextText.text, this.notifyTtsSpeakingTextFromAzureCallback, nextText.index);               
                 } catch (error) {
                     console.error("Error during speech synthesis: ", error);
                 }
@@ -67,6 +86,8 @@ export class MsTtsService implements ITtsService {
     }
 
     stopStreamSpeak(): void {
+        this.msTtsApi.stopSynthesis();
+        this.isFirstSpeak = true;
         this.stopStreamSpeakFlag = true;
         this.isProcessing = false;
         this.speakTextArray = [];
@@ -74,6 +95,8 @@ export class MsTtsService implements ITtsService {
     }
 
     resetStreamSpeak(): void {
+        this.msTtsApi.resetSynthesis();
+        this.isFirstSpeak = true;
         this.isProcessing = false;
         this.stopStreamSpeakFlag = false;
         this.speakTextArray = [];

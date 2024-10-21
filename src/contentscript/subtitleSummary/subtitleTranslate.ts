@@ -256,6 +256,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         const tts = this.tts;
 
         resetHighlightText();
+        await tts.stop();
         await tts.resetStreamSpeak();
         // automatically speak from current paragraph to the end of the ".ytbs_content" element.
         const contentElement = document.querySelector(".ytbs_content");

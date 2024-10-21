@@ -1,10 +1,16 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import { defaultTtsSettings, TtsSettings } from '../common/settings';
 import { settingsManager } from '../common/settingsManager';
+import { logTime } from './utils';
 
 export interface IMsTtsApi {
     synthesizeSpeech(text: string): Promise<void>;
     getVoices(): Promise<sdk.VoiceInfo[]>;
+}
+
+interface IAudioEndFunction {
+    index: number;
+    func: (index: number) => void;
 }
 
 export class MsTtsApi implements IMsTtsApi {
@@ -15,6 +21,11 @@ export class MsTtsApi implements IMsTtsApi {
     private player: sdk.SpeakerAudioDestination | undefined;
     private ttsSettings: TtsSettings = defaultTtsSettings;
     private useDefaultAudioOutput: boolean = false;
+    private audioEndFunctions: IAudioEndFunction[] = [];
+    private lastSynthesisSpeedMs: number = 0;
+    private highlightIndex: number = 0;
+    private synthesisTimeoutId: NodeJS.Timeout | undefined;
+    private audioEndTimeoutId: NodeJS.Timeout | undefined;
 
     static getInstance(): MsTtsApi {
         if (!MsTtsApi.instance) {
@@ -33,13 +44,7 @@ export class MsTtsApi implements IMsTtsApi {
 
         this.speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, speechRegion);
         this.initializeAudioConfig();
-        this.speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoyuMultilingualNeural";
-        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);
-
-        // settingsManager.getTtsSettings().then(settings => {
-        //     this.ttsSettings = settings;
-        //     this.updateSynthesizer();
-        // });
+        // this.speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoyuMultilingualNeural";
     }
 
     async getVoices(): Promise<sdk.VoiceInfo[]> {
@@ -61,10 +66,36 @@ export class MsTtsApi implements IMsTtsApi {
             this.useDefaultAudioOutput = true;
             this.audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
         }
+        this.synthesizer = new sdk.SpeechSynthesizer(this.speechConfig, this.audioConfig);        
+    }
+
+    setHighlightIndex(index: number): void {
+        this.highlightIndex = index;
+    }
+
+    stopSynthesis(): void {
+        this.lastSynthesisSpeedMs = 0;
+        try {
+            this.synthesisTimeoutId && clearTimeout(this.synthesisTimeoutId);
+            this.audioEndTimeoutId && clearTimeout(this.audioEndTimeoutId);
+            this.player!.pause();
+            // this.player?.close();
+            this.synthesizer!.close();
+        } catch (error) {
+            console.warn("Error during stop synthesis: ", error);
+        }
+    }
+
+    resetSynthesis(): void {
+        this.stopSynthesis();
+        this.initializeAudioConfig();
     }
 
 
-    async synthesizeSpeech(text: string): Promise<void> {
+    async synthesizeSpeech(text: string, notifyTtsSpeakingTextCallback: (index: number) => void = () => {}, index: number = 0): Promise<void> {
+        //get time
+        const startTime = performance.now();       
+
         await this.updateTtsSettings();
         const ssml = this.generateSsml(text);
         
@@ -72,12 +103,30 @@ export class MsTtsApi implements IMsTtsApi {
             const callback = (result: sdk.SpeechSynthesisResult) => {
                 if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
                     console.log("Synthesis finished: ", text);
-                    let audioDurationMs = result.audioDuration / 10000 - 2000;
-                    audioDurationMs = Math.max(audioDurationMs, 0);
-                    setTimeout(() => {
-                        console.log('Audio Play End: Audio playback finished.');
+                    const audioDurationMs = result.audioDuration / 10000;
+                    console.log("Audio duration: ", audioDurationMs);
+                    let synthesisSpeedMs = 2000;
+                    let synthesisNextDeylayMs = audioDurationMs - synthesisSpeedMs;
+                    if (audioDurationMs < 2000) {
+                        synthesisSpeedMs = audioDurationMs;
+                        synthesisNextDeylayMs = audioDurationMs;
+                    }
+                    const synthesisTime = performance.now() - startTime;
+                    const synthesisDeylayMs = synthesisNextDeylayMs + this.lastSynthesisSpeedMs - synthesisTime;
+
+                    this.synthesisTimeoutId = setTimeout(() => {
+                        console.log('Synthesis next text.');
+                        this.synthesisTimeoutId = undefined;
                         resolve();
+                    }, synthesisDeylayMs);
+
+                    this.audioEndTimeoutId = setTimeout(() => {
+                        console.log('Audio Play End: Audio playback finished.index:', this.highlightIndex);
+                        notifyTtsSpeakingTextCallback(this.highlightIndex);
+                        this.audioEndTimeoutId = undefined;
                     }, audioDurationMs);
+                    
+                    this.lastSynthesisSpeedMs = synthesisSpeedMs;                    
                 } else {
                     console.log("Speech synthesis canceled: ", result.errorDetails);
                     reject(new Error(result.errorDetails));
@@ -105,9 +154,12 @@ export class MsTtsApi implements IMsTtsApi {
         });
     }
 
+     
+
     private async updateTtsSettings(): Promise<void> {
         this.ttsSettings = await settingsManager.getTtsSettings();
-        this.ttsSettings.voiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
+        // this.ttsSettings.voiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
+        this.ttsSettings.voiceName = this.ttsSettings.voiceName || "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaorouNeural)"
     }
 
     private generateSsml(text: string): string {
