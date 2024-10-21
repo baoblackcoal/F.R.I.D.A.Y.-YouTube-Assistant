@@ -113,7 +113,7 @@ export const testSettings: AbstractSettings = {
   },
   tts: {
     ...defaultTtsSettings,
-    rate: 1.25,
+    rate: 1,
     apiType: ApiType.Azure,
   },
 };

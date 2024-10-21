@@ -22,7 +22,7 @@ export class MessageObserver implements IMessageObserver {
     private static instance: MessageObserver;
     private observerType: ObserverType = ObserverType.Callback;
     private ttsHandlers: Map<string, TtsMessageHandler[]> = new Map();
-    private handlers: Map<string, MessageHandler[]> = new Map();
+    // private handlers: Map<string, MessageHandler[]> = new Map();
     
 
     public setObserverType(observerType: ObserverType): void {
@@ -39,9 +39,7 @@ export class MessageObserver implements IMessageObserver {
 
     addObserverTtsMessage(message: ITtsMessage, handler: TtsMessageHandler): void {
         if (this.observerType === ObserverType.Callback) {
-            if (!this.ttsHandlers.has(message.action)) {
-                this.ttsHandlers.set(message.action, []);
-            }
+            this.ttsHandlers.set(message.action, []);
             this.ttsHandlers.get(message.action)?.push(handler);
         }else {
             chrome.runtime.onMessage.addListener((_message, sender, sendResponse) => {

@@ -163,18 +163,18 @@ export class MsTtsApi implements IMsTtsApi {
     }
 
     private generateSsml(text: string): string {
-        // <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${this.ttsSettings.language}">
-
         function formatPercentage(value: number): string {
             const percentage = (value - 1) * 100;
             const sign = percentage >= 0 ? '+' : '-';
             return `${sign}${Math.abs(percentage).toFixed(0)}%`;
         }
-
+        
         const rateString = formatPercentage(this.ttsSettings.rate);
         const pitchString = formatPercentage(this.ttsSettings.pitch);
         // change volume(0-1) to %
         const volumeString = formatPercentage(this.ttsSettings.volume);
+        //delet * in text
+        text = text.replace(/\*/g, '');
 
         return `
             <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN">
