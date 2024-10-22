@@ -179,7 +179,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             }
 
             const translateTextLength = translateText.length;
-            if (!isError && (isFirstConversation && !finish && (translateTextLength < 500 || translateTextLength > 4000))) {
+            if (!isError && (isFirstConversation && !finish && (translateTextLength < 500 || translateTextLength > 8000))) {
                 console.log("translateTextLength=", translateTextLength);
                 isError = true;
                 errorType = ErrorType.FirstConversationOutputSizeError;
@@ -211,6 +211,20 @@ class SubtitleTranslator implements ISubtitleTranslator {
             //get the first translated_content from translatedTextArray
             let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
             translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+
+            //delete '\n' if paragraph length is less than 50 
+            let deleteCount = 0;
+            for (let i = 0; i < translatedText.length; i++) {
+                deleteCount++;
+                if (translatedText.charAt(i) === '\n') {
+                    if (deleteCount < 50) { 
+                        translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
+                    } else {
+                        deleteCount = 0;
+                    }
+                }
+            }
+
             translatedText.split('\n').forEach(line => {
                 const newElement = document.createElement('p');
                 newElement.innerHTML = line;
