@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const diyPromptText3Input = document.getElementById('diyPromptText3') as HTMLTextAreaElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
     const stopVideoFirstCheckbox = document.getElementById('autoTtsSpeak') as HTMLInputElement;
+    const autoSummaryCheckbox = document.getElementById('autoSummary') as HTMLInputElement;
 
     populateLanguageSelect();
 
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     diyPromptText3Input.value = summarySettings.diyPromptText3 || defaultSummarySettings.diyPromptText3;
     languageSelect.value = summarySettings.language || defaultSummarySettings.language;
     stopVideoFirstCheckbox.checked = summarySettings.autoTtsSpeak || defaultSummarySettings.autoTtsSpeak;
-
+    autoSummaryCheckbox.checked = summarySettings.autoSummary || defaultSummarySettings.autoSummary;
     function populateLanguageSelect() {
         Object.entries(Language).forEach(([key, value]) => {
             const option = document.createElement('option');
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             diyPromptText3: diyPromptText3Input.value,
             language: languageSelect.value,
             autoTtsSpeak: stopVideoFirstCheckbox.checked,
+            autoSummary: autoSummaryCheckbox.checked,
         };
 
 

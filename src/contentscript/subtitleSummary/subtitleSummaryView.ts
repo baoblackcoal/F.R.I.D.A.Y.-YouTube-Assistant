@@ -20,8 +20,9 @@ export function insertSummaryButtonView() {
 export function getSubtitleSummaryView() {
     return `<div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
                     <div id="ytbs_control_panel" style="justify-content: space-between; margin-bottom: 10px;">
-                        <button id="ytbs_speak">Speak</button>
+                        <button id="ytbs_auto_summary">Summary</button>
                         <button id="ytbs_auto_speak">Auto Speak</button>
+                        <button id="ytbs_speak">Speak</button>
                         <button id="ytbs_copy">Copy</button>
                         <button id="ytbs_download">Download</button>
                         <button id="ytbs_language">English</button>
@@ -52,8 +53,21 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonCopyHandle();
     buttonDownloadHandle();
     handleTtsSpeakingText();
+    buttonAutoSummaryHandle();
 
-    subtitleSummaryHandle(videoId, subtitleTranslate);
+    handleAutoSummary(videoId);
+}
+
+async function handleAutoSummary(videoId: string): Promise<void> {
+    const autoSummary = (await getSettings()).summary.autoSummary;
+    if (autoSummary) {
+        subtitleSummaryHandle(videoId, subtitleTranslate);
+    } else {
+        const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
+        if (ytbs_content) {
+            ytbs_content.innerHTML = "Summary disabled.";
+        }
+    }
 }
 
 const messageObserver = MessageObserver.getInstance();
@@ -103,6 +117,28 @@ export function resetHighlightText(): void {
     currentHightlightIndex = 0;
     if (currentHightlightNode) {
         currentHightlightNode.style.backgroundColor = "white";
+    }
+}
+
+function buttonAutoSummaryHandle(): void {
+    async function updateAutoSummaryButtonDisplay(){
+        const buttonAutoSummary = document.getElementById("ytbs_auto_summary");
+        if (buttonAutoSummary) {
+            const settings = await getSettings();
+            buttonAutoSummary.textContent = settings.summary.autoSummary ? "Summary: ON" : "Summary: OFF";            
+        } 
+    }
+    updateAutoSummaryButtonDisplay();
+    const buttonAutoSummary = document.getElementById("ytbs_auto_summary");
+    if (buttonAutoSummary) {
+        buttonAutoSummary.addEventListener("click", async () => {
+            console.log("ytbs_auto_summary clicked");
+            const settings = await getSettings();
+            settings.summary.autoSummary = !settings.summary.autoSummary;
+            await settingsManager.setSummarySettings(settings.summary);
+            await updateAutoSummaryButtonDisplay();           
+            window.location.reload();
+        });
     }
 }
 
@@ -222,7 +258,7 @@ function buttonAutoSpeakHandle(): void {
             settings.summary.autoTtsSpeak = !settings.summary.autoTtsSpeak;
             await settingsManager.setSummarySettings(settings.summary);
             await updateAutoSpeakButtonDisplay(buttonAutoSpeak);
-            console.log(`Auto Speak set to ${settings.summary.autoTtsSpeak}`);
+            window.location.reload();
         });
     }
 }

@@ -50,6 +50,7 @@ export interface SummarySettings {
   diyPromptText3: string;
   language: string;
   autoTtsSpeak: boolean; // After the YouTube video page loads, pause the video. Let TTS speak the summary, then resume the video once it's done.
+  autoSummary: boolean; // After the YouTube video page loads, pause the video. Let TTS speak the summary, then resume the video once it's done.
 }
 
 export const defaultSummarySettings: SummarySettings = {
@@ -59,6 +60,7 @@ export const defaultSummarySettings: SummarySettings = {
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
   language: Language.English.toString(),
   autoTtsSpeak: false,
+  autoSummary: true,
 };  
 
 
@@ -105,7 +107,8 @@ export const testSettings: AbstractSettings = {
     diyPromptText2: "hi",
     diyPromptText3: "hello",
     language: Language.Simplified_Chinese.toString(),
-    autoTtsSpeak: false
+    autoTtsSpeak: true,
+    autoSummary: true,
   },
   llm: {
     ...defaultLlmModel,

@@ -154,7 +154,7 @@ function playVideo() {
 }
 export async function resetPlayPauseFlag(): Promise<void> {
     const summarySettings = await settingsManager.getSummarySettings();
-    playPauseFlag = summarySettings.autoTtsSpeak;
+    playPauseFlag = summarySettings.autoTtsSpeak && summarySettings.autoSummary;
 }
 export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
