@@ -10,7 +10,7 @@ import { waitForPlayer } from './subtitleSummary/subtitleSummary';
 
 import { globalConfig } from '../common/config';
 import { logTime, waitForElm } from "./utils";
-import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/subtitleSummaryView";
+import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
 
 function getVideoId(): string {
     return getSearchParam(window.location.href).v || '';

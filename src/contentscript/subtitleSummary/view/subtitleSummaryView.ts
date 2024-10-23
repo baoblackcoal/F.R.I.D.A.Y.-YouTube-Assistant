@@ -1,14 +1,14 @@
-import { AbstractSettings, Language } from '../../common/settings';
-import { TTSSpeak } from '../ttsSpeak';
-import { settingsManager } from '../../common/settingsManager';
-import { getVideoTitle, subtitleSummaryHandle } from './subtitleSummary';
-import { logTime, waitForElm } from '../utils';
-import { subtitleTranslate } from './subtitleTranslate';
-import { copyTextToClipboard } from '../copy';
-import { listenToMessages } from '../../contentscript/msTtsService';
-import { MessageObserver } from '../../utils/messageObserver';
-import { ITtsMessage } from '../../utils/messageQueue';
-import { responseOk } from '../../common/common';
+import { AbstractSettings, Language } from '../../../common/settings';
+import { TTSSpeak } from '../../ttsSpeak';
+import { settingsManager } from '../../../common/settingsManager';
+import { getVideoTitle, subtitleSummaryHandle } from '../subtitleSummary';
+import { logTime, waitForElm } from '../../utils';
+import { subtitleTranslate } from '../subtitleTranslate';
+import { copyTextToClipboard } from '../../copy';
+import { listenToMessages } from '../../msTtsService';
+import { MessageObserver } from '../../../utils/messageObserver';
+import { ITtsMessage } from '../../../utils/messageQueue';
+import { responseOk } from '../../../common/common';
 
 // Interfaces
 interface IButtonHandler {

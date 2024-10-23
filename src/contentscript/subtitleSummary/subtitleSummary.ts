@@ -5,7 +5,7 @@ import { TTSSpeak } from '../ttsSpeak';
 import { SummarySettings, defaultSummarySettings, Language } from '../../common/settings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
-import { handleSubtitleSummaryView } from "./subtitleSummaryView";
+import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 import { MessageObserver } from "../../utils/messageObserver";
 import { ITtsMessage } from "../../utils/messageQueue";
