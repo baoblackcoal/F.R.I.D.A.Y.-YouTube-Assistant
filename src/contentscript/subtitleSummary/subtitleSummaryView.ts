@@ -24,10 +24,9 @@ export function getSubtitleSummaryView() {
                         <button id="ytbs_auto_speak">Auto Speak</button>
                         <button id="ytbs_play_pause">Pause</button>
                         <button id="ytbs_speak">Speak</button>
-                        <button id="ytbs_copy">Copy</button>
-                        <button id="ytbs_download">Download</button>
                         <button id="ytbs_language">English</button>
                         <button id="ytbs_settings">Settings</button>
+                        <button id="ytbs_more_btn">More</button>
                     </div>
                      <div id="ytbs_summary_status"  style="margin-bottom: 10px;"> </div>
 
@@ -51,8 +50,7 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonLanguageHandle();
     buttonSettingsHandle();
     buttonSummaryToggleHandle();
-    buttonCopyHandle();
-    buttonDownloadHandle();
+    buttonMoreHandle();
     handleTtsSpeakingText();
     buttonAutoSummaryHandle();
     buttonPlayPauseHandle();
@@ -193,33 +191,94 @@ function buttonAutoSummaryHandle(): void {
     }
 }
 
-function buttonCopyHandle(): void {
-    const buttonCopy = document.getElementById("ytbs_copy");
-    if (buttonCopy) {
-        buttonCopy.addEventListener("click", () => {
-            const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
-            copyTextToClipboard(text);
+function buttonMoreHandle(): void {
+    const buttonMore = document.getElementById("ytbs_more_btn");
+    if (buttonMore) {
+        buttonMore.addEventListener("click", (event) => {
+            event.stopPropagation(); // Prevent immediate closing
+            openMorePopup(buttonMore);
         });
     }
 }
 
-function buttonDownloadHandle(): void {
-    const buttonDownload = document.getElementById("ytbs_download");
-    if (buttonDownload) {
-        buttonDownload.addEventListener("click", async () => {
-            const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const videoTitle = await getVideoTitle();
-            a.download = `${videoTitle}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);   
-        });
+function openMorePopup(buttonMore: HTMLElement): void {
+    // Remove existing popup if any
+    const existingPopup = document.getElementById("ytbs_more_popup");
+    if (existingPopup) {
+        existingPopup.remove();
     }
+
+    const popupHtml = `
+        <div id="ytbs_more_popup" style="position: absolute; background-color: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 9999;">
+            <button id="ytbs_popup_copy">Copy</button>
+            <button id="ytbs_popup_download">Download</button>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', popupHtml);
+
+    const popup = document.getElementById("ytbs_more_popup");
+    if (popup) {
+        // Position the popup near the More button
+        const rect = buttonMore.getBoundingClientRect();
+        popup.style.top = `${rect.bottom + window.scrollY}px`;
+        popup.style.left = `${rect.left + window.scrollX}px`;
+
+        document.getElementById("ytbs_popup_copy")?.addEventListener("click", handleCopy);
+        document.getElementById("ytbs_popup_download")?.addEventListener("click", handleDownload);
+
+        // Close popup when clicking outside
+        document.addEventListener('click', closePopupOnClickOutside);
+    }
+}
+
+function closePopupOnClickOutside(event: MouseEvent): void {
+    const popup = document.getElementById("ytbs_more_popup");
+    if (popup && !popup.contains(event.target as Node)) {
+        popup.remove();
+        document.removeEventListener('click', closePopupOnClickOutside);
+    }
+}
+
+function showToast(message: string): void {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 10000;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+async function handleCopy(): Promise<void> {
+    const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+    await copyTextToClipboard(text);
+    showToast("Content copied to clipboard!");
+}
+
+async function handleDownload(): Promise<void> {
+    const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const videoTitle = await getVideoTitle();
+    a.download = `${videoTitle}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Content downloaded!");
 }
 
 const timeoutPromise = new Promise<void>((_, reject) => {
@@ -356,6 +415,8 @@ function buttonSummaryToggleHandle(): void {
         });
     }
 }
+
+
 
 
 
