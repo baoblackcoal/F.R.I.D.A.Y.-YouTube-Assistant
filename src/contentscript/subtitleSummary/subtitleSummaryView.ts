@@ -65,7 +65,7 @@ async function handleAutoSummary(videoId: string): Promise<void> {
     } else {
         const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
         if (ytbs_content) {
-            ytbs_content.innerHTML = "Summary disabled.";
+            ytbs_content.innerHTML = "Summary disable.";
         }
     }
 }
