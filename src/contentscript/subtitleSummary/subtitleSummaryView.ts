@@ -22,6 +22,7 @@ export function getSubtitleSummaryView() {
                     <div id="ytbs_control_panel" style="justify-content: space-between; margin-bottom: 10px;">
                         <button id="ytbs_auto_summary">Summary</button>
                         <button id="ytbs_auto_speak">Auto Speak</button>
+                        <button id="ytbs_play_pause">Pause</button>
                         <button id="ytbs_speak">Speak</button>
                         <button id="ytbs_copy">Copy</button>
                         <button id="ytbs_download">Download</button>
@@ -54,7 +55,7 @@ export async function handleSubtitleSummaryView(videoId: string): Promise<void> 
     buttonDownloadHandle();
     handleTtsSpeakingText();
     buttonAutoSummaryHandle();
-
+    buttonPlayPauseHandle();
     handleAutoSummary(videoId);
 }
 
@@ -74,6 +75,7 @@ const messageObserver = MessageObserver.getInstance();
 let currentHightlightIndex = 0;
 let isHandTtsSpeakingText = false;
 let currentHightlightNode: HTMLElement | null = null;
+let currentReadIndex = 0;
 function handleTtsSpeakingText(): void {
     messageObserver.addObserverTtsMessage({ action: 'ttsSpeakingText' }, (message: ITtsMessage) => {
         if (isHandTtsSpeakingText) {
@@ -82,6 +84,7 @@ function handleTtsSpeakingText(): void {
         isHandTtsSpeakingText = true;   
 
         let ttsTextIndex = message.index;
+        currentReadIndex = ttsTextIndex ?? 0;
 
         //search text from ytbs_content all content, and highlight font color to red of the text
         const ytbs_content = document.querySelector(".ytbs_content") as HTMLElement;
@@ -119,6 +122,54 @@ export function resetHighlightText(): void {
         currentHightlightNode.style.backgroundColor = "white";
     }
 }
+
+function buttonPlayPauseHandle(): void {
+    async function updatePlayPauseButtonDisplay(){
+        const buttonPlayPause = document.getElementById("ytbs_play_pause");
+        if (buttonPlayPause) {
+            if (await tts.isSpeaking()) {
+                buttonPlayPause.textContent = "Pause";
+            } else {
+                buttonPlayPause.textContent = "Play";
+            }
+        } 
+    }
+
+    // update the display of the speak button every 3 seconds
+    setInterval(updatePlayPauseButtonDisplay, 3000);
+    
+    const buttonPlayPause = document.getElementById("ytbs_play_pause");
+
+    // click buttonSpeak, call tts.speak()
+    if (buttonPlayPause) {
+        buttonPlayPause.addEventListener("click", async () => {
+            console.log("ytbs_play_pause clicked");
+            const parser = new DOMParser();
+
+            if (await tts.isSpeaking()) {
+                await tts.stop();
+                buttonPlayPause.textContent = "Play";
+            } else {
+                await tts.resetStreamSpeak();
+                const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
+                const childNodes = tempElement.children;
+                for (let i = 0; i < childNodes.length; i++) {
+                    const node = childNodes[i];
+                    if (node instanceof HTMLElement) {
+                        const speakIndex = Number(node.getAttribute('speak-index') ?? -1);
+                        if (speakIndex >= currentReadIndex) {
+                            const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
+                            tts.speak(textStream, speakIndex);
+                        }
+                    }
+                }
+                buttonPlayPause.textContent = "Pause";
+            }
+        });
+    }
+
+}
+
 
 function buttonAutoSummaryHandle(): void {
     async function updateAutoSummaryButtonDisplay(){
