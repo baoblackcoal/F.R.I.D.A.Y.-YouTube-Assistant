@@ -28,11 +28,22 @@ export class SubtitleSummaryView {
     }
 
     async init(videoId: string): Promise<void> {
+        await this.reloadPage();
         await listenToMessages();
         await this.resetWhenPageChange();
         initializeButtons(this.tts, this);
         this.handleTtsSpeakingText();
         await this.handleAutoSummary(videoId, subtitleTranslate);
+    }
+
+    //reload page when background send reloadPage message "reloadPage"
+    async reloadPage(): Promise<void> {
+        const message: ITtsMessage = { action: 'reloadPage' };
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message.action === 'reloadPage') {
+                window.location.reload();
+            }
+        });
     }
 
     getCurrentIndex(): number {
@@ -105,18 +116,123 @@ export function insertSummaryButtonView(): void {
 
 export function getSubtitleSummaryView(): string {
     return `
-        <div class="ytbs_container" style="font-size: 15px; background-color: rgb(255, 255, 255);  padding:6px;">
-            <div id="ytbs_control_panel" style="justify-content: space-between; margin-bottom: 10px;">
-                <button id="ytbs_auto_summary">Summary</button>
-                <button id="ytbs_auto_speak">Auto Speak</button>
-                <button id="ytbs_play_pause">Pause</button>
-                <button id="ytbs_speak">Speak</button>
-                <button id="ytbs_language">English</button>
-                <button id="ytbs_settings">Settings</button>
-                <button id="ytbs_more_btn">More</button>
+        <div class="ytbs_container" style="
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            background-color: var(--yt-spec-base-background);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin: 8px 0;
+        ">
+            <div id="ytbs_control_panel" style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 16px;
+                align-items: center;
+                gap: 12px;
+            ">
+                <div class="ytbs_left_controls" style="display: flex; gap: 8px;">
+                    <button id="ytbs_play_pause" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">Pause</button>
+                    <button id="ytbs_speak" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">Speak</button>
+                    <button id="ytbs_language" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">English</button>
+                </div>
+
+                <div id="ytbs_summary_title" style="
+                    color: var(--yt-spec-text-primary);
+                    font-size: 16px;
+                    font-weight: 500;
+                    flex-grow: 1;
+                    text-align: center;
+                ">YouTube Summary</div>
+
+                <div class="ytbs_right_controls" style="display: flex; gap: 8px;">
+                    <button id="ytbs_auto_summary" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">Summary</button>
+                    <button id="ytbs_auto_speak" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">Auto Speak</button>
+                    <button id="ytbs_settings" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">Settings</button>
+                    <button id="ytbs_more_btn" style="
+                        background-color: var(--yt-spec-badge-chip-background);
+                        color: var(--yt-spec-text-primary);
+                        border: none;
+                        border-radius: 18px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                    ">More</button>
+                </div>
             </div>
-            <div id="ytbs_summary_status" style="margin-bottom: 10px;"> </div>
-            <div class="ytbs_content"> </div>    
+            <div id="ytbs_summary_status" style="
+                margin-bottom: 12px;
+                color: var(--yt-spec-text-secondary);
+                font-size: 13px;
+            "> </div>
+            <div class="ytbs_content" style="
+                color: var(--yt-spec-text-primary);
+                line-height: 1.6;
+                padding: 8px 0;
+            "> </div>    
         </div>
     `;
 }

@@ -31,6 +31,8 @@ export class TTSSpeak implements TTSInterface {
     private static instance: TTSSpeak;
     private _isSpeaking: boolean = false;
     private messageObserver: MessageObserver;
+    private checkSpeakingAddObservered : boolean = false;
+
     private constructor() {
         this.messageObserver = MessageObserver.getInstance();
     }
@@ -138,14 +140,12 @@ export class TTSSpeak implements TTSInterface {
     }
 
     isSpeaking(): boolean {
-        this.messageObserver.addObserverTtsMessage({ action: 'ttsCheckSpeaking' }, (message: any) => {
-            this._isSpeaking = message!.speaking;
-        });
-        // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {       
-        //     if (message.action === 'ttsCheckSpeaking') {
-        //         this._isSpeaking = message.speaking;
-        //     }
-        // });
+        if (!this.checkSpeakingAddObservered) {
+            this.checkSpeakingAddObservered = true;
+            this.messageObserver.addObserverTtsMessage({ action: 'ttsCheckSpeaking' }, (message: any) => {
+                this._isSpeaking = message!.speaking;
+            });
+        }
         return this._isSpeaking;
     }
 }

@@ -1,5 +1,7 @@
 import { ITtsMessage } from "./messageQueue";
 import { responseOk, responseNoHandlers } from "../common/common";
+import { settingsManager } from "../common/settingsManager";
+import { ApiType } from "../common/settings";
 
 // Define a type for the observer function
 export type TtsMessageHandler = (message: ITtsMessage) => any;
@@ -20,13 +22,14 @@ export interface IMessageObserver {
 
 export class MessageObserver implements IMessageObserver {
     private static instance: MessageObserver;
-    private observerType: ObserverType = ObserverType.Callback;
+    private observerType: ObserverType = ObserverType.ChromeMessage;
     private ttsHandlers: Map<string, TtsMessageHandler[]> = new Map();
     // private handlers: Map<string, MessageHandler[]> = new Map();
     
 
-    public setObserverType(observerType: ObserverType): void {
-        this.observerType = observerType;
+    public async updateObserverType(): Promise<void> {
+        const ttsSettings = await settingsManager.getTtsSettings();
+        this.observerType = ttsSettings.apiType === ApiType.Azure ? ObserverType.Callback : ObserverType.ChromeMessage;      
     }
 
     // Static method to get the singleton instance
@@ -41,6 +44,7 @@ export class MessageObserver implements IMessageObserver {
         if (this.observerType === ObserverType.Callback) {
             this.ttsHandlers.set(message.action, []);
             this.ttsHandlers.get(message.action)?.push(handler);
+            console.log(`Added handler for message type ${message.action}`);
         }else {
             chrome.runtime.onMessage.addListener((_message, sender, sendResponse) => {
                 if (_message && _message.action === message.action) {

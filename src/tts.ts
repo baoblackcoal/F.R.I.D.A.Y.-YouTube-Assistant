@@ -4,10 +4,13 @@ import { ITtsMessage } from './utils/messageQueue';
 import { TTSSpeak, VoiceInfo } from './contentscript/ttsSpeak';
 import { listenToMessages } from './contentscript/msTtsService';
 import { MsTtsApi } from './contentscript/msTtsApi';
+import { MessageObserver } from './utils/messageObserver';
 
-const tts = TTSSpeak.getInstance();                
+const tts = TTSSpeak.getInstance(); 
+let azureTtsListend = false;               
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const ttsTypeSelect = document.getElementById('ttsType') as HTMLSelectElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
     const voiceSelect = document.getElementById('voiceName') as HTMLSelectElement;
     const speedSelect = document.getElementById('speed') as HTMLSelectElement;
@@ -18,33 +21,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resetButton = document.getElementById('reset') as HTMLButtonElement;
 
     let settingsTemp: TtsSettings = await settingsManager.getTtsSettings();
+    const messageObserver = MessageObserver.getInstance();
 
 
-    tts.getVoiceNames((voices: VoiceInfo[]) => {
-        listenToMessages();
-        populateLanguageOptions(voices);
-        populateVoiceOptions(voices);
-        populateSpeedAndPitchOptions();
-        languageSelect.addEventListener('change', () => {
+
+    async function loadTtsVoices() {  
+        const settings = await settingsManager.getTtsSettings();
+        if (settings.apiType === ApiType.Azure && !azureTtsListend) {
+            azureTtsListend = true;
+            await messageObserver.updateObserverType();
+            listenToMessages();            
+        }        
+
+
+        tts.getVoiceNames((voices: VoiceInfo[]) => {
+            populateLanguageOptions(voices);
             populateVoiceOptions(voices);
             populateSpeedAndPitchOptions();
-            saveSettings();
+            populateTtsTypeOptions();
+            // languageSelect.addEventListener('change', () => {
+            //     populateVoiceOptions(voices);
+            //     populateSpeedAndPitchOptions();
+            //     saveSettings();
+            // });
+            // ttsTypeSelect.addEventListener('change', () => {
+            //     populateLanguageOptions(voices);
+            //     populateVoiceOptions(voices);
+            //     populateSpeedAndPitchOptions();
+            //     saveSettings();
+            // });
+            loadSavedSettings();
         });
-        loadSavedSettings();
-    });
+    }
 
-    // chrome.tts.getVoices((voices: chrome.tts.TtsVoice[]) => {
-    //     listenToMessages();
-    //     populateLanguageOptions(voices);
-    //     populateVoiceOptions(voices);
-    //     populateSpeedAndPitchOptions();
-    //     languageSelect.addEventListener('change', () => {
-    //         populateVoiceOptions(voices);
-    //         populateSpeedAndPitchOptions();
-    //         saveSettings();
-    //     });
-    //     loadSavedSettings();
-    // });
+    loadTtsVoices();
+
+    
+    function populateTtsTypeOptions() {
+        ttsTypeSelect.innerHTML = '';
+        Object.values(ApiType).forEach((apiType) => {
+            const option = document.createElement('option');
+            option.textContent = apiType;
+            ttsTypeSelect.appendChild(option);
+        });
+        ttsTypeSelect.value = settingsTemp.apiType;
+    }
+    
+    ttsTypeSelect.addEventListener('change', () => {
+        settingsTemp.apiType = ttsTypeSelect.value as ApiType;
+        settingsTemp.language = '';
+        settingsTemp.voiceName = '';
+        languageSelect.value = '';
+        voiceSelect.value = '';
+        saveSettings();
+        loadTtsVoices();
+        
+        //send message to background to reload page
+        const message: ITtsMessage = { action: 'reloadPage' };
+        chrome.runtime.sendMessage(message);
+
+        tts.speak(' ');//update messageObserver
+    });
 
     function populateLanguageOptions(voices: chrome.tts.TtsVoice[]) {
         const languages = new Set<string>();
@@ -62,6 +99,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             option.textContent = language;
             languageSelect.appendChild(option);
         });
+
+        languageSelect.value = settingsTemp.language;
     }
 
     function populateVoiceOptions(voices: chrome.tts.TtsVoice[]) {
@@ -82,6 +121,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (selectedLanguage === '') {
             voiceSelect.value = '';
+        } else {
+            voiceSelect.value = settingsTemp.voiceName;
         }
     }
 
@@ -121,25 +162,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function saveSettings() {
         const settings: TtsSettings = {
+            apiType: ttsTypeSelect.value as ApiType,
             language: languageSelect.value,
-            voiceName: languageSelect.value === '' ? '' : voiceSelect.value,
+            voiceName: voiceSelect.value,
             rate: parseFloat(speedSelect.value),
             pitch: parseFloat(pitchSelect.value),
             volume: parseFloat(volumeInput.value),
-            apiType: ApiType.Azure
         };
         settingsTemp = settings;
         await settingsManager.setTtsSettings(settings);
     }
 
-    [languageSelect, voiceSelect, speedSelect, pitchSelect, volumeInput].forEach(
+    languageSelect.addEventListener('change', () => {
+        if (voiceSelect.value === '') {
+            voiceSelect.value = '';
+        }
+        saveSettings();
+    });
+
+    [voiceSelect, speedSelect, pitchSelect, volumeInput].forEach(
         (element) => element.addEventListener('change', saveSettings)
     );
 
     testButton.addEventListener('click', () => {
         fetch('languageStrings.json')
             .then(response => response.json())
-            .then(languageStrings => {
+            .then(async (languageStrings) => {
                 const selectedLanguage = languageSelect.value;
                 const testText = languageStrings[selectedLanguage] || "Good day, world! May your moments be filled with peace.";
                 console.log(testText);
@@ -148,19 +196,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     action: 'speak',
                     text: testText,
                 };
-                tts.speak(testText);
-                // chrome.runtime.sendMessage(message);
-                //     text: testText,
-                // });
+                await tts.resetStreamSpeak();
+                await tts.speak(testText);
             })
             .catch(error => console.error('Error loading language strings:', error));
     });
 
     stopButton.addEventListener('click', () => {
         tts.stop();
-        // chrome.runtime.sendMessage({
-        //     action: 'ttsStop',
-        // });
     });
 
     resetButton.addEventListener('click', async () => {

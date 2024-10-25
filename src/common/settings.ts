@@ -117,7 +117,7 @@ export const testSettings: AbstractSettings = {
   tts: {
     ...defaultTtsSettings,
     rate: 1,
-    apiType: ApiType.Azure,
+    apiType: ApiType.Chrome,
   },
 };
 
