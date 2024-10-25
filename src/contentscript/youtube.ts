@@ -45,22 +45,23 @@ export async function insertSummaryBtn(): Promise<void> {
 
         // Place Script Div
         document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", `
-            <div class="yt_ai_summary_container" style="width: 100%;">
+            <div class="yt_ai_summary_container" style="
+                font-family: 'Roboto', sans-serif;
+                font-size: 14px;
+                background-color: var(--yt-spec-badge-chip-background);
+                border-radius: 12px;
+                border-color: var(--yt-spec-base-background);
+                padding: 16px;
+                margin: 8px 12px 0px 0px;">
 
                 ${getSubtitleSummaryView()}
 
                 <div id="yt_ai_summary_header" class="yt_ai_summary_header">
-                    <a href="https://glasp.co/youtube-summary" target="_blank" style="width: 24px;height: 24px;">
-                        ${getLogoSvg()}
-                    </a>
-                    <p class="yt_ai_summary_header_text">Transcript & Summary</p>
+                    <p> </p>
+                    
+                    <p class="yt_ai_summary_header_text">Transcript</p>
                     <div class="yt_ai_summary_header_actions">
-                        <div id="yt_ai_summary_header_summary" class="yt_ai_summary_header_action_btn yt-summary-hover-el yt_ai_summary_icon" data-hover-label="View AI Summary\n(Open New Tab)">
-                            ${getSummarySvg()}
-                        </div>
-                        <div id="yt_ai_summary_header_track" class="yt_ai_summary_header_action_btn yt-summary-hover-el" data-hover-label="Jump to Current Time">
-                            ${getTrackSvg()}
-                        </div>
+                        
                         <div id="yt_ai_summary_header_copy" class="yt_ai_summary_header_action_btn yt-summary-hover-el" data-hover-label="Copy Transcript\n(Plain Text)">
                             ${getCopySvg()}
                         </div>
@@ -100,21 +101,21 @@ export async function insertSummaryBtn(): Promise<void> {
             copyTranscript(videoId);
         })
 
-        // Event Listener: AI Summary
-        document.querySelector("#yt_ai_summary_header_summary")!.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const prompt = copyTranscriptAndPrompt();
-            setTimeout(() => {
-                chrome.runtime.sendMessage({ message: "setPrompt", prompt: prompt });
-                window.open("https://chat.openai.com/chat?ref=glasp", "_blank");
-            }, 500);
-        })
+        // // Event Listener: AI Summary
+        // document.querySelector("#yt_ai_summary_header_summary")!.addEventListener("click", (e) => {
+        //     e.stopPropagation();
+        //     const prompt = copyTranscriptAndPrompt();
+        //     setTimeout(() => {
+        //         chrome.runtime.sendMessage({ message: "setPrompt", prompt: prompt });
+        //         window.open("https://chat.openai.com/chat?ref=glasp", "_blank");
+        //     }, 500);
+        // })
 
-        // Event Listener: Jump to Current Timestamp
-        document.querySelector("#yt_ai_summary_header_track")!.addEventListener("click", (e) => {
-            e.stopPropagation();
-            scrollIntoCurrTimeDiv();
-        })
+        // // Event Listener: Jump to Current Timestamp
+        // document.querySelector("#yt_ai_summary_header_track")!.addEventListener("click", (e) => {
+        //     e.stopPropagation();
+        //     scrollIntoCurrTimeDiv();
+        // })
 
         // Event Listener: Toggle Transcript Body
         document.querySelector("#yt_ai_summary_header")!.addEventListener("click", async (e) => {
@@ -160,8 +161,8 @@ function sanitizeWidget(): void {
     // Toggle Class List
     (document.querySelector("#yt_ai_summary_body") as HTMLElement).classList.toggle("yt_ai_summary_body_show");
     (document.querySelector("#yt_ai_summary_header_copy") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
-    (document.querySelector("#yt_ai_summary_header_summary") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
-    (document.querySelector("#yt_ai_summary_header_track") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
+    // (document.querySelector("#yt_ai_summary_header_summary") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
+    // (document.querySelector("#yt_ai_summary_header_track") as HTMLElement).classList.toggle("yt_ai_summary_header_icon_show");
     (document.querySelector("#yt_ai_summary_header_toggle") as HTMLElement).classList.toggle("yt_ai_summary_header_toggle_rotate");
 }
 

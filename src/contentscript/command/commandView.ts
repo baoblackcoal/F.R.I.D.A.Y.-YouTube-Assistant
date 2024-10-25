@@ -9,20 +9,20 @@ export function insertCommandContainer(): void {
             #ytbs_test_container {
                 position: fixed;
                 bottom: 20px;
-                left: 20px;
+                right: 20px;
                 z-index: 9999;
                 background: rgba(33, 33, 33, 0.95);
                 padding: 10px;
                 border-radius: 4px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                 cursor: move;
-                min-width: 500px;
+                min-width: 300px;
             }
             #ytbs_test_container * {
                 cursor: default;
             }
             #ytbs_test_command {
-                width: 480px;
+                width: 280px;
                 padding: 8px;
                 border: 1px solid #666;
                 border-radius: 4px;
@@ -31,7 +31,7 @@ export function insertCommandContainer(): void {
                 margin-bottom: 8px;
             }
             #ytbs_test_output {
-                width: 480px;
+                width: 280px;
                 padding: 8px;
                 min-height: 20px;
                 color: #fff;

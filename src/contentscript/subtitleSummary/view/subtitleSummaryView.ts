@@ -12,7 +12,7 @@ import { subtitleTranslate } from '../subtitleTranslate';
 
 // Constants
 const HIGHLIGHT_COLOR = "yellow";
-const DEFAULT_COLOR = "white";
+const DEFAULT_COLOR = "transparent";
 const TIMEOUT_MS = 5000;
 
 // Main view class
@@ -74,8 +74,10 @@ export class SubtitleSummaryView {
                     if (speakIndex === ttsTextIndex) {
                         this.currentHighlightNode = node;
                         node.style.backgroundColor = HIGHLIGHT_COLOR;
+                        node.style.color = "black";
                     } else {
                         node.style.backgroundColor = DEFAULT_COLOR;
+                        node.style.color = "var(--yt-spec-text-primary)";
                     }
                 }
             });
@@ -118,12 +120,7 @@ export function getSubtitleSummaryView(): string {
     return `
         <div class="ytbs_container" style="
             font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            background-color: var(--yt-spec-base-background);
-            border-radius: 12px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            padding: 16px;
-            margin: 8px 0;
+            font-size: 15px;           
         ">
             <div id="ytbs_control_panel" style="
                 display: flex;
