@@ -7,7 +7,7 @@ import { copyTextToClipboard } from "./copy";
 import { getLogoSvg, getSummarySvg, getTrackSvg, getCopySvg, getToggleSvg } from './svgs';
 import { commandHandle } from './command/command';
 import { waitForPlayer } from './subtitleSummary/subtitleSummary';
-
+import { insertCommandContainer } from './command/commandView';
 import { globalConfig } from '../common/config';
 import { logTime, waitForElm } from "./utils";
 import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
@@ -18,22 +18,12 @@ function getVideoId(): string {
 
 
 export async function insertSummaryBtn(): Promise<void> {
-    let commandContainerHTML = "";
-    if (globalConfig.devTestCommandOpen) {
-        commandContainerHTML = `
-        <div id="ytbs_test_container">
-            <input type="text" id="ytbs_test_command">
-            <div id="ytbs_test_output"></div>
-        </div>
-        `;
-    } else {
-        commandContainerHTML = ""
-    }
-
     // log time ms   
     logTime("insertSummaryBtn");
 
     insertSummaryButtonView();
+
+    insertCommandContainer();
     
     waitForPlayer();
 
@@ -56,8 +46,6 @@ export async function insertSummaryBtn(): Promise<void> {
         // Place Script Div
         document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", `
             <div class="yt_ai_summary_container" style="width: 100%;">
-
-                ${commandContainerHTML}
 
                 ${getSubtitleSummaryView()}
 
