@@ -281,7 +281,6 @@ class SubtitleTranslator implements ISubtitleTranslator {
             const parser = new DOMParser();
             for (let i = 0; i < paragraphs.length; i++) {
                 const paragraph = paragraphs[i] as HTMLElement;
-                paragraph.style.backgroundColor = 'white';
                 let speakIndex = Number(paragraph.getAttribute('speak-index')!);
                 // skip the before paragraph
                 if (speakIndex === speakIndexParagraphStart) {
@@ -294,9 +293,6 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 await tts.speak(text, speakIndex);
             }
             tts.speakFinsh(getTtsSpeakIndex());
-        }
-        if (paragraphStart instanceof HTMLElement) {
-            paragraphStart.style.backgroundColor = 'yellow';
         }
     }
 }

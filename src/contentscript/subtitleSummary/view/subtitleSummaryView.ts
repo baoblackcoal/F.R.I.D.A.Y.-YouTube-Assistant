@@ -11,7 +11,7 @@ import { waitForElm } from '../../utils';
 import { subtitleTranslate } from '../subtitleTranslate';
 
 // Constants
-const HIGHLIGHT_COLOR = "yellow";
+const HIGHLIGHT_COLOR = "lightskyblue";
 const DEFAULT_COLOR = "transparent";
 const TIMEOUT_MS = 5000;
 
@@ -171,6 +171,7 @@ export function getSubtitleSummaryView(): string {
                     font-weight: 500;
                     flex-grow: 1;
                     text-align: center;
+                    width: auto;
                 ">YouTube Summary</div>
 
                 <div class="ytbs_right_controls" style="display: flex; gap: 8px;">

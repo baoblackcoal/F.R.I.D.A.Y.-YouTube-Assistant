@@ -52,6 +52,7 @@ export async function insertSummaryBtn(): Promise<void> {
                 border-radius: 12px;
                 border-color: var(--yt-spec-base-background);
                 padding: 16px;
+                width: -webkit-fill-available;
                 margin: 8px 12px 0px 0px;">
 
                 ${getSubtitleSummaryView()}
