@@ -44,7 +44,7 @@ module.exports = (env, argv) => {
     entry: {
       'contentscript/index': path.join(__dirname, "src", "contentscript", "index.ts"),
       popup: './src/popup.ts',
-      options: './src/options.ts',
+      options: './src/option/options.ts',
       background: './src/background/background.ts',
       tts: './src/tts.ts'
     },
@@ -83,8 +83,8 @@ module.exports = (env, argv) => {
           { from: 'src/popup.css', to: 'popup.css' },
           { from: 'src/languageStrings.json', to: 'languageStrings.json' },
           { from: 'src/48.png', to: '48.png' },
-          { from: 'src/options.html', to: 'options.html' },
-          { from: 'src/options.css', to: 'options.css' },
+          { from: 'src/option/options.html', to: 'options.html' },
+          { from: 'src/option/options.css', to: 'options.css' },
         ]
       }),
       new webpack.DefinePlugin({
