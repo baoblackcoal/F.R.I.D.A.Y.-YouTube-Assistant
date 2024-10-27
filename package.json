@@ -10,8 +10,11 @@
     "babel-loader": "^8.2.5",
     "copy-webpack-plugin": "^10.2.4",
     "cross-env": "^7.0.3",
+    "css-loader": "^7.1.2",
     "jest": "^29.7.0",
     "jest-puppeteer": "^10.1.1",
+    "mini-css-extract-plugin": "^2.9.1",
+    "postcss-loader": "^8.1.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.2.6",
@@ -21,16 +24,20 @@
   },
   "scripts": {
     "clean": "rimraf dist/*",
-    "build": "npm run clean && webpack --config webpack.config.js",
+    "build:css": "tailwindcss -i ./src/option/options.css -o ./dist/options.css",
+    "build": "npm run clean && npm run build:css && webpack --config webpack.config.js",
     "test": "jest",
-    "build-release": "npm run clean && cross-env NODE_ENV=production webpack"
+    "build-release": "npm run clean && npm run build:css && cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
     "@google/generative-ai": "^0.17.1",
+    "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "jquery": "^3.6.2",
     "marked": "^14.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "^1.40.0"
+    "microsoft-cognitiveservices-speech-sdk": "^1.40.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   }
 }

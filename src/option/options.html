@@ -3,86 +3,71 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Extension Options</title>
+    <title>YouTube Summary Settings</title>
     <link rel="stylesheet" href="options.css">
 </head>
-<body>
-    <div class="container">
-        <h1>Extension Options</h1>
-        <div class="option-group">
-            <label for="geminiApiKey">Gemini API Key:</label>
-            <input type="text" id="geminiApiKey" />
-        </div>
-        <div class="option-group">
-            <label for="language">Summary Language:</label>
-            <select id="language"></select>
-        </div>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-5xl mx-auto px-4 py-4">
+                <h1 class="text-2xl font-bold text-gray-900">YouTube Summary Settings</h1>
+            </div>
+        </header>
 
-        <div class="option-group">
-            <label for="autoSummary">
-                <input type="checkbox" id="autoSummary">
-                Summary: After the YouTube video page loads, summarize the video.
-            </label>
-        </div>
-
-        <div class="option-group">
-            <label for="autoTtsSpeak">
-                <input type="checkbox" id="autoTtsSpeak">
-                Auto TTS Speak: After the YouTube video page loads, pause the video. Let TTS speak the summary, then resume the video once it's done.
-            </label>
-        </div>
-        
-        <div id="prompt-settings"  class="prompt-settings-box" >
-            <div class="option-group">
-                <label for="promptType">Prompt Type:</label>
-                <select id="promptType">
-                    <option value="0">Default</option>
-                    <option value="1">Custom Prompt 1</option>
-                    <option value="2">Custom Prompt 2</option>
-                    <option value="3">Custom Prompt 3</option>
-                </select>
-            </div>
-            <div class="option-group">
-                <label for="defaultPromptText">Default Prompt (Read-only):</label>
-                <div class="truncate-wrapper">
-                    <textarea id="defaultPromptText" rows="2" readonly></textarea>
-                    <button class="expand-btn" data-target="defaultPromptText">Expand</button>
-                </div>
-            </div>
-            <div class="option-group">
-                <label for="diyPromptText1">Custom Prompt 1:</label>
-                <div class="truncate-wrapper">
-                    <textarea id="diyPromptText1" rows="2"></textarea>
-                    <button class="expand-btn" data-target="diyPromptText1">Expand</button>
-                </div>
-            </div>
-            <div class="option-group">
-                <label for="diyPromptText2">Custom Prompt 2:</label>
-                <div class="truncate-wrapper">
-                    <textarea id="diyPromptText2" rows="2"></textarea>
-                    <button class="expand-btn" data-target="diyPromptText2">Expand</button>
-                </div>
-            </div>
-            <div class="option-group">
-                <label for="diyPromptText3">Custom Prompt 3:</label>
-                <div class="truncate-wrapper">
-                    <textarea id="diyPromptText3" rows="2"></textarea>
-                    <button class="expand-btn" data-target="diyPromptText3">Expand</button>
-                </div>
+        <!-- Main Content -->
+        <main class="max-w-5xl mx-auto px-4 py-6">
+            <!-- Tab Navigation -->
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8" aria-label="Tabs">
+                    <button id="tab-general" 
+                            class="tab-button border-b-2 border-blue-500 py-4 px-1 text-sm font-medium text-blue-600"
+                            aria-current="page">
+                        General
+                    </button>
+                    <button id="tab-summary" 
+                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Summary
+                    </button>
+                    <button id="tab-tts" 
+                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        TTS
+                    </button>
+                    <button id="tab-demo" 
+                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Widgets Demo
+                    </button>
+                </nav>
             </div>
 
-            <div id="prompt-info">
-                <p>When creating custom prompts, you can use the following variables:</p>
-                <ul>
-                    <li><code>{videoTitle}</code>: The title of the YouTube video</li>
-                    <li><code>{textTranscript}</code>: The full transcript of the video</li>
-                    <li><code>{language}</code>: The language of the video</li>
-                </ul>
+            <!-- Tab Content -->
+            <div class="mt-6">
+                <div id="content-general" class="tab-content"></div>
+                <div id="content-summary" class="tab-content hidden"></div>
+                <div id="content-tts" class="tab-content hidden"></div>
+                <div id="content-demo" class="tab-content hidden"></div>
             </div>
-        </div>
 
-        <button id="saveBtn">Save</button>
+            <!-- Footer Actions -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <button id="resetBtn" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Reset to Default
+                </button>
+                <button id="saveBtn" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Save Changes
+                </button>
+            </div>
+        </main>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" 
+         class="fixed bottom-4 right-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-lg transform transition-transform duration-300 translate-y-full">
+        Settings saved successfully
+    </div>
+
     <script src="options.bundle.js"></script>
 </body>
 </html>

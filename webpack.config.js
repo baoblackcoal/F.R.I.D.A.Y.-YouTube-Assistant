@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ const fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf",
 const moduleRules = [
   {
     test: /\.css$/,
-    use: ["style-loader", "css-loader"],
+    use: ["style-loader", "css-loader", "postcss-loader"],
     exclude: /node_modules/
   },
   {
@@ -84,7 +85,7 @@ module.exports = (env, argv) => {
           { from: 'src/languageStrings.json', to: 'languageStrings.json' },
           { from: 'src/48.png', to: '48.png' },
           { from: 'src/option/options.html', to: 'options.html' },
-          { from: 'src/option/options.css', to: 'options.css' },
+          // { from: 'src/option/options.css', to: 'options.css' },
         ]
       }),
       new webpack.DefinePlugin({
@@ -92,7 +93,10 @@ module.exports = (env, argv) => {
         'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
         'process.env.SPEECH_KEY': JSON.stringify(process.env.SPEECH_KEY),
         'process.env.SPEECH_REGION': JSON.stringify(process.env.SPEECH_REGION)
-      })
+      }),
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+      }),
     ],
     resolve: {
       extensions: ['.ts', '.js']
