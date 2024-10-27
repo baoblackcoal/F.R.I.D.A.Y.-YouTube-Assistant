@@ -4,200 +4,187 @@ import { Icons } from '../common/icons';
 export class DemoPage {
   private container: HTMLElement;
   private widgets: WidgetDemoConfig[] = [
-    // Button Examples
+    // Button Section
     {
-      id: 'primary-btn',
-      label: 'Primary Button',
-      type: 'button',
-      props: { text: 'Submit', variant: 'primary' }
-    },
-    {
-      id: 'secondary-btn',
-      label: 'Secondary Button',
-      type: 'button',
-      props: { text: 'Cancel', variant: 'secondary' }
-    },
-    
-    // Text Input Examples
-    {
-      id: 'text-input',
-      label: 'Text Input',
-      type: 'text',
-      props: { placeholder: 'Enter your name...', type: 'text' }
-    },
-    {
-      id: 'password-input',
-      label: 'Password Input',
-      type: 'text',
-      props: { placeholder: 'Enter password...', type: 'password' }
+      id: 'buttons',
+      label: 'Buttons',
+      type: 'section',
+      items: [
+        {
+          id: 'primary-btn',
+          label: 'Primary Button',
+          type: 'button',
+          props: { text: 'Submit', variant: 'primary' }
+        },
+        {
+          id: 'secondary-btn',
+          label: 'Secondary Button',
+          type: 'button',
+          props: { text: 'Cancel', variant: 'secondary' }
+        }
+      ]
     },
 
-    // Checkbox Examples
+    // Input Fields Section
     {
-      id: 'checkbox-1',
-      label: 'Checkbox with Label',
-      type: 'checkbox',
-      props: { text: 'Enable notifications', checked: true }
-    },
-    {
-      id: 'checkbox-2',
-      label: 'Disabled Checkbox',
-      type: 'checkbox',
-      props: { text: 'Disabled option', disabled: true }
+      id: 'inputs',
+      label: 'Input Fields',
+      type: 'section',
+      items: [
+        {
+          id: 'text-input',
+          label: 'Text Input',
+          type: 'text',
+          props: { placeholder: 'Enter your name...', type: 'text' }
+        },
+        {
+          id: 'password-input',
+          label: 'Password Input',
+          type: 'text',
+          props: { placeholder: 'Enter password...', type: 'password' }
+        }
+      ]
     },
 
-    // Radio Button Examples
+    // Toggle Options Section
     {
-      id: 'radio-group',
+      id: 'toggles',
+      label: 'Toggle Options',
+      type: 'section',
+      items: [
+        {
+          id: 'checkbox-1',
+          label: 'Enable notifications',
+          type: 'checkbox',
+          props: { checked: true }
+        },
+        {
+          id: 'checkbox-2',
+          label: 'Auto-play videos',
+          type: 'checkbox',
+          props: { checked: false }
+        }
+      ]
+    },
+
+    // Radio Options Section
+    {
+      id: 'radio-options',
       label: 'Language Selection',
-      type: 'radio',
-      props: {
-        name: 'language',
-        options: [
-          { value: 'en', label: 'English' },
-          { value: 'es', label: 'Spanish' },
-          { value: 'fr', label: 'French' }
-        ]
-      }
+      type: 'section',
+      items: [
+        {
+          id: 'radio-group',
+          label: 'Select your preferred language',
+          type: 'radio',
+          props: {
+            name: 'language',
+            options: [
+              { value: 'en', label: 'English' },
+              { value: 'es', label: 'Spanish' },
+              { value: 'fr', label: 'French' }
+            ]
+          }
+        }
+      ]
     },
 
-    // Dropdown Example
+    // Dropdown Section
     {
-      id: 'dropdown',
-      label: 'Theme Selection',
-      type: 'dropdown',
-      props: {
-        options: [
-          { value: 'light', label: 'Light Theme' },
-          { value: 'dark', label: 'Dark Theme' },
-          { value: 'system', label: 'System Default' }
-        ]
-      }
+      id: 'dropdowns',
+      label: 'Dropdown Menus',
+      type: 'section',
+      items: [
+        {
+          id: 'theme-dropdown',
+          label: 'Theme Selection',
+          type: 'dropdown',
+          props: {
+            options: [
+              { value: 'light', label: 'Light Theme' },
+              { value: 'dark', label: 'Dark Theme' },
+              { value: 'system', label: 'System Default' }
+            ]
+          }
+        }
+      ]
     },
 
-    // Label Examples
+    // Slider Controls Section
     {
-      id: 'label-info',
-      label: 'Information Label',
-      type: 'label',
-      props: { 
-        text: 'This is an informative label',
-        variant: 'info'
-      }
-    },
-    {
-      id: 'label-warning',
-      label: 'Warning Label',
-      type: 'label',
-      props: {
-        text: 'This is a warning message',
-        variant: 'warning'
-      }
-    },
-
-    // Slider Example
-    {
-      id: 'volume-slider',
-      label: 'Volume Control',
-      type: 'slider',
-      props: {
-        min: 0,
-        max: 100,
-        value: 50,
-        step: 1
-      }
-    },
-
-    // Progress Bar Examples
-    {
-      id: 'progress-determinate',
-      label: 'Download Progress',
-      type: 'progress',
-      props: {
-        value: 70,
-        max: 100,
-        variant: 'determinate'
-      }
-    },
-    {
-      id: 'progress-indeterminate',
-      label: 'Loading',
-      type: 'progress',
-      props: {
-        variant: 'indeterminate'
-      }
-    },
-
-    // Icon Examples
-    {
-      id: 'icon-home',
-      label: 'Home Icon',
-      type: 'icon',
-      props: {
-        name: 'home',
-        size: 24,
-        color: 'blue'
-      }
-    },
-    {
-      id: 'icon-settings',
-      label: 'Settings Icon',
-      type: 'icon',
-      props: {
-        name: 'settings',
-        size: 24,
-        color: 'gray'
-      }
-    },
-
-    // Toggle Switch Examples
-    {
-      id: 'toggle-theme',
-      label: 'Dark Mode',
-      type: 'toggle',
-      props: {
-        checked: false,
-        onText: 'ON',
-        offText: 'OFF'
-      }
-    },
-
-    // Picture & Label Examples
-    {
-      id: 'picture-label-1',
-      label: 'Feature Preview',
-      type: 'picture',
-      props: {
-        src: 'path/to/feature-image.png',
-        alt: 'Feature preview',
-        caption: 'New features coming soon'
-      }
+      id: 'sliders',
+      label: 'Slider Controls',
+      type: 'section',
+      items: [
+        {
+          id: 'volume-slider',
+          label: 'Volume Control',
+          type: 'slider',
+          props: {
+            min: 0,
+            max: 100,
+            value: 50,
+            step: 1
+          }
+        }
+      ]
     }
   ];
 
   constructor() {
     this.container = document.createElement('div');
-    this.container.className = 'p-6 space-y-6';
+    this.container.className = 'demo-page';
     this.init();
   }
 
-  private createWidget(config: WidgetDemoConfig): HTMLElement {
+  private createSection(config: WidgetDemoConfig): HTMLElement {
+    const section = document.createElement('div');
+    section.className = 'settings-section';
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+
+    const title = document.createElement('h2');
+    title.className = 'section-title';
+    title.textContent = config.label;
+
+    header.appendChild(title);
+    section.appendChild(header);
+
+    if (config.items) {
+      const content = document.createElement('div');
+      content.className = 'section-content';
+
+      config.items.forEach(item => {
+        const widgetWrapper = this.createWidgetWrapper(item);
+        content.appendChild(widgetWrapper);
+      });
+
+      section.appendChild(content);
+    }
+
+    return section;
+  }
+
+  private createWidgetWrapper(config: WidgetDemoConfig): HTMLElement {
     const wrapper = document.createElement('div');
-    wrapper.className = 'widget-demo-item p-4 border rounded-lg';
+    wrapper.className = 'widget-wrapper';
 
-    const label = document.createElement('label');
-    label.textContent = config.label;
-    label.className = 'block text-sm font-medium text-gray-700 mb-2';
+    const labelWrapper = document.createElement('div');
+    labelWrapper.className = 'widget-label';
+    labelWrapper.textContent = config.label;
 
-    const widget = this.renderWidget(config);
-    
-    wrapper.appendChild(label);
-    wrapper.appendChild(widget);
-    
+    const controlWrapper = document.createElement('div');
+    controlWrapper.className = 'widget-control';
+    controlWrapper.appendChild(this.createWidget(config));
+
+    wrapper.appendChild(labelWrapper);
+    wrapper.appendChild(controlWrapper);
+
     return wrapper;
   }
 
-  private renderWidget(config: WidgetDemoConfig): HTMLElement {
+  private createWidget(config: WidgetDemoConfig): HTMLElement {
     switch (config.type) {
       case 'button':
         return this.createButton(config);
@@ -209,18 +196,8 @@ export class DemoPage {
         return this.createRadioGroup(config);
       case 'dropdown':
         return this.createDropdown(config);
-      case 'label':
-        return this.createLabel(config);
       case 'slider':
         return this.createSlider(config);
-      case 'progress':
-        return this.createProgressBar(config);
-      case 'icon':
-        return this.createIcon(config);
-      case 'toggle':
-        return this.createToggle(config);
-      case 'picture':
-        return this.createPictureLabel(config);
       default:
         return document.createElement('div');
     }
@@ -303,18 +280,6 @@ export class DemoPage {
     return select;
   }
 
-  private createLabel(config: WidgetDemoConfig): HTMLDivElement {
-    const label = document.createElement('div');
-    const variant = config.props?.variant || 'info';
-    
-    label.className = variant === 'warning'
-      ? 'px-4 py-2 bg-yellow-100 text-yellow-800 rounded-md'
-      : 'px-4 py-2 bg-blue-100 text-blue-800 rounded-md';
-    
-    label.textContent = config.props?.text || '';
-    return label;
-  }
-
   private createSlider(config: WidgetDemoConfig): HTMLInputElement {
     const slider = document.createElement('input');
     slider.type = 'range';
@@ -326,87 +291,15 @@ export class DemoPage {
     return slider;
   }
 
-  private createProgressBar(config: WidgetDemoConfig): HTMLDivElement {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'w-full bg-gray-200 rounded-full h-2.5';
-
-    if (config.props?.variant === 'indeterminate') {
-      wrapper.innerHTML = `
-        <div class="bg-blue-600 h-2.5 rounded-full w-1/2 animate-[loading_1s_ease-in-out_infinite]"></div>
-      `;
-    } else {
-      const progress = document.createElement('div');
-      progress.className = 'bg-blue-600 h-2.5 rounded-full';
-      progress.style.width = `${config.props?.value || 0}%`;
-      wrapper.appendChild(progress);
-    }
-
-    return wrapper;
-  }
-
-  private createIcon(config: WidgetDemoConfig): HTMLElement {
-    const icon = document.createElement('span');
-    icon.className = `icon-${config.props?.name} text-${config.props?.color}-600`;
-    icon.style.fontSize = `${config.props?.size || 24}px`;
-    icon.innerHTML = Icons[config.props?.name] || '';
-    return icon;
-  }
-
-  private createToggle(config: WidgetDemoConfig): HTMLDivElement {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'flex items-center space-x-2';
-
-    const toggle = document.createElement('button');
-    toggle.className = `
-      relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 
-      border-transparent transition-colors duration-200 ease-in-out focus:outline-none 
-      ${config.props?.checked ? 'bg-blue-600' : 'bg-gray-200'}
-    `;
-    
-    const toggleInner = document.createElement('span');
-    toggleInner.className = `
-      pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow 
-      ring-0 transition duration-200 ease-in-out
-      ${config.props?.checked ? 'translate-x-5' : 'translate-x-0'}
-    `;
-
-    toggle.appendChild(toggleInner);
-    wrapper.appendChild(toggle);
-    return wrapper;
-  }
-
-  private createPictureLabel(config: WidgetDemoConfig): HTMLDivElement {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'space-y-2';
-
-    const picture = document.createElement('img');
-    picture.src = config.props?.src || '';
-    picture.alt = config.props?.alt || '';
-    picture.className = 'w-full h-32 object-cover rounded-lg';
-
-    const caption = document.createElement('p');
-    caption.className = 'text-sm text-gray-600 text-center';
-    caption.textContent = config.props?.caption || '';
-
-    wrapper.appendChild(picture);
-    wrapper.appendChild(caption);
-    return wrapper;
-  }
-
   private init(): void {
-    const title = document.createElement('h2');
-    title.className = 'text-2xl font-bold mb-6';
+    const title = document.createElement('h1');
+    title.className = 'page-title';
     title.textContent = 'Widget Demo';
     this.container.appendChild(title);
 
-    const grid = document.createElement('div');
-    grid.className = 'grid grid-cols-2 gap-6';
-
     this.widgets.forEach(widget => {
-      grid.appendChild(this.createWidget(widget));
+      this.container.appendChild(this.createSection(widget));
     });
-
-    this.container.appendChild(grid);
   }
 
   public getElement(): HTMLElement {

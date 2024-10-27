@@ -4,12 +4,14 @@ export interface TabConfig {
   component: () => HTMLElement;
 }
 
+// Update WidgetDemoConfig to support sections
 export interface WidgetDemoConfig {
   id: string;
   label: string;
-  type: 'button' | 'text' | 'checkbox' | 'radio' | 'dropdown' | 'label' | 
-        'slider' | 'progress' | 'icon' | 'toggle' | 'picture';
+  type: 'section' | 'button' | 'text' | 'checkbox' | 'radio' | 'dropdown' | 
+        'label' | 'slider' | 'progress' | 'icon' | 'toggle' | 'picture';
   props?: Record<string, any>;
+  items?: WidgetDemoConfig[]; // Add support for nested items in sections
 }
 
 export interface Language {
