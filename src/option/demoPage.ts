@@ -4,6 +4,79 @@ import { Icons } from '../common/icons';
 export class DemoPage {
   private container: HTMLElement;
   private widgets: WidgetDemoConfig[] = [
+    // Code Examples Section
+    {
+      id: 'code-examples',
+      label: 'Component Examples',
+      type: 'section',
+      items: [
+        {
+          id: 'button-code',
+          label: 'Button Component',
+          type: 'code',
+          props: {
+            language: 'typescript',
+            code: `
+interface ButtonProps {
+  text: string;
+  variant: 'primary' | 'secondary';
+  onClick?: () => void;
+}
+
+const Button: React.FC<ButtonProps> = ({ 
+  text, 
+  variant = 'primary',
+  onClick 
+}) => {
+  return (
+    <button
+      className={\`btn btn-\${variant}\`}
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
+};`,
+            filename: 'Button.tsx',
+            description: 'A reusable button component with primary and secondary variants'
+          }
+        },
+        {
+          id: 'checkbox-code',
+          label: 'Toggle Switch Component',
+          type: 'code',
+          props: {
+            language: 'typescript',
+            code: `
+interface ToggleProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label?: string;
+}
+
+const Toggle: React.FC<ToggleProps> = ({
+  checked,
+  onChange,
+  label
+}) => {
+  return (
+    <label className="toggle-wrapper">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      {label && <span className="toggle-label">{label}</span>}
+    </label>
+  );
+};`,
+            filename: 'Toggle.tsx',
+            description: 'A customizable toggle switch component with label support'
+          }
+        }
+      ]
+    },
+
     // Button Section
     {
       id: 'buttons',
@@ -35,13 +108,19 @@ export class DemoPage {
           id: 'text-input',
           label: 'Text Input',
           type: 'text',
-          props: { placeholder: 'Enter your name...', type: 'text' }
+          props: { 
+            placeholder: 'Enter your name...',
+            inputType: 'text'  // Change from type to inputType
+          }
         },
         {
           id: 'password-input',
           label: 'Password Input',
           type: 'text',
-          props: { placeholder: 'Enter password...', type: 'password' }
+          props: { 
+            placeholder: 'Enter password...',
+            inputType: 'password'  // Change from type to inputType
+          }
         }
       ]
     },
@@ -186,6 +265,8 @@ export class DemoPage {
 
   private createWidget(config: WidgetDemoConfig): HTMLElement {
     switch (config.type) {
+      case 'code':
+        return this.createCodeBlock(config);
       case 'button':
         return this.createButton(config);
       case 'text':
@@ -215,7 +296,7 @@ export class DemoPage {
 
   private createTextField(config: WidgetDemoConfig): HTMLInputElement {
     const input = document.createElement('input');
-    input.type = config.props?.type || 'text';
+    input.type = config.props?.inputType || 'text';  // Change from type to inputType
     input.className = 'w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500';
     input.placeholder = config.props?.placeholder || '';
     return input;
@@ -250,7 +331,7 @@ export class DemoPage {
 
       const radio = document.createElement('input');
       radio.type = 'radio';
-      radio.name = config.props?.name;
+      radio.name = config.props?.name || '';  // Add default empty string
       radio.value = option.value;
       radio.className = 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500';
 
@@ -289,6 +370,89 @@ export class DemoPage {
     slider.value = config.props?.value?.toString() || '50';
     slider.step = config.props?.step?.toString() || '1';
     return slider;
+  }
+
+  private createCodeBlock(config: WidgetDemoConfig): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-example';
+
+    // Create description if provided
+    if (config.props?.description) {
+      const description = document.createElement('div');
+      description.className = 'code-description';
+      description.textContent = config.props.description;
+      wrapper.appendChild(description);
+    }
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'code-header';
+    
+    const title = document.createElement('div');
+    title.className = 'code-title';
+    title.innerHTML = `
+      <div class="code-title-content">
+        <svg class="code-icon" viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor" d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+        </svg>
+        <span class="code-filename">${config.props?.filename || 'example.ts'}</span>
+      </div>
+      <div class="code-language">${config.props?.language || 'typescript'}</div>
+    `;
+
+    const actions = document.createElement('div');
+    actions.className = 'code-actions';
+    actions.innerHTML = `
+      <button class="code-action-button" title="Copy code">
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      </button>
+    `;
+
+    header.appendChild(title);
+    header.appendChild(actions);
+
+    // Create code content
+    const codeBlock = document.createElement('div');
+    codeBlock.className = 'code-block';
+    
+    const pre = document.createElement('pre');
+    const code = document.createElement('code');
+    code.className = `language-${config.props?.language || 'typescript'}`;
+    code.textContent = config.props?.code?.trim() || '';
+    
+    pre.appendChild(code);
+    codeBlock.appendChild(pre);
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(codeBlock);
+
+    // Add copy functionality
+    const copyButton = actions.querySelector('button');
+    if (copyButton) {
+      copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(config.props?.code?.trim() || '');
+        this.showCopyTooltip(copyButton);
+      });
+    }
+
+    return wrapper;
+  }
+
+  private showCopyTooltip(button: HTMLElement): void {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16">
+        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+      </svg>
+    `;
+    button.classList.add('copied');
+
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.classList.remove('copied');
+    }, 2000);
   }
 
   private init(): void {

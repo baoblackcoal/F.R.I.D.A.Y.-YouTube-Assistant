@@ -4,55 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YouTube Summary Settings</title>
-    <link rel="stylesheet" href="options.css">
+    <link href="options.css" rel="stylesheet">
 </head>
-<body>
-    <div class="settings-container">
+<body class="bg-gray-50">
+    <div class="settings-layout">
         <!-- Left Sidebar Navigation -->
         <nav class="settings-sidebar">
-            <h1 class="settings-title">Settings</h1>
-            <div class="settings-tabs">
-                <button id="tab-general" 
-                        class="settings-tab-button active">
+            <div class="settings-header">
+                <h1 class="settings-title">Settings</h1>
+            </div>
+            <div class="settings-nav">
+                <button id="tab-general" class="settings-tab-button active">
                     General
                 </button>
-                <button id="tab-summary" 
-                        class="settings-tab-button">
+                <button id="tab-summary" class="settings-tab-button">
                     Summary
                 </button>
-                <button id="tab-tts" 
-                        class="settings-tab-button">
+                <button id="tab-tts" class="settings-tab-button">
                     TTS
                 </button>
-                <button id="tab-demo" 
-                        class="settings-tab-button">
+                <button id="tab-demo" class="settings-tab-button">
                     Widgets Demo
                 </button>
             </div>
         </nav>
 
         <!-- Main Content Area -->
-        <main class="settings-content">
-            <!-- Tab Content -->
-            <div id="content-general" class="tab-content"></div>
-            <div id="content-summary" class="tab-content hidden"></div>
-            <div id="content-tts" class="tab-content hidden"></div>
-            <div id="content-demo" class="tab-content hidden"></div>
+        <main class="settings-main">
+            <div class="settings-content-wrapper">
+                <!-- Tab Content -->
+                <div id="content-general" class="settings-tab-content"></div>
+                <div id="content-summary" class="settings-tab-content hidden"></div>
+                <div id="content-tts" class="settings-tab-content hidden"></div>
+                <div id="content-demo" class="settings-tab-content hidden"></div>
 
-            <!-- Footer Actions -->
-            <div class="settings-footer">
-                <button id="resetBtn" class="secondary-button">
-                    Reset to Default
-                </button>
-                <button id="saveBtn" class="primary-button">
-                    Save Changes
-                </button>
+                <!-- Footer Actions -->
+                <div class="settings-footer">
+                    <button id="resetBtn" class="button-reset">
+                        Reset to Default
+                    </button>
+                    <button id="saveBtn" class="button-save">
+                        Save Changes
+                    </button>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast hidden">
+    <div id="toast" class="toast-notification">
         Settings saved successfully
     </div>
 

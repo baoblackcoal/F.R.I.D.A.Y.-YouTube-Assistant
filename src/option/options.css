@@ -1,560 +1,70 @@
-/* Custom Animations */
-@keyframes loading {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
-  }
-  
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #666;
-  }
-  
-  /* Range Slider Custom Styling */
-  input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 8px;
-    border-radius: 4px;
-    background: #e5e7eb;
-    outline: none;
-  }
-  
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #2563eb;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  input[type="range"]::-webkit-slider-thumb:hover {
-    background: #1d4ed8;
-  }
-  
-  /* Custom Checkbox Styling */
-  input[type="checkbox"] {
-    position: relative;
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #d1d5db;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-  }
-  
-  input[type="checkbox"]:checked {
-    background-color: #2563eb;
-    border-color: #2563eb;
-  }
-  
-  input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 4px;
-    height: 8px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  
-  /* Toast Animation */
-  @keyframes slideIn {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideOut {
-    from {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-  }
-  
-  .toast-enter {
-    animation: slideIn 0.3s ease forwards;
-  }
-  
-  .toast-exit {
-    animation: slideOut 0.3s ease forwards;
-  }
-  
-  /* Custom Select Styling */
-  select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
-  }
-  
-  /* Textarea Custom Styling */
-  textarea {
-    resize: none;
-    min-height: 100px;
-    line-height: 1.5;
-  }
-  
-  textarea:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-  
-  /* Toggle Switch Animation */
-  .toggle-switch {
-    transition: background-color 0.2s ease;
-  }
-  
-  .toggle-switch::after {
-    transition: transform 0.2s ease;
-  }
-  
-  /* Progress Bar Animation */
-  .progress-indeterminate {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .progress-indeterminate::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100%;
-    background-color: #2563eb;
-    animation: loading 1.5s ease-in-out infinite;
-  }
-  
-  /* Tab Transition */
-  .tab-content {
-    transition: opacity 0.2s ease;
-  }
-  
-  .tab-content.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  /* Widget Demo Grid Responsive */
-  @media (max-width: 768px) {
-    .widget-demo-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  /* Focus Styles */
-  :focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
-  }
-  
-  /* Disabled State Styles */
-  .disabled, :disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  /* Picture Label Hover Effect */
-  .picture-label:hover img {
-    transform: scale(1.02);
-    transition: transform 0.2s ease;
-  }
-  
-  /* Icon Hover Effect */
-  .icon:hover {
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
-  }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Base Styles */
-body {
-  font-family: "YouTube Sans", Roboto, Arial, sans-serif;
-  color: #0f0f0f;
-  background: #fff;
-  line-height: 1.5;
-  margin: 0;
-  padding: 0;
+/* Layout */
+.settings-layout {
+    @apply min-h-screen flex;
 }
 
-/* Settings Container Layout */
-.settings-container {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Left Sidebar Styles */
+/* Sidebar */
 .settings-sidebar {
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #e5e5e5;
-  padding: 24px 0;
-  flex-shrink: 0;
+    @apply w-64 bg-white border-r border-gray-200;
+}
+
+.settings-header {
+    @apply px-6 py-4;
 }
 
 .settings-title {
-  font-size: 20px;
-  font-weight: 500;
-  padding: 0 24px;
-  margin: 0 0 24px 0;
+    @apply text-xl font-semibold text-gray-900;
 }
 
-.settings-tabs {
-  display: flex;
-  flex-direction: column;
+.settings-nav {
+    @apply space-y-1;
 }
 
 .settings-tab-button {
-  padding: 8px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0f0f0f;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.settings-tab-button:hover {
-  background-color: #f2f2f2;
+    @apply w-full px-6 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100 focus:outline-none;
 }
 
 .settings-tab-button.active {
-  background-color: #e5e5e5;
+    @apply text-gray-900 bg-gray-100;
 }
 
-/* Main Content Area */
-.settings-content {
-  flex-grow: 1;
-  padding: 24px 48px;
-  max-width: 1000px;
+/* Main Content */
+.settings-main {
+    @apply flex-1 overflow-y-auto;
 }
 
-/* Section Styles */
-.settings-section {
-  padding: 24px 0;
-  border-bottom: 1px solid #e5e5e5;
+.settings-content-wrapper {
+    @apply max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8;
 }
 
-.settings-section:last-child {
-  border-bottom: none;
+.settings-tab-content {
+    @apply space-y-6;
 }
 
-.section-title {
-  font-size: 20px;
-  font-weight: 500;
-  margin: 0 0 8px 0;
-  color: #0f0f0f;
+/* Don't use @apply for hidden - use display: none directly */
+.settings-tab-content.hidden {
+    display: none;
 }
 
-.section-description {
-  font-size: 14px;
-  color: #606060;
-  margin-bottom: 24px;
-}
-
-/* Form Controls */
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-/* Footer Actions */
+/* Footer */
 .settings-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 24px 0;
-  border-top: 1px solid #e5e5e5;
-  margin-top: 24px;
+    @apply mt-8 pt-5 border-t border-gray-200 flex justify-end space-x-3;
 }
 
-/* Buttons */
-.primary-button {
-  background: #065fd4;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
+.button-reset {
+    @apply px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
 }
 
-.primary-button:hover {
-  background: #0456bf;
+.button-save {
+    @apply px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
 }
 
-.secondary-button {
-  background: #fff;
-  color: #0f0f0f;
-  border: 1px solid #c6c6c6;
-  padding: 8px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.secondary-button:hover {
-  background: #f2f2f2;
-}
-
-/* Toast Notification */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  padding: 12px 24px;
-  background: rgba(15, 15, 15, 0.9);
-  color: #fff;
-  border-radius: 4px;
-  font-size: 14px;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-}
-
-.toast.show {
-  transform: translateY(0);
-}
-
-/* Responsive Layout */
-@media (max-width: 768px) {
-  .settings-container {
-    flex-direction: column;
-  }
-
-  .settings-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e5e5e5;
-    padding: 16px 0;
-  }
-
-  .settings-content {
-    padding: 16px;
-  }
-}
-
-/* Form Controls Styling */
-input[type="text"],
-textarea {
-  width: 100%;
-  max-width: 400px;
-  padding: 8px 12px;
-  border: 1px solid #c6c6c6;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* Checkbox Styling */
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  margin: 12px 0;
-}
-
-input[type="checkbox"] {
-  appearance: none;
-  width: 36px;
-  height: 14px;
-  background: #b0b0b0;
-  border-radius: 7px;
-  position: relative;
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border-radius: 50%;
-  top: -3px;
-  left: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  transition: left 0.2s;
-}
-
-input[type="checkbox"]:checked {
-  background: #aed6f1;
-}
-
-input[type="checkbox"]:checked::before {
-  left: 16px;
-  background: #065fd4;
-}
-
-/* Select Dropdowns */
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23606060'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 24px;
-  padding: 8px 32px 8px 12px;
-  border: 1px solid #c6c6c6;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Range Slider */
-input[type="range"] {
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Tab Content Transitions */
-.tab-content {
-  opacity: 1;
-  transition: opacity 0.2s ease;
-}
-
-.tab-content.hidden {
-  display: none;
-  opacity: 0;
-}
-
-/* Demo Page Specific Styles */
-.demo-page {
-  padding: 24px;
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 24px;
-  color: #0f0f0f;
-}
-
-.section-header {
-  margin-bottom: 16px;
-}
-
-.section-content {
-  padding-left: 16px;
-}
-
-.widget-wrapper {
-  display: flex;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.widget-wrapper:last-child {
-  border-bottom: none;
-}
-
-.widget-label {
-  flex: 1;
-  font-size: 14px;
-  color: #0f0f0f;
-}
-
-.widget-control {
-  flex: 2;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding-left: 24px;
-}
-
-/* Code Display */
-.code-block {
-  background: #f8f9fa;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  padding: 16px;
-  margin: 8px 0;
-  font-family: monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  overflow-x: auto;
-}
-
-.code-block pre {
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-.code-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  background: #f1f1f1;
-  border: 1px solid #e5e5e5;
-  border-bottom: none;
-  border-radius: 4px 4px 0 0;
-}
-
-.code-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: #606060;
-}
-
-.code-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.code-action-button {
-  padding: 4px 8px;
-  font-size: 12px;
-  color: #606060;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.code-action-button:hover {
-  color: #0f0f0f;
+/* Toast */
+.toast-notification {
+    @apply fixed bottom-4 right-4 px-4 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg;
+    display: none;
 }

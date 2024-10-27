@@ -11,8 +11,19 @@ const fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf",
 const moduleRules = [
   {
     test: /\.css$/,
-    use: ["style-loader", "css-loader", "postcss-loader"],
-    exclude: /node_modules/
+    use: ["style-loader", "css-loader"],
+    exclude: /node_modules/,
+    use: {
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          plugins: [
+            require('tailwindcss'),
+            require('autoprefixer'),
+          ],
+        },
+      },
+    },
   },
   {
     test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
@@ -85,7 +96,7 @@ module.exports = (env, argv) => {
           { from: 'src/languageStrings.json', to: 'languageStrings.json' },
           { from: 'src/48.png', to: '48.png' },
           { from: 'src/option/options.html', to: 'options.html' },
-          // { from: 'src/option/options.css', to: 'options.css' },
+          //{ from: 'src/option/options.css', to: 'options.css' },
         ]
       }),
       new webpack.DefinePlugin({
