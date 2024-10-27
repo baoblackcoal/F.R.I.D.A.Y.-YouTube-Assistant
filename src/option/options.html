@@ -6,56 +6,45 @@
     <title>YouTube Summary Settings</title>
     <link rel="stylesheet" href="options.css">
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="max-w-5xl mx-auto px-4 py-4">
-                <h1 class="text-2xl font-bold text-gray-900">YouTube Summary Settings</h1>
+<body>
+    <div class="settings-container">
+        <!-- Left Sidebar Navigation -->
+        <nav class="settings-sidebar">
+            <h1 class="settings-title">Settings</h1>
+            <div class="settings-tabs">
+                <button id="tab-general" 
+                        class="settings-tab-button active">
+                    General
+                </button>
+                <button id="tab-summary" 
+                        class="settings-tab-button">
+                    Summary
+                </button>
+                <button id="tab-tts" 
+                        class="settings-tab-button">
+                    TTS
+                </button>
+                <button id="tab-demo" 
+                        class="settings-tab-button">
+                    Widgets Demo
+                </button>
             </div>
-        </header>
+        </nav>
 
-        <!-- Main Content -->
-        <main class="max-w-5xl mx-auto px-4 py-6">
-            <!-- Tab Navigation -->
-            <div class="border-b border-gray-200">
-                <nav class="flex space-x-8" aria-label="Tabs">
-                    <button id="tab-general" 
-                            class="tab-button border-b-2 border-blue-500 py-4 px-1 text-sm font-medium text-blue-600"
-                            aria-current="page">
-                        General
-                    </button>
-                    <button id="tab-summary" 
-                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        Summary
-                    </button>
-                    <button id="tab-tts" 
-                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        TTS
-                    </button>
-                    <button id="tab-demo" 
-                            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        Widgets Demo
-                    </button>
-                </nav>
-            </div>
-
+        <!-- Main Content Area -->
+        <main class="settings-content">
             <!-- Tab Content -->
-            <div class="mt-6">
-                <div id="content-general" class="tab-content"></div>
-                <div id="content-summary" class="tab-content hidden"></div>
-                <div id="content-tts" class="tab-content hidden"></div>
-                <div id="content-demo" class="tab-content hidden"></div>
-            </div>
+            <div id="content-general" class="tab-content"></div>
+            <div id="content-summary" class="tab-content hidden"></div>
+            <div id="content-tts" class="tab-content hidden"></div>
+            <div id="content-demo" class="tab-content hidden"></div>
 
             <!-- Footer Actions -->
-            <div class="mt-8 flex justify-end space-x-4">
-                <button id="resetBtn" 
-                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <div class="settings-footer">
+                <button id="resetBtn" class="secondary-button">
                     Reset to Default
                 </button>
-                <button id="saveBtn" 
-                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button id="saveBtn" class="primary-button">
                     Save Changes
                 </button>
             </div>
@@ -63,8 +52,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" 
-         class="fixed bottom-4 right-4 px-4 py-2 bg-green-500 text-white rounded-md shadow-lg transform transition-transform duration-300 translate-y-full">
+    <div id="toast" class="toast hidden">
         Settings saved successfully
     </div>
 

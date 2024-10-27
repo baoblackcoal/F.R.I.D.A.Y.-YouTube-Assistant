@@ -201,3 +201,262 @@
     transform: scale(1.1);
     transition: transform 0.2s ease;
   }
+
+/* Base Styles */
+body {
+  font-family: "YouTube Sans", Roboto, Arial, sans-serif;
+  color: #0f0f0f;
+  background: #fff;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+/* Settings Container Layout */
+.settings-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left Sidebar Styles */
+.settings-sidebar {
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid #e5e5e5;
+  padding: 24px 0;
+  flex-shrink: 0;
+}
+
+.settings-title {
+  font-size: 20px;
+  font-weight: 500;
+  padding: 0 24px;
+  margin: 0 0 24px 0;
+}
+
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tab-button {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f0f0f;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.settings-tab-button:hover {
+  background-color: #f2f2f2;
+}
+
+.settings-tab-button.active {
+  background-color: #e5e5e5;
+}
+
+/* Main Content Area */
+.settings-content {
+  flex-grow: 1;
+  padding: 24px 48px;
+  max-width: 1000px;
+}
+
+/* Section Styles */
+.settings-section {
+  padding: 24px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #0f0f0f;
+}
+
+.section-description {
+  font-size: 14px;
+  color: #606060;
+  margin-bottom: 24px;
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* Footer Actions */
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 24px 0;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 24px;
+}
+
+/* Buttons */
+.primary-button {
+  background: #065fd4;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: #0456bf;
+}
+
+.secondary-button {
+  background: #fff;
+  color: #0f0f0f;
+  border: 1px solid #c6c6c6;
+  padding: 8px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #f2f2f2;
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 24px;
+  background: rgba(15, 15, 15, 0.9);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .settings-container {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 16px 0;
+  }
+
+  .settings-content {
+    padding: 16px;
+  }
+}
+
+/* Form Controls Styling */
+input[type="text"],
+textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 12px;
+  border: 1px solid #c6c6c6;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Checkbox Styling */
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 36px;
+  height: 14px;
+  background: #b0b0b0;
+  border-radius: 7px;
+  position: relative;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  top: -3px;
+  left: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: left 0.2s;
+}
+
+input[type="checkbox"]:checked {
+  background: #aed6f1;
+}
+
+input[type="checkbox"]:checked::before {
+  left: 16px;
+  background: #065fd4;
+}
+
+/* Select Dropdowns */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23606060'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 24px;
+  padding: 8px 32px 8px 12px;
+  border: 1px solid #c6c6c6;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Range Slider */
+input[type="range"] {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Tab Content Transitions */
+.tab-content {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.tab-content.hidden {
+  display: none;
+  opacity: 0;
+}
