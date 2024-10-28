@@ -61,10 +61,25 @@ class OptionsPage {
   }
 
   private attachEventListeners(): void {
-    // Tab switching
+    // Tab switching with active state management
     this.tabs.forEach(tab => {
       const tabButton = document.getElementById(`tab-${tab.id}`);
-      tabButton?.addEventListener('click', () => this.showTab(tab.id));
+      if (tabButton) {
+        tabButton.addEventListener('click', (e) => {
+          // Remove active class from all buttons
+          this.tabs.forEach(t => {
+            const btn = document.getElementById(`tab-${t.id}`);
+            if (btn) {
+              btn.classList.remove('active');
+            }
+          });
+          
+          // Add active class to clicked button
+          (e.target as HTMLElement).classList.add('active');
+          
+          this.showTab(tab.id);
+        });
+      }
     });
 
     // Save button
@@ -84,12 +99,12 @@ class OptionsPage {
       
       if (button && content) {
         if (tab.id === tabId) {
-          button.classList.add('border-blue-500', 'text-blue-600');
-          button.classList.remove('border-transparent', 'text-gray-500');
+          button.classList.add('active');
+          button.classList.remove('inactive');
           content.classList.remove('hidden');
         } else {
-          button.classList.remove('border-blue-500', 'text-blue-600');
-          button.classList.add('border-transparent', 'text-gray-500');
+          button.classList.remove('active');
+          button.classList.add('inactive');
           content.classList.add('hidden');
         }
       }

@@ -29,7 +29,11 @@
 }
 
 .settings-tab-button.active {
-    @apply text-gray-900 bg-gray-100;
+    @apply border-blue-500 text-blue-600 bg-gray-200;
+}
+
+.settings-tab-button.inactive {
+    @apply border-transparent text-gray-500;
 }
 
 /* Main Content */
