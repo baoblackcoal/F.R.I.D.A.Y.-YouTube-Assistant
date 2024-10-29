@@ -1,16 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
+/* import tailwind css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* Layout */
 .settings-layout {
-    @apply min-h-screen flex;
+    @apply min-h-screen flex justify-center;
+    max-width: 1280px;
+    margin: 0 auto;
 }
 
 /* Sidebar */
 .settings-sidebar {
-    @apply w-64 bg-white border-r border-gray-200;
+    @apply border-r border-gray-200;
+    padding-right: 30px;
+    width: 256px;
+    flex-shrink: 0;
 }
 
 .settings-header {
@@ -26,11 +32,11 @@
 }
 
 .settings-tab-button {
-    @apply w-full px-6 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100 focus:outline-none;
+    @apply w-full px-6 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
 }
 
 .settings-tab-button.active {
-    @apply border-blue-500 text-blue-600 bg-gray-200;
+    @apply border-blue-500 text-blue-600 bg-gray-200 rounded-full;
 }
 
 .settings-tab-button.inactive {
@@ -40,6 +46,7 @@
 /* Main Content */
 .settings-main {
     @apply flex-1 overflow-y-auto;
+    max-width: 768px;
 }
 
 .settings-content-wrapper {
@@ -72,4 +79,11 @@
 .toast-notification {
     @apply fixed bottom-4 right-4 px-4 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg;
     display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+    .settings-layout {
+        @apply mx-4;
+    }
 }
