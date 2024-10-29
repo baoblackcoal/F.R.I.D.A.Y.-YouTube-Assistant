@@ -1,0 +1,140 @@
+.demo-page {
+  @apply p-6 space-y-8;
+}
+
+.page-title {
+  @apply text-2xl font-bold mb-8;
+}
+
+.settings-section {
+  @apply bg-white rounded-lg shadow-sm border p-6 space-y-4;
+}
+
+.section-header {
+  @apply border-b pb-4;
+}
+
+.section-title {
+  @apply text-lg font-medium text-gray-900;
+}
+
+.section-content {
+  @apply space-y-4 pt-4;
+}
+
+.widget-wrapper {
+  @apply flex items-center justify-between gap-4;
+}
+
+.widget-label {
+  @apply text-sm font-medium text-gray-700 flex-shrink-0 w-1/4;
+}
+
+.widget-control {
+  @apply flex-grow;
+}
+
+/* Code Block Styles */
+.code-example {
+  @apply bg-gray-50 rounded-lg overflow-hidden border;
+}
+
+.code-description {
+  @apply text-sm text-gray-600 p-4 border-b bg-gray-50;
+}
+
+.code-header {
+  @apply flex items-center justify-between px-4 py-2 bg-gray-100 border-b;
+}
+
+.code-title {
+  @apply flex items-center justify-between flex-grow;
+}
+
+.code-title-content {
+  @apply flex items-center space-x-2;
+}
+
+.code-icon {
+  @apply text-gray-500;
+}
+
+.code-filename {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.code-language {
+  @apply text-xs text-gray-500;
+}
+
+.code-actions {
+  @apply flex items-center space-x-2;
+}
+
+.code-action-button {
+  @apply p-1 text-gray-500 hover:text-gray-700 transition-colors;
+}
+
+.code-action-button.copied {
+  @apply text-green-500;
+}
+
+.code-block {
+  @apply p-4 overflow-x-auto;
+}
+
+.code-block pre {
+  @apply m-0;
+}
+
+.code-block code {
+  @apply font-mono text-sm;
+}
+
+.primary-button {
+  @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700;
+}
+
+.secondary-button {
+  @apply px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300;
+}
+
+.text-input {
+  @apply w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500;
+}
+
+.checkbox-wrapper {
+  @apply flex items-center space-x-2;
+}
+
+.checkbox-input {
+  @apply h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500;
+}
+
+.checkbox-label {
+  @apply text-sm text-gray-700;
+}
+
+.radio-group {
+  @apply space-y-2;
+}
+
+.radio-wrapper {
+  @apply flex items-center space-x-2;
+}
+
+.radio-input {
+  @apply h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500;
+}
+
+.radio-label {
+  @apply text-sm text-gray-700;
+}
+
+.dropdown-select {
+  @apply w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500;
+}
+
+.slider-input {
+  @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+} 

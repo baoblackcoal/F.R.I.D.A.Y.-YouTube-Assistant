@@ -1,15 +1,16 @@
 import { Language, defaultSummarySettings, SummarySettings } from '../common/settings';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import { settingsManager } from '../common/settingsManager';
+import './summaryPage.css';
 
 export class SummaryPage {
   private container: HTMLElement;
   private settings: SummarySettings;
-  private llmSettings: any; // Replace with proper interface
+  private llmSettings: any;
 
   constructor() {
     this.container = document.createElement('div');
-    this.container.className = 'p-6 space-y-6';
+    this.container.className = 'summary-container';
     this.settings = { ...defaultSummarySettings };
     this.init();
   }
@@ -27,24 +28,24 @@ export class SummaryPage {
 
   private createSummaryControls(): void {
     const controls = document.createElement('div');
-    controls.className = 'space-y-6';
+    controls.className = 'controls-container';
 
     // API Key Input
     const apiKeySection = document.createElement('div');
-    apiKeySection.className = 'space-y-2';
+    apiKeySection.className = 'section';
     apiKeySection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">Gemini API Key</label>
+      <label class="label">Gemini API Key</label>
       <input type="text" id="geminiApiKey" 
-             class="w-full px-3 py-2 border rounded-md"
+             class="input-field"
              value="${this.llmSettings.apiKey || ''}">
     `;
 
     // Language Selection
     const languageSection = document.createElement('div');
-    languageSection.className = 'space-y-2';
+    languageSection.className = 'section';
     languageSection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">Summary Language</label>
-      <select id="language" class="w-full p-2 border rounded-md">
+      <label class="label">Summary Language</label>
+      <select id="language" class="select-field">
         ${Object.entries(Language).map(([key, value]) => `
           <option value="${value}" ${this.settings.language === value ? 'selected' : ''}>
             ${key}
@@ -55,15 +56,15 @@ export class SummaryPage {
 
     // Auto Settings
     const autoSettingsSection = document.createElement('div');
-    autoSettingsSection.className = 'space-y-4';
+    autoSettingsSection.className = 'section';
     autoSettingsSection.innerHTML = `
-      <div class="flex items-center space-x-2">
-        <input type="checkbox" id="autoSummary" class="rounded" 
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="autoSummary" class="checkbox" 
                ${this.settings.autoSummary ? 'checked' : ''}>
         <label for="autoSummary">Auto-generate summary when video loads</label>
       </div>
-      <div class="flex items-center space-x-2">
-        <input type="checkbox" id="autoTtsSpeak" class="rounded"
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="autoTtsSpeak" class="checkbox"
                ${this.settings.autoTtsSpeak ? 'checked' : ''}>
         <label for="autoTtsSpeak">Stop video and speak summary automatically</label>
       </div>
@@ -71,11 +72,11 @@ export class SummaryPage {
 
     // Prompt Settings
     const promptSection = document.createElement('div');
-    promptSection.className = 'space-y-4';
+    promptSection.className = 'section';
     promptSection.innerHTML = `
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700">Prompt Type</label>
-        <select id="promptType" class="w-full p-2 border rounded-md">
+      <div class="section">
+        <label class="label">Prompt Type</label>
+        <select id="promptType" class="select-field">
           <option value="0" ${this.settings.promptType === 0 ? 'selected' : ''}>Default</option>
           <option value="1" ${this.settings.promptType === 1 ? 'selected' : ''}>Custom Prompt 1</option>
           <option value="2" ${this.settings.promptType === 2 ? 'selected' : ''}>Custom Prompt 2</option>
@@ -83,21 +84,21 @@ export class SummaryPage {
         </select>
       </div>
 
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700">Default Prompt (Read-only)</label>
+      <div class="section">
+        <label class="label">Default Prompt (Read-only)</label>
         <div class="truncate-wrapper">
           <textarea id="defaultPromptText" rows="2" readonly
-                    class="w-full p-2 border rounded-md bg-gray-50">${defaultPromptText}</textarea>
+                    class="textarea-field readonly">${defaultPromptText}</textarea>
           <button class="expand-btn" data-target="defaultPromptText">Expand</button>
         </div>
       </div>
 
       ${[1, 2, 3].map(i => `
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Custom Prompt ${i}</label>
+        <div class="section">
+          <label class="label">Custom Prompt ${i}</label>
           <div class="truncate-wrapper">
             <textarea id="diyPromptText${i}" rows="2"
-                      class="w-full p-2 border rounded-md">${this.settings[`diyPromptText${i}` as keyof SummarySettings] || ''}</textarea>
+                      class="textarea-field">${this.settings[`diyPromptText${i}` as keyof SummarySettings] || ''}</textarea>
             <button class="expand-btn" data-target="diyPromptText${i}">Expand</button>
           </div>
         </div>
@@ -106,13 +107,13 @@ export class SummaryPage {
 
     // Prompt Variables Info
     const promptInfo = document.createElement('div');
-    promptInfo.className = 'bg-gray-50 p-4 rounded-md mt-4';
+    promptInfo.className = 'prompt-info';
     promptInfo.innerHTML = `
-      <p class="text-sm text-gray-700 mb-2">Available variables for custom prompts:</p>
-      <ul class="list-disc list-inside text-sm text-gray-600">
-        <li><code>{videoTitle}</code>: The title of the YouTube video</li>
-        <li><code>{textTranscript}</code>: The full transcript of the video</li>
-        <li><code>{language}</code>: The language of the video</li>
+      <p class="prompt-info-title">Available variables for custom prompts:</p>
+      <ul class="prompt-info-list">
+        <li><code class="code-text">{videoTitle}</code>: The title of the YouTube video</li>
+        <li><code class="code-text">{textTranscript}</code>: The full transcript of the video</li>
+        <li><code class="code-text">{language}</code>: The language of the video</li>
       </ul>
     `;
 

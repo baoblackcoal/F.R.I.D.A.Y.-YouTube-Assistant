@@ -11,19 +11,22 @@ const fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf",
 const moduleRules = [
   {
     test: /\.css$/,
-    use: ["style-loader", "css-loader"],
-    exclude: /node_modules/,
-    use: {
-      loader: 'postcss-loader',
-      options: {
-        postcssOptions: {
-          plugins: [
-            require('tailwindcss'),
-            require('autoprefixer'),
-          ],
+    use: [
+      'style-loader',
+      'css-loader',
+      {
+        loader: 'postcss-loader',
+        options: {
+          postcssOptions: {
+            plugins: [
+              require('tailwindcss'),
+              require('autoprefixer'),
+            ],
+          },
         },
       },
-    },
+    ],
+    exclude: /node_modules/,
   },
   {
     test: new RegExp('.(' + fileExtensions.join('|') + ')$'),

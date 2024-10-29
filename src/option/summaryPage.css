@@ -1,0 +1,67 @@
+.summary-container {
+  @apply p-6 space-y-6;
+}
+
+.controls-container {
+  @apply space-y-6;
+}
+
+.section {
+  @apply space-y-2;
+}
+
+.label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.input-field {
+  @apply w-full px-3 py-2 border rounded-md;
+}
+
+.select-field {
+  @apply w-full p-2 border rounded-md;
+}
+
+.checkbox-wrapper {
+  @apply flex items-center space-x-2;
+}
+
+.checkbox {
+  @apply rounded;
+}
+
+.textarea-field {
+  @apply w-full p-2 border rounded-md;
+}
+
+.textarea-field.readonly {
+  @apply bg-gray-50;
+}
+
+.textarea-field.expanded {
+  @apply h-40;
+}
+
+.truncate-wrapper {
+  @apply relative;
+}
+
+.expand-btn {
+  @apply absolute right-2 bottom-2 text-sm text-blue-600 hover:text-blue-800;
+}
+
+.prompt-info {
+  @apply bg-gray-50 p-4 rounded-md mt-4;
+}
+
+.prompt-info-title {
+  @apply text-sm text-gray-700 mb-2;
+}
+
+.prompt-info-list {
+  @apply list-disc list-inside text-sm text-gray-600;
+}
+
+.code-text {
+  @apply font-mono;
+} 

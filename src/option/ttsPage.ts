@@ -4,6 +4,7 @@ import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
 import { listenToMessages } from '../contentscript/msTtsService';
 import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
+import './ttsPage.css';
 
 export class TTSPage {
   private container: HTMLElement;
@@ -14,7 +15,7 @@ export class TTSPage {
 
   constructor() {
     this.container = document.createElement('div');
-    this.container.className = 'p-6 space-y-6';
+    this.container.className = 'tts-container';
     this.tts = TTSSpeak.getInstance();
     this.messageObserver = MessageObserver.getInstance();
     this.settings = { ...defaultTtsSettings };
@@ -49,71 +50,65 @@ export class TTSPage {
 
   private createTTSControls(): void {
     const controls = document.createElement('div');
-    controls.className = 'space-y-6';
+    controls.className = 'controls-container';
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    ttsTypeSection.className = 'space-y-2';
+    ttsTypeSection.className = 'section';
     ttsTypeSection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">TTS Type</label>
-      <select id="ttsType" class="w-full p-2 border rounded-md">
+      <label class="label">TTS Type</label>
+      <select id="ttsType" class="select">
       </select>
     `;
 
     // Language Selection
     const languageSection = document.createElement('div');
-    languageSection.className = 'space-y-2';
+    languageSection.className = 'section';
     languageSection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">Language</label>
-      <select id="language" class="w-full p-2 border rounded-md">
+      <label class="label">Language</label>
+      <select id="language" class="select">
       </select>
     `;
 
     // Voice Selection
     const voiceSection = document.createElement('div');
-    voiceSection.className = 'space-y-2';
+    voiceSection.className = 'section';
     voiceSection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">Voice</label>
-      <select id="voiceName" class="w-full p-2 border rounded-md">
+      <label class="label">Voice</label>
+      <select id="voiceName" class="select">
       </select>
     `;
 
     // Speed and Pitch Controls
     const speedPitchSection = document.createElement('div');
-    speedPitchSection.className = 'grid grid-cols-2 gap-4';
+    speedPitchSection.className = 'speed-pitch-grid';
     speedPitchSection.innerHTML = `
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700">Speed</label>
-        <select id="speed" class="w-full p-2 border rounded-md"></select>
+      <div class="section">
+        <label class="label">Speed</label>
+        <select id="speed" class="select"></select>
       </div>
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700">Pitch</label>
-        <select id="pitch" class="w-full p-2 border rounded-md"></select>
+      <div class="section">
+        <label class="label">Pitch</label>
+        <select id="pitch" class="select"></select>
       </div>
     `;
 
     // Volume Control
     const volumeSection = document.createElement('div');
-    volumeSection.className = 'space-y-2';
+    volumeSection.className = 'section';
     volumeSection.innerHTML = `
-      <label class="block text-sm font-medium text-gray-700">Volume</label>
+      <label class="label">Volume</label>
       <input type="range" id="volume" min="0" max="1" step="0.1" value="${this.settings.volume}"
-             class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+             class="volume-slider">
     `;
 
     // Test Controls
     const testSection = document.createElement('div');
-    testSection.className = 'flex space-x-4 mt-6';
+    testSection.className = 'test-controls';
     testSection.innerHTML = `
-      <button id="test" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        Test Voice
-      </button>
-      <button id="stop" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
-        Stop
-      </button>
-      <button id="reset" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
-        Reset
-      </button>
+      <button id="test" class="test-button">Test Voice</button>
+      <button id="stop" class="stop-button">Stop</button>
+      <button id="reset" class="reset-button">Reset</button>
     `;
 
     controls.appendChild(ttsTypeSection);

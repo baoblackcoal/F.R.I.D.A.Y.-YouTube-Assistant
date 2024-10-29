@@ -1,0 +1,31 @@
+.welcome-section {
+  @apply text-center;
+}
+
+.welcome-section img {
+  @apply mx-auto w-[500px] h-[200px] object-cover rounded-lg;
+}
+
+.welcome-section h2 {
+  @apply text-2xl font-bold mt-4;
+}
+
+.language-section {
+  @apply space-y-4;
+}
+
+.language-section select {
+  @apply w-full p-2 border rounded-md;
+}
+
+.language-section .checkbox-wrapper {
+  @apply flex items-center space-x-2;
+}
+
+.language-section input[type="checkbox"] {
+  @apply rounded;
+}
+
+.general-page-container {
+  @apply p-6 space-y-8;
+} 

@@ -1,5 +1,6 @@
 import { WidgetDemoConfig } from './types';
 import { Icons } from '../common/icons';
+import './demoPage.css';
 
 export class DemoPage {
   private container: HTMLElement;
@@ -286,34 +287,33 @@ const Toggle: React.FC<ToggleProps> = ({
 
   private createButton(config: WidgetDemoConfig): HTMLButtonElement {
     const btn = document.createElement('button');
-    const variant = config.props?.variant || 'primary';
-    btn.className = variant === 'primary' 
-      ? 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-      : 'px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300';
+    btn.className = config.props?.variant === 'primary' 
+      ? 'primary-button'
+      : 'secondary-button';
     btn.textContent = config.props?.text || 'Button';
     return btn;
   }
 
   private createTextField(config: WidgetDemoConfig): HTMLInputElement {
     const input = document.createElement('input');
-    input.type = config.props?.inputType || 'text';  // Change from type to inputType
-    input.className = 'w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500';
+    input.type = config.props?.inputType || 'text';
+    input.className = 'text-input';
     input.placeholder = config.props?.placeholder || '';
     return input;
   }
 
   private createCheckbox(config: WidgetDemoConfig): HTMLDivElement {
     const wrapper = document.createElement('div');
-    wrapper.className = 'flex items-center space-x-2';
+    wrapper.className = 'checkbox-wrapper';
     
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.className = 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500';
+    checkbox.className = 'checkbox-input';
     checkbox.checked = config.props?.checked || false;
     checkbox.disabled = config.props?.disabled || false;
 
     const label = document.createElement('label');
-    label.className = 'text-sm text-gray-700';
+    label.className = 'checkbox-label';
     label.textContent = config.props?.text || '';
 
     wrapper.appendChild(checkbox);
@@ -323,20 +323,20 @@ const Toggle: React.FC<ToggleProps> = ({
 
   private createRadioGroup(config: WidgetDemoConfig): HTMLDivElement {
     const wrapper = document.createElement('div');
-    wrapper.className = 'space-y-2';
+    wrapper.className = 'radio-group';
 
     config.props?.options?.forEach((option: { value: string; label: string }) => {
       const radioWrapper = document.createElement('div');
-      radioWrapper.className = 'flex items-center space-x-2';
+      radioWrapper.className = 'radio-wrapper';
 
       const radio = document.createElement('input');
       radio.type = 'radio';
-      radio.name = config.props?.name || '';  // Add default empty string
+      radio.name = config.props?.name || '';
       radio.value = option.value;
-      radio.className = 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500';
+      radio.className = 'radio-input';
 
       const label = document.createElement('label');
-      label.className = 'text-sm text-gray-700';
+      label.className = 'radio-label';
       label.textContent = option.label;
 
       radioWrapper.appendChild(radio);
@@ -349,7 +349,7 @@ const Toggle: React.FC<ToggleProps> = ({
 
   private createDropdown(config: WidgetDemoConfig): HTMLSelectElement {
     const select = document.createElement('select');
-    select.className = 'w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500';
+    select.className = 'dropdown-select';
 
     config.props?.options?.forEach((option: { value: string; label: string }) => {
       const optionElement = document.createElement('option');
@@ -364,7 +364,7 @@ const Toggle: React.FC<ToggleProps> = ({
   private createSlider(config: WidgetDemoConfig): HTMLInputElement {
     const slider = document.createElement('input');
     slider.type = 'range';
-    slider.className = 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer';
+    slider.className = 'slider-input';
     slider.min = config.props?.min?.toString() || '0';
     slider.max = config.props?.max?.toString() || '100';
     slider.value = config.props?.value?.toString() || '50';
@@ -376,7 +376,6 @@ const Toggle: React.FC<ToggleProps> = ({
     const wrapper = document.createElement('div');
     wrapper.className = 'code-example';
 
-    // Create description if provided
     if (config.props?.description) {
       const description = document.createElement('div');
       description.className = 'code-description';
@@ -384,7 +383,6 @@ const Toggle: React.FC<ToggleProps> = ({
       wrapper.appendChild(description);
     }
 
-    // Create header
     const header = document.createElement('div');
     header.className = 'code-header';
     
@@ -392,9 +390,7 @@ const Toggle: React.FC<ToggleProps> = ({
     title.className = 'code-title';
     title.innerHTML = `
       <div class="code-title-content">
-        <svg class="code-icon" viewBox="0 0 24 24" width="16" height="16">
-          <path fill="currentColor" d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
-        </svg>
+        ${Icons.code}
         <span class="code-filename">${config.props?.filename || 'example.ts'}</span>
       </div>
       <div class="code-language">${config.props?.language || 'typescript'}</div>
@@ -404,16 +400,13 @@ const Toggle: React.FC<ToggleProps> = ({
     actions.className = 'code-actions';
     actions.innerHTML = `
       <button class="code-action-button" title="Copy code">
-        <svg viewBox="0 0 24 24" width="16" height="16">
-          <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-        </svg>
+        ${Icons.copy}
       </button>
     `;
 
     header.appendChild(title);
     header.appendChild(actions);
 
-    // Create code content
     const codeBlock = document.createElement('div');
     codeBlock.className = 'code-block';
     
@@ -428,7 +421,6 @@ const Toggle: React.FC<ToggleProps> = ({
     wrapper.appendChild(header);
     wrapper.appendChild(codeBlock);
 
-    // Add copy functionality
     const copyButton = actions.querySelector('button');
     if (copyButton) {
       copyButton.addEventListener('click', () => {
