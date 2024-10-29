@@ -1,7 +1,6 @@
 import { GeneralPage } from './generalPage';
 import { SummaryPage } from './summaryPage';
 import { TTSPage } from './ttsPage';
-import { DemoPage } from './demoPage';
 import { TabConfig } from './types';
 import { settingsManager, ISettingsManager } from '../common/settingsManager';
 
@@ -31,11 +30,6 @@ class OptionsPage {
         id: 'tts',
         label: 'TTS',
         component: () => new TTSPage().getElement()
-      },
-      {
-        id: 'demo',
-        label: 'Widgets Demo',
-        component: () => new DemoPage().getElement()
       }
     ];
 

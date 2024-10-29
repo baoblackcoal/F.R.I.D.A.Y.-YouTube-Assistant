@@ -1,5 +1,6 @@
 import { GeneralPageConfig, Language } from './types';
 import { welcomeImage } from '../assets/welcome-image';
+import './basePage.css';
 import './generalPage.css';
 
 export class GeneralPage {
@@ -40,8 +41,13 @@ export class GeneralPage {
     const wrapper = document.createElement('div');
     wrapper.className = 'language-section';
 
-    const select = document.createElement('select');
-    select.id = 'language-selector';
+    wrapper.innerHTML = `
+      <label class="label">Language</label>
+      <select id="language-selector" class="select-field">
+      </select>
+    `;
+
+    const select = wrapper.querySelector('#language-selector') as HTMLSelectElement;
 
     this.config.languages.forEach(lang => {
       const option = document.createElement('option');
@@ -53,8 +59,8 @@ export class GeneralPage {
     const checkbox = document.createElement('div');
     checkbox.className = 'checkbox-wrapper';
     checkbox.innerHTML = `
-      <input type="checkbox" id="sync-language">
-      <label for="sync-language">Sync language settings for TTS and LLM summary</label>
+      <input type="checkbox" id="sync-language" class="checkbox-input">
+      <label for="sync-language" class="checkbox-label">Sync language settings for TTS and LLM summary</label>
     `;
 
     wrapper.appendChild(select);

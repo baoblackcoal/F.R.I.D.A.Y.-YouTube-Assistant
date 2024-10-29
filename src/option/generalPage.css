@@ -14,7 +14,7 @@
   @apply space-y-4;
 }
 
-.language-section select {
+/* .language-section select {
   @apply w-full p-2 border rounded-md;
 }
 
@@ -24,7 +24,7 @@
 
 .language-section input[type="checkbox"] {
   @apply rounded;
-}
+} */
 
 .general-page-container {
   @apply p-6 space-y-8;

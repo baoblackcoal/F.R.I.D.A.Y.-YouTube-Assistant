@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* import css */
-/* @import './generalPage.css';
-@import './summaryPage.css';
-@import './ttsPage.css';
-@import './demoPage.css'; */
 
 /* Layout */
 .settings-layout {

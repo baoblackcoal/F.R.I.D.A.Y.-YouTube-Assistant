@@ -1,6 +1,7 @@
 import { Language, defaultSummarySettings, SummarySettings } from '../common/settings';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import { settingsManager } from '../common/settingsManager';
+import './basePage.css';
 import './summaryPage.css';
 
 export class SummaryPage {
@@ -59,14 +60,14 @@ export class SummaryPage {
     autoSettingsSection.className = 'section';
     autoSettingsSection.innerHTML = `
       <div class="checkbox-wrapper">
-        <input type="checkbox" id="autoSummary" class="checkbox" 
+        <input type="checkbox" id="autoSummary" class="checkbox-input" 
                ${this.settings.autoSummary ? 'checked' : ''}>
-        <label for="autoSummary">Auto-generate summary when video loads</label>
+        <label for="autoSummary" class="checkbox-label">Auto-generate summary when video loads</label>
       </div>
       <div class="checkbox-wrapper">
-        <input type="checkbox" id="autoTtsSpeak" class="checkbox"
+        <input type="checkbox" id="autoTtsSpeak" class="checkbox-input"
                ${this.settings.autoTtsSpeak ? 'checked' : ''}>
-        <label for="autoTtsSpeak">Stop video and speak summary automatically</label>
+        <label for="autoTtsSpeak" class="checkbox-label">Stop video and speak summary automatically</label>
       </div>
     `;
 

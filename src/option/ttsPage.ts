@@ -4,6 +4,7 @@ import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
 import { listenToMessages } from '../contentscript/msTtsService';
 import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
+import './basePage.css';
 import './ttsPage.css';
 
 export class TTSPage {
@@ -106,9 +107,9 @@ export class TTSPage {
     const testSection = document.createElement('div');
     testSection.className = 'test-controls';
     testSection.innerHTML = `
-      <button id="test" class="test-button">Test Voice</button>
-      <button id="stop" class="stop-button">Stop</button>
-      <button id="reset" class="reset-button">Reset</button>
+      <button id="test" class="base-button">Test Voice</button>
+      <button id="stop" class="base-button">Stop</button>
+      <button id="reset" class="base-button">Reset</button>
     `;
 
     controls.appendChild(ttsTypeSection);
