@@ -1,8 +1,14 @@
 import { GeneralPage } from './generalPage';
 import { SummaryPage } from './summaryPage';
 import { TTSPage } from './ttsPage';
-import { TabConfig } from './types';
+// import { TabConfig } from './types.ts0';
 import { settingsManager, ISettingsManager } from '../common/settingsManager';
+
+export interface TabConfig {
+  id: string;
+  label: string;
+  component: () => HTMLElement;
+}
 
 class OptionsPage {
   private currentTab: string = 'general';

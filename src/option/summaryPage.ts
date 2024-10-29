@@ -1,8 +1,8 @@
 import { Language, defaultSummarySettings, SummarySettings } from '../common/settings';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import { settingsManager } from '../common/settingsManager';
-import './basePage.css';
-import './summaryPage.css';
+import './css/basePage.css';
+import './css/summaryPage.css';
 
 export class SummaryPage {
   private container: HTMLElement;

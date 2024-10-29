@@ -25,7 +25,7 @@
   },
   "scripts": {
     "clean": "rimraf dist/*",
-    "build:css": "tailwindcss -i ./src/option/options.css -o ./dist/options.css --minify",
+    "build:css": "tailwindcss -i ./src/option/css/options.css -o ./dist/options.css --minify",
     "build": "npm run clean && npm run build:css && webpack --config webpack.config.js",
     "test": "jest",
     "build-release": "npm run clean && npm run build:css && cross-env NODE_ENV=production webpack"

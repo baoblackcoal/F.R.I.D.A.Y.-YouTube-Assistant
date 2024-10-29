@@ -1,7 +1,16 @@
-import { GeneralPageConfig, Language } from './types';
 import { welcomeImage } from '../assets/welcome-image';
-import './basePage.css';
-import './generalPage.css';
+import './css/basePage.css';
+import './css/generalPage.css';
+
+export interface GeneralPageConfig {
+  welcomeImage: string;
+  languages: Language[];
+}
+
+export interface Language {
+  code: string;
+  label: string;
+}
 
 export class GeneralPage {
   private container: HTMLElement;

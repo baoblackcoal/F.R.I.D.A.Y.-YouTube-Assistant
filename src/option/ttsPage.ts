@@ -4,8 +4,8 @@ import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
 import { listenToMessages } from '../contentscript/msTtsService';
 import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
-import './basePage.css';
-import './ttsPage.css';
+import './css/basePage.css';
+import './css/ttsPage.css';
 
 export class TTSPage {
   private container: HTMLElement;
