@@ -82,13 +82,13 @@ class OptionsPage {
       }
     });
 
-    // Save button
-    const saveButton = document.getElementById('saveBtn');
-    saveButton?.addEventListener('click', () => this.saveSettings());
+    // // Save button
+    // const saveButton = document.getElementById('saveBtn');
+    // saveButton?.addEventListener('click', () => this.saveSettings());
 
-    // Reset button
-    const resetButton = document.getElementById('resetBtn');
-    resetButton?.addEventListener('click', () => this.resetSettings());
+    // // Reset button
+    // const resetButton = document.getElementById('resetBtn');
+    // resetButton?.addEventListener('click', () => this.resetSettings());
   }
 
   private showTab(tabId: string): void {
@@ -113,50 +113,50 @@ class OptionsPage {
     this.currentTab = tabId;
   }
 
-  private async saveSettings(): Promise<void> {
-    try {
-      // Collect and save settings from all tabs
-      await this.settingsManager.saveSettings();
+  // private async saveSettings(): Promise<void> {
+  //   try {
+  //     // Collect and save settings from all tabs
+  //     await this.settingsManager.saveSettings();
       
-      this.showToast('Settings saved successfully', 'success');
-    } catch (error) {
-      this.showToast('Failed to save settings', 'error');
-      console.error('Error saving settings:', error);
-    }
-  }
+  //     this.showToast('Settings saved successfully', 'success');
+  //   } catch (error) {
+  //     this.showToast('Failed to save settings', 'error');
+  //     console.error('Error saving settings:', error);
+  //   }
+  // }
 
-  private async resetSettings(): Promise<void> {
-    if (confirm('Are you sure you want to reset all settings to default?')) {
-      try {
-        await this.settingsManager.resetSettings();
-        window.location.reload();
-      } catch (error) {
-        this.showToast('Failed to reset settings', 'error');
-        console.error('Error resetting settings:', error);
-      }
-    }
-  }
+  // private async resetSettings(): Promise<void> {
+  //   if (confirm('Are you sure you want to reset all settings to default?')) {
+  //     try {
+  //       await this.settingsManager.resetSettings();
+  //       window.location.reload();
+  //     } catch (error) {
+  //       this.showToast('Failed to reset settings', 'error');
+  //       console.error('Error resetting settings:', error);
+  //     }
+  //   }
+  // }
 
-  private showToast(message: string, type: 'success' | 'error' = 'success'): void {
-    if (this.toast) {
-      this.toast.textContent = message;
-      this.toast.className = `
-        fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg 
-        transform transition-transform duration-300
-        ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white
-      `;
+  // private showToast(message: string, type: 'success' | 'error' = 'success'): void {
+  //   if (this.toast) {
+  //     this.toast.textContent = message;
+  //     this.toast.className = `
+  //       fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg 
+  //       transform transition-transform duration-300
+  //       ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white
+  //     `;
       
-      // Show toast
-      this.toast.style.transform = 'translateY(0)';
+  //     // Show toast
+  //     this.toast.style.transform = 'translateY(0)';
 
-      // Hide toast after 3 seconds
-      setTimeout(() => {
-        if (this.toast) {
-          this.toast.style.transform = 'translateY(100%)';
-        }
-      }, 3000);
-    }
-  }
+  //     // Hide toast after 3 seconds
+  //     setTimeout(() => {
+  //       if (this.toast) {
+  //         this.toast.style.transform = 'translateY(100%)';
+  //       }
+  //     }, 3000);
+  //   }
+  // }
 }
 
 // Initialize the options page when the DOM is loaded

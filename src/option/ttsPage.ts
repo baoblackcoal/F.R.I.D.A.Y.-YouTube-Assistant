@@ -56,11 +56,20 @@ export class TTSPage {
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
     ttsTypeSection.className = 'section';
-    ttsTypeSection.innerHTML = `
+    const hide = true; // hide the TTS Type selection
+    if (hide) {
+      ttsTypeSection.innerHTML = `
+      <label class="hidden">TTS Type</label>
+      <select id="ttsType" class="hidden">
+      </select>
+      `;
+    } else {
+      ttsTypeSection.innerHTML = `
       <label class="label">TTS Type</label>
       <select id="ttsType" class="select">
       </select>
-    `;
+      `;      
+    }
 
     // Language Selection
     const languageSection = document.createElement('div');
@@ -109,7 +118,6 @@ export class TTSPage {
     testSection.innerHTML = `
       <button id="test" class="base-button">Test Voice</button>
       <button id="stop" class="base-button">Stop</button>
-      <button id="reset" class="base-button">Reset</button>
     `;
 
     controls.appendChild(ttsTypeSection);
@@ -210,7 +218,6 @@ export class TTSPage {
     const volumeInput = this.container.querySelector('#volume') as HTMLInputElement;
     const testButton = this.container.querySelector('#test') as HTMLButtonElement;
     const stopButton = this.container.querySelector('#stop') as HTMLButtonElement;
-    const resetButton = this.container.querySelector('#reset') as HTMLButtonElement;
 
     ttsTypeSelect.addEventListener('change', async () => {
       this.settings.apiType = ttsTypeSelect.value as ApiType;
@@ -258,23 +265,7 @@ export class TTSPage {
 
     stopButton.addEventListener('click', () => {
       this.tts.stop();
-    });
-
-    resetButton.addEventListener('click', async () => {
-      this.settings = { ...defaultTtsSettings };
-      await this.saveSettings();
-      
-      languageSelect.value = this.settings.language;
-      voiceSelect.value = this.settings.voiceName;
-      speedSelect.value = this.settings.rate.toString();
-      pitchSelect.value = this.settings.pitch.toString();
-      volumeInput.value = this.settings.volume.toString();
-      
-      this.tts.getVoiceNames((voices) => {
-        this.populateLanguageOptions(voices);
-        this.populateVoiceOptions(voices);
-      });
-    });
+    });    
   }
 
   private async saveSettings(): Promise<void> {

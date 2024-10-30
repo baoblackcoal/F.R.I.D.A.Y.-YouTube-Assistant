@@ -90,7 +90,6 @@ export class SummaryPage {
         <div class="truncate-wrapper">
           <textarea id="defaultPromptText" rows="2" readonly
                     class="textarea-field readonly">${defaultPromptText}</textarea>
-          <button class="expand-btn" data-target="defaultPromptText">Expand</button>
         </div>
       </div>
 
@@ -100,7 +99,6 @@ export class SummaryPage {
           <div class="truncate-wrapper">
             <textarea id="diyPromptText${i}" rows="2"
                       class="textarea-field">${this.settings[`diyPromptText${i}` as keyof SummarySettings] || ''}</textarea>
-            <button class="expand-btn" data-target="diyPromptText${i}">Expand</button>
           </div>
         </div>
       `).join('')}
@@ -128,21 +126,6 @@ export class SummaryPage {
   }
 
   private attachEventListeners(): void {
-    // Handle textarea expansion
-    const expandButtons = this.container.querySelectorAll('.expand-btn');
-    expandButtons.forEach(button => {
-      button.addEventListener('click', (e: Event) => {
-        const target = e.target as HTMLElement;
-        const targetId = target.getAttribute('data-target');
-        if (targetId) {
-          const textarea = this.container.querySelector(`#${targetId}`) as HTMLTextAreaElement;
-          const isExpanded = textarea.classList.toggle('expanded');
-          target.textContent = isExpanded ? 'Collapse' : 'Expand';
-          textarea.rows = isExpanded ? 6 : 2;
-        }
-      });
-    });
-
     // Handle settings changes
     const inputs = {
       geminiApiKey: this.container.querySelector('#geminiApiKey') as HTMLInputElement,

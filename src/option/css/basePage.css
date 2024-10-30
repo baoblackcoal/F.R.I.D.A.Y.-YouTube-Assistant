@@ -2,6 +2,10 @@
     @apply p-6 space-y-6;
 }
 
+.body-container {
+    @apply bg-gray-50 text-sm;
+}
+
 .controls-container {
     @apply space-y-6;
 }
@@ -11,7 +15,7 @@
 }
 
 .label {
-    @apply block text-sm font-medium text-gray-700;
+    @apply block font-medium text-gray-700;
 }
 
 .select {
@@ -19,7 +23,7 @@
 }
 
 .base-button {
-    @apply px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50;
+    @apply px-4 py-2 font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50;
     transition: background-color 0.1s ease-in-out;
 }
 
@@ -41,7 +45,7 @@
 }
 
 .checkbox-label {
-    @apply text-sm text-gray-700;
+    @apply text-gray-700;
 }
 
 .radio-group {
@@ -57,7 +61,7 @@
 }
 
 .radio-label {
-    @apply text-sm text-gray-700;
+    @apply text-gray-700;
 }
 
 .dropdown-select {
