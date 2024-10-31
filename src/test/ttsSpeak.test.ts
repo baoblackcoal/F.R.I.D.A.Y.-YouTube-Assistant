@@ -8,7 +8,7 @@ describe('TTS Tests', () => {
 
   beforeAll(async () => {
     testSetup = await testUtils.setupBrowserAndPage({ 
-      usePopup: true, 
+      usePopup: false, 
       url: 'https://www.youtube.com/watch?v=oc6RV5c1yd0' 
     });
     helpers = testUtils.createTestHelpers();
