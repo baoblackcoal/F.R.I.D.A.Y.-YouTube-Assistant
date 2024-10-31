@@ -37,6 +37,10 @@ chrome.runtime.onInstalled.addListener(async () => {
     });
 });
 
+chrome.action.onClicked.addListener(() => {
+    chrome.runtime.openOptionsPage();
+});
+
 chrome.contextMenus.onClicked.addListener((info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) => {
     if (!tab) return;
     if (info.menuItemId === "readAloud") {
