@@ -100,6 +100,7 @@ export class SummaryPage {
             <textarea id="diyPromptText${i}" rows="2"
                       class="textarea-field">${this.settings[`diyPromptText${i}` as keyof SummarySettings] || ''}</textarea>
           </div>
+          <button class="base-button">Edit</button>
         </div>
       `).join('')}
     `;

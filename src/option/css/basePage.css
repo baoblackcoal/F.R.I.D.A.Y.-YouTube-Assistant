@@ -11,7 +11,7 @@
 }
 
 .section {
-    @apply space-y-2;
+    @apply space-y-2  pt-2;
 }
 
 .label {
