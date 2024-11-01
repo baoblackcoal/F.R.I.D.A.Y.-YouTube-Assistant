@@ -3,7 +3,7 @@
 }
 
 .body-container {
-    @apply bg-gray-50 text-sm;
+    @apply bg-gray-50 text-base;
 }
 
 .controls-container {
@@ -37,7 +37,7 @@
 }
 
 .checkbox-wrapper {
-    @apply flex items-center space-x-2;
+    @apply flex items-center space-x-2 pt-2;
 }
 
 .checkbox-input {

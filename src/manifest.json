@@ -10,11 +10,13 @@
   "options_page": "options.html",
   "action": {
     "default_icon": {
-      "48": "48.png"
+      "48": "friday_logo_48.png",
+      "128": "friday_logo_128.png"
     }
   },
   "icons": {
-    "48": "48.png"
+    "48": "friday_logo_48.png",
+    "128": "friday_logo_128.png"
   },
   "content_scripts": [
     {

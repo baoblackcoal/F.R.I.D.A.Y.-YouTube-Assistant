@@ -20,11 +20,11 @@
 }
 
 .settings-header {
-    @apply px-6 py-4;
+    @apply px-6 py-4 flex;
 }
 
 .settings-title {
-    @apply text-xl font-semibold text-gray-900;
+    @apply text-xl font-semibold text-gray-900 p-3;
 }
 
 .settings-nav {
@@ -32,7 +32,7 @@
 }
 
 .settings-tab-button {
-    @apply w-full px-6 py-3 text-left text-sm font-medium text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
+    @apply w-full px-6 py-3 text-left text-lg font-semibold text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
 }
 
 .settings-tab-button.active {

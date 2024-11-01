@@ -91,3 +91,4 @@ typings/
 # XCode
 UserInterfaceState.xcuserstate
 dist.zip
+src/tailwind.min.css

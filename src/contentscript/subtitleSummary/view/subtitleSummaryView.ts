@@ -103,7 +103,7 @@ export class SubtitleSummaryView {
                 new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Operation timed out')), TIMEOUT_MS))
             ]);
         } catch (error) {
-            console.error('Error resetting page:', error);
+            console.log('Error resetting page:', error);
         }
     }
 }

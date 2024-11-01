@@ -97,7 +97,8 @@ module.exports = (env, argv) => {
           { from: 'src/popup.html', to: 'popup.html' },
           { from: 'src/popup.css', to: 'popup.css' },
           { from: 'src/languageStrings.json', to: 'languageStrings.json' },
-          { from: 'src/48.png', to: '48.png' },
+          { from: 'src/friday_logo_48.png', to: 'friday_logo_48.png' },
+          { from: 'src/friday_logo_128.png', to: 'friday_logo_128.png' },
           { from: 'src/option/options.html', to: 'options.html' },
           //{ from: 'src/option/options.css', to: 'options.css' },
         ]

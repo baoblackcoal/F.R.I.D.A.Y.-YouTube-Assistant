@@ -33,16 +33,13 @@ export class GeneralPage {
     const section = document.createElement('div');
     section.className = 'welcome-section';
 
-    const img = document.createElement('img');
-    img.src = this.config.welcomeImage;
-    img.alt = 'Welcome to YouTube Summary';
-
-    const label = document.createElement('h2');
-    label.textContent = 'Welcome to YouTube Summary';
-
-    section.appendChild(img);
-    section.appendChild(label);
-
+    section.innerHTML = `
+      <img src="friday_logo_128.png" alt="F.R.I.D.A.Y." class="h-24 w-24 mx-auto ">
+      <h2 class="text-2xl font-bold mt-4">F.R.I.D.A.Y. YouTube Assistant</h2>
+      <p class="">Hello! I'm F.R.I.D.A.Y.</p>
+      <p class="mt-4 font-medium ">Your personal YouTube assistant.</p>
+      <p class="mt-4 font-medium ">I can help you summarize YouTube videos, read them aloud, and more!</p>
+    `;
     return section;
   }
 

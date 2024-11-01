@@ -1,13 +1,9 @@
-.welcome-section {
+ .welcome-section {
   @apply text-center;
 }
 
-.welcome-section img {
-  @apply mx-auto w-[500px] h-[200px] object-cover rounded-lg;
-}
-
-.welcome-section h2 {
-  @apply text-2xl font-bold mt-4;
+.welcome-section p {
+  @apply mt-4 font-medium;
 }
 
 .language-section {
