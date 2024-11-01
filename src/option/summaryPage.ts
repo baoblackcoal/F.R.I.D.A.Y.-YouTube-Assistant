@@ -31,14 +31,53 @@ export class SummaryPage {
     const controls = document.createElement('div');
     controls.className = 'controls-container';
 
-    // API Key Input
+    // Update API Key Section
     const apiKeySection = document.createElement('div');
+    apiKeySection.id = 'apiKeySection';
     apiKeySection.className = 'section';
     apiKeySection.innerHTML = `
       <label class="label">Gemini API Key</label>
-      <input type="text" id="geminiApiKey" 
-             class="input-field"
-             value="${this.llmSettings.apiKey || ''}">
+      <div class="radio-wrapper">
+        <input type="radio" name="apiKeyType" id="apiKeyTypeCommonKey" value="Common Key" 
+               ${!this.llmSettings.apiKey || this.llmSettings.apiKey === 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4' ? 'checked' : ''}>
+        <label for="apiKeyTypeCommonKey" class="radio-label">Common Key</label>
+
+        <input type="radio" name="apiKeyType" id="apiKeyTypeYourKey" value="Your Key"
+               ${this.llmSettings.apiKey && this.llmSettings.apiKey !== 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4' ? 'checked' : ''}>
+        <label for="apiKeyTypeYourKey" class="radio-label">Your Key</label>
+      </div>
+      <input type="text" id="geminiApiKey" class="input-field">
+      <button id="testApiKey" class="base-button">Test</button>
+      
+      <div id="apiKeyInfoCommonKey" class="api-key-info api-key-info-common">
+        <p class="mb-2"><strong>Common Key Information:</strong></p>
+        <p>Use the Common Key, which is a shared key with the following limits:</p>
+        <ul class="list-disc ml-4 mt-2">
+          <li>15 requests per minute (RPM)</li>
+          <li>1 million tokens per minute (TPM)</li>
+          <li>1,500 requests per day (RPD)</li>
+        </ul>
+        <p class="mt-2">For more details, refer to the 
+          <a href="https://ai.google.dev/pricing#1_5flash" target="_blank" rel="noopener noreferrer">
+            Gemini Flash 1.5 Pricing
+          </a>
+        </p>
+      </div>
+
+      <div id="apiKeyInfoYourKey" class="api-key-info api-key-info-custom">
+        <p class="mb-2"><strong>Custom API Key Setup:</strong></p>
+        <p>Get your personal API key from the 
+          <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
+            Google Cloud Console
+          </a>
+        </p>
+        <p class="mt-2">Using your own API key provides:</p>
+        <ul class="list-disc ml-4 mt-2">
+          <li>Higher rate limits</li>
+          <li>Independent quota management</li>
+          <li>Better control over API usage</li>
+        </ul>
+      </div>
     `;
 
     // Language Selection
@@ -90,7 +129,7 @@ export class SummaryPage {
         <div id="defaultPrompt" class="section prompt-content">
           <label class="label">Default Prompt (Read-only)</label>
           <div class="truncate-wrapper">
-            <textarea id="defaultPromptText" rows="20" readonly
+            <textarea id="defaultPromptText" rows="15" readonly
                       class="textarea-field readonly">${defaultPromptText}</textarea>
           </div>
         </div>
@@ -99,7 +138,7 @@ export class SummaryPage {
           <div id="diyPrompt${i}" class="section prompt-content" style="display: none;">
             <label class="label">Custom Prompt ${i}</label>
             <div class="truncate-wrapper">
-              <textarea id="diyPromptText${i}" rows="20" readonly
+              <textarea id="diyPromptText${i}" rows="15" readonly
                         class="textarea-field">${this.settings[`diyPromptText${i}` as keyof SummarySettings] || ''}</textarea>
             </div>
             <button id="editPrompt${i}" class="base-button edit-prompt-btn">Edit</button>
@@ -144,6 +183,47 @@ export class SummaryPage {
     
     // Add event listeners for prompt editing
     this.attachPromptEventListeners();
+
+    // Add new method call for API key radio handling
+    this.initializeApiKeySection();
+  }
+
+  private initializeApiKeySection(): void {
+    const commonKeyRadio = this.container.querySelector('#apiKeyTypeCommonKey') as HTMLInputElement;
+    const yourKeyRadio = this.container.querySelector('#apiKeyTypeYourKey') as HTMLInputElement;
+    const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+    const commonKeyInfo = this.container.querySelector('#apiKeyInfoCommonKey') as HTMLElement;
+    const yourKeyInfo = this.container.querySelector('#apiKeyInfoYourKey') as HTMLElement;
+
+    const updateApiKeySection = (isCommonKey: boolean) => {
+        if (isCommonKey) {
+            apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
+            commonKeyInfo.style.display = 'block';
+            yourKeyInfo.style.display = 'none';
+        } else {
+            apiKeyInput.value = this.llmSettings.apiKey || '';
+            commonKeyInfo.style.display = 'none';
+            yourKeyInfo.style.display = 'block';
+        }
+    };
+
+    // Initialize based on current selection
+    updateApiKeySection(commonKeyRadio.checked);
+
+    // Add event listeners for radio buttons
+    commonKeyRadio.addEventListener('change', () => {
+        if (commonKeyRadio.checked) {
+            updateApiKeySection(true);
+            this.saveSettings();
+        }
+    });
+
+    yourKeyRadio.addEventListener('change', () => {
+        if (yourKeyRadio.checked) {
+            updateApiKeySection(false);
+            this.saveSettings();
+        }
+    });
   }
 
   private attachEventListeners(): void {
@@ -157,6 +237,7 @@ export class SummaryPage {
       diyPromptText1: this.container.querySelector('#diyPromptText1') as HTMLTextAreaElement,
       diyPromptText2: this.container.querySelector('#diyPromptText2') as HTMLTextAreaElement,
       diyPromptText3: this.container.querySelector('#diyPromptText3') as HTMLTextAreaElement,
+      apiKeyType: this.container.querySelector('input[name="apiKeyType"]:checked') as HTMLInputElement,
     };
 
     // Auto-save on change
@@ -169,6 +250,7 @@ export class SummaryPage {
 
   private async saveSettings(): Promise<void> {
     const inputs = {
+      apiKeyType: this.container.querySelector('input[name="apiKeyType"]:checked') as HTMLInputElement,
       geminiApiKey: this.container.querySelector('#geminiApiKey') as HTMLInputElement,
       promptType: this.container.querySelector('#promptType') as HTMLSelectElement,
       language: this.container.querySelector('#language') as HTMLSelectElement,

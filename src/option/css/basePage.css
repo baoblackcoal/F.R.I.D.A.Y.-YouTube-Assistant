@@ -61,7 +61,7 @@
 }
 
 .radio-label {
-    @apply text-gray-700;
+    @apply text-gray-700  pr-4;
 }
 
 .dropdown-select {
