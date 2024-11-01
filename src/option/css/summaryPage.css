@@ -32,4 +32,71 @@
 
 .code-text {
   @apply font-mono;
+}
+
+/* Add these styles to your existing CSS */
+.prompt-edit-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+}
+
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dialog-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.dialog-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.prompt-info {
+    background-color: #f5f5f5;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.prompt-info-title {
+    font-weight: bold;
+    margin: 0 0 8px 0;
+}
+
+.prompt-info-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.code-text {
+    background-color: #e0e0e0;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.secondary {
+    background-color: #e0e0e0;
+}
+
+.edit-prompt-btn {
+    margin-top: 8px;
 } 
