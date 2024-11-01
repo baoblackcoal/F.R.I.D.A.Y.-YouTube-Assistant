@@ -4,6 +4,7 @@
 - Testing: Jest, Puppeteer
 - Tool: Webpack
 - Linting: ESLint
+- CSS: Tailwind CSS
 
 # Best Practices
 - **Abstract Interfaces**: Define interfaces for key components and use dependency injection.
