@@ -1,4 +1,5 @@
 import { Language, SummarySettings } from '../common/settings';
+import { settingsManager } from '../common/settingsManager';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import './css/basePage.css';
 import './css/summaryPage.css';
@@ -209,7 +210,14 @@ export class SummaryPageView implements ISummaryPageView {
     const commonKeyInfo = this.container.querySelector('#apiKeyInfoCommonKey') as HTMLElement;
     const yourKeyInfo = this.container.querySelector('#apiKeyInfoYourKey') as HTMLElement;
 
-    apiKeyInput.value = isCommonKey ? 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4' : apiKey;
+    if (isCommonKey) {
+      apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
+      apiKeyInput.readOnly = true;
+    } else {
+      apiKeyInput.value = apiKey || '';
+      apiKeyInput.readOnly = false;
+    }
+
     commonKeyInfo.style.display = isCommonKey ? 'block' : 'none';
     yourKeyInfo.style.display = isCommonKey ? 'none' : 'block';
   }
@@ -242,7 +250,31 @@ export class SummaryPageView implements ISummaryPageView {
 
   private attachEventListeners(): void {
     // Handle form changes
-    this.container.addEventListener('change', this.onSettingsChange);
+    this.container.addEventListener('change', async (e) => {
+      const target = e.target as HTMLElement;
+      
+      // Special handling for API key type radio buttons
+      const isCommonKey = (target as HTMLInputElement).value === 'Common Key';
+      if (target.getAttribute('name') === 'apiKeyType') {
+        const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+        
+        if (isCommonKey) {
+            apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_***********';
+            // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
+            apiKeyInput.readOnly = true;
+        } else {    
+          const llmSettings = await settingsManager.getLlmSettings();
+          apiKeyInput.value = llmSettings.apiKey || '';
+          apiKeyInput.readOnly = false;
+        }
+        
+        this.updateApiKeySection(isCommonKey, apiKeyInput.value);
+      }
+      
+      if (!isCommonKey) {
+        this.onSettingsChange();
+      }
+    });
 
     // Handle prompt editing
     const promptTypeSelect = this.container.querySelector('#promptType') as HTMLSelectElement;
@@ -303,11 +335,14 @@ export class SummaryPageView implements ISummaryPageView {
     const isCommonKey = !llmSettings.apiKey || llmSettings.apiKey === 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
     const commonKeyRadio = this.container.querySelector('#apiKeyTypeCommonKey') as HTMLInputElement;
     const yourKeyRadio = this.container.querySelector('#apiKeyTypeYourKey') as HTMLInputElement;
+    const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
     
     if (isCommonKey) {
       commonKeyRadio.checked = true;
+      apiKeyInput.readOnly = true;
     } else {
       yourKeyRadio.checked = true;
+      apiKeyInput.readOnly = false;
     }
     
     this.updateApiKeySection(isCommonKey, llmSettings.apiKey);
