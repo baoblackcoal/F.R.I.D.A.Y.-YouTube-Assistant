@@ -1,27 +1,54 @@
- .welcome-section {
-  @apply text-center;
+.welcome-section {
+  @apply text-center bg-white rounded-xl shadow-sm p-6 transition-all duration-300;
+}
+
+.welcome-section:hover {
+  @apply shadow-md;
+}
+
+.welcome-section h2 {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500;
+  animation: gradient 6s ease infinite;
+  background-size: 200% 200%;
+}
+
+.welcome-section .welcome-messages {
+  @apply mt-6 space-y-3;
 }
 
 .welcome-section p {
-  @apply mt-4 font-medium;
+  @apply mt-2 font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200;
 }
 
-.language-section {
-  @apply space-y-4;
+.welcome-section .feature-list {
+  @apply mt-4 space-y-2 text-left max-w-md mx-auto bg-gray-50 rounded-lg p-4 border border-gray-200;
 }
 
-/* .language-section select {
-  @apply w-full p-2 border rounded-md;
+.welcome-section .feature-list li {
+  @apply flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors duration-200;
 }
 
-.language-section .checkbox-wrapper {
-  @apply flex items-center space-x-2;
+.welcome-section .feature-list li a {
+  @apply text-blue-600 hover:text-blue-800 underline;
+  @apply dark:text-blue-400 dark:hover:text-blue-300;
 }
 
-.language-section input[type="checkbox"] {
-  @apply rounded;
+/* .language-section {
+  @apply space-y-4 mt-8 bg-white rounded-xl shadow-sm p-6;
 } */
 
-.general-page-container {
-  @apply p-6 space-y-8;
+/* .general-page-container {
+  @apply p-6 space-y-8 max-w-2xl mx-auto;
+} */
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 } 

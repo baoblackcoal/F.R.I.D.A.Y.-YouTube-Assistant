@@ -16,7 +16,7 @@ export class TTSPage {
 
   constructor() {
     this.container = document.createElement('div');
-    this.container.className = 'tts-container';
+    this.container.className = 'page-container';
     this.tts = TTSSpeak.getInstance();
     this.messageObserver = MessageObserver.getInstance();
     this.settings = { ...defaultTtsSettings };
@@ -51,11 +51,11 @@ export class TTSPage {
 
   private createTTSControls(): void {
     const controls = document.createElement('div');
-    controls.className = 'controls-container';
+    controls.className = 'section';
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    ttsTypeSection.className = 'section';
+    ttsTypeSection.className = 'sub-section';
     const hide = true; // hide the TTS Type selection
     if (hide) {
       ttsTypeSection.innerHTML = `
@@ -73,7 +73,7 @@ export class TTSPage {
 
     // Language Selection
     const languageSection = document.createElement('div');
-    languageSection.className = 'section';
+    languageSection.className = 'sub-section';
     languageSection.innerHTML = `
       <label class="label">Language</label>
       <select id="language" class="select">
@@ -82,7 +82,7 @@ export class TTSPage {
 
     // Voice Selection
     const voiceSection = document.createElement('div');
-    voiceSection.className = 'section';
+    voiceSection.className = 'sub-section';
     voiceSection.innerHTML = `
       <label class="label">Voice</label>
       <select id="voiceName" class="select">
@@ -93,11 +93,11 @@ export class TTSPage {
     const speedPitchSection = document.createElement('div');
     speedPitchSection.className = 'speed-pitch-grid';
     speedPitchSection.innerHTML = `
-      <div class="section">
+      <div class="sub-section">
         <label class="label">Speed</label>
         <select id="speed" class="select"></select>
       </div>
-      <div class="section">
+      <div class="sub-section">
         <label class="label">Pitch</label>
         <select id="pitch" class="select"></select>
       </div>
@@ -105,7 +105,7 @@ export class TTSPage {
 
     // Volume Control
     const volumeSection = document.createElement('div');
-    volumeSection.className = 'section';
+    volumeSection.className = 'sub-section';
     volumeSection.innerHTML = `
       <label class="label">Volume</label>
       <input type="range" id="volume" min="0" max="1" step="0.1" value="${this.settings.volume}"

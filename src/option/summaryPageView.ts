@@ -31,20 +31,16 @@ export class SummaryPageView implements ISummaryPageView {
     private readonly onPromptEdit: (promptId: number, value: string) => void
   ) {
     this.container = document.createElement('div');
-    this.container.className = 'summary-container';
+    this.container.className = 'page-container';
     this.createLayout();
   }
 
   private createLayout(): void {
-    const controls = document.createElement('div');
-    controls.className = 'controls-container';
+    this.container.appendChild(this.createApiKeySection());
+    this.container.appendChild(this.createLanguageSection());
+    this.container.appendChild(this.createAutoSettingsSection());
+    this.container.appendChild(this.createPromptSection());
 
-    controls.appendChild(this.createApiKeySection());
-    controls.appendChild(this.createLanguageSection());
-    controls.appendChild(this.createAutoSettingsSection());
-    controls.appendChild(this.createPromptSection());
-
-    this.container.appendChild(controls);
     this.createPromptEditDialog();
     this.attachEventListeners();
   }
@@ -103,7 +99,7 @@ export class SummaryPageView implements ISummaryPageView {
     section.className = 'section';
     section.innerHTML = `
       <label class="label">Summary Language</label>
-      <select id="language" class="select-field">
+      <select id="language" class="select">
         ${Object.entries(Language).map(([key, value]) => `
           <option value="${value}">${key}</option>
         `).join('')}
@@ -133,9 +129,9 @@ export class SummaryPageView implements ISummaryPageView {
     section.id = 'promptSection';
     section.className = 'section';
     section.innerHTML = `
-      <div id="promptTypeSection" class="section">
+      <div id="promptTypeSection" class="sub-section">
         <label class="label">Prompt Type</label>
-        <select id="promptType" class="select-field">
+        <select id="promptType" class="select">
           <option value="0">Default</option>
           <option value="1">Custom Prompt 1</option>
           <option value="2">Custom Prompt 2</option>
@@ -144,7 +140,7 @@ export class SummaryPageView implements ISummaryPageView {
       </div>
 
       <div id="promptContentSection">
-        <div id="defaultPrompt" class="section prompt-content">
+        <div id="defaultPrompt" class="sub-section prompt-content">
           <label class="label">Default Prompt (Read-only)</label>
           <div class="truncate-wrapper">
             <textarea id="defaultPromptText" rows="15" readonly
@@ -153,7 +149,7 @@ export class SummaryPageView implements ISummaryPageView {
         </div>
 
         ${[1, 2, 3].map(i => `
-          <div id="diyPrompt${i}" class="section prompt-content" style="display: none;">
+          <div id="diyPrompt${i}" class="sub-section prompt-content" style="display: none;">
             <label class="label">Custom Prompt ${i}</label>
             <div class="truncate-wrapper">
               <textarea id="diyPromptText${i}" rows="15" readonly

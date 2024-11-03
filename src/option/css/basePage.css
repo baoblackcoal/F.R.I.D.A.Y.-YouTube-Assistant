@@ -10,12 +10,12 @@
     @apply space-y-6;
 }
 
-.section {
+/* .section {
     @apply space-y-2  pt-2;
-}
+} */
 
 .label {
-    @apply block font-medium text-gray-700;
+    @apply block font-medium text-gray-700 mb-2;
 }
 
 .select {
@@ -78,9 +78,9 @@
     @apply w-full px-3 py-2 border rounded-md;
 }
 
-.select-field {
+/* .select-field {
     @apply w-full p-2 border rounded-md;
-}
+} */
 
 /* .checkbox-wrapper {
     @apply flex items-center space-x-2;
@@ -100,4 +100,17 @@
 
 .textarea-field.expanded {
     @apply h-40;
+}
+
+.section {
+    @apply space-y-2 mt-4 bg-white rounded-xl shadow-sm p-5;
+}
+
+
+.sub-section {
+    @apply py-2;
+}
+
+.page-container {
+    @apply pt-6;
 }
