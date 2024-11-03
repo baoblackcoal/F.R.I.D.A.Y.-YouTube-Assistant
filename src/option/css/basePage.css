@@ -103,7 +103,7 @@
 }
 
 .section {
-    @apply space-y-2 mt-4 bg-white rounded-xl shadow-sm p-5;
+    @apply space-y-2 mt-4 bg-gray-100 rounded-xl shadow-sm p-5  border border-gray-200;
 }
 
 

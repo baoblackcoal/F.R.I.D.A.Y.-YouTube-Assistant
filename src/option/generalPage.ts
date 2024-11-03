@@ -34,7 +34,7 @@ export class GeneralPage {
     section.id = 'welcome-section';
     section.className = 'welcome-section section';
     section.innerHTML = `
-      <img src="friday_logo_128.png" alt="F.R.I.D.A.Y." class="h-24 w-24 mx-auto rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+      <img src="friday_logo_128.png" alt="F.R.I.D.A.Y." class="h-24 w-24 mx-auto">
       <h2 class="text-2xl font-bold mt-4 text-primary">F.R.I.D.A.Y. YouTube Assistant</h2>
       <div class="welcome-messages">
         <p>👋 Hello! I'm F.R.I.D.A.Y.</p>

@@ -1,10 +1,10 @@
 .welcome-section {
-  @apply text-center bg-white rounded-xl shadow-sm p-6 transition-all duration-300;
+  @apply text-center rounded-xl shadow-sm p-6 transition-all duration-300;
 }
-
+/* 
 .welcome-section:hover {
   @apply shadow-md;
-}
+} */
 
 .welcome-section h2 {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500;
