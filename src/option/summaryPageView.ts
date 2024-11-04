@@ -1,4 +1,4 @@
-import { Language, SummarySettings } from '../common/settings';
+import { Language, ISummarySettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import './css/basePage.css';
@@ -18,7 +18,7 @@ export interface ISummaryPageView {
     diyPromptText2: string;
     diyPromptText3: string;
   };
-  initialize(settings: SummarySettings, llmSettings: any): void;
+  initialize(settings: ISummarySettings, llmSettings: any): void;
   getElement(): HTMLElement;
 }
 
@@ -307,7 +307,7 @@ export class SummaryPageView implements ISummaryPageView {
     });
   }
 
-  public initialize(settings: SummarySettings, llmSettings: any): void {
+  public initialize(settings: ISummarySettings, llmSettings: any): void {
     // Initialize form values
     const inputs = {
       promptType: this.container.querySelector('#promptType') as HTMLSelectElement,

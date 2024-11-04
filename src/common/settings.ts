@@ -1,59 +1,31 @@
-import { Env } from "./common";
+import { 
+  ApiType, 
+  Language,
+  ITtsSettings, 
+  IGeneralSettings, 
+  ISummarySettings, 
+  ILlmSettings, 
+  IAbstractSettings 
+} from './ISettings';
 
-export enum ApiType {
-  Azure = "Azure",
-  Chrome = "Chrome",
-}
-
-// Define the TTS settings interface
-export interface TtsSettings {
-  language: string;
-  voiceName: string;
-  rate: number;
-  pitch: number;
-  volume: number;
-  apiType: ApiType;
-}
-
-// Default TTS settings
 export const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 export const pitchOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-export const defaultTtsSettings: TtsSettings = {
+
+export const defaultTtsSettings: ITtsSettings = {
   language: '',
   voiceName: '',
-  rate: 1.0, //only set to speedOptions
-  pitch: 1.0, //only set to pitchOptions
+  rate: 1.0,
+  pitch: 1.0,
   volume: 1.0,
   apiType: ApiType.Azure,
 };
 
+export const defaultGeneralSettings: IGeneralSettings = {
+  language: Language.English,
+  syncLanguageLlmAndTts: false,
+};
 
-
-// multi-language enum
-export enum Language {
-  English = 'English',
-  Simplified_Chinese = 'Simplified Chinese',
-  Traditional_Chinese = 'Traditional Chinese',
-  French = 'French',
-  German = 'German',
-  Italian = 'Italian',
-  Portuguese = 'Portuguese',
-  Japanese = 'Japanese',
-  Korean = 'Korean',
-  Russian = 'Russian',
-}
-
-export interface SummarySettings {
-  promptType: number; // 0: default, 1: diy1, 2: diy2, 3: diy3
-  diyPromptText1: string;
-  diyPromptText2: string;
-  diyPromptText3: string;
-  language: string;
-  autoTtsSpeak: boolean; // After the YouTube video page loads, pause the video. Let TTS speak the summary, then resume the video once it's done.
-  autoSummary: boolean; // After the YouTube video page loads, pause the video. Let TTS speak the summary, then resume the video once it's done.
-}
-
-export const defaultSummarySettings: SummarySettings = {
+export const defaultSummarySettings: ISummarySettings = {
   promptType: 0,
   diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
@@ -61,20 +33,9 @@ export const defaultSummarySettings: SummarySettings = {
   language: Language.English.toString(),
   autoTtsSpeak: false,
   autoSummary: true,
-};  
+};
 
-
-export interface LlmSettings {
-  modelName: string;
-  maxTokens: number;
-  temperature: number;
-  topP: number;
-  frequencyPenalty: number;
-  presencePenalty: number;
-  apiKey: string;
-}
-
-export const defaultLlmModel: LlmSettings = {
+export const defaultLlmModel: ILlmSettings = {
   modelName: "gemini-1.5-flash",
   maxTokens: 4096,
   temperature: 0,
@@ -84,22 +45,20 @@ export const defaultLlmModel: LlmSettings = {
   apiKey: "",
 };
 
-
-// Abstract interface for settings
-export interface AbstractSettings {
-  summary: SummarySettings;
-  llm: LlmSettings;
-  tts: TtsSettings;
-}
-
-export const defaultSettings: AbstractSettings = {
+export const defaultSettings: IAbstractSettings = {
+  general: defaultGeneralSettings,
   summary: defaultSummarySettings,
   llm: defaultLlmModel,
   tts: defaultTtsSettings,
 };
 
 // change settings for testing, must update extension in chrome://extensions after change, or it will not take effect!!!
-export const testSettings: AbstractSettings = {
+export const testSettings: IAbstractSettings = {
+  general: {
+    ...defaultGeneralSettings,
+    language: Language.Simplified_Chinese,
+    syncLanguageLlmAndTts: true,
+  },
   summary: {
     ...defaultSummarySettings,
     promptType: 0,
@@ -124,9 +83,9 @@ export const testSettings: AbstractSettings = {
 export enum InitialSettingsType {
   TEST = "test",
   DEFAULT = "default",
-} 
+}
 
-export function getInitSettings(settingsType: InitialSettingsType): AbstractSettings {
+export function getInitSettings(settingsType: InitialSettingsType): IAbstractSettings {
   return settingsType === InitialSettingsType.DEFAULT ? defaultSettings : testSettings;
 }
 

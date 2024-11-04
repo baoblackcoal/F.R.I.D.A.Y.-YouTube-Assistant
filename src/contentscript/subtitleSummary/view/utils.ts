@@ -1,5 +1,5 @@
 import { settingsManager } from '../../../common/settingsManager';
-import { AbstractSettings } from '../../../common/settings';
+import { IAbstractSettings } from '../../../common/ISettings';
 
 // Utility functions
 export const createToast = (message: string): void => {
@@ -20,6 +20,6 @@ export const createToast = (message: string): void => {
     setTimeout(() => toast.remove(), 3000);
 };
 
-export const getSettings = async (): Promise<AbstractSettings> => {
+export const getSettings = async (): Promise<IAbstractSettings> => {
     return await settingsManager.getSettings();
 };

@@ -5,6 +5,8 @@
 # dist directory
 dist/
 
+build/
+
 # IntelliJ
 .idea
 # VS Code

@@ -1,16 +1,17 @@
 import { Env, getEnvironment } from './common';
 import { globalConfig } from './config';
-import { TtsSettings, SummarySettings, LlmSettings, Language, defaultTtsSettings, defaultSummarySettings, defaultLlmModel, getInitSettings, AbstractSettings, InitialSettingsType } from './settings';
+import {  defaultTtsSettings, defaultSummarySettings, defaultLlmModel, getInitSettings, InitialSettingsType } from './settings';
+import {  ITtsSettings, ISummarySettings, ILlmSettings, Language, IAbstractSettings, IGeneralSettings } from './ISettings';
 
 export interface ISettingsManager {
-  setTtsSettings(settings: TtsSettings): Promise<void>;
-  getTtsSettings(): Promise<TtsSettings>;
-  setSummarySettings(settings: SummarySettings): Promise<void>;
-  getSummarySettings(): Promise<SummarySettings>;
-  setLlmSettings(settings: LlmSettings): Promise<void>;
-  getLlmSettings(): Promise<LlmSettings>;
+  setTtsSettings(settings: ITtsSettings): Promise<void>;
+  getTtsSettings(): Promise<ITtsSettings>;
+  setSummarySettings(settings: ISummarySettings): Promise<void>;
+  getSummarySettings(): Promise<ISummarySettings>;
+  setLlmSettings(settings: ILlmSettings): Promise<void>;
+  getLlmSettings(): Promise<ILlmSettings>;
   initializeSettingsWhenInstalled(): Promise<void>;
-  getSettings(): Promise<AbstractSettings>;
+  getSettings(): Promise<IAbstractSettings>;
   saveSettings(): Promise<void>;
   resetSettings(): Promise<void>;
 
@@ -18,7 +19,7 @@ export interface ISettingsManager {
 
 class ChromeSettingsManager implements ISettingsManager {
   //constructor
-  private initSettings: AbstractSettings;
+  private initSettings: IAbstractSettings;
 
   constructor() {
     const env = getEnvironment();
@@ -30,18 +31,28 @@ class ChromeSettingsManager implements ISettingsManager {
     }
   }
 
-  async getSettings(): Promise<AbstractSettings> {
+  async getSettings(): Promise<IAbstractSettings> {
     const ttsSettings = await this.getTtsSettings();
     const summarySettings = await this.getSummarySettings();
     const llmSettings = await this.getLlmSettings();
+    const generalSettings = await this.getGeneralSettings();
 
-    const settings: AbstractSettings = {
+    const settings: IAbstractSettings = {
+      general: generalSettings,
       tts: ttsSettings,
       summary: summarySettings,
       llm: llmSettings
     };
 
     return settings;
+  }
+
+  async getGeneralSettings(): Promise<IGeneralSettings> {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get('generalSettings', (result) => {
+        resolve(result.generalSettings || this.initSettings.general);
+      });
+    });
   }
 
   async saveSettings(): Promise<void> {
@@ -62,13 +73,13 @@ class ChromeSettingsManager implements ISettingsManager {
     await this.setTtsSettings(this.initSettings.tts);
   }
   
-  async setTtsSettings(settings: TtsSettings): Promise<void> {
+  async setTtsSettings(settings: ITtsSettings): Promise<void> {
     return new Promise((resolve) => {
       chrome.storage.sync.set({ ttsSettings: settings }, resolve);
     });
   }
 
-  async getTtsSettings(): Promise<TtsSettings> {
+  async getTtsSettings(): Promise<ITtsSettings> {
     return new Promise((resolve) => {
 
       chrome.storage.sync.get('ttsSettings', (result) => {
@@ -77,13 +88,13 @@ class ChromeSettingsManager implements ISettingsManager {
     });
   }
 
-  async setSummarySettings(settings: SummarySettings): Promise<void> {
+  async setSummarySettings(settings: ISummarySettings): Promise<void> {
     return new Promise((resolve) => {
       chrome.storage.sync.set({ summarySettings: settings }, resolve);
     });
   }
 
-  async getSummarySettings(): Promise<SummarySettings> {
+  async getSummarySettings(): Promise<ISummarySettings> {
     return new Promise((resolve) => {
       chrome.storage.sync.get('summarySettings', (result) => {
         resolve(result.summarySettings || this.initSettings.summary);
@@ -91,13 +102,13 @@ class ChromeSettingsManager implements ISettingsManager {
     });
   }
 
-  async setLlmSettings(settings: LlmSettings): Promise<void> {
+  async setLlmSettings(settings: ILlmSettings): Promise<void> {
     return new Promise((resolve) => {
       chrome.storage.sync.set({ llmSettings: settings }, resolve);
     });
   }
 
-  async getLlmSettings(): Promise<LlmSettings> {
+  async getLlmSettings(): Promise<ILlmSettings> {
     return new Promise((resolve) => {
       chrome.storage.sync.get('llmSettings', (result) => {
         resolve(result.llmSettings || this.initSettings.llm);

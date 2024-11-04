@@ -1,4 +1,4 @@
-import { ApiType } from '../common/settings';
+import { ApiType } from '../common/ISettings';
 import { messageQueue, ITtsMessage } from '../utils/messageQueue';
 import { MessageObserver } from '../utils/messageObserver';
 import { MsTtsApi } from './msTtsApi';

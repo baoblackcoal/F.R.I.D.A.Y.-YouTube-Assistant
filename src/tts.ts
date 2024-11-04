@@ -1,4 +1,5 @@
-import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions, ApiType } from './common/settings';
+import { defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from './common/settings';
+import { ITtsSettings, ApiType } from './common/ISettings';
 import { settingsManager } from './common/settingsManager';
 import { ITtsMessage } from './utils/messageQueue';
 import { TTSSpeak, VoiceInfo } from './contentscript/ttsSpeak';
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stopButton = document.getElementById('stop') as HTMLButtonElement;
     const resetButton = document.getElementById('reset') as HTMLButtonElement;
 
-    let settingsTemp: TtsSettings = await settingsManager.getTtsSettings();
+    let settingsTemp: ITtsSettings = await settingsManager.getTtsSettings();
     const messageObserver = MessageObserver.getInstance();
 
 
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function saveSettings() {
-        const settings: TtsSettings = {
+        const settings: ITtsSettings = {
             apiType: ttsTypeSelect.value as ApiType,
             language: languageSelect.value,
             voiceName: voiceSelect.value,
@@ -207,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     resetButton.addEventListener('click', async () => {
-        const defaultSettings: TtsSettings = { ...defaultTtsSettings };
+        const defaultSettings: ITtsSettings = { ...defaultTtsSettings };
         await settingsManager.setTtsSettings(defaultSettings);
         languageSelect.value = defaultSettings.language;
         voiceSelect.value = defaultSettings.voiceName;

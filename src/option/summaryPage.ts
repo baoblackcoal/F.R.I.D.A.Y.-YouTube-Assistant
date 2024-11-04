@@ -1,10 +1,11 @@
-import { Language, defaultSummarySettings, SummarySettings } from '../common/settings';
+import { defaultSummarySettings } from '../common/settings';
+import { Language, ISummarySettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
 
 export class SummaryPage {
   private view: ISummaryPageView;
-  private settings: SummarySettings;
+  private settings: ISummarySettings;
   private llmSettings: any;
 
   constructor() {
@@ -29,7 +30,7 @@ export class SummaryPage {
   private async handleSettingsChange(): Promise<void> {
     const formValues = this.view.getFormValues();
     
-    const summarySettings: SummarySettings = {
+    const summarySettings: ISummarySettings = {
       promptType: formValues.promptType,
       diyPromptText1: formValues.diyPromptText1,
       diyPromptText2: formValues.diyPromptText2,

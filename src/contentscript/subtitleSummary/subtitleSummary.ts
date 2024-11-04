@@ -2,7 +2,8 @@ import { getLangOptionsWithLink, getRawTranscriptText } from "../transcript";
 import { geminiAPI } from '../geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from '../ttsSpeak';
-import { SummarySettings, defaultSummarySettings, Language } from '../../common/settings';
+import { defaultSummarySettings } from '../../common/settings';
+import { Language, ISummarySettings } from '../../common/ISettings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
 import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
@@ -128,7 +129,7 @@ async function generatePrompt(videoId: string): Promise<string> {
     let promptText = defaultPromptText;
     if (summarySettings.promptType > 0) {
         const diyPromptKey = `diyPromptText${summarySettings.promptType}`;
-        promptText = summarySettings[diyPromptKey as keyof SummarySettings] as string || defaultPromptText;
+        promptText = summarySettings[diyPromptKey as keyof ISummarySettings] as string || defaultPromptText;
     }
 
     const prompt = diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);

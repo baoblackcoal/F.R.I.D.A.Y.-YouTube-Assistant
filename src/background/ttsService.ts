@@ -1,4 +1,5 @@
-import { TtsSettings, defaultTtsSettings } from "../common/settings";
+import { defaultTtsSettings } from "../common/settings";
+import { ITtsSettings } from "../common/ISettings";
 import { ISettingsManager } from "../common/settingsManager";
 import { ITtsService } from "../common/ITtsService";
 
@@ -14,7 +15,7 @@ export class TtsService implements ITtsService {
     private stopStreamSpeakFlag: boolean = false;
     private settingsManager: ISettingsManager;
     private defaultSender: chrome.runtime.MessageSender = {};
-    private ttsSettings: TtsSettings = defaultTtsSettings;
+    private ttsSettings: ITtsSettings = defaultTtsSettings;
     private speakingText: string = ''; 
     private firstSpeakToStartTts: boolean = true; //set tts content to ' ' when first speak, because speakingText is empty and set speakingText after tts got end event.
 

@@ -1,7 +1,7 @@
 import { ITtsMessage } from "./messageQueue";
 import { responseOk, responseNoHandlers } from "../common/common";
 import { settingsManager } from "../common/settingsManager";
-import { ApiType } from "../common/settings";
+import { ApiType } from "../common/ISettings";
 
 // Define a type for the observer function
 export type TtsMessageHandler = (message: ITtsMessage) => any;

@@ -3,7 +3,7 @@ import { getSettings } from './utils';
 import { settingsManager } from '../../../common/settingsManager';
 import { SubtitleSummaryView } from './subtitleSummaryView';
 import { MorePopupHandler } from './popupHandlers';
-import { Language } from '../../../common/settings';
+import { Language } from '../../../common/ISettings';
 // Interfaces
 interface IButtonHandler {
     init(): void;

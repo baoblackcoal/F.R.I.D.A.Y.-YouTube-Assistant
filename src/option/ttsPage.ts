@@ -1,4 +1,5 @@
-import { TtsSettings, defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions, ApiType } from '../common/settings';
+import { defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from '../common/settings';
+import { ITtsSettings, ApiType } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
 import { listenToMessages } from '../contentscript/msTtsService';
@@ -9,7 +10,7 @@ import './css/ttsPage.css';
 
 export class TTSPage {
   private container: HTMLElement;
-  private settings: TtsSettings;
+  private settings: ITtsSettings;
   private tts: TTSSpeak;
   private messageObserver: MessageObserver;
   private azureTtsListend: boolean = false;
@@ -276,7 +277,7 @@ export class TTSPage {
     const pitchSelect = this.container.querySelector('#pitch') as HTMLSelectElement;
     const volumeInput = this.container.querySelector('#volume') as HTMLInputElement;
 
-    const settings: TtsSettings = {
+    const settings: ITtsSettings = {
       apiType: ttsTypeSelect.value as ApiType,
       language: languageSelect.value,
       voiceName: voiceSelect.value,

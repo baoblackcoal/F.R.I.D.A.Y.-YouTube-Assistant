@@ -1,5 +1,6 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
-import { defaultTtsSettings, TtsSettings } from '../common/settings';
+import { defaultTtsSettings } from '../common/settings';
+import { ITtsSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { logTime } from './utils';
 
@@ -19,7 +20,7 @@ export class MsTtsApi implements IMsTtsApi {
     private audioConfig: sdk.AudioConfig | undefined;
     private synthesizer: sdk.SpeechSynthesizer | undefined;
     private player: sdk.SpeakerAudioDestination | undefined;
-    private ttsSettings: TtsSettings = defaultTtsSettings;
+    private ttsSettings: ITtsSettings = defaultTtsSettings;
     private useDefaultAudioOutput: boolean = false;
     private audioEndFunctions: IAudioEndFunction[] = [];
     private lastSynthesisSpeedMs: number = 0;

@@ -1,7 +1,8 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
 import { exec } from 'child_process';
-import { ApiType, TtsSettings, defaultTtsSettings } from '../common/settings';
+import { defaultTtsSettings } from '../common/settings';
+import { ITtsSettings, ApiType } from '../common/ISettings';
 
 describe('Popup Test', () => {
   let browser: Browser;
@@ -67,7 +68,7 @@ describe('Popup Test', () => {
   }
 
   it('should save settings when changed', async () => {
-    const settings: TtsSettings = {
+    const settings: ITtsSettings = {
       apiType: ApiType.Azure,
       volume: 0.8,
       pitch: 1.25,
@@ -95,7 +96,7 @@ describe('Popup Test', () => {
     await popupPage.click('#stop');
 
     const savedSettings = await popupPage.evaluate(() => {
-      return new Promise<TtsSettings>(resolve => {
+      return new Promise<ITtsSettings>(resolve => {
         chrome.storage.sync.get('ttsSettings', (data: { [key: string]: any }) => resolve(data.ttsSettings));
       });
     });
@@ -111,7 +112,7 @@ describe('Popup Test', () => {
     await popupPage.click('#reset');
 
     const defaultSettings = await popupPage.evaluate(() => {
-      return new Promise<TtsSettings>(resolve => {
+      return new Promise<ITtsSettings>(resolve => {
         chrome.storage.sync.get('ttsSettings', (data: { [key: string]: any }) => resolve(data.ttsSettings));
       });
     });
