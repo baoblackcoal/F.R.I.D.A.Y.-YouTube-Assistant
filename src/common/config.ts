@@ -5,7 +5,7 @@ export const globalConfig  = {
     devInitialSettingsType : InitialSettingsType.TEST,
     // devInitialSettingsType : InitialSettingsType.DEFAULT,
 
-    devTestCommandOpen : true,
-    // devInitialSettingsType : fase,
+    // devTestCommandOpen : true,
+    devTestCommandOpen : false,
     
 }

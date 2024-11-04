@@ -1,5 +1,5 @@
 export enum Env {
-  Dev = "test",
+  Dev = "dev",
   Prod = "prod",
 }
 

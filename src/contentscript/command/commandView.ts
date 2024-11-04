@@ -16,7 +16,7 @@ export function insertCommandContainer(): void {
                 border-radius: 4px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                 cursor: move;
-                min-width: 300px;
+                min-width: 300px;                
             }
             #ytbs_test_container * {
                 cursor: default;
@@ -67,6 +67,7 @@ export function insertCommandContainer(): void {
 
     // Add drag functionality
     const container = document.getElementById('ytbs_test_container');
+
     if (container) {
         let isDragging = false;
         let currentX: number;

@@ -55,7 +55,6 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    ttsTypeSection.className = 'sub-section';
     const hide = true; // hide the TTS Type selection
     if (hide) {
       ttsTypeSection.innerHTML = `
@@ -64,6 +63,7 @@ export class TTSPage {
       </select>
       `;
     } else {
+      ttsTypeSection.className = 'sub-section';
       ttsTypeSection.innerHTML = `
       <label class="label">TTS Type</label>
       <select id="ttsType" class="select">

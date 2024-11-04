@@ -1,5 +1,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
+import { assert } from 'console';
+import { globalConfig } from '../common/config';
 
 export interface TestSetup {
   browser: Browser;
@@ -27,6 +29,11 @@ const testUtils: TestUtils = {
     usePopup?: boolean;
     url?: string;
   }): Promise<TestSetup> {
+    //assert devTestCommandOpen is true, throw error if not
+    if (!globalConfig.devTestCommandOpen) {
+      throw new Error('devTestCommandOpen must be true');
+    }
+
     const extensionPath = '../../dist';
     const browser = await puppeteer.launch({
       headless: false,
