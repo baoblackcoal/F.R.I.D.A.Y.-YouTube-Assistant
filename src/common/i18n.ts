@@ -28,7 +28,7 @@ export class I18nService {
 
   public getMessage(key: string): string {
     const message = this.messages[key]?.message;
-    return message || key;
+    return message || `${key} not found`;
   }
 
   public getLanguageLabel(language: Language): string {

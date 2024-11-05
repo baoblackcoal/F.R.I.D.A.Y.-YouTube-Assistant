@@ -1,38 +1,46 @@
 {
-  "extension_name": {
-    "message": "F.R.I.D.A.Y. YouTube 助手"
-  },
-  "welcome_greeting": {
-    "message": "👋 你好！我是 F.R.I.D.A.Y."
-  },
-  "assistant_description": {
-    "message": "🤖 你的個人 YouTube 助手。"
-  },
-  "mission_statement": {
-    "message": "🎯 我的使命是幫助你更容易理解 YouTube 資訊。"
-  },
-  "features_intro": {
-    "message": "✨ 我可以幫你："
-  },
-  "feature_summarize": {
-    "message": "📝 總結 YouTube 影片。"
-  },
-  "feature_translate": {
-    "message": "🌍 翻譯字幕。"
-  },
-  "feature_tts": {
-    "message": "🔊 朗讀內容。"
-  },
-  "feature_more": {
-    "message": "💡 更多功能！請參考"
-  },
-  "open_source": {
-    "message": "開源專案"
-  },
-  "language_label": {
-    "message": "語言"
-  },
-  "sync_language_label": {
-    "message": "同步 TTS 和 LLM 摘要的語言設置"
-  }
-} 
+    "extension_name": {
+        "message": "F.R.I.D.A.Y. YouTube 助手"
+    },
+    "assistant_description": {
+        "message": "🤖 你的個人 YouTube 助手。"
+    },
+
+    
+    "option_general_extension_name": {
+        "message": "F.R.I.D.A.Y. YouTube 助手"
+    },
+    "option_general_welcome_greeting": {
+        "message": "👋 你好！我是 F.R.I.D.A.Y."
+    },
+    "option_general_assistant_description": {
+        "message": "🤖 你的個人 YouTube 助手。"
+    },
+    "option_general_mission_statement": {
+        "message": "🎯 我的使命是幫助你更容易理解 YouTube 資訊。"
+    },
+    "option_general_features_intro": {
+        "message": "✨ 我可以幫你："
+    },
+    "option_general_feature_summarize": {
+        "message": "📝 總結 YouTube 影片。"
+    },
+    "option_general_feature_translate": {
+        "message": "🌍 翻譯字幕。"
+    },
+    "option_general_feature_tts": {
+        "message": "🔊 朗讀內容。"
+    },
+    "option_general_feature_more": {
+        "message": "💡 更多功能！請參考"
+    },
+    "option_general_open_source": {
+        "message": "開源專案"
+    },
+    "option_general_language_label": {
+        "message": "語言"
+    },
+    "option_general_sync_language_label": {
+        "message": "同步 TTS 和 LLM 摘要的語言設置"
+    }
+}

@@ -20,20 +20,20 @@ export class GeneralPage {
     if (welcomeSection) {
       welcomeSection.innerHTML = `
         <img src="friday_logo_128.png" alt="F.R.I.D.A.Y." class="h-24 w-24 mx-auto">
-        <h2 class="text-2xl font-bold mt-4 text-primary">${i18n.getMessage('extension_name')}</h2>
+        <h2 class="text-2xl font-bold mt-4 text-primary">${i18n.getMessage('option_general_extension_name')}</h2>
         <div class="welcome-messages">
-          <p>${i18n.getMessage('welcome_greeting')}</p>
-          <p>${i18n.getMessage('assistant_description')}</p>
-          <p>${i18n.getMessage('mission_statement')}</p>
-          <p>${i18n.getMessage('features_intro')}</p>
+          <p>${i18n.getMessage('option_general_welcome_greeting')}</p>
+          <p>${i18n.getMessage('option_general_assistant_description')}</p>
+          <p>${i18n.getMessage('option_general_mission_statement')}</p>
+          <p>${i18n.getMessage('option_general_features_intro')}</p>
           <ul class="feature-list">
-            <li>${i18n.getMessage('feature_summarize')}</li>
-            <li>${i18n.getMessage('feature_translate')}</li>
-            <li>${i18n.getMessage('feature_tts')}</li>
-            <li>${i18n.getMessage('feature_more')} 
+            <li>${i18n.getMessage('option_general_feature_summarize')}</li>
+            <li>${i18n.getMessage('option_general_feature_translate')}</li>
+            <li>${i18n.getMessage('option_general_feature_tts')}</li>
+            <li>${i18n.getMessage('option_general_feature_more')} 
                 <a href="https://github.com/baoblackcoal/F.R.I.D.A.Y.-YouTube-Assistant" 
                    target="_blank" 
-                   rel="noopener noreferrer">${i18n.getMessage('open_source')}</a>.
+                   rel="noopener noreferrer">${i18n.getMessage('option_general_open_source')}</a>
             </li>
           </ul>
         </div>
@@ -43,13 +43,13 @@ export class GeneralPage {
     // Update language selector label
     const languageLabel = this.container.querySelector('#language-label');
     if (languageLabel) {
-      languageLabel.textContent = i18n.getMessage('language_label');
+      languageLabel.textContent = i18n.getMessage('option_general_language_label');
     }
 
     // Update sync language checkbox label
     const syncLanguageCheckbox = this.container.querySelector('#sync-language-label');
     if (syncLanguageCheckbox) {
-      syncLanguageCheckbox.textContent = i18n.getMessage('sync_language_label');
+      syncLanguageCheckbox.textContent = i18n.getMessage('option_general_sync_language_label');
     }
   }
 
@@ -99,7 +99,7 @@ export class GeneralPage {
     wrapper.className = 'section';
 
     wrapper.innerHTML = `
-      <label class="label" id="language-label">${i18n.getMessage('language_label')}</label>
+      <label class="label" id="language-label">${i18n.getMessage('option_general_language_label')}</label>
       <select id="language-selector" class="select">
         ${Object.values(Language).map(lang => 
           `<option value="${lang}">${i18n.getLanguageLabel(lang)}</option>`
@@ -117,7 +117,7 @@ export class GeneralPage {
     checkbox.innerHTML = `
       <input type="checkbox" id="sync-language" class="checkbox-input">
       <label for="sync-language" class="checkbox-label" id="sync-language-label">
-        ${i18n.getMessage('sync_language_label')}
+        ${i18n.getMessage('option_general_sync_language_label')}
       </label>
     `;
 
