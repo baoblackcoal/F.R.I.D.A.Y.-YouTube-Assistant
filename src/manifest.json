@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "YoutubeSummary",
+  "name": "__MSG_extension_name__",
   "version": "0.0.1",
-  "description": "Reads selected text aloud with customizable settings",
+  "description": "__MSG_assistant_description__",
+  "default_locale": "en",
   "permissions": ["contextMenus", "tts", "storage", "tabs", "activeTab"],
   "background": {
     "service_worker": "background.bundle.js"

@@ -1,0 +1,38 @@
+{
+  "extension_name": {
+    "message": "F.R.I.D.A.Y. YouTube 助手"
+  },
+  "welcome_greeting": {
+    "message": "👋 你好！我是 F.R.I.D.A.Y."
+  },
+  "assistant_description": {
+    "message": "🤖 你的个人 YouTube 助手。"
+  },
+  "mission_statement": {
+    "message": "🎯 我的使命是帮助你更容易理解 YouTube 信息。"
+  },
+  "features_intro": {
+    "message": "✨ 我可以帮你："
+  },
+  "feature_summarize": {
+    "message": "📝 总结 YouTube 视频。"
+  },
+  "feature_translate": {
+    "message": "🌍 翻译字幕。"
+  },
+  "feature_tts": {
+    "message": "🔊 朗读内容。"
+  },
+  "feature_more": {
+    "message": "💡 更多功能！请参考"
+  },
+  "open_source": {
+    "message": "开源项目"
+  },
+  "language_label": {
+    "message": "语言"
+  },
+  "sync_language_label": {
+    "message": "同步 TTS 和 LLM 摘要的语言设置"
+  }
+} 

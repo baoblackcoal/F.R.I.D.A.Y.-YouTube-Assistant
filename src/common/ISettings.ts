@@ -5,9 +5,9 @@ export enum ApiType {
   
 // multi-language enum
 export enum Language {
-    English = 'English',
-    Simplified_Chinese = 'Simplified Chinese',
-    Traditional_Chinese = 'Traditional Chinese',
+    English = 'en',
+    SimplifiedChinese = 'zh_CN',
+    TraditionalChinese = 'zh_TW',
     // French = 'French',
     // German = 'German',
     // Italian = 'Italian',

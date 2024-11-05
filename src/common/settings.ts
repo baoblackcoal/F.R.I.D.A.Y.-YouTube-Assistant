@@ -21,7 +21,7 @@ export const defaultTtsSettings: ITtsSettings = {
 };
 
 export const defaultGeneralSettings: IGeneralSettings = {
-  language: Language.English,
+  language: Language.SimplifiedChinese,
   syncLanguageLlmAndTts: false,
 };
 
@@ -56,7 +56,7 @@ export const defaultSettings: IAbstractSettings = {
 export const testSettings: IAbstractSettings = {
   general: {
     ...defaultGeneralSettings,
-    language: Language.Simplified_Chinese,
+    language: Language.SimplifiedChinese,
     syncLanguageLlmAndTts: true,
   },
   summary: {
@@ -65,7 +65,7 @@ export const testSettings: IAbstractSettings = {
     diyPromptText1: "hi",
     diyPromptText2: "hi",
     diyPromptText3: "hello",
-    language: Language.Simplified_Chinese.toString(),
+    language: Language.SimplifiedChinese.toString(),
     autoTtsSpeak: false,
     autoSummary: true,
   },

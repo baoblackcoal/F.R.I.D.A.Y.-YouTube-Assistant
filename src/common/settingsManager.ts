@@ -14,7 +14,8 @@ export interface ISettingsManager {
   getSettings(): Promise<IAbstractSettings>;
   saveSettings(): Promise<void>;
   resetSettings(): Promise<void>;
-
+  getGeneralSettings(): Promise<IGeneralSettings>;
+  setGeneralSettings(settings: IGeneralSettings): Promise<void>;
 }
 
 class ChromeSettingsManager implements ISettingsManager {
@@ -52,6 +53,12 @@ class ChromeSettingsManager implements ISettingsManager {
       chrome.storage.sync.get('generalSettings', (result) => {
         resolve(result.generalSettings || this.initSettings.general);
       });
+    });
+  }
+
+  async setGeneralSettings(settings: IGeneralSettings): Promise<void> {
+    return new Promise((resolve) => {
+      chrome.storage.sync.set({ generalSettings: settings }, resolve);
     });
   }
 

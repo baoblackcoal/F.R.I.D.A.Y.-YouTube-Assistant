@@ -62,6 +62,7 @@ module.exports = (env, argv) => {
       options: './src/option/options.ts',
       background: './src/background/background.ts',
       tts: './src/tts.ts'
+
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -87,6 +88,7 @@ module.exports = (env, argv) => {
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
+          { from: 'src/_locales', to: '_locales' },
           {
             from: "src/css/*.css",
             to({ context, absoluteFilename }) {

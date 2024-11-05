@@ -1,0 +1,40 @@
+{
+
+  "extension_name": {
+    "message": "F.R.I.D.A.Y. YouTube Assistant"
+  },
+  "welcome_greeting": {
+    "message": "👋 Hello! I'm F.R.I.D.A.Y."
+  },
+  "assistant_description": {
+    "message": "🤖 Your personal YouTube assistant."
+  },
+  "mission_statement": {
+    "message": "🎯 My mission is to make YouTube information easier to understand for you."
+  },
+  "features_intro": {
+    "message": "✨ I can help you:"
+  },
+  "feature_summarize": {
+    "message": "📝 Summarize YouTube videos."
+  },
+  "feature_translate": {
+    "message": "🌍 Translate subtitle."
+  },
+  "feature_tts": {
+    "message": "🔊 Read content aloud."
+  },
+  "feature_more": {
+    "message": "💡 And more! Refer to the"
+  },
+  "open_source": {
+    "message": "Open Source Project"
+  },
+  "language_label": {
+    "message": "Language"
+  },
+
+  "sync_language_label": {
+    "message": "Sync language settings for TTS and LLM summary"
+  }
+} 
