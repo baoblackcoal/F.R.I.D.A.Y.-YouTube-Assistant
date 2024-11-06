@@ -12,6 +12,7 @@ export class GeneralPage {
     this.container.className = 'page-container';
     this.init();
     this.loadCurrentLanguage();
+    this.loadSyncLanguageCheckbox();
   }
 
   private updatePageContent(): void {
@@ -66,32 +67,51 @@ export class GeneralPage {
     this.updatePageContent();
   }
 
-  private async handleLanguageChange(event: Event): Promise<void> {
-    const select = event.target as HTMLSelectElement;
+  private async loadSyncLanguageCheckbox(): Promise<void> {
+    const result = await settingsManager.getGeneralSettings();
+    const sync = result.syncLanguageLlmAndTts || false;
+
+    const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = sync;
+    }
+  }
+
+  private async saveLanguageSettings(): Promise<void> {
+    const select = this.container.querySelector('#language-selector') as HTMLSelectElement;
     const newLanguage = select.value as Language;
+
+    const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
+    const sync = checkbox.checked || false;
 
     try {
       const generalSettings: IGeneralSettings = {
         language: newLanguage,
-        syncLanguageLlmAndTts: (this.container.querySelector('#sync-language-selector') as HTMLInputElement)?.checked || false
+        syncLanguageLlmAndTts: sync
       };
 
-      // Save the selected language
       await settingsManager.setGeneralSettings(generalSettings);
-      
-      // Load and apply the new locale
-      await i18n.loadLocale(newLanguage);
-      
-      // Update the page content
-      this.updatePageContent();
-      
-      // Dispatch a custom event for language change
-      window.dispatchEvent(new CustomEvent('languageChanged', {
-        detail: { language: newLanguage }
-      }));
     } catch (error) {
       console.error('Failed to change language:', error);
     }
+  }
+
+  private async handleLanguageChange(event: Event): Promise<void> {
+    const select = event.target as HTMLSelectElement;
+    const newLanguage = select.value as Language;
+     
+    await this.saveLanguageSettings();
+    await i18n.loadLocale(newLanguage);     
+  
+    this.updatePageContent();
+    
+    window.dispatchEvent(new CustomEvent('languageChanged', {
+      detail: { language: newLanguage }
+    }));     
+  }
+
+  private handleLanguageSyncChange(event: Event): void {
+    this.saveLanguageSettings();
   }
 
   private createWelcomeSection(): HTMLElement {
@@ -127,6 +147,10 @@ export class GeneralPage {
         ${i18n.getMessage('option_general_sync_language_label')}
       </label>
     `;
+    const checkboxInput = checkbox.querySelector('#sync-language');
+    if (checkboxInput) {
+      checkboxInput.addEventListener('change', (e) => this.handleLanguageSyncChange(e));
+    }
 
     wrapper.appendChild(checkbox);
 

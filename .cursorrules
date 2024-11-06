@@ -7,6 +7,9 @@
 - **Linting Tool**: ESLint
 - **Styling**: Tailwind CSS
 
+# Formatting Rules
+- **Indentation**: 4 spaces
+
 # Core Principles
 - **Abstract and Interface-Driven Design**: Define clear interfaces for key components, promoting abstraction and enabling dependency injection to ensure flexibility and ease of testing. This approach decouples code and enhances adaptability.
 - **Modular and Decoupled Structure**: Structure the project into cohesive, self-contained modules to support scalability and ease of maintenance. Each module should have a well-defined purpose and communicate through interfaces.
