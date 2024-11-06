@@ -38,6 +38,11 @@ export class I18nService {
     return message || `${key} not found`;
   }
 
+  public getMessageWithParams(key: string, params: Record<string, string>): string {
+    const message = this.messages[key]?.message;
+    return message ? message.replace(/{(\w+)}/g, (_, p) => params[p] || `{${p}}`) : `${key} not found`;
+  }
+
   public getLanguageLabel(language: Language): string {
     return this.languageLabels[language];
   }

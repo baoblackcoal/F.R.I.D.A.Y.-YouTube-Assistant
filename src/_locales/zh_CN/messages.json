@@ -53,5 +53,102 @@
     },
     "option_tab_tts": {
         "message": "语音合成"
+    },
+
+    "option_summary_api_key_section": {
+        "message": "Gemini API 密钥"
+    },
+    "option_summary_common_key": {
+        "message": "公共密钥"
+    },
+    "option_summary_your_key": {
+        "message": "个人密钥"
+    },
+    "option_summary_test_button": {
+        "message": "测试"
+    },
+    "option_summary_common_key_info_title": {
+        "message": "公共密钥信息："
+    },
+    "option_summary_common_key_description": {
+        "message": "使用公共密钥，该密钥具有以下限制："
+    },
+    "option_summary_common_key_limit_rpm": {
+        "message": "每分钟 15 个请求 (RPM)"
+    },
+    "option_summary_common_key_limit_tpm": {
+        "message": "每分钟 100 万个令牌 (TPM)"
+    },
+    "option_summary_common_key_limit_rpd": {
+        "message": "每天 1,500 个请求 (RPD)"
+    },
+    "option_summary_gemini_flash_1_5_pricing": {
+        "message": "更多详情，请访问"
+    },
+    "option_summary_custom_key_title": {
+        "message": "自定义 API 密钥设置："
+    },
+    "option_summary_custom_key_description": {
+        "message": "获取您的个人 API 密钥，请访问"
+    },
+    "option_summary_custom_key_benefits": {
+        "message": "使用您自己的 API 密钥可以提供："
+    },
+    "option_summary_custom_key_benefit_limits": {
+        "message": "更高的速率限制"
+    },
+    "option_summary_custom_key_benefit_quota": {
+        "message": "独立的配额管理"
+    },
+    "option_summary_custom_key_benefit_control": {
+        "message": "更好的 API 使用控制"
+    },
+    "option_summary_language_label": {
+        "message": "总结的语言"
+    },
+    "option_summary_auto_summary": {
+        "message": "视频加载时自动生成摘要"
+    },
+    "option_summary_auto_tts": {
+        "message": "自动停止视频并朗读摘要"
+    },
+    "option_summary_prompt_type": {
+        "message": "提示类型"
+    },
+    "option_summary_prompt_default": {
+        "message": "默认"
+    },
+    "option_summary_prompt_custom": {
+        "message": "自定义提示 {number}"
+    },
+    "option_summary_prompt_default_readonly": {
+        "message": "默认提示（只读）"
+    },
+    "option_summary_prompt_custom_label": {
+        "message": "自定义提示 {number}"
+    },
+    "option_summary_prompt_edit": {
+        "message": "编辑"
+    },
+    "option_summary_prompt_edit_dialog_title": {
+        "message": "编辑自定义提示"
+    },
+    "option_summary_prompt_variables_title": {
+        "message": "可用的自定义提示变量："
+    },
+    "option_summary_prompt_variable_title": {
+        "message": "YouTube 视频标题"
+    },
+    "option_summary_prompt_variable_transcript": {
+        "message": "视频的完整字幕"
+    },
+    "option_summary_prompt_variable_language": {
+        "message": "总结的语言"
+    },
+    "option_summary_prompt_save": {
+        "message": "保存"
+    },
+    "option_summary_prompt_cancel": {
+        "message": "取消"
     }
 }

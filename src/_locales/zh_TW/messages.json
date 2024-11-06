@@ -53,5 +53,103 @@
     },
     "option_tab_tts": {
         "message": "語音合成"
+    },
+
+    "option_summary_api_key_section": {
+        "message": "Gemini API 金鑰"
+    },
+    "option_summary_common_key": {
+        "message": "公共金鑰"
+    },
+    "option_summary_your_key": {
+        "message": "個人金鑰"
+    },
+
+    "option_summary_test_button": {
+        "message": "測試"
+    },
+    "option_summary_common_key_info_title": {
+        "message": "公共金鑰資訊："
+    },
+    "option_summary_common_key_description": {
+        "message": "使用公共金鑰，該金鑰具有以下限制："
+    },
+    "option_summary_common_key_limit_rpm": {
+        "message": "每分鐘 15 個請求 (RPM)"
+    },
+    "option_summary_common_key_limit_tpm": {
+        "message": "每分鐘 100 萬個令牌 (TPM)"
+    },
+    "option_summary_common_key_limit_rpd": {
+        "message": "每天 1,500 個請求 (RPD)"
+    },
+    "option_summary_gemini_flash_1_5_pricing": {
+        "message": "更多詳情，請訪問"
+    }, 
+    "option_summary_custom_key_title": {
+        "message": "自定義 API 金鑰設置："
+    },
+    "option_summary_custom_key_description": {
+        "message": "獲取您的個人 API 金鑰，請訪問"
+    },
+    "option_summary_custom_key_benefits": {
+        "message": "使用您自己的 API 金鑰可以提供："
+    },
+    "option_summary_custom_key_benefit_limits": {
+        "message": "更高的速率限制"
+    },
+    "option_summary_custom_key_benefit_quota": {
+        "message": "獨立的配額管理"
+    },
+    "option_summary_custom_key_benefit_control": {
+        "message": "更好的 API 使用控制"
+    },
+    "option_summary_language_label": {
+        "message": "總結語言"
+    },
+    "option_summary_auto_summary": {
+        "message": "影片載入時自動生成摘要"
+    },
+    "option_summary_auto_tts": {
+        "message": "自動停止影片並朗讀摘要"
+    },
+    "option_summary_prompt_type": {
+        "message": "提示類型"
+    },
+    "option_summary_prompt_default": {
+        "message": "預設"
+    },
+    "option_summary_prompt_custom": {
+        "message": "自定義提示 {number}"
+    },
+    "option_summary_prompt_default_readonly": {
+        "message": "預設提示（唯讀）"
+    },
+    "option_summary_prompt_custom_label": {
+        "message": "自定義提示 {number}"
+    },
+    "option_summary_prompt_edit": {
+        "message": "編輯"
+    },
+    "option_summary_prompt_edit_dialog_title": {
+        "message": "編輯自定義提示"
+    },
+    "option_summary_prompt_variables_title": {
+        "message": "可用的自定義提示變數："
+    },
+    "option_summary_prompt_variable_title": {
+        "message": "YouTube 影片標題"
+    },
+    "option_summary_prompt_variable_transcript": {
+        "message": "影片的完整字幕"
+    },
+    "option_summary_prompt_variable_language": {
+        "message": "總結的語言"
+    },
+    "option_summary_prompt_save": {
+        "message": "儲存"
+    },
+    "option_summary_prompt_cancel": {
+        "message": "取消"
     }
 }

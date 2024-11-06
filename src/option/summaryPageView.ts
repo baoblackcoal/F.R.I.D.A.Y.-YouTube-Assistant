@@ -3,6 +3,7 @@ import { settingsManager } from '../common/settingsManager';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import './css/basePage.css';
 import './css/summaryPage.css';
+import { i18n, I18nService } from '../common/i18n';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -20,6 +21,7 @@ export interface ISummaryPageView {
   };
   initialize(settings: ISummarySettings, llmSettings: any): void;
   getElement(): HTMLElement;
+  updateI18n(): void;
 }
 
 export class SummaryPageView implements ISummaryPageView {
@@ -28,7 +30,7 @@ export class SummaryPageView implements ISummaryPageView {
 
   constructor(
     private readonly onSettingsChange: () => void,
-    private readonly onPromptEdit: (promptId: number, value: string) => void
+    private readonly onPromptEdit: (promptId: number, value: string) => void,
   ) {
     this.container = document.createElement('div');
     this.container.className = 'page-container';
@@ -50,26 +52,30 @@ export class SummaryPageView implements ISummaryPageView {
     section.id = 'apiKeySection';
     section.className = 'section';
     section.innerHTML = `
-      <label class="label">Gemini API Key</label>
+      <label class="label">${i18n.getMessage('option_summary_api_key_section')}</label>
       <div class="radio-wrapper">
         <input type="radio" name="apiKeyType" id="apiKeyTypeCommonKey" value="Common Key">
-        <label for="apiKeyTypeCommonKey" class="radio-label">Common Key</label>
+        <label for="apiKeyTypeCommonKey" class="radio-label">
+          ${i18n.getMessage('option_summary_common_key')}
+        </label>
 
         <input type="radio" name="apiKeyType" id="apiKeyTypeYourKey" value="Your Key">
-        <label for="apiKeyTypeYourKey" class="radio-label">Your Key</label>
+        <label for="apiKeyTypeYourKey" class="radio-label">
+          ${i18n.getMessage('option_summary_your_key')}
+        </label>
       </div>
       <input type="text" id="geminiApiKey" class="input-field">
-      <button id="testApiKey" class="base-button">Test</button>
+      <button id="testApiKey" class="base-button">${i18n.getMessage('option_summary_test_button')}</button>
       
       <div id="apiKeyInfoCommonKey" class="api-key-info api-key-info-common">
-        <p class="mb-2"><strong>Common Key Information:</strong></p>
-        <p>Use the Common Key, which is a shared key with the following limits:</p>
+        <p class="mb-2"><strong>${i18n.getMessage('option_summary_common_key_info_title')}</strong></p>
+        <p>${i18n.getMessage('option_summary_common_key_description')}</p>
         <ul class="list-disc ml-4 mt-2">
-          <li>15 requests per minute (RPM)</li>
-          <li>1 million tokens per minute (TPM)</li>
-          <li>1,500 requests per day (RPD)</li>
+          <li>${i18n.getMessage('option_summary_common_key_limit_rpm')}</li>
+          <li>${i18n.getMessage('option_summary_common_key_limit_tpm')}</li>
+          <li>${i18n.getMessage('option_summary_common_key_limit_rpd')}</li>
         </ul>
-        <p class="mt-2">For more details, refer to the 
+        <p class="mt-2">${i18n.getMessage('option_summary_gemini_flash_1_5_pricing')}
           <a href="https://ai.google.dev/pricing#1_5flash" target="_blank" rel="noopener noreferrer">
             Gemini Flash 1.5 Pricing
           </a>
@@ -77,18 +83,18 @@ export class SummaryPageView implements ISummaryPageView {
       </div>
 
       <div id="apiKeyInfoYourKey" class="api-key-info api-key-info-custom">
-        <p class="mb-2"><strong>Custom API Key Setup:</strong></p>
-        <p>Get your personal API key from the 
-          <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
+        <p class="mb-2"><strong>${i18n.getMessage('option_summary_custom_key_title')}</strong></p>
+
+        <p class="mt-2">${i18n.getMessage('option_summary_custom_key_benefits')}</p>
+        <ul class="list-disc ml-4 mt-2">
+          <li>${i18n.getMessage('option_summary_custom_key_benefit_limits')}</li>
+          <li>${i18n.getMessage('option_summary_custom_key_benefit_quota')}</li>
+          <li>${i18n.getMessage('option_summary_custom_key_benefit_control')}</li>
+        </ul>
+        <p class="mt-2">${i18n.getMessage('option_summary_custom_key_description')} <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
             Google Cloud Console
           </a>
         </p>
-        <p class="mt-2">Using your own API key provides:</p>
-        <ul class="list-disc ml-4 mt-2">
-          <li>Higher rate limits</li>
-          <li>Independent quota management</li>
-          <li>Better control over API usage</li>
-        </ul>
       </div>
     `;
     return section;
@@ -98,10 +104,10 @@ export class SummaryPageView implements ISummaryPageView {
     const section = document.createElement('div');
     section.className = 'section';
     section.innerHTML = `
-      <label class="label">Summary Language</label>
+      <label class="label">${i18n.getMessage('option_summary_language_label')}</label>
       <select id="language" class="select">
-        ${Object.entries(Language).map(([key, value]) => `
-          <option value="${value}">${key}</option>
+        ${Object.values(Language).map(lang => `
+          <option value="${lang}">${i18n.getLanguageLabel(lang)}</option>
         `).join('')}
       </select>
     `;
@@ -114,11 +120,11 @@ export class SummaryPageView implements ISummaryPageView {
     section.innerHTML = `
       <div class="checkbox-wrapper">
         <input type="checkbox" id="autoSummary" class="checkbox-input">
-        <label for="autoSummary" class="checkbox-label">Auto-generate summary when video loads</label>
+        <label for="autoSummary" class="checkbox-label">${i18n.getMessage('option_summary_auto_summary')}</label>
       </div>
       <div class="checkbox-wrapper">
         <input type="checkbox" id="autoTtsSpeak" class="checkbox-input">
-        <label for="autoTtsSpeak" class="checkbox-label">Stop video and speak summary automatically</label>
+        <label for="autoTtsSpeak" class="checkbox-label">${i18n.getMessage('option_summary_auto_tts')}</label>
       </div>
     `;
     return section;
@@ -130,32 +136,32 @@ export class SummaryPageView implements ISummaryPageView {
     section.className = 'section';
     section.innerHTML = `
       <div id="promptTypeSection" class="sub-section">
-        <label class="label">Prompt Type</label>
+        <label class="label">${i18n.getMessage('option_summary_prompt_type')}</label>
         <select id="promptType" class="select">
-          <option value="0">Default</option>
-          <option value="1">Custom Prompt 1</option>
-          <option value="2">Custom Prompt 2</option>
-          <option value="3">Custom Prompt 3</option>
+          <option value="0">${i18n.getMessage('option_summary_prompt_default')}</option>
+          <option value="1">${i18n.getMessageWithParams('option_summary_prompt_custom', { number: '1' })}</option>
+          <option value="2">${i18n.getMessageWithParams('option_summary_prompt_custom', { number: '2' })}</option>
+          <option value="3">${i18n.getMessageWithParams('option_summary_prompt_custom', { number: '3' })}</option>
         </select>
       </div>
 
       <div id="promptContentSection">
         <div id="defaultPrompt" class="sub-section prompt-content">
-          <label class="label">Default Prompt (Read-only)</label>
+          <label class="label">${i18n.getMessage('option_summary_prompt_default_readonly')}</label>
           <div class="truncate-wrapper">
-            <textarea id="defaultPromptText" rows="15" readonly
+            <textarea id="defaultPromptText" rows="12" readonly
                       class="textarea-field readonly">${defaultPromptText}</textarea>
           </div>
         </div>
 
         ${[1, 2, 3].map(i => `
           <div id="diyPrompt${i}" class="sub-section prompt-content" style="display: none;">
-            <label class="label">Custom Prompt ${i}</label>
+            <label class="label">${i18n.getMessageWithParams('option_summary_prompt_custom', { number: i.toString() })}</label>
             <div class="truncate-wrapper">
-              <textarea id="diyPromptText${i}" rows="15" readonly
+              <textarea id="diyPromptText${i}" rows="12" readonly
                         class="textarea-field"></textarea>
             </div>
-            <button id="editPrompt${i}" class="base-button edit-prompt-btn">Edit</button>
+            <button id="editPrompt${i}" class="base-button edit-prompt-btn">${i18n.getMessage('option_summary_prompt_edit')}</button>
           </div>
         `).join('')}
       </div>
@@ -167,19 +173,19 @@ export class SummaryPageView implements ISummaryPageView {
     const dialogHTML = `
       <dialog id="promptEditDialog" class="prompt-edit-dialog">
         <div class="dialog-content">
-          <h2 id="dialogPromptTitle" class="dialog-title">Edit Custom Prompt</h2>
+          <h2 id="dialogPromptTitle" class="dialog-title">${i18n.getMessage('option_summary_prompt_edit_dialog_title')}</h2>
           <div class="prompt-info">
-            <p class="prompt-info-title">Available variables for custom prompts:</p>
+            <p class="prompt-info-title">${i18n.getMessage('option_summary_prompt_variables_title')}</p>
             <ul class="prompt-info-list">
-              <li><code class="code-text">{videoTitle}</code>: The title of the YouTube video</li>
-              <li><code class="code-text">{textTranscript}</code>: The full transcript of the video</li>
-              <li><code class="code-text">{language}</code>: The language of the video</li>
+              <li><code class="code-text">{videoTitle}</code>: ${i18n.getMessage('option_summary_prompt_variable_title')}</li>
+              <li><code class="code-text">{textTranscript}</code>: ${i18n.getMessage('option_summary_prompt_variable_transcript')}</li>
+              <li><code class="code-text">{language}</code>: ${i18n.getMessage('option_summary_prompt_variable_language')}</li>
             </ul>
           </div>
           <textarea id="dialogPromptText" rows="20" class="dialog-textarea"></textarea>
           <div class="dialog-buttons">
-            <button id="dialogSave" class="base-button">Save</button>
-            <button id="dialogCancel" class="base-button secondary">Cancel</button>
+            <button id="dialogSave" class="base-button">${i18n.getMessage('option_summary_prompt_save')}</button>
+            <button id="dialogCancel" class="base-button secondary">${i18n.getMessage('option_summary_prompt_cancel')}</button>
           </div>
         </div>
       </dialog>
@@ -347,5 +353,160 @@ export class SummaryPageView implements ISummaryPageView {
 
   public getElement(): HTMLElement {
     return this.container;
+  }
+
+  public updateI18n(): void {
+    // API Key Section
+    const apiKeyElements = {
+        apiKeyLabel: this.container.querySelector('#apiKeySection .label'),
+        commonKeyLabel: this.container.querySelector('[for="apiKeyTypeCommonKey"]'),
+        yourKeyLabel: this.container.querySelector('[for="apiKeyTypeYourKey"]'),
+        testButton: this.container.querySelector('#testApiKey'),
+        commonKeyInfoTitle: this.container.querySelector('#apiKeyInfoCommonKey strong'),
+        commonKeyDescription: this.container.querySelector('#apiKeyInfoCommonKey > p:nth-child(2)'),
+        commonKeyLimitRpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(1)'),
+        commonKeyLimitTpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(2)'),
+        commonKeyLimitRpd: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(3)'),
+        yourKeyInfoTitle: this.container.querySelector('#apiKeyInfoYourKey strong'),
+        yourKeyDescription: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(2)'),
+        yourKeyBenefitsTitle: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(3)'),
+        yourKeyBenefitLimits: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(1)'),
+        yourKeyBenefitQuota: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(2)'),
+        yourKeyBenefitControl: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(3)')
+    };
+
+    // Language Section
+    const languageElements = {
+        languageLabel: this.container.querySelector('#language')?.previousElementSibling
+    };
+
+    // Auto Settings Section
+    const autoSettingsElements = {
+        autoSummaryLabel: this.container.querySelector('[for="autoSummary"]'),
+        autoTtsSpeakLabel: this.container.querySelector('[for="autoTtsSpeak"]')
+    };
+
+    // Prompt Section
+    const promptElements = {
+        promptTypeLabel: this.container.querySelector('#promptTypeSection .label'),
+        defaultOption: this.container.querySelector('#promptType option[value="0"]'),
+        defaultPromptLabel: this.container.querySelector('#defaultPrompt .label'),
+        dialogTitle: this.container.querySelector('#dialogPromptTitle'),
+        dialogVariablesTitle: this.container.querySelector('.prompt-info-title'),
+        dialogVariableTitle: this.container.querySelector('.prompt-info-list li:nth-child(1)'),
+        dialogVariableTranscript: this.container.querySelector('.prompt-info-list li:nth-child(2)'),
+        dialogVariableLanguage: this.container.querySelector('.prompt-info-list li:nth-child(3)'),
+        dialogSaveButton: this.container.querySelector('#dialogSave'),
+        dialogCancelButton: this.container.querySelector('#dialogCancel')
+    };
+
+    // Update API Key Section
+    if (apiKeyElements.apiKeyLabel) {
+        apiKeyElements.apiKeyLabel.textContent = i18n.getMessage('option_summary_api_key_section');
+    }
+    if (apiKeyElements.commonKeyLabel) {
+        apiKeyElements.commonKeyLabel.textContent = i18n.getMessage('option_summary_common_key');
+    }
+    if (apiKeyElements.yourKeyLabel) {
+        apiKeyElements.yourKeyLabel.textContent = i18n.getMessage('option_summary_your_key');
+    }
+    if (apiKeyElements.testButton) {
+        apiKeyElements.testButton.textContent = i18n.getMessage('option_summary_test_button');
+    }
+    if (apiKeyElements.commonKeyInfoTitle) {
+        apiKeyElements.commonKeyInfoTitle.textContent = i18n.getMessage('option_summary_common_key_info_title');
+    }
+    if (apiKeyElements.commonKeyDescription) {
+        apiKeyElements.commonKeyDescription.textContent = i18n.getMessage('option_summary_common_key_description');
+    }
+    if (apiKeyElements.commonKeyLimitRpm) {
+        apiKeyElements.commonKeyLimitRpm.textContent = i18n.getMessage('option_summary_common_key_limit_rpm');
+    }
+    if (apiKeyElements.commonKeyLimitTpm) {
+        apiKeyElements.commonKeyLimitTpm.textContent = i18n.getMessage('option_summary_common_key_limit_tpm');
+    }
+    if (apiKeyElements.commonKeyLimitRpd) {
+        apiKeyElements.commonKeyLimitRpd.textContent = i18n.getMessage('option_summary_common_key_limit_rpd');
+    }
+    if (apiKeyElements.yourKeyInfoTitle) {
+        apiKeyElements.yourKeyInfoTitle.textContent = i18n.getMessage('option_summary_custom_key_title');
+    }
+    if (apiKeyElements.yourKeyDescription) {
+        apiKeyElements.yourKeyDescription.textContent = i18n.getMessage('option_summary_custom_key_description');
+    }
+    if (apiKeyElements.yourKeyBenefitsTitle) {
+        apiKeyElements.yourKeyBenefitsTitle.textContent = i18n.getMessage('option_summary_custom_key_benefits');
+    }
+    if (apiKeyElements.yourKeyBenefitLimits) {
+        apiKeyElements.yourKeyBenefitLimits.textContent = i18n.getMessage('option_summary_custom_key_benefit_limits');
+    }
+    if (apiKeyElements.yourKeyBenefitQuota) {
+        apiKeyElements.yourKeyBenefitQuota.textContent = i18n.getMessage('option_summary_custom_key_benefit_quota');
+    }
+    if (apiKeyElements.yourKeyBenefitControl) {
+        apiKeyElements.yourKeyBenefitControl.textContent = i18n.getMessage('option_summary_custom_key_benefit_control');
+    }
+
+    // Update Language Section
+    if (languageElements.languageLabel) {
+        languageElements.languageLabel.textContent = i18n.getMessage('option_summary_language_label');
+    }
+
+    // Update Auto Settings Section
+    if (autoSettingsElements.autoSummaryLabel) {
+        autoSettingsElements.autoSummaryLabel.textContent = i18n.getMessage('option_summary_auto_summary');
+    }
+    if (autoSettingsElements.autoTtsSpeakLabel) {
+        autoSettingsElements.autoTtsSpeakLabel.textContent = i18n.getMessage('option_summary_auto_tts');
+    }
+
+    // Update Prompt Section
+    if (promptElements.promptTypeLabel) {
+        promptElements.promptTypeLabel.textContent = i18n.getMessage('option_summary_prompt_type');
+    }
+    if (promptElements.defaultOption) {
+        promptElements.defaultOption.textContent = i18n.getMessage('option_summary_prompt_default');
+    }
+    if (promptElements.defaultPromptLabel) {
+        promptElements.defaultPromptLabel.textContent = i18n.getMessage('option_summary_prompt_default_readonly');
+    }
+    if (promptElements.dialogTitle) {
+        promptElements.dialogTitle.textContent = i18n.getMessage('option_summary_prompt_edit_dialog_title');
+    }
+    if (promptElements.dialogVariablesTitle) {
+        promptElements.dialogVariablesTitle.textContent = i18n.getMessage('option_summary_prompt_variables_title');
+    }
+    if (promptElements.dialogVariableTitle) {
+        promptElements.dialogVariableTitle.textContent = i18n.getMessage('option_summary_prompt_variable_title');
+    }
+    if (promptElements.dialogVariableTranscript) {
+        promptElements.dialogVariableTranscript.textContent = i18n.getMessage('option_summary_prompt_variable_transcript');
+    }
+    if (promptElements.dialogVariableLanguage) {
+        promptElements.dialogVariableLanguage.textContent = i18n.getMessage('option_summary_prompt_variable_language');
+    }
+    if (promptElements.dialogSaveButton) {
+        promptElements.dialogSaveButton.textContent = i18n.getMessage('option_summary_prompt_save');
+    }
+    if (promptElements.dialogCancelButton) {
+        promptElements.dialogCancelButton.textContent = i18n.getMessage('option_summary_prompt_cancel');
+    }
+
+    // Update Custom Prompt Options and Labels
+    [1, 2, 3].forEach(i => {
+        const option = this.container.querySelector(`#promptType option[value="${i}"]`);
+        const label = this.container.querySelector(`#diyPrompt${i} .label`);
+        const editButton = this.container.querySelector(`#editPrompt${i}`);
+
+        if (option) {
+            option.textContent = i18n.getMessageWithParams('option_summary_prompt_custom', { number: i.toString() });
+        }
+        if (label) {
+            label.textContent = i18n.getMessageWithParams('option_summary_prompt_custom_label', { number: i.toString() });
+        }
+        if (editButton) {
+            editButton.textContent = i18n.getMessage('option_summary_prompt_edit');
+        }
+    });
   }
 }

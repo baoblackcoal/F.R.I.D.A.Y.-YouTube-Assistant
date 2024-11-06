@@ -2,6 +2,7 @@ import { defaultSummarySettings } from '../common/settings';
 import { Language, ISummarySettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
+import { i18n } from '../common/i18n';
 
 export class SummaryPage {
   private view: ISummaryPageView;
@@ -12,9 +13,16 @@ export class SummaryPage {
     this.settings = { ...defaultSummarySettings };
     this.view = new SummaryPageView(
       this.handleSettingsChange.bind(this),
-      this.handlePromptEdit.bind(this)
+      this.handlePromptEdit.bind(this),
     );
     this.init();
+
+    window.addEventListener('languageChanged', async (event: Event) => {
+      const customEvent = event as CustomEvent<{language: Language}>;
+      const { language } = customEvent.detail;
+      await i18n.loadLocale(language);
+      this.view.updateI18n();
+    });
   }
 
   private async init(): Promise<void> {
