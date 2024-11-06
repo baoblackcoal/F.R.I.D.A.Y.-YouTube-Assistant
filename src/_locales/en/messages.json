@@ -42,5 +42,16 @@
     },
     "option_general_sync_language_label": {
         "message": "Sync language settings for TTS and LLM summary"
+    },
+
+    
+    "option_tab_general": {
+        "message": "General"
+    },
+    "option_tab_summary": {
+        "message": "AI Summary"
+    },
+    "option_tab_tts": {
+        "message": "TTS"
     }
 }

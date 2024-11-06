@@ -3,6 +3,7 @@ import { SummaryPage } from './summaryPage';
 import { TTSPage } from './ttsPage';
 // import { TabConfig } from './types.ts0';
 import { settingsManager, ISettingsManager } from '../common/settingsManager';
+import { i18n } from '../common/i18n';
 
 export interface TabConfig {
   id: string;
@@ -42,9 +43,11 @@ class OptionsPage {
     this.init();
   }
 
-  private init(): void {
+  private async init(): Promise<void> {
+    await i18n.initLoadLocale();
     this.initializeTabContent();
     this.attachEventListeners();
+    this.updateTabLabels();
   }
 
   private initializeTabContent(): void {
@@ -82,13 +85,11 @@ class OptionsPage {
       }
     });
 
-    // // Save button
-    // const saveButton = document.getElementById('saveBtn');
-    // saveButton?.addEventListener('click', () => this.saveSettings());
+    // Add language change event listener
+    window.addEventListener('languageChanged', () => {
+      this.updateTabLabels();
+    });
 
-    // // Reset button
-    // const resetButton = document.getElementById('resetBtn');
-    // resetButton?.addEventListener('click', () => this.resetSettings());
   }
 
   private showTab(tabId: string): void {
@@ -113,50 +114,21 @@ class OptionsPage {
     this.currentTab = tabId;
   }
 
-  // private async saveSettings(): Promise<void> {
-  //   try {
-  //     // Collect and save settings from all tabs
-  //     await this.settingsManager.saveSettings();
-      
-  //     this.showToast('Settings saved successfully', 'success');
-  //   } catch (error) {
-  //     this.showToast('Failed to save settings', 'error');
-  //     console.error('Error saving settings:', error);
-  //   }
-  // }
 
-  // private async resetSettings(): Promise<void> {
-  //   if (confirm('Are you sure you want to reset all settings to default?')) {
-  //     try {
-  //       await this.settingsManager.resetSettings();
-  //       window.location.reload();
-  //     } catch (error) {
-  //       this.showToast('Failed to reset settings', 'error');
-  //       console.error('Error resetting settings:', error);
-  //     }
-  //   }
-  // }
+  private updateTabLabels(): void {
+    const tabLabels = {
+      general: i18n.getMessage('option_tab_general'),
+      summary: i18n.getMessage('option_tab_summary'),
+      tts: i18n.getMessage('option_tab_tts')
+    };
 
-  // private showToast(message: string, type: 'success' | 'error' = 'success'): void {
-  //   if (this.toast) {
-  //     this.toast.textContent = message;
-  //     this.toast.className = `
-  //       fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg 
-  //       transform transition-transform duration-300
-  //       ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white
-  //     `;
-      
-  //     // Show toast
-  //     this.toast.style.transform = 'translateY(0)';
-
-  //     // Hide toast after 3 seconds
-  //     setTimeout(() => {
-  //       if (this.toast) {
-  //         this.toast.style.transform = 'translateY(100%)';
-  //       }
-  //     }, 3000);
-  //   }
-  // }
+    this.tabs.forEach(tab => {
+      const tabButton = document.getElementById(`tab-${tab.id}`);
+      if (tabButton) {
+        tabButton.textContent = tabLabels[tab.id as keyof typeof tabLabels];
+      }
+    });
+  }
 }
 
 // Initialize the options page when the DOM is loaded

@@ -81,7 +81,14 @@ export class GeneralPage {
       
       // Load and apply the new locale
       await i18n.loadLocale(newLanguage);
+      
+      // Update the page content
       this.updatePageContent();
+      
+      // Dispatch a custom event for language change
+      window.dispatchEvent(new CustomEvent('languageChanged', {
+        detail: { language: newLanguage }
+      }));
     } catch (error) {
       console.error('Failed to change language:', error);
     }

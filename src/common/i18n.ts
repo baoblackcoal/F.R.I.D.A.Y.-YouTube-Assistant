@@ -1,4 +1,5 @@
 import { Language } from './ISettings';
+import { settingsManager } from './settingsManager';
 
 interface LocaleMessages {
   [key: string]: {
@@ -24,6 +25,12 @@ export class I18nService {
       I18nService.instance = new I18nService();
     }
     return I18nService.instance;
+  }
+
+  public async initLoadLocale(): Promise<void> {
+    const result = await settingsManager.getGeneralSettings();
+    const currentLanguage = result.language || Language.English;
+    await this.loadLocale(currentLanguage);
   }
 
   public getMessage(key: string): string {

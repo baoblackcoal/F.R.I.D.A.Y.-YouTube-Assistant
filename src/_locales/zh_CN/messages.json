@@ -42,5 +42,16 @@
     },
     "option_general_sync_language_label": {
         "message": "同步 TTS 和 LLM 摘要的语言设置"
+    },
+
+
+    "option_tab_general": {
+        "message": "通用"
+    },
+    "option_tab_summary": {
+        "message": "AI 总结"
+    },
+    "option_tab_tts": {
+        "message": "语音合成"
     }
 }
