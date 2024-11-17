@@ -36,7 +36,7 @@ export interface ISummarySettings {
   diyPromptText1: string;
   diyPromptText2: string;
   diyPromptText3: string;
-  language: string;
+  language: Language;
   autoTtsSpeak: boolean;
   autoSummary: boolean;
 }

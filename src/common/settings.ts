@@ -22,7 +22,7 @@ export const defaultTtsSettings: ITtsSettings = {
 
 export const defaultGeneralSettings: IGeneralSettings = {
   language: Language.SimplifiedChinese,
-  syncLanguageLlmAndTts: false,
+  syncLanguageLlmAndTts: true,
 };
 
 export const defaultSummarySettings: ISummarySettings = {
@@ -30,7 +30,7 @@ export const defaultSummarySettings: ISummarySettings = {
   diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
-  language: Language.English.toString(),
+  language: Language.SimplifiedChinese,
   autoTtsSpeak: false,
   autoSummary: true,
 };
@@ -58,7 +58,6 @@ export const testSettings: IAbstractSettings = {
   general: {
     ...defaultGeneralSettings,
     language: Language.SimplifiedChinese,
-    syncLanguageLlmAndTts: true,
   },
   summary: {
     ...defaultSummarySettings,
@@ -66,7 +65,7 @@ export const testSettings: IAbstractSettings = {
     diyPromptText1: "hi",
     diyPromptText2: "hi",
     diyPromptText3: "hello",
-    language: Language.SimplifiedChinese.toString(),
+    language: Language.SimplifiedChinese,
     autoTtsSpeak: false,
     autoSummary: true,
   },

@@ -43,7 +43,7 @@ export class SummaryPage {
       diyPromptText1: formValues.diyPromptText1,
       diyPromptText2: formValues.diyPromptText2,
       diyPromptText3: formValues.diyPromptText3,
-      language: formValues.language,
+      language: formValues.language as Language,
       autoTtsSpeak: formValues.autoTtsSpeak,
       autoSummary: formValues.autoSummary,
     };

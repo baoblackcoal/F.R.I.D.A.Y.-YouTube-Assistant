@@ -46,6 +46,15 @@ export class SummaryPageView implements ISummaryPageView {
 
     this.createPromptEditDialog();
     this.attachApiKeyEventListeners();
+    this.attachLanguageChangeEventListeners();
+  }
+
+  private attachLanguageChangeEventListeners(): void {
+    const select = this.container.querySelector('#language') as HTMLSelectElement;
+
+    select.addEventListener('change', async (event: Event) => {
+      await this.onSettingsChangeToSave();
+    });
   }
 
   private createApiKeySection(): HTMLElement {
