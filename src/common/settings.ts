@@ -42,7 +42,8 @@ export const defaultLlmModel: ILlmSettings = {
   topP: 1,
   frequencyPenalty: 0,
   presencePenalty: 0,
-  apiKey: "",
+  userApiKey: "",
+  isCommonKey: true,
 };
 
 export const defaultSettings: IAbstractSettings = {
@@ -71,7 +72,7 @@ export const testSettings: IAbstractSettings = {
   },
   llm: {
     ...defaultLlmModel,
-    apiKey: "test-api-key",
+    userApiKey: "test-api-key",
   },
   tts: {
     ...defaultTtsSettings,

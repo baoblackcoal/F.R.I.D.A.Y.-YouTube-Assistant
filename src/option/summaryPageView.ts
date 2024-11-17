@@ -1,9 +1,10 @@
-import { Language, ISummarySettings } from '../common/ISettings';
+import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { defaultPromptText } from '../prompts/defaultPromptText';
 import './css/basePage.css';
 import './css/summaryPage.css';
 import { i18n, I18nService } from '../common/i18n';
+import { common } from '../common/common';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -19,7 +20,7 @@ export interface ISummaryPageView {
     diyPromptText2: string;
     diyPromptText3: string;
   };
-  initialize(settings: ISummarySettings, llmSettings: any): void;
+  initialize(settings: ISummarySettings, llmSettings: ILlmSettings): void;
   getElement(): HTMLElement;
   updateI18n(): void;
 }
@@ -29,7 +30,7 @@ export class SummaryPageView implements ISummaryPageView {
   private dialog!: HTMLDialogElement;
 
   constructor(
-    private readonly onSettingsChange: () => void,
+    private readonly onSettingsChangeToSave: () => Promise<void>,
     private readonly onPromptEdit: (promptId: number, value: string) => void,
   ) {
     this.container = document.createElement('div');
@@ -44,7 +45,7 @@ export class SummaryPageView implements ISummaryPageView {
     this.container.appendChild(this.createPromptSection());
 
     this.createPromptEditDialog();
-    this.attachEventListeners();
+    this.attachApiKeyEventListeners();
   }
 
   private createApiKeySection(): HTMLElement {
@@ -54,12 +55,12 @@ export class SummaryPageView implements ISummaryPageView {
     section.innerHTML = `
       <label class="label">${i18n.getMessage('option_summary_api_key_section')}</label>
       <div class="radio-wrapper">
-        <input type="radio" name="apiKeyType" id="apiKeyTypeCommonKey" value="Common Key">
+        <input type="radio" name="apiKeyType" id="apiKeyTypeCommonKey" value="Common Key" class="radio-input">
         <label for="apiKeyTypeCommonKey" class="radio-label">
           ${i18n.getMessage('option_summary_common_key')}
         </label>
 
-        <input type="radio" name="apiKeyType" id="apiKeyTypeYourKey" value="Your Key">
+        <input type="radio" name="apiKeyType" id="apiKeyTypeYourKey" value="Your Key" class="radio-input">
         <label for="apiKeyTypeYourKey" class="radio-label">
           ${i18n.getMessage('option_summary_your_key')}
         </label>
@@ -212,11 +213,14 @@ export class SummaryPageView implements ISummaryPageView {
     const commonKeyInfo = this.container.querySelector('#apiKeyInfoCommonKey') as HTMLElement;
     const yourKeyInfo = this.container.querySelector('#apiKeyInfoYourKey') as HTMLElement;
 
+    let displayKey = '';
+    if (apiKey !== '') {
+      displayKey = apiKey.replace(/.{6}$/, '******');
+    }
+    apiKeyInput.value = displayKey;
     if (isCommonKey) {
-      apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
       apiKeyInput.readOnly = true;
     } else {
-      apiKeyInput.value = apiKey || '';
       apiKeyInput.readOnly = false;
     }
 
@@ -250,32 +254,38 @@ export class SummaryPageView implements ISummaryPageView {
     };
   }
 
-  private attachEventListeners(): void {
+  private async handleApiKeyChange(target: HTMLElement): Promise<void> {
+    const isCommonKey = (target as HTMLInputElement).value === 'Common Key';
+    const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+    
+    await this.onSettingsChangeToSave();
+    
+    const llmSettings = await settingsManager.getLlmSettings();
+    const apiKey = common.getApiKey(llmSettings);
+    // if (isCommonKey) {
+    //     // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_***********';
+    //     // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
+    //     // apiKeyInput.readOnly = true;
+    // } else {    
+    //   // const llmSettings = await settingsManager.getLlmSettings();
+    //   // apiKeyInput.value = llmSettings.userApiKey || '';
+    //   // apiKeyInput.readOnly = false;
+    // }
+    
+    this.updateApiKeySection(isCommonKey, apiKey);
+  }
+
+  private attachApiKeyEventListeners(): void {
     // Handle form changes
     this.container.addEventListener('change', async (e) => {
       const target = e.target as HTMLElement;
       
       // Special handling for API key type radio buttons
-      const isCommonKey = (target as HTMLInputElement).value === 'Common Key';
       if (target.getAttribute('name') === 'apiKeyType') {
-        const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
-        
-        if (isCommonKey) {
-            apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_***********';
-            // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
-            apiKeyInput.readOnly = true;
-        } else {    
-          const llmSettings = await settingsManager.getLlmSettings();
-          apiKeyInput.value = llmSettings.apiKey || '';
-          apiKeyInput.readOnly = false;
-        }
-        
-        this.updateApiKeySection(isCommonKey, apiKeyInput.value);
+        await this.handleApiKeyChange(target);
       }
       
-      if (!isCommonKey) {
-        this.onSettingsChange();
-      }
+      
     });
 
     // Handle prompt editing
@@ -313,7 +323,7 @@ export class SummaryPageView implements ISummaryPageView {
     });
   }
 
-  public initialize(settings: ISummarySettings, llmSettings: any): void {
+  public async initialize(settings: ISummarySettings, llmSettings: ILlmSettings): Promise<void> {
     // Initialize form values
     const inputs = {
       promptType: this.container.querySelector('#promptType') as HTMLSelectElement,
@@ -334,11 +344,12 @@ export class SummaryPageView implements ISummaryPageView {
     inputs.diyPromptText3.value = settings.diyPromptText3;
 
     // Initialize API key section
-    const isCommonKey = !llmSettings.apiKey || llmSettings.apiKey === 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
     const commonKeyRadio = this.container.querySelector('#apiKeyTypeCommonKey') as HTMLInputElement;
     const yourKeyRadio = this.container.querySelector('#apiKeyTypeYourKey') as HTMLInputElement;
     const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+    const isCommonKey = llmSettings.isCommonKey;
     
+    const apiKey = common.getApiKey(llmSettings);
     if (isCommonKey) {
       commonKeyRadio.checked = true;
       apiKeyInput.readOnly = true;
@@ -347,7 +358,7 @@ export class SummaryPageView implements ISummaryPageView {
       apiKeyInput.readOnly = false;
     }
     
-    this.updateApiKeySection(isCommonKey, llmSettings.apiKey);
+    this.updateApiKeySection(isCommonKey, apiKey);
     this.updatePromptVisibility(settings.promptType);
   }
 

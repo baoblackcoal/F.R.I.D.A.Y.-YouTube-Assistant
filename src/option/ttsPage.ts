@@ -56,7 +56,7 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    const hide = true; // hide the TTS Type selection
+    const hide = false; // hide the TTS Type selection
     if (hide) {
       ttsTypeSection.innerHTML = `
       <label class="hidden">TTS Type</label>

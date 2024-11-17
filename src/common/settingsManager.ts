@@ -1,4 +1,4 @@
-import { Env, getEnvironment } from './common';
+import { Env, common } from './common';
 import { globalConfig } from './config';
 import {  defaultTtsSettings, defaultSummarySettings, defaultLlmModel, getInitSettings, InitialSettingsType } from './settings';
 import {  ITtsSettings, ISummarySettings, ILlmSettings, Language, IAbstractSettings, IGeneralSettings } from './ISettings';
@@ -23,9 +23,9 @@ class ChromeSettingsManager implements ISettingsManager {
   private initSettings: IAbstractSettings;
 
   constructor() {
-    const env = getEnvironment();
+    const env: Env = common.getEnvironment();
     console.log("environment = "+env);
-    if (env == Env.Prod) {
+    if (env) {
       this.initSettings = getInitSettings(InitialSettingsType.DEFAULT);
     } else {
       this.initSettings = getInitSettings(globalConfig.devInitialSettingsType);

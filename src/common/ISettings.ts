@@ -48,7 +48,8 @@ export interface ILlmSettings {
   topP: number;
   frequencyPenalty: number;
   presencePenalty: number;
-  apiKey: string;
+  userApiKey: string;
+  isCommonKey: boolean;
 }
 
 export interface IAbstractSettings {

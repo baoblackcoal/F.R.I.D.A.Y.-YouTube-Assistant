@@ -1,16 +1,16 @@
 import { defaultSummarySettings } from '../common/settings';
-import { Language, ISummarySettings } from '../common/ISettings';
+import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
 import { i18n } from '../common/i18n';
 
 export class SummaryPage {
   private view: ISummaryPageView;
-  private settings: ISummarySettings;
-  private llmSettings: any;
+  private summarySettings: ISummarySettings;
+  private llmSettings!: ILlmSettings;
 
   constructor() {
-    this.settings = { ...defaultSummarySettings };
+    this.summarySettings = { ...defaultSummarySettings };
     this.view = new SummaryPageView(
       this.handleSettingsChange.bind(this),
       this.handlePromptEdit.bind(this),
@@ -27,12 +27,12 @@ export class SummaryPage {
 
   private async init(): Promise<void> {
     await this.loadSettings();
-    this.view.initialize(this.settings, this.llmSettings);
+    this.view.initialize(this.summarySettings, this.llmSettings);
   }
 
   private async loadSettings(): Promise<void> {
-    this.settings = await settingsManager.getSummarySettings();
     this.llmSettings = await settingsManager.getLlmSettings();
+    this.summarySettings = await settingsManager.getSummarySettings();
   }
 
   private async handleSettingsChange(): Promise<void> {
@@ -48,13 +48,20 @@ export class SummaryPage {
       autoSummary: formValues.autoSummary,
     };
 
-    await settingsManager.setLlmSettings({ 
-      ...this.llmSettings, 
-      apiKey: formValues.geminiApiKey 
-    });
+    const isUserKey = formValues.apiKeyType === 'Your Key';
+    if (isUserKey) {
+      await settingsManager.setLlmSettings({ 
+        ...await settingsManager.getLlmSettings(),
+        isCommonKey: false 
+      });
+    } else {
+      await settingsManager.setLlmSettings({ 
+        ...await settingsManager.getLlmSettings(), 
+        isCommonKey: true 
+      });
+    }
+    console.log('summarySettings', summarySettings);                                                                                                    
     await settingsManager.setSummarySettings(summarySettings);
-
-    this.settings = summarySettings;
   }
 
   private async handlePromptEdit(promptId: number, value: string): Promise<void> {

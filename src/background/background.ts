@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { Env, getEnvironment, responseOk } from '../common/common';
+import { Env, responseOk } from '../common/common';
 import { settingsManager } from "../common/settingsManager";
 import { TtsService } from './ttsService';
 // import { MsTtsService } from './msTtsService';
@@ -11,10 +11,6 @@ let ttsService: ITtsService = new TtsService(settingsManager);
 chrome.runtime.onInstalled.addListener(async () => {
     console.log("Extension installed");
     await settingsManager.initializeSettingsWhenInstalled();
-    // if (getEnvironment() == Env.Prod) {
-    //     console.log("Opening options page in background");
-    //     chrome.runtime.openOptionsPage();
-    // }
     chrome.runtime.openOptionsPage();
 });
 
