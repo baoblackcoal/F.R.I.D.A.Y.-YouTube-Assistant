@@ -151,5 +151,17 @@
     },
     "option_summary_prompt_cancel": {
         "message": "取消"
+    },
+    "option_summary_testing": {
+        "message": "測試中..."
+    },
+    "option_summary_api_key_empty": {
+        "message": "請輸入 API 金鑰"
+    },
+    "option_summary_api_key_valid": {
+        "message": "API 金鑰有效"
+    },
+    "option_summary_api_key_invalid": {
+        "message": "無效的 API 金鑰"
     }
 }

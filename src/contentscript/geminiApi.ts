@@ -11,6 +11,7 @@ export interface GeminiAPI {
   streamGenerate: (prompt: string, callback: (text: string) => Promise<void>) => Promise<void>;
   chat: (prompt: string, isFirstConversation: boolean) => Promise<string>;
   countTokens: (prompt: string) => Promise<number>;
+  testApiKey: (key: string) => Promise<boolean>;
 }
 
 export const setKey = async (key: string): Promise<void> => {
@@ -47,6 +48,15 @@ export const sayHelloByGemini = async (): Promise<string> => {
     return "An error occurred";
   }
 };
+
+export const testApiKey = async (key: string): Promise<boolean> => {
+  await setKey(key);
+  if (!geminiModel) throw new Error("Gemini model not initialized");
+  const result = await geminiModel.generateContent("hello");
+  //check if the response is 200 indicates the api key is valid, otherwise the api key is invalid
+  const response = result.response.text();
+  return response.length > 0;
+}
 
 export const generate = async (prompt: string): Promise<string> => {
   let text: string;
@@ -112,4 +122,5 @@ export const geminiAPI: GeminiAPI = {
   streamGenerate,
   chat,
   countTokens,
+  testApiKey,
 };

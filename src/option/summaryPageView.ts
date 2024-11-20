@@ -6,6 +6,8 @@ import './css/summaryPage.css';
 import { i18n, I18nService } from '../common/i18n';
 import { common } from '../common/common';
 import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
+import { geminiAPI } from '../contentscript/geminiApi';
+import { Toast } from '../common/toast';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -278,17 +280,70 @@ export class SummaryPageView implements ISummaryPageView {
     this.updateApiKeySection(isCommonKey, apiKey);
   }
 
+  private async onTestApiKey(): Promise<void> {
+    const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+    const testButton = this.container.querySelector('#testApiKey') as HTMLButtonElement;
+    
+    // Disable the test button while testing
+    testButton.disabled = true;
+    testButton.textContent = i18n.getMessage('option_summary_testing');
+    
+    try {
+        // Get the current API key
+        const llmSettings = await settingsManager.getLlmSettings();
+        const apiKey = common.getApiKey(llmSettings);
+        if (!apiKey) {
+            throw new Error(i18n.getMessage('option_summary_api_key_empty'));
+        }
+
+        // Set the API key and try a simple test request
+        const isValid = await geminiAPI.testApiKey(apiKey);
+        
+        if (isValid) {
+            Toast.show({
+                type: 'success',
+                message: i18n.getMessage('option_summary_api_key_valid')
+            });
+        } else {
+            throw new Error(i18n.getMessage('option_summary_api_key_invalid'));
+        }
+    } catch (error) {
+        Toast.show({
+            type: 'error',
+            message: error instanceof Error ? error.message : i18n.getMessage('option_summary_api_key_invalid')
+        });
+    } finally {
+        // Re-enable the test button and restore original text
+        testButton.disabled = false;
+        testButton.textContent = i18n.getMessage('option_summary_test_button');
+    }
+  }
+
   private attachApiKeyEventListeners(): void {
     // Handle form changes
     this.container.addEventListener('change', async (e) => {
-      const target = e.target as HTMLElement;
-      
+      const target = e.target as HTMLElement;      
       // Special handling for API key type radio buttons
       if (target.getAttribute('name') === 'apiKeyType') {
         await this.handleApiKeyChange(target);
+      }      
+    });
+
+    //handle testApiKey button
+    const testApiKeyButton = this.container.querySelector('#testApiKey') as HTMLButtonElement;
+    testApiKeyButton.addEventListener('click', async () => {
+      await this.onTestApiKey();
+    });
+
+    // Handle geminiApiKey input change
+    const geminiApiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
+    geminiApiKeyInput.addEventListener('change', async () => {
+      const key = geminiApiKeyInput.value.trim();
+      if (key) {
+        const llmSettings = await settingsManager.getLlmSettings();
+        llmSettings.userApiKey = key;
+        await settingsManager.setLlmSettings(llmSettings);
       }
-      
-      
     });
 
     // Handle prompt editing

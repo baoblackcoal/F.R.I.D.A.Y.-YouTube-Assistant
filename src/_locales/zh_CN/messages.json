@@ -150,5 +150,17 @@
     },
     "option_summary_prompt_cancel": {
         "message": "取消"
+    },
+    "option_summary_testing": {
+        "message": "测试中..."
+    },
+    "option_summary_api_key_empty": {
+        "message": "请输入 API 密钥"
+    },
+    "option_summary_api_key_valid": {
+        "message": "API 密钥有效"
+    },
+    "option_summary_api_key_invalid": {
+        "message": "无效的 API 密钥"
     }
 }
