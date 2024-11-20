@@ -13,6 +13,7 @@ export class GeneralPage {
     this.init();
     this.loadCurrentLanguage();
     this.loadSyncLanguageCheckbox();
+    this.attachLanguageSyncChangeEventListeners();
   }
 
   private updatePageContent(): void {
@@ -67,9 +68,17 @@ export class GeneralPage {
     this.updatePageContent();
   }
 
+  private async attachLanguageSyncChangeEventListeners(): Promise<void> {
+    window.addEventListener('generalLanguageSyncChanged', async (event: Event) => {
+      const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
+      const settings = await settingsManager.getGeneralSettings();
+      checkbox.checked = settings.syncLanguage;
+    });
+  }
+
   private async loadSyncLanguageCheckbox(): Promise<void> {
     const result = await settingsManager.getGeneralSettings();
-    const sync = result.syncLanguageLlmAndTts || false;
+    const sync = result.syncLanguage || false;
 
     const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
     if (checkbox) {
@@ -87,7 +96,7 @@ export class GeneralPage {
     try {
       const generalSettings: IGeneralSettings = {
         language: newLanguage,
-        syncLanguageLlmAndTts: sync
+        syncLanguage: sync
       };
 
       await settingsManager.setGeneralSettings(generalSettings);
@@ -105,13 +114,23 @@ export class GeneralPage {
   
     this.updatePageContent();
     
-    window.dispatchEvent(new CustomEvent('languageChanged', {
+    window.dispatchEvent(new CustomEvent('generalLanguageChanged', {
       detail: { language: newLanguage }
     }));     
   }
 
-  private handleLanguageSyncChange(event: Event): void {
-    this.saveLanguageSettings();
+  private async handleLanguageSyncChange(event: Event): Promise<void> {    
+    await this.saveLanguageSettings();
+
+    // must dispatch generalLanguageChanged event if saveLanguageSettings is successful
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      const generalSettings = await settingsManager.getGeneralSettings();
+      const newLanguage = generalSettings.language;
+      window.dispatchEvent(new CustomEvent('generalLanguageChanged', {
+        detail: { language: newLanguage }
+      }));    
+    }
   }
 
   private createWelcomeSection(): HTMLElement {

@@ -49,11 +49,29 @@ export class SummaryPageView implements ISummaryPageView {
     this.attachLanguageChangeEventListeners();
   }
 
-  private attachLanguageChangeEventListeners(): void {
-    const select = this.container.querySelector('#language') as HTMLSelectElement;
+  private async attachLanguageChangeEventListeners(): Promise<void> {
+    // Listen for language changes from other pages
+    window.addEventListener('generalLanguageChanged', async (event: Event) => {
+      const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
+      const generalSettings = await settingsManager.getGeneralSettings();
+      if (generalSettings.syncLanguage) {
+        const customEvent = event as CustomEvent<{language: Language}>;
+        const { language } = customEvent.detail;
+        languageSelect.value = language;
+        await this.onSettingsChangeToSave();
+      }
+    });
 
-    select.addEventListener('change', async (event: Event) => {
+    // Listen for language changes from this page
+    const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
+    languageSelect.addEventListener('change', async (event: Event) => {
+      const generalSettings = await settingsManager.getGeneralSettings();
+      generalSettings.syncLanguage = false;
+      await settingsManager.setGeneralSettings(generalSettings);
       await this.onSettingsChangeToSave();
+      window.dispatchEvent(new CustomEvent('generalLanguageSyncChanged', {
+        detail: { syncLanguage: generalSettings.syncLanguage }
+      }));
     });
   }
 

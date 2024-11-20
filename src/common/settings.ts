@@ -17,12 +17,12 @@ export const defaultTtsSettings: ITtsSettings = {
   rate: 1.0,
   pitch: 1.0,
   volume: 1.0,
-  apiType: ApiType.Azure,
+  apiType: ApiType.Chrome,
 };
 
 export const defaultGeneralSettings: IGeneralSettings = {
   language: Language.SimplifiedChinese,
-  syncLanguageLlmAndTts: true,
+  syncLanguage: true,
 };
 
 export const defaultSummarySettings: ISummarySettings = {

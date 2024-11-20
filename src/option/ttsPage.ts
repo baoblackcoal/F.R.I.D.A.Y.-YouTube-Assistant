@@ -1,5 +1,5 @@
 import { defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from '../common/settings';
-import { ITtsSettings, ApiType } from '../common/ISettings';
+import { ITtsSettings, ApiType, Language } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
 import { listenToMessages } from '../contentscript/msTtsService';
@@ -56,7 +56,7 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    const hide = false; // hide the TTS Type selection
+    const hide = true; // hide the TTS Type selection
     if (hide) {
       ttsTypeSection.innerHTML = `
       <label class="hidden">TTS Type</label>

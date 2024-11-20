@@ -17,7 +17,7 @@ export class SummaryPage {
     );
     this.init();
 
-    window.addEventListener('languageChanged', async (event: Event) => {
+    window.addEventListener('generalLanguageChanged', async (event: Event) => {
       const customEvent = event as CustomEvent<{language: Language}>;
       const { language } = customEvent.detail;
       await i18n.loadLocale(language);

@@ -86,7 +86,7 @@ class OptionsPage {
     });
 
     // Add language change event listener
-    window.addEventListener('languageChanged', () => {
+    window.addEventListener('generalLanguageChanged', () => {
       this.updateTabLabels();
     });
 

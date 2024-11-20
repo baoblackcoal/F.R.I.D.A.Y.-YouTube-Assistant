@@ -28,7 +28,7 @@ export interface ITtsSettings {
 
 export interface IGeneralSettings {
   language: Language;
-  syncLanguageLlmAndTts: boolean;
+  syncLanguage: boolean;
 }
 
 export interface ISummarySettings {

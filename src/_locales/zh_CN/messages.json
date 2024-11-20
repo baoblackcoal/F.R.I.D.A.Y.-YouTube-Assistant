@@ -41,7 +41,7 @@
         "message": "语言"
     },
     "option_general_sync_language_label": {
-        "message": "同步 TTS 和 LLM 摘要的语言设置"
+        "message": "同步 AI总结 的语言设置"
     },
 
 
