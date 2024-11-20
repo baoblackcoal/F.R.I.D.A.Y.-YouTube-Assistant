@@ -5,6 +5,7 @@ import './css/basePage.css';
 import './css/summaryPage.css';
 import { i18n, I18nService } from '../common/i18n';
 import { common } from '../common/common';
+import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -27,7 +28,7 @@ export interface ISummaryPageView {
 
 export class SummaryPageView implements ISummaryPageView {
   private container: HTMLElement;
-  private dialog!: HTMLDialogElement;
+  private dialog: ISummaryPageDialog;
 
   constructor(
     private readonly onSettingsChangeToSave: () => Promise<void>,
@@ -35,6 +36,7 @@ export class SummaryPageView implements ISummaryPageView {
   ) {
     this.container = document.createElement('div');
     this.container.className = 'page-container';
+    this.dialog = new SummaryPageDialog(this.container, this.onPromptEdit, i18n);
     this.createLayout();
   }
 
@@ -44,7 +46,6 @@ export class SummaryPageView implements ISummaryPageView {
     this.container.appendChild(this.createAutoSettingsSection());
     this.container.appendChild(this.createPromptSection());
 
-    this.createPromptEditDialog();
     this.attachApiKeyEventListeners();
     this.attachLanguageChangeEventListeners();
   }
@@ -197,31 +198,6 @@ export class SummaryPageView implements ISummaryPageView {
     return section;
   }
 
-  private createPromptEditDialog(): void {
-    const dialogHTML = `
-      <dialog id="promptEditDialog" class="prompt-edit-dialog">
-        <div class="dialog-content">
-          <h2 id="dialogPromptTitle" class="dialog-title">${i18n.getMessage('option_summary_prompt_edit_dialog_title')}</h2>
-          <div class="prompt-info">
-            <p class="prompt-info-title">${i18n.getMessage('option_summary_prompt_variables_title')}</p>
-            <ul class="prompt-info-list">
-              <li><code class="code-text">{videoTitle}</code>: ${i18n.getMessage('option_summary_prompt_variable_title')}</li>
-              <li><code class="code-text">{textTranscript}</code>: ${i18n.getMessage('option_summary_prompt_variable_transcript')}</li>
-              <li><code class="code-text">{language}</code>: ${i18n.getMessage('option_summary_prompt_variable_language')}</li>
-            </ul>
-          </div>
-          <textarea id="dialogPromptText" rows="20" class="dialog-textarea"></textarea>
-          <div class="dialog-buttons">
-            <button id="dialogSave" class="base-button">${i18n.getMessage('option_summary_prompt_save')}</button>
-            <button id="dialogCancel" class="base-button secondary">${i18n.getMessage('option_summary_prompt_cancel')}</button>
-          </div>
-        </div>
-      </dialog>
-    `;
-    this.container.insertAdjacentHTML('beforeend', dialogHTML);
-    this.dialog = this.container.querySelector('#promptEditDialog') as HTMLDialogElement;
-  }
-
   public updatePromptVisibility(promptType: number): void {
     const allPrompts = this.container.querySelectorAll('.prompt-content');
     allPrompts.forEach(prompt => (prompt as HTMLElement).style.display = 'none');
@@ -322,31 +298,13 @@ export class SummaryPageView implements ISummaryPageView {
       this.updatePromptVisibility(newType);
     });
 
-    // Handle edit buttons
+    // Update prompt editing event handlers
     [1, 2, 3].forEach(i => {
       const editBtn = this.container.querySelector(`#editPrompt${i}`) as HTMLButtonElement;
       editBtn?.addEventListener('click', () => {
         const promptTextarea = this.container.querySelector(`#diyPromptText${i}`) as HTMLTextAreaElement;
-        const dialogTextarea = this.dialog.querySelector('#dialogPromptText') as HTMLTextAreaElement;
-        dialogTextarea.value = promptTextarea.value;
-        this.dialog.setAttribute('data-prompt-id', i.toString());
-        this.dialog.showModal();
+        this.dialog.showDialog(i, promptTextarea.value);
       });
-    });
-
-    // Handle dialog buttons
-    const saveBtn = this.dialog.querySelector('#dialogSave');
-    const cancelBtn = this.dialog.querySelector('#dialogCancel');
-
-    saveBtn?.addEventListener('click', () => {
-      const promptId = parseInt(this.dialog.getAttribute('data-prompt-id') || '0');
-      const dialogTextarea = this.dialog.querySelector('#dialogPromptText') as HTMLTextAreaElement;
-      this.onPromptEdit(promptId, dialogTextarea.value);
-      this.dialog.close();
-    });
-
-    cancelBtn?.addEventListener('click', () => {
-      this.dialog.close();
     });
   }
 
@@ -546,5 +504,8 @@ export class SummaryPageView implements ISummaryPageView {
             editButton.textContent = i18n.getMessage('option_summary_prompt_edit');
         }
     });
+
+    // Update dialog i18n
+    this.dialog.updateI18n(i18n);
   }
 }
