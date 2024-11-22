@@ -162,5 +162,32 @@
     },
     "option_summary_api_key_invalid": {
         "message": "无效的 API 密钥"
+    },
+    "option_tts_type_label": {
+        "message": "语音类型"
+    },
+    "option_tts_language_label": {
+        "message": "语言"
+    },
+    "option_tts_voice_label": {
+        "message": "声音"
+    },
+    "option_tts_speed_label": {
+        "message": "语速"
+    },
+    "option_tts_pitch_label": {
+        "message": "音调"
+    },
+    "option_tts_volume_label": {
+        "message": "音量"
+    },
+    "option_tts_test_button": {
+        "message": "测试语音"
+    },
+    "option_tts_stop_button": {
+        "message": "停止"
+    },
+    "option_tts_default_option": {
+        "message": "默认"
     }
 }

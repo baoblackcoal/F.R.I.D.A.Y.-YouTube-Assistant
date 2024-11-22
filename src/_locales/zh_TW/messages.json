@@ -163,5 +163,32 @@
     },
     "option_summary_api_key_invalid": {
         "message": "無效的 API 金鑰"
+    },
+    "option_tts_type_label": {
+        "message": "語音類型"
+    },
+    "option_tts_language_label": {
+        "message": "語言"
+    },
+    "option_tts_voice_label": {
+        "message": "聲音"
+    },
+    "option_tts_speed_label": {
+        "message": "語速"
+    },
+    "option_tts_pitch_label": {
+        "message": "音調"
+    },
+    "option_tts_volume_label": {
+        "message": "音量"
+    },
+    "option_tts_test_button": {
+        "message": "測試語音"
+    },
+    "option_tts_stop_button": {
+        "message": "停止"
+    },
+    "option_tts_default_option": {
+        "message": "預設"
     }
 }

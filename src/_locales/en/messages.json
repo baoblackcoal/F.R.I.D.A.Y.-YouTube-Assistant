@@ -163,5 +163,32 @@
     },
     "option_summary_api_key_invalid": {
         "message": "Invalid API key"
+    },
+    "option_tts_type_label": {
+        "message": "TTS Type"
+    },
+    "option_tts_language_label": {
+        "message": "Language"
+    },
+    "option_tts_voice_label": {
+        "message": "Voice"
+    },
+    "option_tts_speed_label": {
+        "message": "Speed"
+    },
+    "option_tts_pitch_label": {
+        "message": "Pitch"
+    },
+    "option_tts_volume_label": {
+        "message": "Volume"
+    },
+    "option_tts_test_button": {
+        "message": "Test Voice"
+    },
+    "option_tts_stop_button": {
+        "message": "Stop"
+    },
+    "option_tts_default_option": {
+        "message": "Default"
     }
 }

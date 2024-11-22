@@ -7,8 +7,11 @@ import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
 import './css/basePage.css';
 import './css/ttsPage.css';
+import { II18n } from './options';
+import { i18n, I18nService } from '../common/i18n';
 
-export class TTSPage {
+
+export class TTSPage implements II18n {
   private container: HTMLElement;
   private settings: ITtsSettings;
   private tts: TTSSpeak;
@@ -29,6 +32,53 @@ export class TTSPage {
     this.createTTSControls();
     await this.loadTtsVoices();
     this.attachEventListeners();
+
+    window.addEventListener('generalLanguageChanged', async (event: Event) => {
+      await this.updateI18nAndAttachEvent();
+    });
+  }
+
+  public async updateI18nAndAttachEvent(): Promise<void> {
+    // Update all labels
+    // Define mapping of label elements to their corresponding i18n keys
+    const labelMappings = {
+      'Type': 'option_tts_type_label',
+      'Language': 'option_tts_language_label',
+      'Voice': 'option_tts_voice_label',
+      'Speed': 'option_tts_speed_label',
+      'Pitch': 'option_tts_pitch_label',
+      'Volume': 'option_tts_volume_label'
+    };
+
+    // Update all labels
+    const labels = this.container.querySelectorAll('.label');
+    labels.forEach(label => {
+      const text = label.textContent;
+      if (text && text in labelMappings) {
+          const messageKey = labelMappings[text as keyof typeof labelMappings];
+          const translation = i18n.getMessage(messageKey);
+          if (translation) {
+              label.textContent = translation;
+          }
+      }
+    });
+
+    // Update buttons
+    const testButton = this.container.querySelector('#test') as HTMLButtonElement;
+    const stopButton = this.container.querySelector('#stop') as HTMLButtonElement;
+    
+    if (testButton) {
+      testButton.textContent = i18n.getMessage('option_tts_test_button');
+    }
+    if (stopButton) {
+      stopButton.textContent = i18n.getMessage('option_tts_stop_button');
+    }
+
+    // Update default options
+    const defaultOptions = this.container.querySelectorAll('option[value=""]');
+    defaultOptions.forEach(option => {
+      option.textContent = i18n.getMessage('option_tts_default_option');
+    });
   }
 
   private async loadSettings(): Promise<void> {
@@ -56,17 +106,17 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    const hide = true; // hide the TTS Type selection
+    const hide = true;
     if (hide) {
       ttsTypeSection.innerHTML = `
-      <label class="hidden">TTS Type</label>
+      <label class="hidden">${i18n.getMessage('option_tts_type_label')}</label>
       <select id="ttsType" class="hidden">
       </select>
       `;
     } else {
       ttsTypeSection.className = 'sub-section';
       ttsTypeSection.innerHTML = `
-      <label class="label">TTS Type</label>
+      <label class="label">${i18n.getMessage('option_tts_type_label')}</label>
       <select id="ttsType" class="select">
       </select>
       `;      
@@ -76,7 +126,7 @@ export class TTSPage {
     const languageSection = document.createElement('div');
     languageSection.className = 'sub-section';
     languageSection.innerHTML = `
-      <label class="label">Language</label>
+      <label class="label">${i18n.getMessage('option_tts_language_label')}</label>
       <select id="language" class="select">
       </select>
     `;
@@ -85,7 +135,7 @@ export class TTSPage {
     const voiceSection = document.createElement('div');
     voiceSection.className = 'sub-section';
     voiceSection.innerHTML = `
-      <label class="label">Voice</label>
+      <label class="label">${i18n.getMessage('option_tts_voice_label')}</label>
       <select id="voiceName" class="select">
       </select>
     `;
@@ -95,11 +145,11 @@ export class TTSPage {
     speedPitchSection.className = 'speed-pitch-grid';
     speedPitchSection.innerHTML = `
       <div class="sub-section">
-        <label class="label">Speed</label>
+        <label class="label">${i18n.getMessage('option_tts_speed_label')}</label>
         <select id="speed" class="select"></select>
       </div>
       <div class="sub-section">
-        <label class="label">Pitch</label>
+        <label class="label">${i18n.getMessage('option_tts_pitch_label')}</label>
         <select id="pitch" class="select"></select>
       </div>
     `;
@@ -108,7 +158,7 @@ export class TTSPage {
     const volumeSection = document.createElement('div');
     volumeSection.className = 'sub-section';
     volumeSection.innerHTML = `
-      <label class="label">Volume</label>
+      <label class="label">${i18n.getMessage('option_tts_volume_label')}</label>
       <input type="range" id="volume" min="0" max="1" step="0.1" value="${this.settings.volume}"
              class="volume-slider">
     `;
@@ -117,8 +167,8 @@ export class TTSPage {
     const testSection = document.createElement('div');
     testSection.className = 'test-controls';
     testSection.innerHTML = `
-      <button id="test" class="base-button">Test Voice</button>
-      <button id="stop" class="base-button">Stop</button>
+      <button id="test" class="base-button">${i18n.getMessage('option_tts_test_button')}</button>
+      <button id="stop" class="base-button">${i18n.getMessage('option_tts_stop_button')}</button>
     `;
 
     controls.appendChild(ttsTypeSection);
@@ -156,7 +206,7 @@ export class TTSPage {
       }
     });
 
-    languageSelect.innerHTML = '<option value="">Default</option>';
+    languageSelect.innerHTML = `<option value="">${i18n.getMessage('option_tts_default_option')}</option>`;
     languages.forEach((language) => {
       const option = document.createElement('option');
       option.value = language;

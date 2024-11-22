@@ -11,7 +11,7 @@ export interface TabConfig {
   component: () => HTMLElement;
 }
 
-export interface I18n {
+export interface II18n {
   updateI18nAndAttachEvent(): Promise<void>;
 }
 

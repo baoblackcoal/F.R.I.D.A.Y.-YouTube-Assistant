@@ -8,7 +8,7 @@ import { common } from '../common/common';
 import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
 import { geminiAPI } from '../common/geminiApi';
 import { Toast } from '../common/toast';
-import { I18n } from './options';
+import { II18n } from './options';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -28,7 +28,7 @@ export interface ISummaryPageView {
   getElement(): HTMLElement;
 }
 
-export class SummaryPageView implements ISummaryPageView,I18n {
+export class SummaryPageView implements ISummaryPageView,II18n {
   private container: HTMLElement;
   private dialog: ISummaryPageDialog;
 
