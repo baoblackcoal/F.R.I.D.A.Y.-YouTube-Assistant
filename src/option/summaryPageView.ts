@@ -50,6 +50,16 @@ export class SummaryPageView implements ISummaryPageView {
 
     this.attachApiKeyEventListeners();
     this.attachLanguageChangeEventListeners();
+    this.attachCheckboxEventListeners();
+  }
+
+  private attachCheckboxEventListeners(): void {
+    // Attach event listeners to checkboxes
+    const autoSummaryCheckbox = this.container.querySelector('#autoSummary') as HTMLInputElement;
+    autoSummaryCheckbox.addEventListener('change', () => this.onSettingsChangeToSave());
+
+    const autoTtsSpeakCheckbox = this.container.querySelector('#autoTtsSpeak') as HTMLInputElement;
+    autoTtsSpeakCheckbox.addEventListener('change', () => this.onSettingsChangeToSave());
   }
 
   private async attachLanguageChangeEventListeners(): Promise<void> {
