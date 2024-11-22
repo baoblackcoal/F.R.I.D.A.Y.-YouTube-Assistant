@@ -1,4 +1,4 @@
-import { TTSSpeak } from '../../ttsSpeak';
+import { TTSSpeak } from '../../../common/ttsSpeak';
 import { getSettings } from './utils';
 import { settingsManager } from '../../../common/settingsManager';
 import { SubtitleSummaryView } from './subtitleSummaryView';

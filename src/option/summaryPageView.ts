@@ -6,7 +6,7 @@ import './css/summaryPage.css';
 import { i18n, I18nService } from '../common/i18n';
 import { common } from '../common/common';
 import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
-import { geminiAPI } from '../contentscript/geminiApi';
+import { geminiAPI } from '../common/geminiApi';
 import { Toast } from '../common/toast';
 
 export interface ISummaryPageView {

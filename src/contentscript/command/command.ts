@@ -1,8 +1,8 @@
 import { globalConfig } from '../../common/config';
-import { geminiAPI } from '../geminiApi';
-import { TTSSpeak } from '../ttsSpeak';
+import { geminiAPI } from '../../common/geminiApi';
+import { TTSSpeak } from '../../common/ttsSpeak';
 import { CommandHandler } from './commandHandler';
-import { MsTtsApi } from '../msTtsApi';
+import { MsTtsApi } from '../../common/msTtsApi';
 import { MessageObserver } from '../../utils/messageObserver';
 import { ITtsMessage } from '../../utils/messageQueue';
 

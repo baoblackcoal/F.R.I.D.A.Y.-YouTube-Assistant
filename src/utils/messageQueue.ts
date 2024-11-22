@@ -1,4 +1,4 @@
-import { listenToMessages } from "../contentscript/msTtsService";
+import { listenToMessages } from "../common/msTtsService";
 import { logTime } from "../contentscript/utils";
 import { MessageObserver } from "./messageObserver";
 

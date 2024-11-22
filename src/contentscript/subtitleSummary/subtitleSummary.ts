@@ -1,7 +1,7 @@
 import { getLangOptionsWithLink, getRawTranscriptText } from "../transcript";
-import { geminiAPI } from '../geminiApi';
+import { geminiAPI } from '../../common/geminiApi';
 import { parse } from 'marked';
-import { TTSSpeak } from '../ttsSpeak';
+import { TTSSpeak } from '../../common/ttsSpeak';
 import { defaultSummarySettings } from '../../common/settings';
 import { Language, ISummarySettings } from '../../common/ISettings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";

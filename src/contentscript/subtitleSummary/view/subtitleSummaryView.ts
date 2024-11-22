@@ -1,7 +1,7 @@
-import { TTSSpeak } from '../../ttsSpeak';
+import { TTSSpeak } from '../../../common/ttsSpeak';
 import { settingsManager } from '../../../common/settingsManager';
 import { subtitleSummaryHandle } from '../subtitleSummary';
-import { listenToMessages } from '../../../contentscript/msTtsService';
+import { listenToMessages } from '../../../common/msTtsService';
 import { MessageObserver } from '../../../utils/messageObserver';
 import { ITtsMessage } from '../../../utils/messageQueue';
 import { responseOk } from '../../../common/common';

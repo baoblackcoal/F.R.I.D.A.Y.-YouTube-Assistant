@@ -1,8 +1,8 @@
 import { defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as TtsPitchOptions } from '../common/settings';
 import { ITtsSettings, ApiType, Language } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
-import { TTSSpeak, VoiceInfo } from '../contentscript/ttsSpeak';
-import { listenToMessages } from '../contentscript/msTtsService';
+import { TTSSpeak, VoiceInfo } from '../common/ttsSpeak';
+import { listenToMessages } from '../common/msTtsService';
 import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
 import './css/basePage.css';

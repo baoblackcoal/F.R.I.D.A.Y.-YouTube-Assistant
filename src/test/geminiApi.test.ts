@@ -1,4 +1,4 @@
-import { sayHelloByGemini, generate, setKey } from '../contentscript/geminiApi';
+import { sayHelloByGemini, generate, setKey } from '../common/geminiApi';
 import dotenv from "dotenv";
 import { TestSetup, TestHelpers } from './testUtils';
 import testUtils from './testUtils';

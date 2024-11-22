@@ -1,8 +1,8 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
-import { defaultTtsSettings } from '../common/settings';
-import { ITtsSettings } from '../common/ISettings';
-import { settingsManager } from '../common/settingsManager';
-import { logTime } from './utils';
+import { defaultTtsSettings } from './settings';
+import { ITtsSettings } from './ISettings';
+import { settingsManager } from './settingsManager';
+import { logTime } from '../contentscript/utils';
 
 export interface IMsTtsApi {
     synthesizeSpeech(text: string): Promise<void>;

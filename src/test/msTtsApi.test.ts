@@ -1,4 +1,4 @@
-import { MsTtsApi } from '../contentscript/msTtsApi';
+import { MsTtsApi } from '../common/msTtsApi';
 import testUtils, { TestSetup, TestHelpers } from './testUtils';
 import { jest } from '@jest/globals';
 

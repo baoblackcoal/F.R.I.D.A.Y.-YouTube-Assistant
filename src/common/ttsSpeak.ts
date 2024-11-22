@@ -1,8 +1,8 @@
-import { ApiType } from '../common/ISettings';
+import { ApiType } from './ISettings';
 import { messageQueue, ITtsMessage } from '../utils/messageQueue';
 import { MessageObserver } from '../utils/messageObserver';
 import { MsTtsApi } from './msTtsApi';
-import { settingsManager } from '../common/settingsManager';
+import { settingsManager } from './settingsManager';
 
 export interface TTSInterface {
     speak(text: string, index: number): Promise<void>;

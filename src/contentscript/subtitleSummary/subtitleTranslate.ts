@@ -1,5 +1,5 @@
-import { geminiAPI } from '../geminiApi';
-import { TTSSpeak } from '../ttsSpeak';
+import { geminiAPI } from '../../common/geminiApi';
+import { TTSSpeak } from '../../common/ttsSpeak';
 import { defaultTranslatePrompt, translatePrompt } from "../../prompts/defaultTranslatePrompt";
 import { settingsManager } from '../../common/settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";

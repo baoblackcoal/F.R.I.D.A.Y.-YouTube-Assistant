@@ -2,9 +2,9 @@ import { defaultTtsSettings, speedOptions as TtsSpeedOptions, pitchOptions as Tt
 import { ITtsSettings, ApiType } from './common/ISettings';
 import { settingsManager } from './common/settingsManager';
 import { ITtsMessage } from './utils/messageQueue';
-import { TTSSpeak, VoiceInfo } from './contentscript/ttsSpeak';
-import { listenToMessages } from './contentscript/msTtsService';
-import { MsTtsApi } from './contentscript/msTtsApi';
+import { TTSSpeak, VoiceInfo } from './common/ttsSpeak';
+import { listenToMessages } from './common/msTtsService';
+import { MsTtsApi } from './common/msTtsApi';
 import { MessageObserver } from './utils/messageObserver';
 
 const tts = TTSSpeak.getInstance(); 
