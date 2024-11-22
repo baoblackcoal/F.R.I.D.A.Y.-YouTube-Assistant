@@ -8,6 +8,7 @@ import { common } from '../common/common';
 import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
 import { geminiAPI } from '../common/geminiApi';
 import { Toast } from '../common/toast';
+import { I18n } from './options';
 
 export interface ISummaryPageView {
   updatePromptVisibility(promptType: number): void;
@@ -25,10 +26,9 @@ export interface ISummaryPageView {
   };
   initialize(settings: ISummarySettings, llmSettings: ILlmSettings): void;
   getElement(): HTMLElement;
-  updateI18nAndAttachEvent(): Promise<void>;
 }
 
-export class SummaryPageView implements ISummaryPageView {
+export class SummaryPageView implements ISummaryPageView,I18n {
   private container: HTMLElement;
   private dialog: ISummaryPageDialog;
 

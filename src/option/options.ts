@@ -11,6 +11,10 @@ export interface TabConfig {
   component: () => HTMLElement;
 }
 
+export interface I18n {
+  updateI18nAndAttachEvent(): Promise<void>;
+}
+
 class OptionsPage {
   private currentTab: string = 'general';
   private settingsManager: ISettingsManager;

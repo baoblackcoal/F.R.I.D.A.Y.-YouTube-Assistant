@@ -3,9 +3,10 @@ import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
 import { i18n } from '../common/i18n';
+import { I18n } from './options';
 
 export class SummaryPage {
-  private view: ISummaryPageView;
+  private view: ISummaryPageView & I18n;
   private summarySettings: ISummarySettings;
   private llmSettings!: ILlmSettings;
 
