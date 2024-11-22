@@ -428,12 +428,13 @@ export class SummaryPageView implements ISummaryPageView {
         commonKeyLimitRpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(1)'),
         commonKeyLimitTpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(2)'),
         commonKeyLimitRpd: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(3)'),
+        commonKeyMoreInfo: this.container.querySelector('#apiKeyInfoCommonKey > p:nth-child(4)'),
         yourKeyInfoTitle: this.container.querySelector('#apiKeyInfoYourKey strong'),
-        yourKeyDescription: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(2)'),
-        yourKeyBenefitsTitle: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(3)'),
+        yourKeyBenefitsTitle: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(2)'),
         yourKeyBenefitLimits: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(1)'),
         yourKeyBenefitQuota: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(2)'),
-        yourKeyBenefitControl: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(3)')
+        yourKeyBenefitControl: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(3)'),
+        yourKeyMoreInfo: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(4)')
     };
 
     // Language Section
@@ -489,11 +490,14 @@ export class SummaryPageView implements ISummaryPageView {
     if (apiKeyElements.commonKeyLimitRpd) {
         apiKeyElements.commonKeyLimitRpd.textContent = i18n.getMessage('option_summary_common_key_limit_rpd');
     }
+    if (apiKeyElements.commonKeyMoreInfo) {
+        apiKeyElements.commonKeyMoreInfo.innerHTML = `${i18n.getMessage('option_summary_gemini_flash_1_5_pricing')}
+        <a href="https://ai.google.dev/pricing#1_5flash" target="_blank" rel="noopener noreferrer">
+          Gemini Flash 1.5 Pricing
+        </a>`;
+    }
     if (apiKeyElements.yourKeyInfoTitle) {
         apiKeyElements.yourKeyInfoTitle.textContent = i18n.getMessage('option_summary_custom_key_title');
-    }
-    if (apiKeyElements.yourKeyDescription) {
-        apiKeyElements.yourKeyDescription.textContent = i18n.getMessage('option_summary_custom_key_description');
     }
     if (apiKeyElements.yourKeyBenefitsTitle) {
         apiKeyElements.yourKeyBenefitsTitle.textContent = i18n.getMessage('option_summary_custom_key_benefits');
@@ -506,6 +510,11 @@ export class SummaryPageView implements ISummaryPageView {
     }
     if (apiKeyElements.yourKeyBenefitControl) {
         apiKeyElements.yourKeyBenefitControl.textContent = i18n.getMessage('option_summary_custom_key_benefit_control');
+    }
+    if (apiKeyElements.yourKeyMoreInfo) {
+        apiKeyElements.yourKeyMoreInfo.innerHTML = `${i18n.getMessage('option_summary_custom_key_description')} <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
+        Google Cloud Console
+      </a>`;
     }
 
     // Update Language Section
