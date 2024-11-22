@@ -15,25 +15,25 @@ export class SummaryPage {
       this.handleSettingsChange.bind(this),
       this.handlePromptEdit.bind(this),
     );
-    this.init();
+    // this.init();
 
     window.addEventListener('generalLanguageChanged', async (event: Event) => {
       const customEvent = event as CustomEvent<{language: Language}>;
       const { language } = customEvent.detail;
       await i18n.loadLocale(language);
-      this.view.updateI18n();
+      await this.view.updateI18nAndAttachEvent();
     });
   }
 
-  private async init(): Promise<void> {
-    await this.loadSettings();
-    this.view.initialize(this.summarySettings, this.llmSettings);
-  }
+  // private async init(): Promise<void> {
+  //   await this.loadSettings();
+  //   this.view.initialize(this.summarySettings, this.llmSettings);
+  // }
 
-  private async loadSettings(): Promise<void> {
-    this.llmSettings = await settingsManager.getLlmSettings();
-    this.summarySettings = await settingsManager.getSummarySettings();
-  }
+  // private async loadSettings(): Promise<void> {
+  //   this.llmSettings = await settingsManager.getLlmSettings();
+  //   this.summarySettings = await settingsManager.getSummarySettings();
+  // }
 
   private async handleSettingsChange(): Promise<void> {
     const formValues = this.view.getFormValues();

@@ -25,7 +25,7 @@ export interface ISummaryPageView {
   };
   initialize(settings: ISummarySettings, llmSettings: ILlmSettings): void;
   getElement(): HTMLElement;
-  updateI18n(): void;
+  updateI18nAndAttachEvent(): Promise<void>;
 }
 
 export class SummaryPageView implements ISummaryPageView {
@@ -42,15 +42,14 @@ export class SummaryPageView implements ISummaryPageView {
     this.createLayout();
   }
 
-  private createLayout(): void {
-    this.container.appendChild(this.createApiKeySection());
-    this.container.appendChild(this.createLanguageSection());
-    this.container.appendChild(this.createAutoSettingsSection());
-    this.container.appendChild(this.createPromptSection());
-
-    this.attachApiKeyEventListeners();
-    this.attachLanguageChangeEventListeners();
-    this.attachCheckboxEventListeners();
+  private async createLayout(): Promise<void> {
+    this.container.innerHTML = `<div id="apiKeySection" class="section"></div>
+      <div id="languageSection" class="section"></div>
+      <div id="autoSettingsSection" class="section"></div>
+      <div id="promptSection" class="section"></div>
+    `;
+    
+    await this.updateI18nAndAttachEvent();
   }
 
   private attachCheckboxEventListeners(): void {
@@ -88,11 +87,9 @@ export class SummaryPageView implements ISummaryPageView {
     });
   }
 
-  private createApiKeySection(): HTMLElement {
-    const section = document.createElement('div');
-    section.id = 'apiKeySection';
-    section.className = 'section';
-    section.innerHTML = `
+  private updateApiKeySectionI18n(): void {
+    const section = this.container.querySelector('#apiKeySection');
+    section!.innerHTML = `
       <label class="label">${i18n.getMessage('option_summary_api_key_section')}</label>
       <div class="radio-wrapper">
         <input type="radio" name="apiKeyType" id="apiKeyTypeCommonKey" value="Common Key" class="radio-input">
@@ -138,13 +135,11 @@ export class SummaryPageView implements ISummaryPageView {
         </p>
       </div>
     `;
-    return section;
   }
 
-  private createLanguageSection(): HTMLElement {
-    const section = document.createElement('div');
-    section.className = 'section';
-    section.innerHTML = `
+  private updateLanguageSectionI18n() {
+    const section = this.container.querySelector('#languageSection');
+    section!.innerHTML = `
       <label class="label">${i18n.getMessage('option_summary_language_label')}</label>
       <select id="language" class="select">
         ${Object.values(Language).map(lang => `
@@ -152,13 +147,11 @@ export class SummaryPageView implements ISummaryPageView {
         `).join('')}
       </select>
     `;
-    return section;
   }
 
-  private createAutoSettingsSection(): HTMLElement {
-    const section = document.createElement('div');
-    section.className = 'section';
-    section.innerHTML = `
+  private updateAutoSettingsSectionI18n() {
+    const section = this.container.querySelector('#autoSettingsSection');
+    section!.innerHTML = `
       <div class="checkbox-wrapper">
         <input type="checkbox" id="autoSummary" class="checkbox-input">
         <label for="autoSummary" class="checkbox-label">${i18n.getMessage('option_summary_auto_summary')}</label>
@@ -168,14 +161,11 @@ export class SummaryPageView implements ISummaryPageView {
         <label for="autoTtsSpeak" class="checkbox-label">${i18n.getMessage('option_summary_auto_tts')}</label>
       </div>
     `;
-    return section;
   }
 
-  private createPromptSection(): HTMLElement {
-    const section = document.createElement('div');
-    section.id = 'promptSection';
-    section.className = 'section';
-    section.innerHTML = `
+  private updatePromptSectionI18n() {
+    const section = this.container.querySelector('#promptSection');
+    section!.innerHTML = `
       <div id="promptTypeSection" class="sub-section">
         <label class="label">${i18n.getMessage('option_summary_prompt_type')}</label>
         <select id="promptType" class="select">
@@ -207,7 +197,6 @@ export class SummaryPageView implements ISummaryPageView {
         `).join('')}
       </div>
     `;
-    return section;
   }
 
   public updatePromptVisibility(promptType: number): void {
@@ -416,168 +405,19 @@ export class SummaryPageView implements ISummaryPageView {
     return this.container;
   }
 
-  public updateI18n(): void {
-    // API Key Section
-    const apiKeyElements = {
-        apiKeyLabel: this.container.querySelector('#apiKeySection .label'),
-        commonKeyLabel: this.container.querySelector('[for="apiKeyTypeCommonKey"]'),
-        yourKeyLabel: this.container.querySelector('[for="apiKeyTypeYourKey"]'),
-        testButton: this.container.querySelector('#testApiKey'),
-        commonKeyInfoTitle: this.container.querySelector('#apiKeyInfoCommonKey strong'),
-        commonKeyDescription: this.container.querySelector('#apiKeyInfoCommonKey > p:nth-child(2)'),
-        commonKeyLimitRpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(1)'),
-        commonKeyLimitTpm: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(2)'),
-        commonKeyLimitRpd: this.container.querySelector('#apiKeyInfoCommonKey li:nth-child(3)'),
-        commonKeyMoreInfo: this.container.querySelector('#apiKeyInfoCommonKey > p:nth-child(4)'),
-        yourKeyInfoTitle: this.container.querySelector('#apiKeyInfoYourKey strong'),
-        yourKeyBenefitsTitle: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(2)'),
-        yourKeyBenefitLimits: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(1)'),
-        yourKeyBenefitQuota: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(2)'),
-        yourKeyBenefitControl: this.container.querySelector('#apiKeyInfoYourKey li:nth-child(3)'),
-        yourKeyMoreInfo: this.container.querySelector('#apiKeyInfoYourKey > p:nth-child(4)')
-    };
+  public async updateI18nAndAttachEvent(): Promise<void>   {
+    this.updateApiKeySectionI18n();
+    this.updateLanguageSectionI18n();
+    this.updateAutoSettingsSectionI18n();
+    this.updatePromptSectionI18n();
 
-    // Language Section
-    const languageElements = {
-        languageLabel: this.container.querySelector('#language')?.previousElementSibling
-    };
+    const summarySettings = await settingsManager.getSummarySettings();
+    const llmSettings = await settingsManager.getLlmSettings(); 
+    this.initialize(summarySettings, llmSettings);
 
-    // Auto Settings Section
-    const autoSettingsElements = {
-        autoSummaryLabel: this.container.querySelector('[for="autoSummary"]'),
-        autoTtsSpeakLabel: this.container.querySelector('[for="autoTtsSpeak"]')
-    };
-
-    // Prompt Section
-    const promptElements = {
-        promptTypeLabel: this.container.querySelector('#promptTypeSection .label'),
-        defaultOption: this.container.querySelector('#promptType option[value="0"]'),
-        defaultPromptLabel: this.container.querySelector('#defaultPrompt .label'),
-        dialogTitle: this.container.querySelector('#dialogPromptTitle'),
-        dialogVariablesTitle: this.container.querySelector('.prompt-info-title'),
-        dialogVariableTitle: this.container.querySelector('.prompt-info-list li:nth-child(1)'),
-        dialogVariableTranscript: this.container.querySelector('.prompt-info-list li:nth-child(2)'),
-        dialogVariableLanguage: this.container.querySelector('.prompt-info-list li:nth-child(3)'),
-        dialogSaveButton: this.container.querySelector('#dialogSave'),
-        dialogCancelButton: this.container.querySelector('#dialogCancel')
-    };
-
-    // Update API Key Section
-    if (apiKeyElements.apiKeyLabel) {
-        apiKeyElements.apiKeyLabel.textContent = i18n.getMessage('option_summary_api_key_section');
-    }
-    if (apiKeyElements.commonKeyLabel) {
-        apiKeyElements.commonKeyLabel.textContent = i18n.getMessage('option_summary_common_key');
-    }
-    if (apiKeyElements.yourKeyLabel) {
-        apiKeyElements.yourKeyLabel.textContent = i18n.getMessage('option_summary_your_key');
-    }
-    if (apiKeyElements.testButton) {
-        apiKeyElements.testButton.textContent = i18n.getMessage('option_summary_test_button');
-    }
-    if (apiKeyElements.commonKeyInfoTitle) {
-        apiKeyElements.commonKeyInfoTitle.textContent = i18n.getMessage('option_summary_common_key_info_title');
-    }
-    if (apiKeyElements.commonKeyDescription) {
-        apiKeyElements.commonKeyDescription.textContent = i18n.getMessage('option_summary_common_key_description');
-    }
-    if (apiKeyElements.commonKeyLimitRpm) {
-        apiKeyElements.commonKeyLimitRpm.textContent = i18n.getMessage('option_summary_common_key_limit_rpm');
-    }
-    if (apiKeyElements.commonKeyLimitTpm) {
-        apiKeyElements.commonKeyLimitTpm.textContent = i18n.getMessage('option_summary_common_key_limit_tpm');
-    }
-    if (apiKeyElements.commonKeyLimitRpd) {
-        apiKeyElements.commonKeyLimitRpd.textContent = i18n.getMessage('option_summary_common_key_limit_rpd');
-    }
-    if (apiKeyElements.commonKeyMoreInfo) {
-        apiKeyElements.commonKeyMoreInfo.innerHTML = `${i18n.getMessage('option_summary_gemini_flash_1_5_pricing')}
-        <a href="https://ai.google.dev/pricing#1_5flash" target="_blank" rel="noopener noreferrer">
-          Gemini Flash 1.5 Pricing
-        </a>`;
-    }
-    if (apiKeyElements.yourKeyInfoTitle) {
-        apiKeyElements.yourKeyInfoTitle.textContent = i18n.getMessage('option_summary_custom_key_title');
-    }
-    if (apiKeyElements.yourKeyBenefitsTitle) {
-        apiKeyElements.yourKeyBenefitsTitle.textContent = i18n.getMessage('option_summary_custom_key_benefits');
-    }
-    if (apiKeyElements.yourKeyBenefitLimits) {
-        apiKeyElements.yourKeyBenefitLimits.textContent = i18n.getMessage('option_summary_custom_key_benefit_limits');
-    }
-    if (apiKeyElements.yourKeyBenefitQuota) {
-        apiKeyElements.yourKeyBenefitQuota.textContent = i18n.getMessage('option_summary_custom_key_benefit_quota');
-    }
-    if (apiKeyElements.yourKeyBenefitControl) {
-        apiKeyElements.yourKeyBenefitControl.textContent = i18n.getMessage('option_summary_custom_key_benefit_control');
-    }
-    if (apiKeyElements.yourKeyMoreInfo) {
-        apiKeyElements.yourKeyMoreInfo.innerHTML = `${i18n.getMessage('option_summary_custom_key_description')} <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
-        Google Cloud Console
-      </a>`;
-    }
-
-    // Update Language Section
-    if (languageElements.languageLabel) {
-        languageElements.languageLabel.textContent = i18n.getMessage('option_summary_language_label');
-    }
-
-    // Update Auto Settings Section
-    if (autoSettingsElements.autoSummaryLabel) {
-        autoSettingsElements.autoSummaryLabel.textContent = i18n.getMessage('option_summary_auto_summary');
-    }
-    if (autoSettingsElements.autoTtsSpeakLabel) {
-        autoSettingsElements.autoTtsSpeakLabel.textContent = i18n.getMessage('option_summary_auto_tts');
-    }
-
-    // Update Prompt Section
-    if (promptElements.promptTypeLabel) {
-        promptElements.promptTypeLabel.textContent = i18n.getMessage('option_summary_prompt_type');
-    }
-    if (promptElements.defaultOption) {
-        promptElements.defaultOption.textContent = i18n.getMessage('option_summary_prompt_default');
-    }
-    if (promptElements.defaultPromptLabel) {
-        promptElements.defaultPromptLabel.textContent = i18n.getMessage('option_summary_prompt_default_readonly');
-    }
-    if (promptElements.dialogTitle) {
-        promptElements.dialogTitle.textContent = i18n.getMessage('option_summary_prompt_edit_dialog_title');
-    }
-    if (promptElements.dialogVariablesTitle) {
-        promptElements.dialogVariablesTitle.textContent = i18n.getMessage('option_summary_prompt_variables_title');
-    }
-    if (promptElements.dialogVariableTitle) {
-        promptElements.dialogVariableTitle.textContent = i18n.getMessage('option_summary_prompt_variable_title');
-    }
-    if (promptElements.dialogVariableTranscript) {
-        promptElements.dialogVariableTranscript.textContent = i18n.getMessage('option_summary_prompt_variable_transcript');
-    }
-    if (promptElements.dialogVariableLanguage) {
-        promptElements.dialogVariableLanguage.textContent = i18n.getMessage('option_summary_prompt_variable_language');
-    }
-    if (promptElements.dialogSaveButton) {
-        promptElements.dialogSaveButton.textContent = i18n.getMessage('option_summary_prompt_save');
-    }
-    if (promptElements.dialogCancelButton) {
-        promptElements.dialogCancelButton.textContent = i18n.getMessage('option_summary_prompt_cancel');
-    }
-
-    // Update Custom Prompt Options and Labels
-    [1, 2, 3].forEach(i => {
-        const option = this.container.querySelector(`#promptType option[value="${i}"]`);
-        const label = this.container.querySelector(`#diyPrompt${i} .label`);
-        const editButton = this.container.querySelector(`#editPrompt${i}`);
-
-        if (option) {
-            option.textContent = i18n.getMessageWithParams('option_summary_prompt_custom', { number: i.toString() });
-        }
-        if (label) {
-            label.textContent = i18n.getMessageWithParams('option_summary_prompt_custom_label', { number: i.toString() });
-        }
-        if (editButton) {
-            editButton.textContent = i18n.getMessage('option_summary_prompt_edit');
-        }
-    });
+    this.attachApiKeyEventListeners();
+    this.attachLanguageChangeEventListeners();
+    this.attachCheckboxEventListeners();
 
     // Update dialog i18n
     this.dialog.updateI18n(i18n);
