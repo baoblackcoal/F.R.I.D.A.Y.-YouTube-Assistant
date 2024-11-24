@@ -110,10 +110,26 @@ export class SubtitleSummaryView {
 
 // Helper functions
 export function insertSummaryButtonView(): void {
-    const buttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`;
-    waitForElm('#top-level-buttons-computed').then((elm) => {
-        elm.insertAdjacentHTML("afterbegin", buttonHtml);
-    });
+    // const buttonHtml = `<button id="ytbs_summary_btn" style="display: inline-block; font-size: 14px; line-height: 36px; padding: 0px 20px; margin: 0px 8px 3px; background-color: lightgrey; border-radius: 20px; transition: background-color 0.3s, transform 0.3s; cursor: pointer; transform: scale(1);" onmouseover="this.style.backgroundColor='grey';" onmouseout="this.style.backgroundColor='lightgrey';" onmousedown="this.style.backgroundColor='darkgrey'; this.style.transform='scale(0.95)';" onmouseup="this.style.backgroundColor='grey'; this.style.transform='scale(1)';">Summary</button>`;
+    const logoElement = document.getElementById('logo');
+    const fridayLogo = document.getElementById('ytbs_summary_logo');
+
+    if (logoElement && !fridayLogo) {
+        // Create a new button element
+        const logo = document.createElement('img');
+        logo.id = 'ytbs_summary_logo';
+        logo.src = chrome.runtime.getURL('friday_logo_48.png');
+        logo.style.width = '32px';
+
+        // Add a click event listener for custom functionality
+        logo.addEventListener('click', () => {
+            // alert('Summary button clicked!'); // Replace with desired functionality
+        });
+        
+        // Insert the button after the logo element
+        logoElement.insertAdjacentElement('afterend', logo);
+    }
+
 }
 
 export function getSubtitleSummaryView(): string {

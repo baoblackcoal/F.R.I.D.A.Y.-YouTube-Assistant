@@ -146,7 +146,7 @@ class SettingsButtonHandler implements IButtonHandler {
 }
 
 class SummaryToggleButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_summary_btn";
+    private buttonId = "ytbs_summary_logo";
 
     init(): void {
         const button = document.getElementById(this.buttonId);

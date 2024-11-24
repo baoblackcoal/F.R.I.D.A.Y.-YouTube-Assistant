@@ -21,8 +21,7 @@ export class GeneralPage {
     const welcomeSection = this.container.querySelector('#welcome-section');
     if (welcomeSection) {
       welcomeSection.innerHTML = `
-        <img src="friday_logo_128.png" alt="F.R.I.D.A.Y." class="h-24 w-24 mx-auto">
-        <h2 class="text-2xl font-bold mt-4 text-primary">${i18n.getMessage('option_general_extension_name')}</h2>
+        <img src="friday_logo_&_ytb.png" alt="F.R.I.D.A.Y." class="h-24 mx-auto">
         <div class="welcome-messages">
           <p>${i18n.getMessage('option_general_welcome_greeting')}</p>
           <p>${i18n.getMessage('option_general_assistant_description')}</p>
