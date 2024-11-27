@@ -45,25 +45,21 @@ export class TTSPage {
     // Update all labels
     // Define mapping of label elements to their corresponding i18n keys
     const labelMappings = {
-      'Type': 'option_tts_type_label',
-      'Language': 'option_tts_language_label',
-      'Voice': 'option_tts_voice_label',
-      'Speed': 'option_tts_speed_label',
-      'Pitch': 'option_tts_pitch_label',
-      'Volume': 'option_tts_volume_label'
+      'ttsTypeLabel': 'option_tts_type_label',
+      'languageLabel': 'option_tts_language_label',
+      'voiceLabel': 'option_tts_voice_label',
+      'speedLabel': 'option_tts_speed_label',
+      'pitchLabel': 'option_tts_pitch_label',
+      'volumeLabel': 'option_tts_volume_label'
     };
 
     // Update all labels
     const labels = this.container.querySelectorAll('.label');
     labels.forEach(label => {
-      const text = label.textContent;
-      if (text && text in labelMappings) {
-          const messageKey = labelMappings[text as keyof typeof labelMappings];
-          const translation = i18n.getMessage(messageKey);
-          if (translation) {
-              label.textContent = translation;
-          }
-      }
+      const id = label.id;
+      if (id && id in labelMappings) {
+        label.textContent = i18n.getMessage(labelMappings[id as keyof typeof labelMappings]);
+      }      
     });
 
     // Update buttons
@@ -112,14 +108,14 @@ export class TTSPage {
     const hide = true;
     if (hide) {
       ttsTypeSection.innerHTML = `
-      <label class="hidden">${i18n.getMessage('option_tts_type_label')}</label>
+      <label id="ttsTypeLabel" class="hidden">${i18n.getMessage('option_tts_type_label')}</label>
       <select id="ttsType" class="hidden">
       </select>
       `;
     } else {
       ttsTypeSection.className = 'sub-section';
       ttsTypeSection.innerHTML = `
-      <label class="label">${i18n.getMessage('option_tts_type_label')}</label>
+      <label id="ttsTypeLabel" class="label">${i18n.getMessage('option_tts_type_label')}</label>
       <select id="ttsType" class="select">
       </select>
       `;      
@@ -129,7 +125,7 @@ export class TTSPage {
     const languageSection = document.createElement('div');
     languageSection.className = 'sub-section';
     languageSection.innerHTML = `
-      <label class="label">${i18n.getMessage('option_tts_language_label')}</label>
+      <label id="languageLabel" class="label">${i18n.getMessage('option_tts_language_label')}</label>
       <select id="language" class="select">
       </select>
     `;
@@ -138,7 +134,7 @@ export class TTSPage {
     const voiceSection = document.createElement('div');
     voiceSection.className = 'sub-section';
     voiceSection.innerHTML = `
-      <label class="label">${i18n.getMessage('option_tts_voice_label')}</label>
+      <label id="voiceLabel" class="label">${i18n.getMessage('option_tts_voice_label')}</label>
       <select id="voiceName" class="select">
       </select>
     `;
@@ -148,11 +144,11 @@ export class TTSPage {
     speedPitchSection.className = 'speed-pitch-grid';
     speedPitchSection.innerHTML = `
       <div class="sub-section">
-        <label class="label">${i18n.getMessage('option_tts_speed_label')}</label>
+        <label id="speedLabel" class="label">${i18n.getMessage('option_tts_speed_label')}</label>
         <select id="speed" class="select"></select>
       </div>
       <div class="sub-section">
-        <label class="label">${i18n.getMessage('option_tts_pitch_label')}</label>
+        <label id="pitchLabel" class="label">${i18n.getMessage('option_tts_pitch_label')}</label>
         <select id="pitch" class="select"></select>
       </div>
     `;
@@ -161,7 +157,7 @@ export class TTSPage {
     const volumeSection = document.createElement('div');
     volumeSection.className = 'sub-section';
     volumeSection.innerHTML = `
-      <label class="label">${i18n.getMessage('option_tts_volume_label')}</label>
+      <label id="volumeLabel" class="label">${i18n.getMessage('option_tts_volume_label')}</label>
       <input type="range" id="volume" min="0" max="1" step="0.1" value="${this.settings.volume}"
              class="volume-slider">
     `;
