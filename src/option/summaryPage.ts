@@ -3,10 +3,9 @@ import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
 import { i18n } from '../common/i18n';
-import { II18n } from './options';
 
 export class SummaryPage {
-  private view: ISummaryPageView & II18n;
+  private view: ISummaryPageView;
   private summarySettings: ISummarySettings;
   private llmSettings!: ILlmSettings;
 
@@ -16,13 +15,6 @@ export class SummaryPage {
       this.handleSettingsChange.bind(this),
       this.handlePromptEdit.bind(this),
     );
-
-    window.addEventListener('generalLanguageChanged', async (event: Event) => {
-      const customEvent = event as CustomEvent<{language: Language}>;
-      const { language } = customEvent.detail;
-      await i18n.loadLocale(language);
-      await this.view.updateI18nAndAttachEvent();
-    });
   }
 
   private async handleSettingsChange(): Promise<void> {

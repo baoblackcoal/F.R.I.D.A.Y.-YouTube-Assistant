@@ -7,10 +7,18 @@ interface LocaleMessages {
   };
 }
 
+
+interface I18nEvent {
+  eventId: string;
+  callback: (language: Language) => Promise<void>;
+}
+
+
 export class I18nService {
   private static instance: I18nService;
   private messages: LocaleMessages = {};
   private currentLanguage: Language = Language.English;
+  private i18nEvents: I18nEvent[] = [];
 
   private readonly languageLabels: Record<Language, string> = {
     [Language.English]: 'English',
@@ -18,7 +26,13 @@ export class I18nService {
     [Language.TraditionalChinese]: '繁體中文'
   };
 
-  private constructor() {}
+  private constructor() {
+    this.onGeneralLanguageChanged();
+  }
+
+  public async init(): Promise<void> {
+    await this.loadLocaleByGeneralSettings();
+  }
 
   public static getInstance(): I18nService {
     if (!I18nService.instance) {
@@ -27,10 +41,27 @@ export class I18nService {
     return I18nService.instance;
   }
 
-  public async initLoadLocale(): Promise<void> {
+  private async loadLocaleByGeneralSettings(): Promise<void> {
     const result = await settingsManager.getGeneralSettings();
     const currentLanguage = result.language || Language.English;
     await this.loadLocale(currentLanguage);
+  }
+
+  private onGeneralLanguageChanged() {
+    window.addEventListener('generalLanguageChanged', async (event: Event) => {
+      const customEvent = event as CustomEvent<{language: Language}>;
+      const { language } = customEvent.detail;
+      await i18n.loadLocale(language);
+      this.i18nEvents.forEach(event => {
+        event.callback(language);
+      });
+    });
+  }
+
+  public async attachI18nEvent(event: I18nEvent): Promise<void> {
+    if (!this.i18nEvents.find(e => e.eventId === event.eventId)) {
+      this.i18nEvents.push(event);
+    }
   }
 
   public getMessage(key: string): string {

@@ -7,11 +7,11 @@ import { MessageObserver } from '../utils/messageObserver';
 import { ITtsMessage } from '../utils/messageQueue';
 import './css/basePage.css';
 import './css/ttsPage.css';
-import { II18n } from './options';
+// import { II18n } from './options';
 import { i18n, I18nService } from '../common/i18n';
 
 
-export class TTSPage implements II18n {
+export class TTSPage {
   private container: HTMLElement;
   private settings: ITtsSettings;
   private tts: TTSSpeak;
@@ -33,8 +33,11 @@ export class TTSPage implements II18n {
     await this.loadTtsVoices();
     this.attachEventListeners();
 
-    window.addEventListener('generalLanguageChanged', async (event: Event) => {
-      await this.updateI18nAndAttachEvent();
+    i18n.attachI18nEvent({
+      eventId: 'ttsPage',
+      callback: async (language: Language) => {
+        await this.updateI18nAndAttachEvent();
+      }
     });
   }
 

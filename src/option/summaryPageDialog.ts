@@ -3,7 +3,7 @@ import { I18nService } from '../common/i18n';
 export interface ISummaryPageDialog {
     showDialog(promptId: number, currentValue: string): void;
     initialize(): void;
-    updateI18n(i18n: I18nService): void;
+    updateI18nAndAttachEvent(i18n: I18nService): void;
 }
 
 export class SummaryPageDialog implements ISummaryPageDialog {
@@ -18,7 +18,7 @@ export class SummaryPageDialog implements ISummaryPageDialog {
         this.attachEventListeners();
     }
 
-    private createDialog(): void {
+    private createDialog(): void {        
         const dialogHTML = `
             <dialog id="promptEditDialog" class="prompt-edit-dialog">
                 <div class="dialog-content">
@@ -70,37 +70,8 @@ export class SummaryPageDialog implements ISummaryPageDialog {
         // Any initialization logic if needed
     }
 
-    public updateI18n(i18n: I18nService): void {
-        const elements = {
-            dialogTitle: this.dialog.querySelector('#dialogPromptTitle'),
-            dialogVariablesTitle: this.dialog.querySelector('.prompt-info-title'),
-            dialogVariableTitle: this.dialog.querySelector('.prompt-info-list li:nth-child(1)'),
-            dialogVariableTranscript: this.dialog.querySelector('.prompt-info-list li:nth-child(2)'),
-            dialogVariableLanguage: this.dialog.querySelector('.prompt-info-list li:nth-child(3)'),
-            dialogSaveButton: this.dialog.querySelector('#dialogSave'),
-            dialogCancelButton: this.dialog.querySelector('#dialogCancel')
-        };
-
-        if (elements.dialogTitle) {
-            elements.dialogTitle.textContent = i18n.getMessage('option_summary_prompt_edit_dialog_title');
-        }
-        if (elements.dialogVariablesTitle) {
-            elements.dialogVariablesTitle.textContent = i18n.getMessage('option_summary_prompt_variables_title');
-        }
-        if (elements.dialogVariableTitle) {
-            elements.dialogVariableTitle.textContent = i18n.getMessage('option_summary_prompt_variable_title');
-        }
-        if (elements.dialogVariableTranscript) {
-            elements.dialogVariableTranscript.textContent = i18n.getMessage('option_summary_prompt_variable_transcript');
-        }
-        if (elements.dialogVariableLanguage) {
-            elements.dialogVariableLanguage.textContent = i18n.getMessage('option_summary_prompt_variable_language');
-        }
-        if (elements.dialogSaveButton) {
-            elements.dialogSaveButton.textContent = i18n.getMessage('option_summary_prompt_save');
-        }
-        if (elements.dialogCancelButton) {
-            elements.dialogCancelButton.textContent = i18n.getMessage('option_summary_prompt_cancel');
-        }
+    public updateI18nAndAttachEvent(i18n: I18nService): void {
+        this.createDialog();
+        this.attachEventListeners();
     }
 } 

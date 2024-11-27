@@ -10,10 +10,30 @@ export class GeneralPage {
   constructor() {
     this.container = document.createElement('div');
     this.container.className = 'page-container';
-    this.init();
+    this.container.innerHTML = `
+      <div id="welcome-section" class="welcome-section section"></div>
+      <div id="language-section" class="section"></div>
+    `;
+
+    this.updateI18nAndAttachEvent();
+    
+    i18n.attachI18nEvent({
+      eventId: 'generalPage',
+      callback: async (language: Language) => {
+        this.updateI18nAndAttachEvent();
+      }
+    });
+
+    window.addEventListener('generalLanguageSyncChanged', () => {
+      this.loadSyncLanguageCheckbox();
+    });
+  }
+
+  private updateI18nAndAttachEvent(): void {
+    this.updatePageContent();
     this.loadCurrentLanguage();
     this.loadSyncLanguageCheckbox();
-    this.attachLanguageSyncChangeEventListeners();
+    this.attachChangeEventListeners();
   }
 
   private updatePageContent(): void {
@@ -41,17 +61,25 @@ export class GeneralPage {
       `;
     }
 
-    // Update language selector label
-    const languageLabel = this.container.querySelector('#language-label');
-    if (languageLabel) {
-      languageLabel.textContent = i18n.getMessage('option_general_language_label');
+    const languageSection = this.container.querySelector('#language-section');
+    if (languageSection) {
+      languageSection.innerHTML = `
+        <label class="label" id="language-label">${i18n.getMessage('option_general_language_label')}</label>
+        <select id="language-selector" class="select">
+          ${Object.values(Language).map(lang => 
+            `<option value="${lang}">${i18n.getLanguageLabel(lang)}</option>`
+          ).join('')}
+        </select>
+
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="sync-language" class="checkbox-input">
+          <label for="sync-language" class="checkbox-label" id="sync-language-label">
+            ${i18n.getMessage('option_general_sync_language_label')}
+          </label>
+        </div>
+      `;
     }
 
-    // Update sync language checkbox label
-    const syncLanguageCheckbox = this.container.querySelector('#sync-language-label');
-    if (syncLanguageCheckbox) {
-      syncLanguageCheckbox.textContent = i18n.getMessage('option_general_sync_language_label');
-    }
   }
 
   private async loadCurrentLanguage(): Promise<void> {
@@ -63,16 +91,6 @@ export class GeneralPage {
       languageSelector.value = currentLanguage;
     }
 
-    await i18n.loadLocale(currentLanguage);
-    this.updatePageContent();
-  }
-
-  private async attachLanguageSyncChangeEventListeners(): Promise<void> {
-    window.addEventListener('generalLanguageSyncChanged', async (event: Event) => {
-      const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
-      const settings = await settingsManager.getGeneralSettings();
-      checkbox.checked = settings.syncLanguage;
-    });
   }
 
   private async loadSyncLanguageCheckbox(): Promise<void> {
@@ -85,16 +103,10 @@ export class GeneralPage {
     }
   }
 
-  private async saveLanguageSettings(): Promise<void> {
-    const select = this.container.querySelector('#language-selector') as HTMLSelectElement;
-    const newLanguage = select.value as Language;
-
-    const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
-    const sync = checkbox.checked || false;
-
+  private async updateAndSaveLanguageSettings(language: Language, sync: boolean): Promise<void> {
     try {
       const generalSettings: IGeneralSettings = {
-        language: newLanguage,
+        language: language,
         syncLanguage: sync
       };
 
@@ -105,13 +117,13 @@ export class GeneralPage {
   }
 
   private async handleLanguageChange(event: Event): Promise<void> {
+    const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
+    const sync = checkbox.checked || false;
+
     const select = event.target as HTMLSelectElement;
     const newLanguage = select.value as Language;
-     
-    await this.saveLanguageSettings();
-    await i18n.loadLocale(newLanguage);     
-  
-    this.updatePageContent();
+
+    await this.updateAndSaveLanguageSettings(newLanguage, sync);
     
     window.dispatchEvent(new CustomEvent('generalLanguageChanged', {
       detail: { language: newLanguage }
@@ -119,11 +131,15 @@ export class GeneralPage {
   }
 
   private async handleLanguageSyncChange(event: Event): Promise<void> {    
-    await this.saveLanguageSettings();
+    const select = this.container.querySelector('#language-selector') as HTMLSelectElement;
+    const language = select.value as Language;
+
+    const sync = (event.target as HTMLInputElement).checked;
+
+    await this.updateAndSaveLanguageSettings(language, sync);
 
     // must dispatch generalLanguageChanged event if saveLanguageSettings is successful
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
+    if (sync) {
       const generalSettings = await settingsManager.getGeneralSettings();
       const newLanguage = generalSettings.language;
       window.dispatchEvent(new CustomEvent('generalLanguageChanged', {
@@ -132,52 +148,17 @@ export class GeneralPage {
     }
   }
 
-  private createWelcomeSection(): HTMLElement {
-    const section = document.createElement('div');
-    section.id = 'welcome-section';
-    section.className = 'welcome-section section';
-    return section;
-  }
 
-  private createLanguageSelector(): HTMLElement {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'section';
-
-    wrapper.innerHTML = `
-      <label class="label" id="language-label">${i18n.getMessage('option_general_language_label')}</label>
-      <select id="language-selector" class="select">
-        ${Object.values(Language).map(lang => 
-          `<option value="${lang}">${i18n.getLanguageLabel(lang)}</option>`
-        ).join('')}
-      </select>
-    `;
-
-    const languageSelector = wrapper.querySelector('#language-selector');
+  private attachChangeEventListeners(): void {
+    const languageSelector = this.container.querySelector('#language-selector');
     if (languageSelector) {
       languageSelector.addEventListener('change', (e) => this.handleLanguageChange(e));
     }
-    
-    const checkbox = document.createElement('div');
-    checkbox.className = 'checkbox-wrapper';
-    checkbox.innerHTML = `
-      <input type="checkbox" id="sync-language" class="checkbox-input">
-      <label for="sync-language" class="checkbox-label" id="sync-language-label">
-        ${i18n.getMessage('option_general_sync_language_label')}
-      </label>
-    `;
-    const checkboxInput = checkbox.querySelector('#sync-language');
-    if (checkboxInput) {
-      checkboxInput.addEventListener('change', (e) => this.handleLanguageSyncChange(e));
+
+    const checkbox = this.container.querySelector('#sync-language');
+    if (checkbox) {
+      checkbox.addEventListener('change', (e) => this.handleLanguageSyncChange(e));
     }
-
-    wrapper.appendChild(checkbox);
-
-    return wrapper;
-  }
-
-  private init(): void {
-    this.container.appendChild(this.createWelcomeSection());
-    this.container.appendChild(this.createLanguageSelector());
   }
 
   public getElement(): HTMLElement {

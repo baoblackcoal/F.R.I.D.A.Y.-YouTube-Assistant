@@ -8,11 +8,11 @@ import { common } from '../common/common';
 import { ISummaryPageDialog, SummaryPageDialog } from './summaryPageDialog';
 import { geminiAPI } from '../common/geminiApi';
 import { Toast } from '../common/toast';
-import { II18n } from './options';
+// import { II18n } from './options';
 
 export interface ISummaryPageView {
-  updatePromptVisibility(promptType: number): void;
-  updateApiKeySection(isCommonKey: boolean, apiKey: string): void;
+  loadPromptVisibility(promptType: number): void;
+  loadApiKeySection(isCommonKey: boolean, apiKey: string): void;
   getFormValues(): {
     apiKeyType: string;
     geminiApiKey: string;
@@ -24,13 +24,14 @@ export interface ISummaryPageView {
     diyPromptText2: string;
     diyPromptText3: string;
   };
-  initialize(settings: ISummarySettings, llmSettings: ILlmSettings): void;
+  load(settings: ISummarySettings, llmSettings: ILlmSettings): void;
   getElement(): HTMLElement;
 }
 
-export class SummaryPageView implements ISummaryPageView,II18n {
+export class SummaryPageView implements ISummaryPageView {
   private container: HTMLElement;
   private dialog: ISummaryPageDialog;
+  generalLanguageAttach: boolean = false;
 
   constructor(
     private readonly onSettingsChangeToSave: () => Promise<void>,
@@ -40,6 +41,7 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     this.container.className = 'page-container';
     this.dialog = new SummaryPageDialog(this.container, this.onPromptEdit, i18n);
     this.createLayout();
+    this.attachLanguageChangeFromGeneralPage();
   }
 
   private async createLayout(): Promise<void> {
@@ -61,18 +63,24 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     autoTtsSpeakCheckbox.addEventListener('change', () => this.onSettingsChangeToSave());
   }
 
-  private async attachLanguageChangeEventListeners(): Promise<void> {
-    // Listen for language changes from other pages
-    window.addEventListener('generalLanguageChanged', async (event: Event) => {
-      const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
-      const generalSettings = await settingsManager.getGeneralSettings();
-      if (generalSettings.syncLanguage) {
-        const customEvent = event as CustomEvent<{language: Language}>;
-        const { language } = customEvent.detail;
-        languageSelect.value = language;
-        await this.onSettingsChangeToSave();
+  attachLanguageChangeFromGeneralPage(): void {
+    i18n.attachI18nEvent({
+      eventId: 'summaryPageView',
+      callback: async (language: Language) => {
+        const generalSettings = await settingsManager.getGeneralSettings();
+        if (generalSettings.syncLanguage) {
+          const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
+          languageSelect.value = language;
+          await this.onSettingsChangeToSave();
+          await this.updateI18nAndAttachEvent();
+        }
       }
     });
+  }
+
+  private async attachLanguageChangeEventListeners(): Promise<void> {
+    // // Listen for language changes from other pages
+    // this.attachLanguageChangeFromGeneralPage();
 
     // Listen for language changes from this page
     const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
@@ -199,7 +207,7 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     `;
   }
 
-  public updatePromptVisibility(promptType: number): void {
+  public loadPromptVisibility(promptType: number): void {
     const allPrompts = this.container.querySelectorAll('.prompt-content');
     allPrompts.forEach(prompt => (prompt as HTMLElement).style.display = 'none');
 
@@ -212,7 +220,7 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     }
   }
 
-  public updateApiKeySection(isCommonKey: boolean, apiKey: string): void {
+  public loadApiKeySection(isCommonKey: boolean, apiKey: string): void {
     const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
     const commonKeyInfo = this.container.querySelector('#apiKeyInfoCommonKey') as HTMLElement;
     const yourKeyInfo = this.container.querySelector('#apiKeyInfoYourKey') as HTMLElement;
@@ -266,17 +274,8 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     
     const llmSettings = await settingsManager.getLlmSettings();
     const apiKey = common.getApiKey(llmSettings);
-    // if (isCommonKey) {
-    //     // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_***********';
-    //     // apiKeyInput.value = 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
-    //     // apiKeyInput.readOnly = true;
-    // } else {    
-    //   // const llmSettings = await settingsManager.getLlmSettings();
-    //   // apiKeyInput.value = llmSettings.userApiKey || '';
-    //   // apiKeyInput.readOnly = false;
-    // }
     
-    this.updateApiKeySection(isCommonKey, apiKey);
+    this.loadApiKeySection(isCommonKey, apiKey);
   }
 
   private async onTestApiKey(): Promise<void> {
@@ -349,7 +348,7 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     const promptTypeSelect = this.container.querySelector('#promptType') as HTMLSelectElement;
     promptTypeSelect.addEventListener('change', (e) => {
       const newType = parseInt((e.target as HTMLSelectElement).value);
-      this.updatePromptVisibility(newType);
+      this.loadPromptVisibility(newType);
     });
 
     // Update prompt editing event handlers
@@ -362,7 +361,7 @@ export class SummaryPageView implements ISummaryPageView,II18n {
     });
   }
 
-  public async initialize(settings: ISummarySettings, llmSettings: ILlmSettings): Promise<void> {
+  public async load(settings: ISummarySettings, llmSettings: ILlmSettings): Promise<void> {
     // Initialize form values
     const inputs = {
       promptType: this.container.querySelector('#promptType') as HTMLSelectElement,
@@ -396,9 +395,8 @@ export class SummaryPageView implements ISummaryPageView,II18n {
       yourKeyRadio.checked = true;
       apiKeyInput.readOnly = false;
     }
-    
-    this.updateApiKeySection(isCommonKey, apiKey);
-    this.updatePromptVisibility(settings.promptType);
+    this.loadApiKeySection(isCommonKey, apiKey);
+    this.loadPromptVisibility(settings.promptType);
   }
 
   public getElement(): HTMLElement {
@@ -413,13 +411,13 @@ export class SummaryPageView implements ISummaryPageView,II18n {
 
     const summarySettings = await settingsManager.getSummarySettings();
     const llmSettings = await settingsManager.getLlmSettings(); 
-    this.initialize(summarySettings, llmSettings);
+    this.load(summarySettings, llmSettings);
 
     this.attachApiKeyEventListeners();
     this.attachLanguageChangeEventListeners();
     this.attachCheckboxEventListeners();
 
     // Update dialog i18n
-    this.dialog.updateI18n(i18n);
+    this.dialog.updateI18nAndAttachEvent(i18n);
   }
 }

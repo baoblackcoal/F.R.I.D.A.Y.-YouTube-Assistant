@@ -4,15 +4,12 @@ import { TTSPage } from './ttsPage';
 // import { TabConfig } from './types.ts0';
 import { settingsManager, ISettingsManager } from '../common/settingsManager';
 import { i18n } from '../common/i18n';
+import { Language } from '../common/ISettings';
 
 export interface TabConfig {
   id: string;
   label: string;
   component: () => HTMLElement;
-}
-
-export interface II18n {
-  updateI18nAndAttachEvent(): Promise<void>;
 }
 
 class OptionsPage {
@@ -48,10 +45,16 @@ class OptionsPage {
   }
 
   private async init(): Promise<void> {
-    await i18n.initLoadLocale();
+    await i18n.init();
     this.initializeTabContent();
     this.attachEventListeners();
     this.updateTabLabels();
+    i18n.attachI18nEvent({
+      eventId: 'optionsPage',
+      callback: async (language: Language) => {
+        this.updateTabLabels();
+      }
+    });
   }
 
   private initializeTabContent(): void {
@@ -88,12 +91,6 @@ class OptionsPage {
         });
       }
     });
-
-    // Add language change event listener
-    window.addEventListener('generalLanguageChanged', () => {
-      this.updateTabLabels();
-    });
-
   }
 
   private showTab(tabId: string): void {
