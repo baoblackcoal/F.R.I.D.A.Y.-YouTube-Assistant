@@ -92,9 +92,10 @@ module.exports = (env, argv) => {
           {
             from: "src/css/*.css",
             to({ context, absoluteFilename }) {
-              return "contentscript/[name][ext]";
+              return "css/[name][ext]";
             }
           },
+          { from: 'src/css/toast.css', to: 'toast.css' },
           { from: 'src/manifest.json', to: 'manifest.json' },
           { from: 'src/popup.html', to: 'popup.html' },
           { from: 'src/popup.css', to: 'popup.css' },

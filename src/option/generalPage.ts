@@ -25,7 +25,7 @@ export class GeneralPage {
     });
 
     window.addEventListener('generalLanguageSyncChanged', () => {
-      this.loadSyncLanguageCheckbox();
+      this.syncLanguageCheckboxFromWindowEvent();
     });
   }
 
@@ -34,6 +34,19 @@ export class GeneralPage {
     this.loadCurrentLanguage();
     this.loadSyncLanguageCheckbox();
     this.attachChangeEventListeners();
+  }
+
+  private async syncLanguageCheckboxFromWindowEvent(): Promise<void> {
+    const generalSetting = await settingsManager.getGeneralSettings();
+    const summarySetting = await settingsManager.getSummarySettings();
+
+    const sync = generalSetting.language === summarySetting.language;
+    const checkbox = this.container.querySelector('#sync-language') as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = sync;
+    }
+    generalSetting.syncLanguage = sync;
+    await settingsManager.setGeneralSettings(generalSetting);
   }
 
   private updatePageContent(): void {

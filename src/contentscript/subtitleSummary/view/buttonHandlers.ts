@@ -125,6 +125,7 @@ class LanguageButtonHandler implements IButtonHandler {
         settings.summary.language = languages[nextLanguageIndex];
         await settingsManager.setSummarySettings(settings.summary);
         await this.update();
+        window.dispatchEvent(new CustomEvent('generalLanguageSyncChanged', {}));
     }
 }
 

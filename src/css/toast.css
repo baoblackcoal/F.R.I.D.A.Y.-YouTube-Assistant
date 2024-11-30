@@ -1,0 +1,40 @@
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+  
+  /* Toast */
+  .toast {
+    padding: 12px 24px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: white;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .toast-success {
+    background-color: #4caf50;
+  }
+  
+  .toast-error {
+    background-color: #f44336;
+  }
+  
+  /* Test button states */
+  #testApiKey:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
