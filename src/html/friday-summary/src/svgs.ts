@@ -1,4 +1,14 @@
-const ICONS = {
+interface Icons {
+    [key: string]: string;
+}
+
+interface Languages {
+    readonly ENGLISH: string;
+    readonly SIMPLE_CHINESE: string;
+    readonly TRAN_CHINESE: string;
+}
+
+export const ICONS: Icons = {
     paragraph: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 6h16M4 10h12M4 14h16M4 18h8" stroke-linecap="round"></path>
     </svg>`,
@@ -34,7 +44,7 @@ const ICONS = {
     </svg>`
 };
 
-const LANGUAGES = {
+export const LANGUAGES: Languages = {
     ENGLISH: 'English',
     SIMPLE_CHINESE: 'Simple Chinese',
     TRAN_CHINESE: 'Tran Chinese'
