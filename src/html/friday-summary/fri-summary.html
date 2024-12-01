@@ -212,6 +212,7 @@
             color: #0F0F0F;
             font-size: 14px;
             position: relative;
+            height: 30px;
         }
 
         .dark .fri-popup-item {
@@ -220,6 +221,10 @@
 
         .fri-popup-item:hover {
             background: rgba(0, 0, 0, 0.05);
+        }
+
+        .fri-popup-item:active {
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .dark .fri-popup-item:hover {
@@ -349,6 +354,29 @@
                 <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
             </svg>`
         };
+
+        // Add this after the ICONS declaration
+        const LANGUAGES = {
+            ENGLISH: 'English',
+            SIMPLE_CHINESE: 'Simple Chinese',
+            TRAN_CHINESE: 'Tran Chinese'
+        };
+
+        // Function to create language menu items
+        function createLanguageMenuItems(selectedLanguage) {
+            const languages = [
+                LANGUAGES.ENGLISH,
+                LANGUAGES.SIMPLE_CHINESE,
+                LANGUAGES.TRAN_CHINESE
+            ];
+            
+            return languages.map(lang => `
+                <div class="fri-popup-item language-item" data-language="${lang}">
+                    ${lang === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
+                    <span style="margin-left: 4px;">${lang}</span>
+                </div>
+            `).join('');
+        }
 
         // Function to create icon button
         function createIconButton(icon, tooltip) {
@@ -507,19 +535,8 @@
                 <div class="fri-popup-item with-sub">
                     ${ICONS.language}
                     AI Language
-                    <div class="fri-sub-popup fri-popup-menu">
-                        <div class="fri-popup-item">
-                            ${ICONS.check}
-                            <span style="margin-left: 4px;">English</span>
-                        </div>
-                        <div class="fri-popup-item">
-                            <div style="width: 24px;"></div>
-                            <span style="margin-left: 4px;">Simple Chinese</span>
-                        </div>
-                        <div class="fri-popup-item">
-                            <div style="width: 24px;"></div>
-                            <span style="margin-left: 4px;">Tran Chinese</span>
-                        </div>
+                    <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
+                        ${createLanguageMenuItems(LANGUAGES.ENGLISH)}
                     </div>
                 </div>
                 <div class="fri-popup-item">
@@ -564,6 +581,28 @@
                     e.stopPropagation();
                     toggle.classList.toggle('active');
                 });
+            });
+
+            // Add language selection handling
+            const languageSubmenu = popupMenu.querySelector('#language-submenu');
+            let currentLanguage = LANGUAGES.ENGLISH;
+
+            languageSubmenu.addEventListener('click', (e) => {
+                const languageItem = e.target.closest('.language-item');
+                if (!languageItem) return;
+
+                e.stopPropagation();
+                const newLanguage = languageItem.dataset.language;
+                
+                if (newLanguage === currentLanguage) return;
+                
+                currentLanguage = newLanguage;
+                languageSubmenu.innerHTML = createLanguageMenuItems(currentLanguage);
+                
+                // Dispatch custom event for language change
+                document.dispatchEvent(new CustomEvent('languageChange', {
+                    detail: { language: currentLanguage }
+                }));
             });
         }
 
