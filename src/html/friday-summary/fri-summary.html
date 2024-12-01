@@ -258,8 +258,8 @@
                     </div>
 
                     <div class="fri-right-controls">
-                        ${createIconButton('settings', 'Settings')}
                         ${createIconButton('more', 'More')}
+                        ${createIconButton('settings', 'Settings')}
                         <div class="fri-icon-box expand-collapse-container">
                             <button class="fri-icon-button expand-button" style="display: none;">
                                 ${ICONS['expand']}
@@ -272,7 +272,7 @@
                     </div>
                 </div>
 
-                <div class="fri-summary-content-container">
+                <div class="fri-summary-content-container" id="fri-summary-content-container">
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
@@ -348,6 +348,10 @@
                 expandButton.style.display = isCollapsed ? 'flex' : 'none';
                 collapseButton.style.display = isCollapsed ? 'none' : 'flex';
                 expandCollapseTooltip.textContent = isCollapsed ? 'Collapse' : 'Expand';
+
+                // fri-summary-content-container show or hide
+                const summaryContentContainer = document.getElementById('fri-summary-content-container');
+                summaryContentContainer.style.display = isCollapsed ? 'none' : 'block';
             });
         }
 
