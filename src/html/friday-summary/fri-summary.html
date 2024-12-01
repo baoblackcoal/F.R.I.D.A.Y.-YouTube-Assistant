@@ -13,15 +13,14 @@
         }
 
         .fri-summry-container {
-            padding: 5rem 2rem;
+            padding: 0.5rem;
             transition: background-color 0.3s;
 
             font-family: 'Roboto', sans-serif;
             font-size: 14px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
             border-radius: 12px;
-            border-color: #0f0f0f;
-            border: 1px solid #0f0f0f;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             width: -webkit-fill-available;
             margin: 8px 12px 0px 12px;
         }
@@ -33,7 +32,6 @@
         .fri-icons-row {
             display: flex;
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
         }
 
         .fri-icon-box {
@@ -97,12 +95,16 @@
         }
 
        
+        .dark .fri-left-controls {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         .fri-left-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 2px;
             min-width: fit-content;
-            border-right: 1px solid #eee;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
             padding-right: 8px;
         }
 
@@ -133,18 +135,19 @@
         .fri-right-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 2px;
             min-width: fit-content;
         }
 
-        svg {
+        /* svg {
             width: 26px;
             height: 26px;
-        }
+        } */
     </style>
 </head>
 
 <body>
+    <div style="padding-top: 5rem;"></div>
     <div class="fri-summry-container" id="fri-summry-container">
         <div class="fri-icons-row">
             <div class="fri-left-controls">
@@ -231,12 +234,11 @@
         </div>
     </div>
 
-    <div>
+    <div style="padding-top: 5rem; padding-left: 1rem;">
         <button id="themeButton" data-lucide="moon">change theme</button>
     </div>
 
     <script>
-        // 主题切换
         let isDark = false;
         const friSummryContainer = document.getElementById('fri-summry-container');
         const themeButton = document.getElementById('themeButton');
@@ -247,7 +249,6 @@
             themeButton.setAttribute('data-lucide', isDark ? 'sun-medium' : 'moon');
         });
 
-        // 添加点击效果
         const buttons = document.querySelectorAll('.fri-icon-button');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
