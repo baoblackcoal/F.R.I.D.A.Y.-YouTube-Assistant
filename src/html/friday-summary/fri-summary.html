@@ -524,11 +524,11 @@
             popupMenu.className = 'fri-popup-menu';
             
             popupMenu.innerHTML = `
-                <div class="fri-popup-item">
+                <div class="fri-popup-item" id="copy-item">
                     ${ICONS.copy}
                     Copy
                 </div>
-                <div class="fri-popup-item">
+                <div class="fri-popup-item" id="download-item">
                     ${ICONS.download}
                     Download
                 </div>
@@ -539,19 +539,26 @@
                         ${createLanguageMenuItems(LANGUAGES.ENGLISH)}
                     </div>
                 </div>
-                <div class="fri-popup-item">
+                <div class="fri-popup-item" id="auto-generate-item">
                     ${ICONS.paragraph}
                     Auto Generate
-                    <div class="fri-toggle"></div>
+                    <div class="fri-toggle" id="auto-generate-toggle"></div>
                 </div>
-                <div class="fri-popup-item">
+                <div class="fri-popup-item" id="auto-play-item">
                     ${ICONS.play}
                     Auto Play
-                    <div class="fri-toggle"></div>
+                    <div class="fri-toggle" id="auto-play-toggle"></div>
                 </div>
             `;
 
             return popupMenu;
+        }
+
+        function displayToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fri-toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
         }
 
         function initializePopupMenu() {
@@ -572,15 +579,6 @@
                 if (!popupMenu.contains(e.target) && e.target !== moreButton) {
                     popupMenu.style.display = 'none';
                 }
-            });
-
-            // Toggle button functionality
-            const toggles = popupMenu.querySelectorAll('.fri-toggle');
-            toggles.forEach(toggle => {
-                toggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggle.classList.toggle('active');
-                });
             });
 
             // Add language selection handling
@@ -604,8 +602,58 @@
                     detail: { language: currentLanguage }
                 }));
             });
-        }
 
+
+            // Add click handlers for toggle items
+            const autoGenerateItem = popupMenu.querySelector('#auto-generate-item');
+            const autoPlayItem = popupMenu.querySelector('#auto-play-item');
+            const autoGenerateToggle = popupMenu.querySelector('#auto-generate-toggle');
+            const autoPlayToggle = popupMenu.querySelector('#auto-play-toggle');
+
+            autoGenerateItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                autoGenerateToggle.classList.toggle('active');
+                
+                // Dispatch custom event for auto generate toggle
+                document.dispatchEvent(new CustomEvent('autoGenerateChange', {
+                    detail: { enabled: autoGenerateToggle.classList.contains('active') }
+                }));
+            });
+
+            autoPlayItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                autoPlayToggle.classList.toggle('active');
+                
+                // Dispatch custom event for auto play toggle
+                document.dispatchEvent(new CustomEvent('autoPlayChange', {
+                    detail: { enabled: autoPlayToggle.classList.contains('active') }
+                }));
+            });
+
+            // Remove the previous toggle click handlers to prevent double-toggling
+            autoGenerateToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                autoGenerateToggle.classList.toggle('active');
+            });
+
+            autoPlayToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                autoPlayToggle.classList.toggle('active');
+            });
+
+            // Toast display click info when click Copy and Download items
+            const copyItem = document.getElementById('copy-item');
+            const downloadItem = document.getElementById('download-item');
+
+            copyItem.addEventListener('click', () => {
+                displayToast('Copy');
+            }); 
+            downloadItem.addEventListener('click', () => {
+                displayToast('Download');
+            });
+
+        }
+       
         // Initialize popup menu after DOM content is loaded
         document.addEventListener('DOMContentLoaded', () => {
             initializePopupMenu();
