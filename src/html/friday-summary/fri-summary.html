@@ -312,59 +312,6 @@
         <button id="themeButton" data-lucide="moon">change theme</button>
     </div>
 
-    <template id="popupMenuTemplate">
-        <div class="fri-popup-menu">
-            <div class="fri-popup-item">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
-                Copy
-            </div>
-            <div class="fri-popup-item">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                </svg>
-                Download
-            </div>
-            <div class="fri-popup-item with-sub">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                    <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-                </svg>
-                AI Language
-                <div class="fri-sub-popup fri-popup-menu">
-                    <div class="fri-popup-item">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                        </svg>
-                        <span style="margin-left: 4px;">English</span>
-                    </div>
-                    <div class="fri-popup-item">
-                        <div style="width: 24px;"></div>
-                        <span style="margin-left: 4px;">Simple Chinese</span>
-                    </div>
-                    <div class="fri-popup-item">
-                        <div style="width: 24px;"></div>
-                        <span style="margin-left: 4px;">Tran Chinese</span>
-                    </div>
-                </div>
-            </div>
-            <div class="fri-popup-item">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M4 6h16M4 10h12M4 14h16M4 18h8" stroke-linecap="round"></path>
-                </svg>
-                Auto Generate
-                <div class="fri-toggle"></div>
-            </div>
-            <div class="fri-popup-item">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                    <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"></path>
-                </svg>
-                Auto Play
-                <div class="fri-toggle"></div>
-            </div>
-        </div>
-    </template>
-
     <script>
         // SVG Icons as variables for better maintainability
         const ICONS = {
@@ -388,6 +335,18 @@
             </svg>`,
             collapse: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 15l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>`,
+            copy: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>`,
+            download: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>`,
+            language: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+            </svg>`,
+            check: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
             </svg>`
         };
 
@@ -532,14 +491,57 @@
         });
 
         // Popup Menu Implementation
+        function createPopupMenu() {
+            const popupMenu = document.createElement('div');
+            popupMenu.className = 'fri-popup-menu';
+            
+            popupMenu.innerHTML = `
+                <div class="fri-popup-item">
+                    ${ICONS.copy}
+                    Copy
+                </div>
+                <div class="fri-popup-item">
+                    ${ICONS.download}
+                    Download
+                </div>
+                <div class="fri-popup-item with-sub">
+                    ${ICONS.language}
+                    AI Language
+                    <div class="fri-sub-popup fri-popup-menu">
+                        <div class="fri-popup-item">
+                            ${ICONS.check}
+                            <span style="margin-left: 4px;">English</span>
+                        </div>
+                        <div class="fri-popup-item">
+                            <div style="width: 24px;"></div>
+                            <span style="margin-left: 4px;">Simple Chinese</span>
+                        </div>
+                        <div class="fri-popup-item">
+                            <div style="width: 24px;"></div>
+                            <span style="margin-left: 4px;">Tran Chinese</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="fri-popup-item">
+                    ${ICONS.paragraph}
+                    Auto Generate
+                    <div class="fri-toggle"></div>
+                </div>
+                <div class="fri-popup-item">
+                    ${ICONS.play}
+                    Auto Play
+                    <div class="fri-toggle"></div>
+                </div>
+            `;
+
+            return popupMenu;
+        }
+
         function initializePopupMenu() {
             const moreButton = document.querySelector('.fri-right-controls .fri-icon-button');
-            const template = document.getElementById('popupMenuTemplate');
-            const popup = template.content.cloneNode(true);
+            const popupMenu = createPopupMenu();
             
-            moreButton.parentElement.appendChild(popup);
-            
-            const popupMenu = moreButton.parentElement.querySelector('.fri-popup-menu');
+            moreButton.parentElement.appendChild(popupMenu);
             
             // Toggle popup on more button click
             moreButton.addEventListener('click', (e) => {
