@@ -242,8 +242,15 @@
                 <div class="fri-icons-row">
                     <div class="fri-left-controls">
                         ${createIconButton('paragraph', 'Generate Paragraph')}
-                        ${createIconButton('play', 'Play')}
-                        ${createIconButton('pause', 'Pause')}
+                        <div class="fri-icon-box play-pause-container">
+                            <button class="fri-icon-button play-button">
+                                ${ICONS['play']}
+                            </button>
+                            <button class="fri-icon-button pause-button" style="display: none;">
+                                ${ICONS['pause']}
+                            </button>
+                            <div class="fri-tooltip">Play</div>
+                        </div>
                     </div>
 
                     <div class="fri-summry-info-container">
@@ -253,8 +260,15 @@
                     <div class="fri-right-controls">
                         ${createIconButton('settings', 'Settings')}
                         ${createIconButton('more', 'More')}
-                        ${createIconButton('expand', 'Expand')}
-                        ${createIconButton('collapse', 'Collapse')}
+                        <div class="fri-icon-box expand-collapse-container">
+                            <button class="fri-icon-button expand-button" style="display: none;">
+                                ${ICONS['expand']}
+                            </button>
+                            <button class="fri-icon-button collapse-button">
+                                ${ICONS['collapse']}
+                            </button>
+                            <div class="fri-tooltip">Expand</div>
+                        </div>
                     </div>
                 </div>
 
@@ -307,6 +321,40 @@
 
         // Initialize button effects
         initializeButtonEffects();
+
+        // Toggle functionality for play/pause and expand/collapse
+        function initializeToggleButtons() {
+            // Play/Pause toggle
+            const playPauseContainer = document.querySelector('.play-pause-container');
+            const playButton = playPauseContainer.querySelector('.play-button');
+            const pauseButton = playPauseContainer.querySelector('.pause-button');
+            const playPauseTooltip = playPauseContainer.querySelector('.fri-tooltip');
+
+            playPauseContainer.addEventListener('click', () => {
+                const isPlaying = playButton.style.display !== 'none';
+                playButton.style.display = isPlaying ? 'none' : 'flex';
+                pauseButton.style.display = isPlaying ? 'flex' : 'none';
+                playPauseTooltip.textContent = isPlaying ? 'Pause' : 'Play';
+            });
+
+            // Expand/Collapse toggle
+            const expandCollapseContainer = document.querySelector('.expand-collapse-container');
+            const expandButton = expandCollapseContainer.querySelector('.expand-button');
+            const collapseButton = expandCollapseContainer.querySelector('.collapse-button');
+            const expandCollapseTooltip = expandCollapseContainer.querySelector('.fri-tooltip');
+
+            expandCollapseContainer.addEventListener('click', () => {
+                const isCollapsed = collapseButton.style.display !== 'none';
+                expandButton.style.display = isCollapsed ? 'flex' : 'none';
+                collapseButton.style.display = isCollapsed ? 'none' : 'flex';
+                expandCollapseTooltip.textContent = isCollapsed ? 'Collapse' : 'Expand';
+            });
+        }
+
+        // Initialize toggle buttons after DOM content is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeToggleButtons();
+        });
     </script>
 </body>
 
