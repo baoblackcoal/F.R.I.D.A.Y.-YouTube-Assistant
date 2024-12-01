@@ -1,7 +1,7 @@
 
 # Technical Architecture
 - **Chrome Extension**: Manifest V3
-- **Programming Language**: TypeScript (ES6, CommonJS)
+<!-- - **Programming Language**: TypeScript (ES6, CommonJS) -->
 - **Testing Frameworks**: Jest, Puppeteer
 - **Build Tool**: Webpack
 - **Linting Tool**: ESLint
