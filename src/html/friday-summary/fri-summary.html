@@ -117,7 +117,7 @@
         }
 
         .fri-summry-info {
-            font-size: 16px;
+            font-size: 15px;
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
@@ -379,10 +379,10 @@
         }
 
         // Function to create icon button
-        function createIconButton(icon, tooltip) {
+        function createIconButton(icon, tooltip, id) {
             return `
                 <div class="fri-icon-box">
-                    <button class="fri-icon-button">
+                    <button class="fri-icon-button" id="${id}">
                         ${ICONS[icon]}
                     </button>
                     <div class="fri-tooltip">${tooltip}</div>
@@ -399,12 +399,12 @@
             container.innerHTML = `
                 <div class="fri-icons-row">
                     <div class="fri-left-controls">
-                        ${createIconButton('paragraph', 'Generate Paragraph')}
+                        ${createIconButton('paragraph', 'Generate Paragraph', 'generate-paragraph-button')}
                         <div class="fri-icon-box play-pause-container">
-                            <button class="fri-icon-button play-button">
+                            <button class="fri-icon-button play-button" id="play-button">
                                 ${ICONS['play']}
                             </button>
-                            <button class="fri-icon-button pause-button" style="display: none;">
+                            <button class="fri-icon-button pause-button" style="display: none;" id="pause-button">
                                 ${ICONS['pause']}
                             </button>
                             <div class="fri-tooltip">Play</div>
@@ -416,8 +416,8 @@
                     </div>
 
                     <div class="fri-right-controls">
-                        ${createIconButton('more', 'More')}
-                        ${createIconButton('settings', 'Settings')}
+                        ${createIconButton('more', 'More', 'more-button')}
+                        ${createIconButton('settings', 'Settings', 'settings-button')}
                         <div class="fri-icon-box expand-collapse-container">
                             <button class="fri-icon-button expand-button" style="display: none;">
                                 ${ICONS['expand']}
@@ -510,6 +510,24 @@
                 // fri-summary-content-container show or hide
                 const summaryContentContainer = document.getElementById('fri-summary-content-container');
                 summaryContentContainer.style.display = isCollapsed ? 'none' : 'block';
+            });
+
+            // Generate Paragraph button click
+            const generateParagraphButton = document.getElementById('generate-paragraph-button');
+            generateParagraphButton.addEventListener('click', () => {
+                displayToast('Generate Paragraph');
+            });
+
+            // More button click
+            const moreButton = document.getElementById('more-button');
+            moreButton.addEventListener('click', () => {
+                displayToast('More');
+            });
+
+            // Settings button click
+            const settingsButton = document.getElementById('settings-button');
+            settingsButton.addEventListener('click', () => {
+                displayToast('Settings');
             });
         }
 
