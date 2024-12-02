@@ -20,7 +20,7 @@ body {
     background-color: #0F0F0F;
 }
 
-.fri-icons-row {
+.fri-summary-row {
     display: flex;
     gap: 1.5rem;
 }

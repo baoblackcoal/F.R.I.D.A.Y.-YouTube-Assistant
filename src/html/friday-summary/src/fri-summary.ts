@@ -1,5 +1,6 @@
 import { ICONS, LANGUAGES } from './svgs.js';
 import { ToastService, ThemeService, InfoTextService } from './test.js';
+import { FriSummaryPopup, PopupEvents } from './friSummaryPopup.js';
 
 interface FriSummaryState {
     isDark: boolean;
@@ -66,7 +67,7 @@ class FriSummary {
         container.id = 'fri-summry-container';
 
         container.innerHTML = `
-            <div class="fri-icons-row">
+            <div class="fri-summary-row">
                 <div class="fri-left-controls">
                     ${this.createIconButton('paragraph', 'Generate Paragraph', 'generate-button')}
                     <div class="fri-icon-box play-pause-container">
@@ -186,149 +187,35 @@ class FriSummary {
         settingsButton?.addEventListener('click', () => this.toastService.show('Settings'));
     }
 
-    private createPopupMenu(): HTMLElement {
-        const popupMenu = document.createElement('div');
-        popupMenu.className = 'fri-popup-menu';
-        
-        popupMenu.innerHTML = `
-            <div class="fri-popup-item" id="copy-item">
-                ${ICONS.copy}
-                Copy
-            </div>
-            <div class="fri-popup-item" id="download-item">
-                ${ICONS.download}
-                Download
-            </div>
-            <div class="fri-popup-item with-sub">
-                ${ICONS.language}
-                AI Language
-                <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(this.state.currentLanguage)}
-                </div>
-            </div>
-            <div class="fri-popup-item" id="auto-generate-item">
-                ${ICONS.paragraph}
-                Auto Generate
-                <div class="fri-toggle" id="auto-generate-toggle"></div>
-            </div>
-            <div class="fri-popup-item" id="auto-play-item">
-                ${ICONS.play}
-                Auto Play
-                <div class="fri-toggle" id="auto-play-toggle"></div>
-            </div>
-        `;
-
-        return popupMenu;
-    }
-
     private initializePopupMenu(): void {
         const moreButton = document.querySelector('.fri-right-controls .fri-icon-button');
         if (!moreButton) return;
 
-        const popupMenu = this.createPopupMenu();
-        moreButton.parentElement?.appendChild(popupMenu);
+        const popupEvents: PopupEvents = {
+            onLanguageChange: (language: string) => {
+                this.state.currentLanguage = language;
+                this.toastService.show(`Language changed to ${language}`);
+            },
+            onAutoGenerateChange: (enabled: boolean) => {
+                this.toastService.show(`Auto Generate: changed to ${enabled}`);
+            },
+            onAutoPlayChange: (enabled: boolean) => {
+                this.toastService.show(`Auto Play: changed to ${enabled}`);
+            },
+            onCopy: () => this.toastService.show('Copy'),
+            onDownload: () => this.toastService.show('Download')
+        };
 
-        this.initializePopupMenuEvents(moreButton as HTMLElement, popupMenu);
-        this.initializeLanguageSubmenu(popupMenu);
-        this.initializeToggleItems(popupMenu);
-        this.initializePopupEvents();
-    }
-
-    
-    private onAutoGenerateToggleChange(): void {
-        const toggle = document.getElementById('auto-generate-toggle');
-        if (!toggle) return;
-
-        const isChecked = toggle.classList.contains('active');
-        this.toastService.show(`Auto Generate: changed to ${isChecked}`);
-    }
-
-    private onAutoPlayToggleChange(): void {
-        const toggle = document.getElementById('auto-play-toggle');
-        if (!toggle) return;
-
-        const isChecked = toggle.classList.contains('active');
-        this.toastService.show(`Auto Play: changed to ${isChecked}`);
-    }
-
-    private initializePopupEvents(): void {
-        const copyItem = document.getElementById('copy-item');
-        const downloadItem = document.getElementById('download-item');
-        const autoGenerateToggle = document.getElementById('auto-generate-toggle');
-        const autoPlayToggle = document.getElementById('auto-play-toggle');
-        const autoGenerateItem = document.getElementById('auto-generate-item');
-        const autoPlayItem = document.getElementById('auto-play-item');
-
-        if (!copyItem || !downloadItem || !autoGenerateToggle || !autoPlayToggle || !autoGenerateItem || !autoPlayItem) return;
-
-        copyItem.addEventListener('click', () => this.toastService.show('Copy'));
-        downloadItem.addEventListener('click', () => this.toastService.show('Download'));
-
-        autoGenerateItem.addEventListener('click', () => {
-            this.onAutoGenerateToggleChange();
-        });
-        autoPlayItem.addEventListener('click', () => {
-            this.onAutoPlayToggleChange();
-        });
-
-        autoGenerateToggle.addEventListener('click', (e) => {
-            this.onAutoGenerateToggleChange();
-        });
-        autoPlayToggle.addEventListener('click', (e) => {
-            this.onAutoPlayToggleChange();
-        });
-    }
-
-    private initializePopupMenuEvents(moreButton: HTMLElement, popupMenu: HTMLElement): void {
-        moreButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isVisible = popupMenu.style.display === 'block';
-            popupMenu.style.display = isVisible ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!popupMenu.contains(e.target as Node) && e.target !== moreButton) {
-                popupMenu.style.display = 'none';
-            }
-        });
-    }
-
-    private initializeLanguageSubmenu(popupMenu: HTMLElement): void {
-        const languageSubmenu = popupMenu.querySelector('#language-submenu');
-        if (!languageSubmenu) return;
-
-        languageSubmenu.addEventListener('click', (e) => {
-            const languageItem = (e.target as HTMLElement).closest('.language-item');
-            if (!languageItem) return;
-
-            e.stopPropagation();
-            const newLanguage = languageItem.getAttribute('data-language');
-            if (!newLanguage || newLanguage === this.state.currentLanguage) return;
-
-            this.state.currentLanguage = newLanguage;
-            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.currentLanguage);
-
-            this.toastService.show(`Language changed to ${this.state.currentLanguage}`);
-        });
-    }
-
-    private initializeToggleItems(popupMenu: HTMLElement): void {
-        const toggleItems = ['auto-generate', 'auto-play'];
-
-        toggleItems.forEach(item => {
-            const toggleItem = popupMenu.querySelector(`#${item}-item`);
-            const toggle = popupMenu.querySelector(`#${item}-toggle`);
-            if (!toggleItem || !toggle) return;
-
-            toggleItem.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggle.classList.toggle('active');
-
-                document.dispatchEvent(new CustomEvent(`${item}Change`, {
-                    detail: { enabled: toggle.classList.contains('active') }
-                }));
-            });
-        });
+        const popup = new FriSummaryPopup(
+            { 
+                currentLanguage: this.state.currentLanguage,
+                isDark: this.state.isDark 
+            },
+            popupEvents,
+            this.toastService
+        );
+        
+        popup.init(moreButton as HTMLElement);
     }
 
     public init(): void {
