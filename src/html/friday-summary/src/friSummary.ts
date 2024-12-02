@@ -1,32 +1,57 @@
-import { ICONS, LANGUAGES } from './svgs.js';
+import { ICONS } from './svgs.js';
 import { ToastService, ThemeService, InfoTextService } from './test.js';
-import { FriSummaryPopup, PopupEvents } from './friSummaryPopup.js';
+import { FriSummaryPopup, IPopupEvents } from './friSummaryPopup.js';
 
-interface FriSummaryState {
-    isDark: boolean;
-    currentLanguage: string;
+
+export enum Language {
+    English = 'en',
+    SimplifiedChinese = 'zh_CN',
+    TraditionalChinese = 'zh_TW',
+    // French = 'French',
+    // German = 'German',
+    // Italian = 'Italian',
+    // Portuguese = 'Portuguese',
+    // Japanese = 'Japanese',
+    // Korean = 'Korean',
+    // Russian = 'Russian',
 }
+
+
+export interface IFriSummaryState {
+    isDark: boolean;
+    // currentLanguage: string;
+
+    autoGenerate: boolean;
+    autoPlay: boolean;
+    language: Language;
+}
+
 
 interface ToastOptions {
     duration?: number;
     className?: string;
 }
 
+class FriSummaryState implements IFriSummaryState  {
+    isDark: boolean = false;
+    // currentLanguage: string = LANGUAGES.ENGLISH;
+
+    autoGenerate: boolean = false;
+    autoPlay: boolean = true;
+    language: Language = Language.SimplifiedChinese;
+}
+
+const summaryState = new FriSummaryState();
+
 class FriSummary {
-    private state: FriSummaryState = {
-        isDark: false,
-        currentLanguage: LANGUAGES.ENGLISH
-    };
+    private state!: IFriSummaryState
 
     private toastService!: ToastService;
     private themeService!: ThemeService;
     private infoTextService!: InfoTextService;
 
     constructor() {
-        this.state = {
-            isDark: false,
-            currentLanguage: LANGUAGES.ENGLISH
-        };
+        this.state = summaryState;       
     }
 
     private initServices(): void {        
@@ -191,9 +216,9 @@ class FriSummary {
         const moreButton = document.querySelector('.fri-right-controls .fri-icon-button');
         if (!moreButton) return;
 
-        const popupEvents: PopupEvents = {
-            onLanguageChange: (language: string) => {
-                this.state.currentLanguage = language;
+        const popupEvents: IPopupEvents = {
+            onLanguageChange: (language: Language) => {
+                this.state.language = language;
                 this.toastService.show(`Language changed to ${language}`);
             },
             onAutoGenerateChange: (enabled: boolean) => {
@@ -207,10 +232,7 @@ class FriSummary {
         };
 
         const popup = new FriSummaryPopup(
-            { 
-                currentLanguage: this.state.currentLanguage,
-                isDark: this.state.isDark 
-            },
+            this.state,
             popupEvents,
             this.toastService
         );

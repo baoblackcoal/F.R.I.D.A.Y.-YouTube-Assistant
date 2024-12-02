@@ -1,13 +1,15 @@
-import { ICONS, LANGUAGES } from './svgs.js';
+import { Language } from './friSummary.js';
+import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
+import { IFriSummaryState } from './friSummary.js';
 
 export interface PopupState {
     currentLanguage: string;
     isDark: boolean;
 }
 
-export interface PopupEvents {
-    onLanguageChange: (language: string) => void;
+export interface IPopupEvents {
+    onLanguageChange: (language: Language) => void;
     onAutoGenerateChange: (enabled: boolean) => void;
     onAutoPlayChange: (enabled: boolean) => void;
     onCopy: () => void;
@@ -15,14 +17,22 @@ export interface PopupEvents {
 }
 
 export class FriSummaryPopup {
-    private state: PopupState;
+    private state: IFriSummaryState;
     private popupMenu: HTMLElement;
     private toastService: ToastService;
-    private events: PopupEvents;
+    private events: IPopupEvents;
+    
+    private readonly languageLabels: Record<Language, string> = {
+        [Language.English]: 'English',
+        [Language.SimplifiedChinese]: '简体中文',
+        [Language.TraditionalChinese]: '繁體中文'
+    };
+
 
     constructor(
-        initialState: PopupState,
-        events: PopupEvents,
+        initialState: IFriSummaryState,
+
+        events: IPopupEvents,
         toastService: ToastService
     ) {
         this.state = initialState;
@@ -31,16 +41,10 @@ export class FriSummaryPopup {
         this.popupMenu = this.createPopupMenu();
     }
 
-    private createLanguageMenuItems(selectedLanguage: string): string {
-        const languages = [
-            LANGUAGES.ENGLISH,
-            LANGUAGES.SIMPLE_CHINESE,
-            LANGUAGES.TRAN_CHINESE
-        ];
-        
-        return languages.map(lang => `
-            <div class="fri-popup-item language-item" data-language="${lang}">
-                ${lang === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
+    private createLanguageMenuItems(selectedLanguage: Language): string {
+        return Object.entries(this.languageLabels).map(([key, lang]) => `
+            <div class="fri-popup-item language-item" data-language="${key}">
+                ${key === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
                 <span style="margin-left: 4px;">${lang}</span>
             </div>
         `).join('');
@@ -63,7 +67,7 @@ export class FriSummaryPopup {
                 ${ICONS.language}
                 AI Language
                 <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(this.state.currentLanguage)}
+                    ${this.createLanguageMenuItems(this.state.language)}
                 </div>
             </div>
             <div class="fri-popup-item" id="auto-generate-item">
@@ -83,10 +87,25 @@ export class FriSummaryPopup {
 
     public init(moreButton: HTMLElement): void {
         moreButton.parentElement?.appendChild(this.popupMenu);
+        this.loadState();
         this.initializePopupMenuEvents(moreButton);
         this.initializeLanguageSubmenu();
         this.initializeToggleItems();
         this.initializePopupEvents();
+    }
+
+    private loadState(): void {
+        const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
+        const autoGenerateToggle = this.popupMenu.querySelector('#auto-generate-toggle');
+        const autoPlayToggle = this.popupMenu.querySelector('#auto-play-toggle');
+        if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle) return;
+
+        // set language submenu items checked
+        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.language);
+
+        // set toggle items checked
+        autoGenerateToggle.classList.toggle('active', this.state.autoGenerate);
+        autoPlayToggle.classList.toggle('active', this.state.autoPlay);
     }
 
     private initializePopupMenuEvents(moreButton: HTMLElement): void {
@@ -112,11 +131,11 @@ export class FriSummaryPopup {
             if (!languageItem) return;
 
             e.stopPropagation();
-            const newLanguage = languageItem.getAttribute('data-language');
-            if (!newLanguage || newLanguage === this.state.currentLanguage) return;
+            const newLanguage = languageItem.getAttribute('data-language') as Language;
+            if (!newLanguage || newLanguage === this.state.language) return;
 
-            this.state.currentLanguage = newLanguage;
-            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.currentLanguage);
+            this.state.language = newLanguage;
+            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.language);
             this.events.onLanguageChange(newLanguage);
         });
     }
