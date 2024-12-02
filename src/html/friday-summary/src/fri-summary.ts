@@ -1,4 +1,5 @@
 import { ICONS, LANGUAGES } from './svgs.js';
+import { ToastService, ThemeService, InfoTextService } from './test.js';
 
 interface FriSummaryState {
     isDark: boolean;
@@ -15,6 +16,23 @@ class FriSummary {
         isDark: false,
         currentLanguage: LANGUAGES.ENGLISH
     };
+
+    private toastService!: ToastService;
+    private themeService!: ThemeService;
+    private infoTextService!: InfoTextService;
+
+    constructor() {
+        this.state = {
+            isDark: false,
+            currentLanguage: LANGUAGES.ENGLISH
+        };
+    }
+
+    private initServices(): void {        
+        this.toastService = new ToastService();
+        this.themeService = new ThemeService();
+        this.infoTextService = new InfoTextService();
+    }
 
     private createLanguageMenuItems(selectedLanguage: string): string {
         const languages = [
@@ -50,7 +68,7 @@ class FriSummary {
         container.innerHTML = `
             <div class="fri-icons-row">
                 <div class="fri-left-controls">
-                    ${this.createIconButton('paragraph', 'Generate Paragraph', 'generate-paragraph-button')}
+                    ${this.createIconButton('paragraph', 'Generate Paragraph', 'generate-button')}
                     <div class="fri-icon-box play-pause-container">
                         <button class="fri-icon-button play-button" id="play-button">
                             ${ICONS['play']}
@@ -159,13 +177,13 @@ class FriSummary {
     }
 
     private initializeActionButtons(): void {
-        const generateButton = document.getElementById('generate-paragraph-button');
+        const generateButton = document.getElementById('generate-button');
         const moreButton = document.getElementById('more-button');
         const settingsButton = document.getElementById('settings-button');
 
-        generateButton?.addEventListener('click', () => this.displayToast('Generate Paragraph'));
-        moreButton?.addEventListener('click', () => this.displayToast('More'));
-        settingsButton?.addEventListener('click', () => this.displayToast('Settings'));
+        generateButton?.addEventListener('click', () => this.toastService.show('Generate Paragraph'));
+        moreButton?.addEventListener('click', () => this.toastService.show('More'));
+        settingsButton?.addEventListener('click', () => this.toastService.show('Settings'));
     }
 
     private createPopupMenu(): HTMLElement {
@@ -213,6 +231,52 @@ class FriSummary {
         this.initializePopupMenuEvents(moreButton as HTMLElement, popupMenu);
         this.initializeLanguageSubmenu(popupMenu);
         this.initializeToggleItems(popupMenu);
+        this.initializePopupEvents();
+    }
+
+    
+    private onAutoGenerateToggleChange(): void {
+        const toggle = document.getElementById('auto-generate-toggle');
+        if (!toggle) return;
+
+        const isChecked = toggle.classList.contains('active');
+        this.toastService.show(`Auto Generate: changed to ${isChecked}`);
+    }
+
+    private onAutoPlayToggleChange(): void {
+        const toggle = document.getElementById('auto-play-toggle');
+        if (!toggle) return;
+
+        const isChecked = toggle.classList.contains('active');
+        this.toastService.show(`Auto Play: changed to ${isChecked}`);
+    }
+
+    private initializePopupEvents(): void {
+        const copyItem = document.getElementById('copy-item');
+        const downloadItem = document.getElementById('download-item');
+        const autoGenerateToggle = document.getElementById('auto-generate-toggle');
+        const autoPlayToggle = document.getElementById('auto-play-toggle');
+        const autoGenerateItem = document.getElementById('auto-generate-item');
+        const autoPlayItem = document.getElementById('auto-play-item');
+
+        if (!copyItem || !downloadItem || !autoGenerateToggle || !autoPlayToggle || !autoGenerateItem || !autoPlayItem) return;
+
+        copyItem.addEventListener('click', () => this.toastService.show('Copy'));
+        downloadItem.addEventListener('click', () => this.toastService.show('Download'));
+
+        autoGenerateItem.addEventListener('click', () => {
+            this.onAutoGenerateToggleChange();
+        });
+        autoPlayItem.addEventListener('click', () => {
+            this.onAutoPlayToggleChange();
+        });
+
+        autoGenerateToggle.addEventListener('click', (e) => {
+            this.onAutoGenerateToggleChange();
+        });
+        autoPlayToggle.addEventListener('click', (e) => {
+            this.onAutoPlayToggleChange();
+        });
     }
 
     private initializePopupMenuEvents(moreButton: HTMLElement, popupMenu: HTMLElement): void {
@@ -244,9 +308,7 @@ class FriSummary {
             this.state.currentLanguage = newLanguage;
             languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.currentLanguage);
 
-            document.dispatchEvent(new CustomEvent('languageChange', {
-                detail: { language: this.state.currentLanguage }
-            }));
+            this.toastService.show(`Language changed to ${this.state.currentLanguage}`);
         });
     }
 
@@ -269,52 +331,6 @@ class FriSummary {
         });
     }
 
-    private setFriSummryInfoText(text: string): void {
-        const infoText = document.getElementById('fri-summary-info-text');
-        if (!infoText) return;
-
-        infoText.classList.add('fade-out');
-        
-        setTimeout(() => {
-            infoText.textContent = text;
-            infoText.offsetHeight; // Force reflow
-            infoText.classList.remove('fade-out');
-        }, 300);
-    }
-
-    
-    private displayToast(message: string, options: ToastOptions = {}): void {
-        const toast = document.createElement('div');
-        toast.className = `fri-toast ${options.className || ''}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, options.duration || 3000);
-    }
-
-    private setFriSummryInfoTextDemo(): void {
-        const texts = ['随时等候吩咐。', '正在生成总结...', '正在翻译字幕...'];
-        let index = 0;
-        setInterval(() => {
-            this.setFriSummryInfoText(texts[index]);
-            index = (index + 1) % texts.length;
-        }, 2000);
-    }
-
-    private initializeThemeToggle(): void {
-        const themeButton = document.getElementById('themeButton');
-        const friSummryContainer = document.getElementById('fri-summry-container');
-        if (!themeButton || !friSummryContainer) return;
-
-        themeButton.addEventListener('click', () => {
-            this.state.isDark = !this.state.isDark;
-            friSummryContainer.classList.toggle('dark');
-            themeButton.setAttribute('data-lucide', this.state.isDark ? 'sun-medium' : 'moon');
-        });
-    }
-
     public init(): void {
         const root = document.getElementById('root');
         if (!root) return;
@@ -326,8 +342,8 @@ class FriSummary {
             this.initializeToggleButtons();
             this.initializePopupMenu();
 
-            this.setFriSummryInfoTextDemo();
-            this.initializeThemeToggle();
+            this.initServices();
+            this.infoTextService.startDemo();
         });
     }
 }
