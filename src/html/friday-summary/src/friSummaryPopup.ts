@@ -1,7 +1,7 @@
-import { Language } from './friSummary.js';
+import { Language } from './friSummaryState.js';
 import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
-import { IFriSummaryState } from './friSummary.js';
+import { IFriSummaryState } from './friSummaryState.js';
 
 export interface PopupState {
     currentLanguage: string;
@@ -67,7 +67,7 @@ export class FriSummaryPopup {
                 ${ICONS.language}
                 AI Language
                 <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(this.state.language)}
+                    ${this.createLanguageMenuItems(this.state.getLanguage())}
                 </div>
             </div>
             <div class="fri-popup-item" id="auto-generate-item">
@@ -101,11 +101,11 @@ export class FriSummaryPopup {
         if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle) return;
 
         // set language submenu items checked
-        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.language);
+        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getLanguage());
 
         // set toggle items checked
-        autoGenerateToggle.classList.toggle('active', this.state.autoGenerate);
-        autoPlayToggle.classList.toggle('active', this.state.autoPlay);
+        autoGenerateToggle.classList.toggle('active', this.state.getAutoGenerate());
+        autoPlayToggle.classList.toggle('active', this.state.getAutoPlay());
     }
 
     private initializePopupMenuEvents(moreButton: HTMLElement): void {
@@ -132,10 +132,10 @@ export class FriSummaryPopup {
 
             e.stopPropagation();
             const newLanguage = languageItem.getAttribute('data-language') as Language;
-            if (!newLanguage || newLanguage === this.state.language) return;
+            if (!newLanguage || newLanguage === this.state.getLanguage()) return;
 
-            this.state.language = newLanguage;
-            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.language);
+            this.state.setLanguage(newLanguage);
+            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getLanguage());
             this.events.onLanguageChange(newLanguage);
         });
     }

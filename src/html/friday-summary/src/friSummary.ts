@@ -1,47 +1,8 @@
 import { ICONS } from './svgs.js';
 import { ToastService, ThemeService, InfoTextService } from './test.js';
 import { FriSummaryPopup, IPopupEvents } from './friSummaryPopup.js';
+import { IFriSummaryState, summaryState, Language } from './friSummaryState.js';
 
-
-export enum Language {
-    English = 'en',
-    SimplifiedChinese = 'zh_CN',
-    TraditionalChinese = 'zh_TW',
-    // French = 'French',
-    // German = 'German',
-    // Italian = 'Italian',
-    // Portuguese = 'Portuguese',
-    // Japanese = 'Japanese',
-    // Korean = 'Korean',
-    // Russian = 'Russian',
-}
-
-
-export interface IFriSummaryState {
-    isDark: boolean;
-    // currentLanguage: string;
-
-    autoGenerate: boolean;
-    autoPlay: boolean;
-    language: Language;
-}
-
-
-interface ToastOptions {
-    duration?: number;
-    className?: string;
-}
-
-class FriSummaryState implements IFriSummaryState  {
-    isDark: boolean = false;
-    // currentLanguage: string = LANGUAGES.ENGLISH;
-
-    autoGenerate: boolean = false;
-    autoPlay: boolean = true;
-    language: Language = Language.SimplifiedChinese;
-}
-
-const summaryState = new FriSummaryState();
 
 class FriSummary {
     private state!: IFriSummaryState
@@ -58,21 +19,6 @@ class FriSummary {
         this.toastService = new ToastService();
         this.themeService = new ThemeService();
         this.infoTextService = new InfoTextService();
-    }
-
-    private createLanguageMenuItems(selectedLanguage: string): string {
-        const languages = [
-            LANGUAGES.ENGLISH,
-            LANGUAGES.SIMPLE_CHINESE,
-            LANGUAGES.TRAN_CHINESE
-        ];
-        
-        return languages.map(lang => `
-            <div class="fri-popup-item language-item" data-language="${lang}">
-                ${lang === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
-                <span style="margin-left: 4px;">${lang}</span>
-            </div>
-        `).join('');
     }
 
     private createIconButton(icon: string, tooltip: string, id: string): string {
@@ -218,13 +164,15 @@ class FriSummary {
 
         const popupEvents: IPopupEvents = {
             onLanguageChange: (language: Language) => {
-                this.state.language = language;
+                summaryState.setLanguage(language);
                 this.toastService.show(`Language changed to ${language}`);
             },
             onAutoGenerateChange: (enabled: boolean) => {
+                summaryState.setAutoGenerate(enabled);
                 this.toastService.show(`Auto Generate: changed to ${enabled}`);
             },
             onAutoPlayChange: (enabled: boolean) => {
+                summaryState.setAutoPlay(enabled);
                 this.toastService.show(`Auto Play: changed to ${enabled}`);
             },
             onCopy: () => this.toastService.show('Copy'),
