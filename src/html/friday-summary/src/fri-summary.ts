@@ -168,17 +168,6 @@ class FriSummary {
         settingsButton?.addEventListener('click', () => this.displayToast('Settings'));
     }
 
-    private displayToast(message: string, options: ToastOptions = {}): void {
-        const toast = document.createElement('div');
-        toast.className = `fri-toast ${options.className || ''}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, options.duration || 3000);
-    }
-
     private createPopupMenu(): HTMLElement {
         const popupMenu = document.createElement('div');
         popupMenu.className = 'fri-popup-menu';
@@ -291,6 +280,18 @@ class FriSummary {
             infoText.offsetHeight; // Force reflow
             infoText.classList.remove('fade-out');
         }, 300);
+    }
+
+    
+    private displayToast(message: string, options: ToastOptions = {}): void {
+        const toast = document.createElement('div');
+        toast.className = `fri-toast ${options.className || ''}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, options.duration || 3000);
     }
 
     private setFriSummryInfoTextDemo(): void {
