@@ -25,10 +25,6 @@ export class ToastService implements IToastService {
         toast.className = `fri-toast ${options.className || ''}`;
         toast.textContent = message;
         document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, options.duration || 3000);
     }
 }
 
