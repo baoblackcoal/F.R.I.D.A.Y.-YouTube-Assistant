@@ -1,0 +1,9 @@
+{
+    "play": {
+        "message": "播放"
+    },
+    "pause": {
+        "message": "暂停"
+    }
+
+}

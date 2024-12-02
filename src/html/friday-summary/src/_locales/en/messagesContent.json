@@ -1,0 +1,9 @@
+{
+    "play": {
+        "message": "Play"
+    },
+    "pause": {
+        "message": "Pause"
+    }
+
+}

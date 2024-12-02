@@ -2,6 +2,7 @@ import { Language } from './friSummaryState.js';
 import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
 import { IFriSummaryState } from './friSummaryState.js';
+import { i18nService } from './i18nService.js';
 
 export interface IPopupEvents {
     onLanguageChange: (language: Language) => void;
@@ -62,7 +63,7 @@ export class FriSummaryPopup {
                 ${ICONS.language}
                 AI Language
                 <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(this.state.getLanguage())}
+                    ${this.createLanguageMenuItems(this.state.getSummaryLanguage())}
                 </div>
             </div>
             <div class="fri-popup-item" id="auto-generate-item">
@@ -97,7 +98,7 @@ export class FriSummaryPopup {
         if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle) return;
 
         // set language submenu items checked
-        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getLanguage());
+        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getSummaryLanguage());
 
         // set toggle items checked
         autoGenerateToggle.classList.toggle('active', this.state.getAutoGenerate());
@@ -118,21 +119,32 @@ export class FriSummaryPopup {
         });
     }
 
+    private async handleLanguageChange(newLanguage: Language): Promise<void> {
+        try {
+            const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
+            if (languageSubmenu) {
+                languageSubmenu.innerHTML = this.createLanguageMenuItems(newLanguage);
+            }
+            this.events.onLanguageChange(newLanguage);
+        } catch (error) {
+            console.error('Failed to change language:', error);
+            this.toastService.show('Failed to change language');
+        }
+    }
+
     private initializeLanguageSubmenu(): void {
         const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
         if (!languageSubmenu) return;
 
-        languageSubmenu.addEventListener('click', (e) => {
+        languageSubmenu.addEventListener('click', async (e) => {
             const languageItem = (e.target as HTMLElement).closest('.language-item');
             if (!languageItem) return;
 
             e.stopPropagation();
             const newLanguage = languageItem.getAttribute('data-language') as Language;
-            if (!newLanguage || newLanguage === this.state.getLanguage()) return;
+            if (!newLanguage || newLanguage === this.state.getSummaryLanguage()) return;
 
-            this.state.setLanguage(newLanguage);
-            languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getLanguage());
-            this.events.onLanguageChange(newLanguage);
+            await this.handleLanguageChange(newLanguage);
         });
     }
 

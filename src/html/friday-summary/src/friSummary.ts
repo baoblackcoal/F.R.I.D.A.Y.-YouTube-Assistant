@@ -1,7 +1,8 @@
 import { ICONS } from './svgs.js';
-import { ToastService, ThemeService, InfoTextService } from './test.js';
+import { ToastService, ThemeService, InfoTextService, LanguageService } from './test.js';
 import { FriSummaryPopup, IPopupEvents } from './friSummaryPopup.js';
 import { IFriSummaryState, summaryState, Language } from './friSummaryState.js';
+import { i18nService } from './i18nService.js';
 
 
 class FriSummary {
@@ -10,15 +11,17 @@ class FriSummary {
     private toastService!: ToastService;
     private themeService!: ThemeService;
     private infoTextService!: InfoTextService;
-
+    private languageService!: LanguageService;
     constructor() {
-        this.state = summaryState;       
+        this.state = summaryState;    
+        i18nService.setLanguage(this.state.getDisplayLanguage());
     }
 
     private initServices(): void {        
         this.toastService = new ToastService();
         this.themeService = new ThemeService();
         this.infoTextService = new InfoTextService();
+        this.languageService = new LanguageService();
     }
 
     private createIconButton(icon: string, tooltip: string, id: string): string {
@@ -162,7 +165,7 @@ class FriSummary {
 
         const popupEvents: IPopupEvents = {
             onLanguageChange: (language: Language) => {
-                summaryState.setLanguage(language);
+                summaryState.setSummaryLanguage(language);
                 this.toastService.show(`Language changed to ${language}`);
             },
             onAutoGenerateChange: (enabled: boolean) => {
@@ -186,6 +189,20 @@ class FriSummary {
         popup.init(moreButton as HTMLElement);
     }
 
+    private updateLanguageTexts(): void {
+        const playTooltip = document.querySelector('.play-pause-container .fri-tooltip');
+        if (playTooltip) {
+            const isPlaying = (document.querySelector('.play-button') as HTMLElement).style.display !== 'none';
+            playTooltip.textContent = i18nService.getMessage(isPlaying ? 'play' : 'pause');
+        }
+    }
+
+    private initializeLanguageHandler(): void {
+        window.addEventListener('languageChanged', () => {
+            this.updateLanguageTexts();
+        });
+    }
+
     public init(): void {
         const root = document.getElementById('root');
         if (!root) return;
@@ -196,6 +213,8 @@ class FriSummary {
             this.initializeButtonEffects();
             this.initializeToggleButtons();
             this.initializePopupMenu();
+            this.initializeLanguageHandler();
+            this.updateLanguageTexts();
 
             this.initServices();
             this.infoTextService.startDemo();

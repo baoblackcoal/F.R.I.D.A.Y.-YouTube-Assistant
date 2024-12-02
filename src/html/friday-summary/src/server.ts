@@ -10,6 +10,7 @@ const port: number = parseInt(process.env.PORT || '3000', 10);
 
 // Serve static files from the dist directory
 app.use(express.static(join(__dirname, '../')));
+app.use(express.static(join(__dirname, '../dist/')));
 
 // Route for the main page
 app.get('/', (req, res) => {

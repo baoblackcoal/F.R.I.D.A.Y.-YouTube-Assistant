@@ -1,3 +1,6 @@
+import { Language } from "./friSummaryState.js";
+import { i18nService } from "./i18nService.js";
+
 // Interfaces for better abstraction and testability
 interface IToastService {
     show(message: string, options?: ToastOptions): void;
@@ -16,6 +19,10 @@ interface IInfoTextService {
 interface ToastOptions {
     duration?: number;
     className?: string;
+}
+
+interface ILanguageService {
+    setLanguage(language: Language): void;
 }
 
 // Implementation of Toast Service
@@ -56,6 +63,29 @@ export class ThemeService implements IThemeService {
 
     public isDark(): boolean {
         return this.darkMode;
+    }
+}
+
+// Implementation of Language Service
+export class LanguageService implements ILanguageService {
+    private language: Language = Language.English;
+    private languageButton: HTMLElement | null;
+
+    constructor() {
+        this.languageButton = document.getElementById('languageButton');
+        this.initialize();
+    }
+
+    private initialize(): void {
+        if (!this.languageButton) return;
+
+        this.languageButton.addEventListener('click', () => this.setLanguage());
+    }
+
+    public setLanguage(): void {
+        this.language = this.language === Language.English ? Language.SimplifiedChinese : Language.English;
+        this.languageButton!.textContent = this.language === Language.English ? 'English' : '简体中文';
+        i18nService.setLanguage(this.language);
     }
 }
 

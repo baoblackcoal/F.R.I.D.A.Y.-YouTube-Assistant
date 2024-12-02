@@ -12,15 +12,18 @@ export interface IFriSummaryState {
     setAutoGenerate(value: boolean): void;
     getAutoPlay(): boolean;
     setAutoPlay(value: boolean): void;
-    getLanguage(): Language;
-    setLanguage(value: Language): void;
+    getSummaryLanguage(): Language;
+    setSummaryLanguage(value: Language): void;
+    getDisplayLanguage(): Language;
+    setDisplayLanguage(value: Language): void;
 }
 
 
 class FriSummaryState implements IFriSummaryState {
     private autoGenerate: boolean = true;
     private autoPlay: boolean = false;
-    private language: Language = Language.TraditionalChinese;
+    private summaryLanguage: Language = Language.TraditionalChinese;
+    private displayLanguage: Language = Language.TraditionalChinese;
 
     private static instance: FriSummaryState;
 
@@ -53,13 +56,21 @@ class FriSummaryState implements IFriSummaryState {
         this.autoPlay = value;
     }
 
-     getLanguage(): Language {
-        return this.language;
+     getSummaryLanguage(): Language {
+        return this.summaryLanguage;
     }
 
-     setLanguage(value: Language): void {
-        this.language = value;
+     setSummaryLanguage(value: Language): void {
+        this.summaryLanguage = value;
     }   
+
+    getDisplayLanguage(): Language {
+        return this.displayLanguage;
+    }
+
+    setDisplayLanguage(value: Language): void {
+        this.displayLanguage = value;
+    }
 }
 
 
