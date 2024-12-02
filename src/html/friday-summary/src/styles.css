@@ -1,3 +1,31 @@
+:root {
+    /* Light theme (default) */
+    --fri-background: rgba(0, 0, 0, 0.05);
+    --fri-text: #0F0F0F;
+    --fri-border: rgba(0, 0, 0, 0.1);
+    --fri-icon-color: #606060;
+    --fri-hover-bg: rgba(0, 0, 0, 0.05);
+    --fri-active-bg: rgba(0, 0, 0, 0.1);
+    --fri-popup-bg: white;
+    --fri-popup-shadow: rgba(0, 0, 0, 0.3);
+    --fri-status-border: rgba(0, 0, 0, 0.08);
+    --fri-content-border: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] {
+    /* Dark theme */
+    --fri-background: #0F0F0F;
+    --fri-text: #FFFFFF;
+    --fri-border: rgba(255, 255, 255, 0.1);
+    --fri-icon-color: #AAAAAA;
+    --fri-hover-bg: rgba(255, 255, 255, 0.05);
+    --fri-active-bg: rgba(255, 255, 255, 0.1);
+    --fri-popup-bg: #282828;
+    --fri-popup-shadow: rgba(0, 0, 0, 0.5);
+    --fri-status-border: rgba(255, 255, 255, 0.1);
+    --fri-content-border: rgba(255, 255, 255, 0.1);
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -9,11 +37,12 @@ body {
 
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--fri-background);
     border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--fri-border);
     width: -webkit-fill-available;
     margin: 8px 12px 0px 12px;
+    color: var(--fri-text);
 }
 
 .dark {
@@ -41,27 +70,15 @@ body {
     cursor: pointer;
     padding: 0;
     transition: background-color 0.15s;
-    color: #606060;
-}
-
-.dark .fri-icon-button {
-    color: #AAAAAA;
+    color: var(--fri-icon-color);
 }
 
 .fri-icon-button:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dark .fri-icon-button:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--fri-hover-bg);
 }
 
 .fri-icon-button:active {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.dark .fri-icon-button:active {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--fri-active-bg);
 }
 
 .fri-tooltip {

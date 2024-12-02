@@ -86,13 +86,11 @@ class FriSummary {
         const buttons = document.querySelectorAll('.fri-icon-button');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
-                (button as HTMLElement).style.backgroundColor = 
-                    this.state.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+                (button as HTMLElement).style.backgroundColor = 'var(--fri-hover-bg)';
             });
 
             button.addEventListener('mousedown', () => {
-                (button as HTMLElement).style.backgroundColor = 
-                    this.state.isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)';
+                (button as HTMLElement).style.backgroundColor = 'var(--fri-active-bg)';
             });
 
             button.addEventListener('mouseup', () => {

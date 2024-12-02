@@ -8,7 +8,6 @@ export enum Language {
 
 
 export interface IFriSummaryState {
-    isDark: boolean;
     getAutoGenerate(): boolean;
     setAutoGenerate(value: boolean): void;
     getAutoPlay(): boolean;
@@ -19,7 +18,6 @@ export interface IFriSummaryState {
 
 
 class FriSummaryState implements IFriSummaryState {
-    isDark: boolean = false;
     private autoGenerate: boolean = true;
     private autoPlay: boolean = false;
     private language: Language = Language.TraditionalChinese;

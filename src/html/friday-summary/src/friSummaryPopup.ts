@@ -3,11 +3,6 @@ import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
 import { IFriSummaryState } from './friSummaryState.js';
 
-export interface PopupState {
-    currentLanguage: string;
-    isDark: boolean;
-}
-
 export interface IPopupEvents {
     onLanguageChange: (language: Language) => void;
     onAutoGenerateChange: (enabled: boolean) => void;
@@ -92,6 +87,7 @@ export class FriSummaryPopup {
         this.initializeLanguageSubmenu();
         this.initializeToggleItems();
         this.initializePopupEvents();
+        this.initializeButtonEffects();
     }
 
     private loadState(): void {
@@ -165,5 +161,26 @@ export class FriSummaryPopup {
 
         copyItem?.addEventListener('click', () => this.events.onCopy());
         downloadItem?.addEventListener('click', () => this.events.onDownload());
+    }
+
+    private initializeButtonEffects(): void {
+        const buttons = document.querySelectorAll('.fri-icon-button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                (button as HTMLElement).style.backgroundColor = 'var(--fri-hover-bg)';
+            });
+
+            button.addEventListener('mousedown', () => {
+                (button as HTMLElement).style.backgroundColor = 'var(--fri-active-bg)';
+            });
+
+            button.addEventListener('mouseup', () => {
+                (button as HTMLElement).style.backgroundColor = 'transparent';
+            });
+
+            button.addEventListener('mouseleave', () => {
+                (button as HTMLElement).style.backgroundColor = 'transparent';
+            });
+        });
     }
 } 
