@@ -4,6 +4,29 @@
     },
     "summary-pause": {
         "message": "Pause"
+    },
+    "summary-ai-generate": {
+        "message": "AI Generate"
+    },
+    "summary-expand": {
+        "message": "Expand"
+    },
+    "summary-collapse": {
+        "message": "Collapse"
+    },
+    "summary-more": {
+        "message": "More"
+    },
+    "summary-settings": {
+        "message": "Settings"
+    },
+    "summary-friday-waiting": {
+        "message": "Always ready to serve."
+    },
+    "summary-friday-generating": {
+        "message": "Generating summary..."
+    },
+    "summary-friday-translating": {
+        "message": "Translating subtitles..."
     }
-
 }

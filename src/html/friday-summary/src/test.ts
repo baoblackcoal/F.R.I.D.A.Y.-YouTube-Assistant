@@ -112,11 +112,12 @@ export class InfoTextService implements IInfoTextService {
     }
 
     public startDemo(): void {
-        const texts = ['随时等候吩咐。', '正在生成总结...', '正在翻译字幕...'];
+        // const texts = ['随时等候吩咐。', '正在生成总结...', '正在翻译字幕...'];
+        const texts = ['summary-friday-waiting', 'summary-friday-generating', 'summary-friday-translating'];
         let index = 0;
 
         this.intervalId = window.setInterval(() => {
-            this.setText(texts[index]);
+            this.setText(i18nService.getMessage(texts[index]));
             index = (index + 1) % texts.length;
         }, 2000);
     }

@@ -4,6 +4,29 @@
     },
     "summary-pause": {
         "message": "暂停"
+    },
+    "summary-ai-generate": {
+        "message": "AI 生成"
+    },
+    "summary-expand": {
+        "message": "展开"
+    },
+    "summary-collapse": {
+        "message": "折叠"
+    },
+    "summary-more": {
+        "message": "更多"
+    },
+    "summary-settings": {
+        "message": "设置"
+    },
+    "summary-friday-waiting": {
+        "message": "随时等候吩咐。"
+    },
+    "summary-friday-generating": {
+        "message": "正在生成总结..."
+    },
+    "summary-friday-translating": {
+        "message": "正在翻译字幕..."
     }
-
 }
