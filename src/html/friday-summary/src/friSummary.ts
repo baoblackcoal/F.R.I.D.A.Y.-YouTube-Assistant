@@ -193,7 +193,7 @@ class FriSummary {
         const playTooltip = document.querySelector('.play-pause-container .fri-tooltip');
         if (playTooltip) {
             const isPlaying = (document.querySelector('.play-button') as HTMLElement).style.display !== 'none';
-            playTooltip.textContent = i18nService.getMessage(isPlaying ? 'play' : 'pause');
+            playTooltip.textContent = i18nService.getMessage(isPlaying ? 'summary-play' : 'summary-pause');
         }
     }
 

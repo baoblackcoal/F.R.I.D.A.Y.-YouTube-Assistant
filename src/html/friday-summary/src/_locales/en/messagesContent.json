@@ -1,8 +1,8 @@
 {
-    "play": {
+    "summary-play": {
         "message": "Play"
     },
-    "pause": {
+    "summary-pause": {
         "message": "Pause"
     }
 

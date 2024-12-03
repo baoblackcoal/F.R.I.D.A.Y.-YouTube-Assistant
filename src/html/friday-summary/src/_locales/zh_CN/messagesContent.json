@@ -1,8 +1,8 @@
 {
-    "play": {
+    "summary-play": {
         "message": "播放"
     },
-    "pause": {
+    "summary-pause": {
         "message": "暂停"
     }
 

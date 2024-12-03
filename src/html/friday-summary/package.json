@@ -5,10 +5,12 @@
     "main": "dist/server.js",
     "type": "module",
     "scripts": {
+        "copy-locales": "copyfiles -u 1 \"src/_locales/**/*\" dist/",
         "start": "node dist/server.js",
         "dev": "concurrently \"npm run watch\" \"npm run serve\"",
         "build": "tsc",
-        "watch": "tsc -w",
+        "watch": "concurrently \"tsc -w\" \"npm run watch-locales\"",
+        "watch-locales": "nodemon --watch src/_locales -e json --exec \"npm run copy-locales\"",
         "serve": "nodemon dist/server.js"
     },
     "dependencies": {
@@ -18,13 +20,15 @@
         "@types/express": "^4.17.21",
         "@types/node": "^20.11.0",
         "concurrently": "^8.2.2",
+        "copyfiles": "^2.4.1",
         "nodemon": "^2.0.22",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
     },
     "nodemonConfig": {
-        "watch": ["dist"],
+        "watch": [
+            "dist"
+        ],
         "ext": "js,json"
     }
 }
-  
