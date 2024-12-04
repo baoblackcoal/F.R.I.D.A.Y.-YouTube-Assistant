@@ -13,7 +13,7 @@ interface IThemeService {
 
 interface IInfoTextService {
     startDemo(): void;
-    setText(text: string): void;
+    // setText(text: string): void;
 }
 
 interface ToastOptions {
@@ -93,31 +93,19 @@ export class LanguageService implements ILanguageService {
 export class InfoTextService implements IInfoTextService {
     private infoTextElement: HTMLElement | null = null;
     private intervalId: number | null = null;
+    private setFriInfoText: (text: string) => void;
 
-    constructor() {
+    constructor(setFriInfoText: (text: string) => void) {
+        this.setFriInfoText = setFriInfoText;
         this.infoTextElement = document.getElementById('fri-summary-info-text');
     }
 
-    public setText(text: string): void {
-        if (!this.infoTextElement) return;
-
-        this.infoTextElement.classList.add('fade-out');
-        
-        setTimeout(() => {
-            if (!this.infoTextElement) return;
-            this.infoTextElement.textContent = text;
-            this.infoTextElement.offsetHeight; // Force reflow
-            this.infoTextElement.classList.remove('fade-out');
-        }, 300);
-    }
-
     public startDemo(): void {
-        // const texts = ['随时等候吩咐。', '正在生成总结...', '正在翻译字幕...'];
-        const texts = ['summary-friday-waiting', 'summary-friday-generating', 'summary-friday-translating'];
+        const texts = ['summary-fri-waiting', 'summary-fri-generating', 'summary-fri-translating', 'summary-fri-finished'];
         let index = 0;
 
         this.intervalId = window.setInterval(() => {
-            this.setText(i18nService.getMessage(texts[index]));
+            this.setFriInfoText(i18nService.getMessage(texts[index]));
             index = (index + 1) % texts.length;
         }, 2000);
     }

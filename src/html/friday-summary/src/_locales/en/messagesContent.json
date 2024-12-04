@@ -20,13 +20,16 @@
     "summary-settings": {
         "message": "Settings"
     },
-    "summary-friday-waiting": {
+    "summary-fri-waiting": {
         "message": "Always ready to serve."
     },
-    "summary-friday-generating": {
+    "summary-fri-generating": {
         "message": "Generating summary..."
     },
-    "summary-friday-translating": {
+    "summary-fri-translating": {
         "message": "Translating subtitles..."
+    },
+    "summary-fri-finished": {
+        "message": "Generate finished."
     }
 }

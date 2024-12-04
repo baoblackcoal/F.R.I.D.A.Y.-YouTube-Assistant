@@ -20,13 +20,16 @@
     "summary-settings": {
         "message": "設定"
     },
-    "summary-friday-waiting": {
+    "summary-fri-waiting": {
         "message": "隨時等候吩咐。"
     },
-    "summary-friday-generating": {
+    "summary-fri-generating": {
         "message": "正在生成總結..."
     },
-    "summary-friday-translating": {
+    "summary-fri-translating": {
         "message": "正在翻譯字幕..."
+    },
+    "summary-fri-finished": {
+        "message": "生成完成。"
     }
 }

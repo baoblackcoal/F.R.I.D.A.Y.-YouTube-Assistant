@@ -20,7 +20,7 @@ class FriSummary {
     private initServices(): void {        
         this.toastService = new ToastService();
         this.themeService = new ThemeService();
-        this.infoTextService = new InfoTextService();
+        this.infoTextService = new InfoTextService(this.setFriInfoText);
         this.languageService = new LanguageService();
     }
 
@@ -56,7 +56,7 @@ class FriSummary {
                 </div>
 
                 <div class="fri-summary-info-container">
-                    <div class="fri-summary-info"> <strong>Friday: </strong>
+                    <div class="fri-summary-info"> <strong>Friday:  </strong>
                         <span id="fri-summary-info-text" class="fri-summary-info-text">...</span>
                     </div>
                 </div>
@@ -187,6 +187,19 @@ class FriSummary {
         );
         
         popup.init(moreButton as HTMLElement);
+    }
+
+    public setFriInfoText(text: string): void {
+        const infoTextElement = document.getElementById('fri-summary-info-text');
+        if (!infoTextElement) return;
+
+        infoTextElement.classList.add('fade-out');
+        
+        setTimeout(() => {
+            infoTextElement.textContent = text;
+            infoTextElement.offsetHeight; 
+            infoTextElement.classList.remove('fade-out');
+        }, 300);
     }
 
     private updateLanguageTexts(): void {

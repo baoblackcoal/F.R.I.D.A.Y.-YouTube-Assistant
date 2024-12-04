@@ -1,4 +1,4 @@
-import { Language } from './friSummaryState.js';
+import { Language, languageLabels } from './friSummaryState.js';
 import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
 import { IFriSummaryState } from './friSummaryState.js';
@@ -17,13 +17,6 @@ export class FriSummaryPopup {
     private popupMenu: HTMLElement;
     private toastService: ToastService;
     private events: IPopupEvents;
-    
-    private readonly languageLabels: Record<Language, string> = {
-        [Language.English]: 'English',
-        [Language.SimplifiedChinese]: '简体中文',
-        [Language.TraditionalChinese]: '繁體中文'
-    };
-
 
     constructor(
         initialState: IFriSummaryState,
@@ -38,7 +31,7 @@ export class FriSummaryPopup {
     }
 
     private createLanguageMenuItems(selectedLanguage: Language): string {
-        return Object.entries(this.languageLabels).map(([key, lang]) => `
+        return Object.entries(languageLabels).map(([key, lang]) => `
             <div class="fri-popup-item language-item" data-language="${key}">
                 ${key === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
                 <span style="margin-left: 4px;">${lang}</span>

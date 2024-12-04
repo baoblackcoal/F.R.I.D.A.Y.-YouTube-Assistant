@@ -5,7 +5,12 @@ export enum Language {
     SimplifiedChinese = 'zh_CN',
     TraditionalChinese = 'zh_TW'
 }
-
+    
+export const languageLabels: Record<Language, string> = {
+    [Language.English]: 'English',
+    [Language.SimplifiedChinese]: '简体中文',
+    [Language.TraditionalChinese]: '繁體中文'
+};
 
 export interface IFriSummaryState {
     getAutoGenerate(): boolean;
