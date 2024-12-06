@@ -1,4 +1,4 @@
-export const defaultTranslatePrompt = `
+export const easyToReadPrompt = `
 Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read.
 
 output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain content_is_easy_to_read, task_finish_status.
@@ -36,7 +36,7 @@ Each time you output no more than 2000 words and no less than 500, divided into 
 `;
 
 
-export const translatePrompt = `
+export const translateEasyToReadPrompt = `
 Please translate the following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into {language}.
 
 output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain translated_content.

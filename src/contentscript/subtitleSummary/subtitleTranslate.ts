@@ -1,13 +1,15 @@
 import { geminiAPI } from '../../common/geminiApi';
 import { TTSSpeak } from '../../common/ttsSpeak';
-import { defaultTranslatePrompt, translatePrompt } from "../../prompts/defaultTranslatePrompt";
+import { easyToReadPrompt, translateEasyToReadPrompt } from "../../prompts/defaultTranslatePrompt";
+import { defaultPodcastPrompt, translatePodcastPrompt } from "../../prompts/podcastPrompt";
 import { settingsManager } from '../../common/settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
 import { resetHighlightText } from './view/subtitleSummaryView';
 import { parser } from 'marked';
+import { GenerateSubtitleType } from '../../common/ISettings';
 
 interface ISubtitleTranslator {
-    generatePrompt(videoId: string): Promise<string>;
+    generatePrompt(videoId: string, generateSubtitleType: GenerateSubtitleType): Promise<string>;
     translateSubtitles(videoId: string): Promise<void>;
 }
 
@@ -18,7 +20,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         this.tts = TTSSpeak.getInstance();
     }
 
-    async generatePrompt(videoId: string): Promise<string> {
+    async generatePrompt(videoId: string, generateSubtitleType: GenerateSubtitleType): Promise<string> {
         const textTranscript = await getTranscriptText(videoId);
         if (textTranscript == null) {
             return "";
@@ -26,7 +28,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
         const videoTitle = await getVideoTitle();
         const summarySettings = await settingsManager.getSummarySettings();
-        const promptText = defaultTranslatePrompt;
+        const promptText = generateSubtitleType === GenerateSubtitleType.EasyToRead ? easyToReadPrompt : defaultPodcastPrompt;
 
         return diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
     }
@@ -70,7 +72,8 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 }
 
                 const oldHtml = this.cloneAndResetContent(contentElement);
-                const translatePrompt = await this.generatePrompt(videoId);
+                const generateSubtitleType = summarySettings.generateSubtitleType;
+                const translatePrompt = await this.generatePrompt(videoId, generateSubtitleType);
                 await this.processTranslation(contentElement, translatePrompt, oldHtml, summarySettings);
             } catch (error) {
                 this.displayError(`Error generating text: ${error}`);
@@ -118,12 +121,26 @@ class SubtitleTranslator implements ISubtitleTranslator {
     }
 
     private async getTranslateAndSpeakText(prompt: string, isFirstConversation: boolean, contentElement: Element, summarySettings: any): Promise<[boolean, boolean, ErrorType]> {
+        const generateSubtitleType = summarySettings.generateSubtitleType;
         const text = await geminiAPI.chat(prompt, isFirstConversation);
-        const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
+        // const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
         const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
+        let translateTextArray: RegExpMatchArray | null = null;
+        if (generateSubtitleType === GenerateSubtitleType.Podcast) {
+            translateTextArray = text.match(/<content_to_podcast>([\s\S]*?)<\/content_to_podcast>/g);
+        } else {
+            translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
+        }
         const lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
         const finish = lastTaskStatusText === 'task_is_finish';
-        const [isError, errorType] = await this.checkForErrors(isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
+        let [isError, errorType, translateText] = await this.checkForErrors(generateSubtitleType, isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
+        
+        if (!isError) {
+            isError = !await this.displayTranslatedText(generateSubtitleType, translateText, contentElement);
+            if (isError) {
+                errorType = ErrorType.TranslateError;
+            }
+        }
 
         if (!isError) {
             const parser = new DOMParser();
@@ -154,7 +171,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return lastTaskStatusText.replace(/<task_finish_status>/g, '').replace(/<\/task_finish_status>/g, '').replace(/\n/g, '');
     }
 
-    private async checkForErrors(isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): Promise<[boolean, ErrorType]> {
+    private async checkForErrors(generateSubtitleType: GenerateSubtitleType, isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): Promise<[boolean, ErrorType, string]> {
         let errorType: ErrorType = ErrorType.NotError;
         let isError = false;
         
@@ -172,10 +189,12 @@ class SubtitleTranslator implements ISubtitleTranslator {
         if (!isError) {
             translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
             // add \n after ". " or "。" for break line to read easily
-            translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
-            if (translateText.split('\n').length <= 1) {
-                isError = true;
-                errorType = ErrorType.OutputSizeNotEnouthNewLine;
+            if (generateSubtitleType === GenerateSubtitleType.EasyToRead) {
+                translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+                if (translateText.split('\n').length <= 1) {
+                    isError = true;
+                    errorType = ErrorType.OutputSizeNotEnouthNewLine;
+                }
             }
 
             const translateTextLength = translateText.length;
@@ -185,23 +204,17 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 errorType = ErrorType.FirstConversationOutputSizeError;
             }
         }      
-        
-        if (!isError) {
-            isError = !await this.displayTranslatedText(translateText, contentElement);
-            if (isError) {
-                errorType = ErrorType.TranslateError;
-            }
-        }
 
-        return [isError, errorType];
+        return [isError, errorType, translateText];
     }
 
-    private async displayTranslatedText(translateText: string, contentElement: Element): Promise<boolean> {
+    private async displayTranslatedText(generateSubtitleType: GenerateSubtitleType, translateText: string, contentElement: Element): Promise<boolean> {
         const summarySettings = await settingsManager.getSummarySettings();
         const replacements: Record<string, string> = {
             '{language}': summarySettings.language,
             '{textTranscript}': translateText
         };
+        const translatePrompt = generateSubtitleType === GenerateSubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
         const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
         const result = await geminiAPI.generate(prompt);
         const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
@@ -210,20 +223,21 @@ class SubtitleTranslator implements ISubtitleTranslator {
         } else {    
             //get the first translated_content from translatedTextArray
             let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
-            translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
-
-            //delete '\n' if paragraph length is less than 50 
-            let deleteCount = 0;
-            for (let i = 0; i < translatedText.length; i++) {
-                deleteCount++;
-                if (translatedText.charAt(i) === '\n') {
-                    if (deleteCount < 50) { 
-                        translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
-                    } else {
-                        deleteCount = 0;
+            if (generateSubtitleType === GenerateSubtitleType.EasyToRead) {
+                translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+                //delete '\n' if paragraph length is less than 50 
+                let deleteCount = 0;
+                for (let i = 0; i < translatedText.length; i++) {
+                    deleteCount++;
+                    if (translatedText.charAt(i) === '\n') {
+                        if (deleteCount < 50) { 
+                            translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
+                        } else {
+                            deleteCount = 0;
+                        }
                     }
                 }
-            }
+            }           
 
             translatedText.split('\n').forEach(line => {
                 const newElement = document.createElement('p');

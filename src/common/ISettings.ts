@@ -17,6 +17,12 @@ export enum Language {
     // Russian = 'Russian',
 }
 
+export enum GenerateSubtitleType {
+    None = "None",
+    EasyToRead = "EasyToRead",
+    Podcast = "Podcast",
+}
+
 export interface ITtsSettings {
   language: string;
   voiceName: string;
@@ -39,6 +45,7 @@ export interface ISummarySettings {
   language: Language;
   autoTtsSpeak: boolean;
   autoSummary: boolean;
+  generateSubtitleType: GenerateSubtitleType;
 }
 
 export interface ILlmSettings {

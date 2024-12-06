@@ -1,5 +1,5 @@
 import { defaultSummarySettings } from '../common/settings';
-import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
+import { Language, ISummarySettings, ILlmSettings, GenerateSubtitleType } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
 import { ISummaryPageView, SummaryPageView } from './summaryPageView';
 import { i18n } from '../common/i18n';
@@ -28,6 +28,7 @@ export class SummaryPage {
       language: formValues.language as Language,
       autoTtsSpeak: formValues.autoTtsSpeak,
       autoSummary: formValues.autoSummary,
+      generateSubtitleType: GenerateSubtitleType.Podcast,
     };
 
     const isUserKey = formValues.apiKeyType === 'Your Key';
