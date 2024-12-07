@@ -53,7 +53,7 @@ class FriSummary {
                         </button>
                         <div class="fri-tooltip" id="play-pause-tooltip"></div>
                     </div>
-                    ${this.createIconButton('subtitle', 'summary-subtitle', 'subtitle-button')}
+                    ${this.createIconButton('subtitleTranslate', 'summary-subtitle-generate', 'subtitle-generate-button')}
                 </div>
 
                 <div class="fri-summary-info-container">

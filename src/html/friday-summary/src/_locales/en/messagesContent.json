@@ -31,5 +31,17 @@
     },
     "summary-fri-finished": {
         "message": "Generate finished."
+    },
+    "summary-subtitle-generate": {
+        "message": "Subtitle Generate"
+    },
+    "summary-subtitle-none": {
+        "message": "None"
+    },
+    "summary-subtitle-translate": {
+        "message": "Subtitle Translate"
+    },
+    "summary-subtitle-to-podcast": {
+        "message": "Subtitle to Podcast"
     }
 }

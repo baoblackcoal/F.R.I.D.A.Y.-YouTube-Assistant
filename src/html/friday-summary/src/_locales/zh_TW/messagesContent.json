@@ -31,5 +31,17 @@
     },
     "summary-fri-finished": {
         "message": "生成完成。"
+    },
+    "summary-subtitle-generate": {
+        "message": "字幕生成"
+    },
+    "summary-subtitle-none": {
+        "message": "無"
+    },
+    "summary-subtitle-translate": {
+        "message": "字幕翻譯"
+    },
+    "summary-subtitle-to-podcast": {
+        "message": "字幕轉播客"
     }
 }

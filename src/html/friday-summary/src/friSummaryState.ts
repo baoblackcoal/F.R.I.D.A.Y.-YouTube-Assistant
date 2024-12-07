@@ -5,6 +5,12 @@ export enum Language {
     SimplifiedChinese = 'zh_CN',
     TraditionalChinese = 'zh_TW'
 }
+
+export enum SubtitleType {
+    None = 'None',
+    SubtitleTranslate = 'Subtitle Translate',
+    SubtitleToPodcast = 'Subtitle to Podcast'
+}
     
 export const languageLabels: Record<Language, string> = {
     [Language.English]: 'English',
@@ -21,6 +27,8 @@ export interface IFriSummaryState {
     setSummaryLanguage(value: Language): void;
     getDisplayLanguage(): Language;
     setDisplayLanguage(value: Language): void;
+    getSubtitleType(): SubtitleType;
+    setSubtitleType(value: SubtitleType): void;
 }
 
 
@@ -29,7 +37,7 @@ class FriSummaryState implements IFriSummaryState {
     private autoPlay: boolean = false;
     private summaryLanguage: Language = Language.English;
     private displayLanguage: Language = Language.English;
-
+    private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
     private static instance: FriSummaryState;
 
     public static getInstance() {
@@ -43,6 +51,14 @@ class FriSummaryState implements IFriSummaryState {
 
     private constructor() {
         // private constructor
+    }
+
+    getSubtitleType(): SubtitleType {
+        return this.subtitleType;
+    }
+
+    setSubtitleType(value: SubtitleType): void {
+        this.subtitleType = value;
     }
 
     getAutoGenerate(): boolean {
