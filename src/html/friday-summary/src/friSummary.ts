@@ -1,7 +1,7 @@
 import { ICONS } from './svgs.js';
 import { ToastService, ThemeService, InfoTextService, LanguageService } from './test.js';
-import { FriSummaryPopup, IPopupEvents } from './friSummaryPopup.js';
-import { IFriSummaryState, summaryState, Language } from './friSummaryState.js';
+import { FriSummaryPopup, IPopupEvents, ISubtitleEvents, SubtitlePopup } from './friSummaryPopup.js';
+import { IFriSummaryState, summaryState, Language, SubtitleType } from './friSummaryState.js';
 import { i18nService } from './i18nService.js';
 
 
@@ -53,7 +53,7 @@ class FriSummary {
                         </button>
                         <div class="fri-tooltip" id="play-pause-tooltip"></div>
                     </div>
-                    ${this.createIconButton('subtitleTranslate', 'summary-subtitle-generate', 'subtitle-generate-button')}
+                    ${this.createIconButton('subtitleGenerate', 'summary-subtitle-generate', 'subtitle-generate-button')}
                 </div>
 
                 <div class="fri-summary-info-container">
@@ -161,7 +161,7 @@ class FriSummary {
     }
 
     private initializePopupMenu(): void {
-        const moreButton = document.querySelector('.fri-right-controls .fri-icon-button');
+        const moreButton = document.getElementById('more-button');
         if (!moreButton) return;
 
         const popupEvents: IPopupEvents = {
@@ -178,7 +178,7 @@ class FriSummary {
                 this.toastService.show(`Auto Play: changed to ${enabled}`);
             },
             onCopy: () => this.toastService.show('Copy'),
-            onDownload: () => this.toastService.show('Download')
+            onDownload: () => this.toastService.show('Download'),
         };
 
         const popup = new FriSummaryPopup(
@@ -215,6 +215,11 @@ class FriSummary {
             generateTooltip.textContent = i18nService.getMessage('summary-ai-generate');
         }
 
+        const subtitleTooltip = document.getElementById('subtitle-generate-button-tooltip');
+        if (subtitleTooltip) {
+            subtitleTooltip.textContent = i18nService.getMessage('summary-subtitle-generate');
+        }
+
         const moreTooltip = document.getElementById('more-button-tooltip');
         if (moreTooltip) {
             moreTooltip.textContent = i18nService.getMessage('summary-more');
@@ -238,6 +243,41 @@ class FriSummary {
         });
     }
 
+    private initializeSubtitlePopup(): void {
+        const subtitleButton = document.getElementById('subtitle-generate-button');
+        if (!subtitleButton) return;
+
+        const subtitleEvents: ISubtitleEvents = {
+            onSubtitleOptionChange: (option: SubtitleType) => {
+                this.handleSubtitleOptionChange(option);
+            }
+        };
+
+
+        const popup = new SubtitlePopup(
+            subtitleButton,
+            this.state,
+            subtitleEvents
+        );
+        
+    }
+
+    private handleSubtitleOptionChange(option: SubtitleType): void {
+        this.state.setSubtitleType(option);
+        
+        switch (option) {
+            case SubtitleType.None:
+                this.toastService.show('Subtitle disabled');
+                break;
+            case SubtitleType.SubtitleTranslate:
+                this.toastService.show('SubtitleTranslate');
+                break;
+            case SubtitleType.SubtitleToPodcast:
+                this.toastService.show('SubtitleToPodcast');
+                break;
+        }
+    }
+
     public init(): void {
         const root = document.getElementById('root');
         if (!root) return;
@@ -249,8 +289,8 @@ class FriSummary {
             this.initializeToggleButtons();
             this.initializePopupMenu();
             this.initializeLanguageHandler();
+            this.initializeSubtitlePopup();
             this.updateLanguageTexts();
-
             this.initServices();
             this.infoTextService.startDemo();
         });

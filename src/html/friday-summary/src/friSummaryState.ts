@@ -35,7 +35,7 @@ export interface IFriSummaryState {
 class FriSummaryState implements IFriSummaryState {
     private autoGenerate: boolean = true;
     private autoPlay: boolean = false;
-    private summaryLanguage: Language = Language.English;
+    private summaryLanguage: Language = Language.SimplifiedChinese;
     private displayLanguage: Language = Language.English;
     private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
     private static instance: FriSummaryState;

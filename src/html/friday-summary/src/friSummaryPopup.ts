@@ -1,8 +1,16 @@
-import { Language, languageLabels } from './friSummaryState.js';
+import { Language, languageLabels, SubtitleType } from './friSummaryState.js';
 import { ICONS } from './svgs.js';
 import { ToastService } from './test.js';
 import { IFriSummaryState } from './friSummaryState.js';
 import { i18nService } from './i18nService.js';
+
+// export type SubtitleOption = 'none' | 'translate' | 'podcast';
+
+export const subtitleOptionLabels: Record<SubtitleType, string> = {
+    [SubtitleType.None]: 'summary-subtitle-none',
+    [SubtitleType.SubtitleTranslate]: 'summary-subtitle-translate',
+    [SubtitleType.SubtitleToPodcast]: 'summary-subtitle-to-podcast'
+};
 
 export interface IPopupEvents {
     onLanguageChange: (language: Language) => void;
@@ -10,6 +18,98 @@ export interface IPopupEvents {
     onAutoPlayChange: (enabled: boolean) => void;
     onCopy: () => void;
     onDownload: () => void;
+}
+
+export interface ISubtitleEvents {
+    onSubtitleOptionChange: (option: SubtitleType) => void;
+}
+
+export class SubtitlePopup {
+    private submenu: HTMLElement;
+    private button: HTMLElement;
+    private state: IFriSummaryState;
+    private events: ISubtitleEvents;
+
+    constructor(
+        button: HTMLElement,
+        state: IFriSummaryState,
+        events: ISubtitleEvents
+    ) {
+        this.button = button;
+        this.state = state;
+        this.events = events;
+        this.submenu = this.createSubmenu();
+        this.initialize();
+    }
+
+    private createSubmenu(): HTMLElement {
+        const submenu = document.createElement('div');
+        submenu.className = 'fri-sub-popup fri-popup-menu';
+        submenu.id = 'subtitle-submenu';
+        submenu.style.display = 'none';
+        document.body.appendChild(submenu);
+        return submenu;
+    }
+
+    private createMenuItems(): string {
+        return Object.entries(subtitleOptionLabels).map(([key, label]) => `
+            <div class="fri-popup-item subtitle-item" data-subtitle-option="${key}">
+                ${key === this.state.getSubtitleType() ? ICONS.check : '<div style="width: 24px;"></div>'}
+                <span style="margin-left: 4px;">${i18nService.getMessage(label)}</span>
+            </div>
+        `).join('');
+    }
+
+    private positionSubmenu(): void {
+        const buttonRect = this.button.getBoundingClientRect();
+        this.submenu.style.top = `${buttonRect.bottom + 5}px`;
+        this.submenu.style.left = `${buttonRect.left}px`;
+    }
+
+    private initialize(): void {
+        this.submenu.innerHTML = this.createMenuItems();
+
+        // Button click handler
+        this.button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = this.submenu.style.display === 'block';
+            this.submenu.style.display = isVisible ? 'none' : 'block';
+            
+            if (!isVisible) {
+                this.positionSubmenu();
+            } 
+            this.updateMenuItems();     
+        });
+
+        // Submenu item click handler
+        this.submenu.addEventListener('click', async (e) => {
+            const subtitleItem = (e.target as HTMLElement).closest('.subtitle-item');
+            if (!subtitleItem) return;
+
+            e.stopPropagation();
+            const newOption = subtitleItem.getAttribute('data-subtitle-option') as SubtitleType;
+            if (!newOption) return;
+
+            this.events.onSubtitleOptionChange(newOption);
+            this.submenu.style.display = 'none';
+            this.updateMenuItems();
+        });
+
+        // Close submenu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.submenu.contains(e.target as Node) && e.target !== this.button) {
+                this.submenu.style.display = 'none';
+            }
+        });
+    }
+
+    private updateMenuItems(): void {
+        this.submenu.innerHTML = this.createMenuItems();
+    }
+
+    public destroy(): void {
+        this.submenu.remove();
+    }
 }
 
 export class FriSummaryPopup {
@@ -36,7 +136,7 @@ export class FriSummaryPopup {
                 ${key === selectedLanguage ? ICONS.check : '<div style="width: 24px;"></div>'}
                 <span style="margin-left: 4px;">${lang}</span>
             </div>
-        `).join('');
+        `).join('');    
     }
 
     private createPopupMenu(): HTMLElement {

@@ -12,7 +12,7 @@ export const ICONS: Icons = {
     pause: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M8 5c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1s1-.45 1-1V6c0-.55-.45-1-1-1zm8 0c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1s1-.45 1-1V6c0-.55-.45-1-1-1z"></path>
     </svg>`,
-    subtitle: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+    subtitleGenerate: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <rect stroke="#7f7f7f" rx="2" id="svg_7" height="14.92869" width="20.53883" y="4.66194" x="1.54405" stroke-width="2" fill="none"/>
         <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="10" id="svg_9" y="15.59696" x="5.06228" stroke-width="0" stroke="#7f7f7f" fill="#7f7f7f">CC</text>
     </svg>`,
