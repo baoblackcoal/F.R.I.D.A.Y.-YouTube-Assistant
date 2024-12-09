@@ -14,7 +14,11 @@ class FriSummary {
     private languageService!: LanguageService;
     constructor() {
         this.state = summaryState;    
-        i18nService.setLanguage(this.state.getDisplayLanguage());
+        this.setLanguage();
+    }
+
+    private async setLanguage(): Promise<void> {
+        await i18nService.setLanguage(this.state.getDisplayLanguage());
     }
 
     private initServices(): void {        
@@ -84,27 +88,6 @@ class FriSummary {
         `;
 
         return container;
-    }
-
-    private initializeButtonEffects(): void {
-        const buttons = document.querySelectorAll('.fri-icon-button');
-        buttons.forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                (button as HTMLElement).style.backgroundColor = 'var(--fri-hover-bg)';
-            });
-
-            button.addEventListener('mousedown', () => {
-                (button as HTMLElement).style.backgroundColor = 'var(--fri-active-bg)';
-            });
-
-            button.addEventListener('mouseup', () => {
-                (button as HTMLElement).style.backgroundColor = 'transparent';
-            });
-
-            button.addEventListener('mouseleave', () => {
-                (button as HTMLElement).style.backgroundColor = 'transparent';
-            });
-        });
     }
 
     private initializeToggleButtons(): void {
@@ -285,7 +268,6 @@ class FriSummary {
         root.appendChild(this.createFriSummaryContainer());
 
         document.addEventListener('DOMContentLoaded', () => {
-            this.initializeButtonEffects();
             this.initializeToggleButtons();
             this.initializePopupMenu();
             this.initializeLanguageHandler();

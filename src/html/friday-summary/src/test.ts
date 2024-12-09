@@ -57,8 +57,13 @@ export class ThemeService implements IThemeService {
         if (!this.container || !this.themeButton) return;
         
         this.darkMode = !this.darkMode;
-        this.container.classList.toggle('dark');
-        this.themeButton.setAttribute('data-lucide', this.darkMode ? 'sun-medium' : 'moon');
+
+        const htmlElement = document.documentElement;
+        if (this.darkMode) {
+            htmlElement.removeAttribute('dark');
+        } else {
+            htmlElement.setAttribute('dark', '');
+        }
     }
 
     public isDark(): boolean {
