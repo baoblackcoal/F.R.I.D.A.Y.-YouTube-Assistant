@@ -43,5 +43,23 @@
     },
     "summary-subtitle-to-podcast": {
         "message": "字幕轉播客"
+    },
+    "summary-pupup-copy": {
+        "message": "複製"
+    },
+    "summary-pupup-download": {
+        "message": "下載"
+    },
+    "summary-pupup-youtube-subtitle": {
+        "message": "Youtube 字幕"
+    },
+    "summary-pupup-auto-generate": {
+        "message": "自動生成"
+    },
+    "summary-pupup-auto-play": {
+        "message": "自動播放"
+    },
+    "summary-pupup-language": {
+        "message": "AI 語言"
     }
 }

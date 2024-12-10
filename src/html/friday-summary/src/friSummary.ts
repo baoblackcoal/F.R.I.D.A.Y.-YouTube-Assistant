@@ -1,4 +1,4 @@
-import { ICONS } from './svgs.js';
+import { getCopySvg, getToggleSvg, ICONS } from './svgs.js';
 import { ToastService, ThemeService, InfoTextService, LanguageService } from './test.js';
 import { FriSummaryPopup, IPopupEvents, ISubtitleEvents, SubtitlePopup } from './friSummaryPopup.js';
 import { IFriSummaryState, summaryState, Language, SubtitleType } from './friSummaryState.js';
@@ -85,6 +85,25 @@ class FriSummary {
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
             </div>
+
+            <div id="yt_ai_summary_header" class="yt_ai_summary_header">
+                    <p> </p>
+                    
+                    <p class="yt_ai_summary_header_text">Transcript</p>
+                    <div class="yt_ai_summary_header_actions">
+                        
+                        <div id="yt_ai_summary_header_copy" class="yt_ai_summary_header_action_btn yt-summary-hover-el" data-hover-label="Copy Transcript\n(Plain Text)">
+                            ${getCopySvg()}
+                        </div>
+                        <div style="filter: brightness(0.9);" id="yt_ai_summary_header_toggle" class="yt_ai_summary_header_action_btn">
+                            ${getToggleSvg()}
+                        </div>
+                    </div>
+                </div>
+                <div id="yt_ai_summary_body" class="yt_ai_summary_body">
+                    <div id="yt_ai_summary_lang_select" class="yt_ai_summary_lang_select"></div>
+                    <div id="yt_ai_summary_text" class="yt_ai_summary_text"></div>
+                </div>
         `;
 
         return container;
@@ -162,6 +181,16 @@ class FriSummary {
             },
             onCopy: () => this.toastService.show('Copy'),
             onDownload: () => this.toastService.show('Download'),
+            onYoutubeSubtitleChange: (enabled: boolean) => {
+                const youtubeSubtitleContainer = document.getElementById('yt_ai_summary_header');
+                const youtubeSubtitleBody = document.getElementById('yt_ai_summary_body');
+                if (!youtubeSubtitleContainer || !youtubeSubtitleBody) return;
+
+                youtubeSubtitleContainer.style.display = enabled ? 'flex' : 'none';
+                youtubeSubtitleBody.style.display = enabled ? 'block' : 'none';
+                summaryState.setYoutubeSubtitleVisible(enabled);
+                this.toastService.show(`Youtube Subtitle: changed to ${enabled}`);
+            }
         };
 
         const popup = new FriSummaryPopup(
@@ -262,7 +291,7 @@ class FriSummary {
     }
 
     public init(): void {
-        const root = document.getElementById('root');
+        const root = document.getElementById('#bottom-row');
         if (!root) return;
 
         root.appendChild(this.createFriSummaryContainer());

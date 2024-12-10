@@ -29,6 +29,8 @@ export interface IFriSummaryState {
     setDisplayLanguage(value: Language): void;
     getSubtitleType(): SubtitleType;
     setSubtitleType(value: SubtitleType): void;
+    getYoutubeSubtitleVisible(): boolean;
+    setYoutubeSubtitleVisible(value: boolean): void;
 }
 
 
@@ -38,6 +40,9 @@ class FriSummaryState implements IFriSummaryState {
     private summaryLanguage: Language = Language.SimplifiedChinese;
     private displayLanguage: Language = Language.English;
     private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
+    private youtubeSubtitleVisible: boolean = true;
+
+
     private static instance: FriSummaryState;
 
     public static getInstance() {
@@ -51,6 +56,14 @@ class FriSummaryState implements IFriSummaryState {
 
     private constructor() {
         // private constructor
+    }
+
+    getYoutubeSubtitleVisible(): boolean {
+        return this.youtubeSubtitleVisible;
+    }
+
+    setYoutubeSubtitleVisible(value: boolean): void {
+        this.youtubeSubtitleVisible = value;
     }
 
     getSubtitleType(): SubtitleType {

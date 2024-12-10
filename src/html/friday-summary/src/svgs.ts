@@ -14,7 +14,7 @@ export const ICONS: Icons = {
     </svg>`,
     subtitleGenerate: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" >
         <rect rx="2" id="svg_7" height="14.92869" width="20.53883" y="4.66194" x="1.54405" stroke-width="1.5"/>
-        <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="10" id="svg_9" y="15.59696" x="5.06228" stroke-width="0" fill="currentColor">CC</text>
+        <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="10" id="svg_9" y="15.59696" x="5.06228" stroke-width="0" fill="currentColor">SG</text>
     </svg>`,
     settings: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"></path>
@@ -42,6 +42,24 @@ export const ICONS: Icons = {
     </svg>`,
     subPopupArrow: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M9.4 18.4l-.7-.7 5.6-5.6-5.7-5.7.7-.7 6.4 6.4-6.3 6.3z"/>
+    </svg>`,
+    youtubeSubtitle: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" >
+        <rect rx="2" id="svg_7" height="14.92869" width="20.53883" y="4.66194" x="1.54405" stroke-width="1.5"/>
+        <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="10" id="svg_9" y="15.59696" x="5.06228" stroke-width="0" fill="currentColor">CC</text>
     </svg>`
 };
 
+// Function to get the copy button SVG
+export const getCopySvg = () => `
+<svg style="filter: brightness(0.95);" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 6.6V5C7 4.44772 7.44772 4 8 4H18C18.5523 4 19 4.44772 19 5V16C19 16.5523 18.5523 17 18 17H16.2308" stroke="#828282" stroke-width="1.5"/>
+    <rect x="4.75" y="6.75" width="11.5" height="13.5" rx="1.25" stroke="#828282" stroke-width="1.5"/>
+</svg>
+`;
+
+// Function to get the toggle button SVG
+export const getToggleSvg = () => `
+<svg width="24" height="24" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.2447 9.9588C16.5376 9.6659 16.5376 9.19103 16.2447 8.89814C15.9518 8.60524 15.4769 8.60524 15.184 8.89814L16.2447 9.9588ZM6.81611 8.89814C6.52322 8.60524 6.04835 8.60524 5.75545 8.89814C5.46256 9.19103 5.46256 9.6659 5.75545 9.9588L6.81611 8.89814ZM11.7425 14.461L16.2447 9.9588L15.184 8.89814L10.6819 13.4003L11.7425 14.461ZM11.3183 13.4003L6.81611 8.89814L5.75545 9.9588L10.2576 14.461L11.3183 13.4003ZM10.6819 13.4003C10.8576 13.2246 11.1425 13.2246 11.3183 13.4003L10.2576 14.461C10.6677 14.871 11.3325 14.871 11.7425 14.461L10.6819 13.4003Z" fill="#8B8B8B"/>
+</svg>
+`;

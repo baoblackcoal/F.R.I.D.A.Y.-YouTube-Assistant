@@ -43,5 +43,23 @@
     },
     "summary-subtitle-to-podcast": {
         "message": "Subtitle to Podcast"
+    },
+    "summary-pupup-copy": {
+        "message": "Copy"
+    }, 
+    "summary-pupup-download": {
+        "message": "Download"
+    },
+    "summary-pupup-youtube-subtitle": {
+        "message": "Youtube Subtitle"
+    },
+    "summary-pupup-auto-generate": {
+        "message": "Auto Generate"
+    },
+    "summary-pupup-auto-play": {
+        "message": "Auto Play"
+    },
+    "summary-pupup-language": {
+        "message": "AI Language"
     }
 }
