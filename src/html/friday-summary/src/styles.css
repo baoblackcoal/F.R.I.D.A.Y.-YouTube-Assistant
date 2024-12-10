@@ -1,5 +1,4 @@
 html {
-    /* --yt-spec-badge-chip-background: rgba(0, 0, 0, 1); */
     --yt-spec-additive-background: rgba(0, 0, 0, 0.05);
     --yt-spec-text-primary: #0f0f0f;
     --yt-spec-text-primary-inverse: #fff;
@@ -269,19 +268,6 @@ html[dark] {
     --fri-content-border: var(--yt-spec-outline);
     --fri-tooltip-bg: rgba(255, 255, 255, 0.4);
 
-
-    /* --fri-background: #0F0F0F;
-    --fri-text: #FFFFFF;
-    --fri-border: rgba(255, 255, 255, 0.1);
-    --fri-icon-color: rgba(255, 255, 255, 0.9);
-    --fri-hover-bg: rgba(255, 255, 255, 0.05);
-    --fri-active-bg: rgba(255, 255, 255, 0.1);
-    --fri-popup-bg: #282828;
-    --fri-popup-shadow: rgba(0, 0, 0, 0.5);
-    --fri-status-border: rgba(255, 255, 255, 0.1);
-    --fri-content-border: rgba(255, 255, 255, 0.1); */
-
-
 }
 
 body {
@@ -311,10 +297,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     margin: 8px 12px 0px 12px;
     color: var(--yt-spec-text-primary);
 }
-
-/* .dark {
-    background-color: #0F0F0F;
-} */
 
 .fri-summary-row {
     display: flex;
@@ -371,10 +353,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 }
 
 
-/* .dark .fri-left-controls {
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-} */
-
 .fri-left-controls {
     display: flex;
     align-items: center;
@@ -400,10 +378,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     text-overflow: ellipsis;
 }
 
-/* .dark .fri-summary-info {
-    color: #AAAAAA;
-} */
-
 .fri-right-controls {
     display: flex;
     align-items: center;
@@ -415,17 +389,10 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     padding: 0.75rem 1rem;
     margin: 0.5rem 0;
     font-size: 14px;
-    /* border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.03); */
     border-top: 1px solid var(--fri-border);
     transition: all 0.3s ease;
 }
 
-/* .dark .fri-summary-status-container {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #AAAAAA;
-} */
 
 .fri-summary-status-content {
     display: flex;
@@ -438,9 +405,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     color: #dc2626;
 }
 
-/* .dark .fri-summary-status-content.error {
-    color: #ef4444;
-} */
 
 .fri-summary-content-container {
     padding: 0.5rem;
@@ -448,11 +412,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     border-top: 1px solid var(--fri-border);
 }
 
-/* .dark .fri-summary-content-container {
-    background-color: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #AAAAAA;
-} */
 
 .fri-summary-content-container p {
     margin: 0.75rem 0;
@@ -475,10 +434,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     display: none;
 }
 
-/* .dark .fri-popup-menu {
-    background: #282828;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-} */
 
 .fri-popup-item {
     padding: 8px 16px;
@@ -492,9 +447,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     height: 25px;
 }
 
-/* .dark .fri-popup-item {
-    color: #FFFFFF;
-} */
 
 .fri-popup-item:hover {
     background: var(--fri-hover-bg);
@@ -503,10 +455,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 .fri-popup-item:active {
     background: var(--fri-active-bg);
 }
-
-/* .dark .fri-popup-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-} */
 
 .fri-popup-item svg {
     width: 24px;
@@ -523,16 +471,7 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     right: 12px;
     width: 24px;
     height: 24px;
-    /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M9.4 18.4l-.7-.7 5.6-5.6-5.7-5.7.7-.7 6.4 6.4-6.3 6.3z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    color: var(--fri-icon-color); Apply the CSS variable */
 }
-
-/* .dark .fri-popup-item.with-sub::after {
-    filter: invert(1);
-} */
-
 
 .fri-sub-popup {
     position: absolute;
@@ -544,29 +483,6 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 .fri-popup-item:hover > .fri-sub-popup {
     display: block;
 }
-
-
-
-/* .fri-sub-popup {
-    position: absolute;
-    background: var(--fri-popup-bg);
-    border: 1px solid var(--fri-border-color);
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    min-width: 200px;   
-}
-
-.subtitle-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    cursor: pointer;
-}
-
-.subtitle-item:hover {
-    background-color: var(--fri-hover-bg);
-} */
 
 .fri-sub-popup-arrow {
     margin-left: auto;
@@ -612,11 +528,11 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 
 .fri-sub-popup .fri-popup-item {
     color: var(--fri-icon-color);
-    padding-right: 24px;  /* Adjust padding for submenu items */
+    padding-right: 24px;  
 }
 
 .fri-sub-popup .fri-popup-item svg {
-    min-width: 24px;  /* Ensure consistent width for the checkmark icon */
+    min-width: 24px; 
 }
 
 .fri-summary-info-text {
