@@ -48,7 +48,9 @@ export class SubtitlePopup {
         submenu.className = 'fri-sub-popup fri-popup-menu';
         submenu.id = 'subtitle-submenu';
         submenu.style.display = 'none';
-        document.body.appendChild(submenu);
+        submenu.style.top = '110%';
+        submenu.style.left = '0';
+        this.button.appendChild(submenu);
         return submenu;
     }
 
@@ -61,11 +63,6 @@ export class SubtitlePopup {
         `).join('');
     }
 
-    private positionSubmenu(): void {
-        const buttonRect = this.button.getBoundingClientRect();
-        this.submenu.style.top = `${buttonRect.bottom + 5}px`;
-        this.submenu.style.left = `${buttonRect.left}px`;
-    }
 
     private initialize(): void {
         this.submenu.innerHTML = this.createMenuItems();
@@ -74,12 +71,9 @@ export class SubtitlePopup {
         this.button.addEventListener('click', (e) => {
             e.stopPropagation();
             const isVisible = this.submenu.style.display === 'block';
-            this.submenu.style.display = isVisible ? 'none' : 'block';
             
-            if (!isVisible) {
-                this.positionSubmenu();
-            } 
             this.updateMenuItems();     
+            this.submenu.style.display = isVisible ? 'none' : 'block';
         });
 
         // Submenu item click handler

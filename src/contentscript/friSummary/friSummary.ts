@@ -40,7 +40,9 @@ class FriSummary {
     }
 
     private createFriSummaryContainer(): HTMLElement {
-        const container = document.createElement('div');
+        const div = document.createElement('div');
+
+        const container = div.appendChild(document.createElement('div'));
         container.className = 'fri-summry-container';
         container.id = 'fri-summry-container';
 
@@ -106,7 +108,7 @@ class FriSummary {
                 </div>
         `;
 
-        return container;
+        return div;
     }
 
     private initializeToggleButtons(): void {
@@ -290,27 +292,23 @@ class FriSummary {
         }
     }
 
-    public init(): void {
-        const root = document.getElementById('#bottom-row');
-        if (!root) return;
+    public init(): void {        
+        const friSummaryContainer = document.getElementById('fri-summry-container');
+        if (friSummaryContainer) {
+            friSummaryContainer.remove();
+        }
+        const container = this.createFriSummaryContainer();
+        document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", container.innerHTML);
 
-        root.appendChild(this.createFriSummaryContainer());
-
-        document.addEventListener('DOMContentLoaded', () => {
-            this.initializeToggleButtons();
-            this.initializePopupMenu();
-            this.initializeLanguageHandler();
-            this.initializeSubtitlePopup();
-            this.updateLanguageTexts();
-            this.initServices();
-            this.infoTextService.startDemo();
-        });
+        this.initializeToggleButtons();
+        this.initializePopupMenu();
+        this.initializeLanguageHandler();
+        this.initializeSubtitlePopup();
+        this.updateLanguageTexts();
+        this.initServices();
+        this.infoTextService.startDemo();
     }
 }
-
-// Initialize the FriSummary component
-// const friSummary = new FriSummary();
-// friSummary.init(); 
 
 export function friSummaryInit(): void {
     const friSummary = new FriSummary();

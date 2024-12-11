@@ -1,4 +1,4 @@
-import { i18n } from './i18n';
+import { i18n } from '../../common/i18n';
 import { Language, summaryState } from './friSummaryState';
 
 export interface II18nService {

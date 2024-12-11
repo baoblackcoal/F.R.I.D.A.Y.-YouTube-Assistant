@@ -86,6 +86,10 @@ export class I18nService {
     try {
       const response = await fetch(`_locales/${language}/messages.json`);
       this.messages = await response.json();
+      const responseContent = await fetch(`_locales/${language}/messagesContent.json`);
+      const messagesContent = await responseContent.json();
+      this.messages = { ...this.messages, ...messagesContent };
+
       this.currentLanguage = language;
     } catch (error) {
       console.error('Failed to load locale:', error);

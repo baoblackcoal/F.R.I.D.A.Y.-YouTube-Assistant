@@ -33,7 +33,7 @@ export const defaultSummarySettings: ISummarySettings = {
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
   language: Language.SimplifiedChinese,
   autoTtsSpeak: false,
-  autoSummary: true,
+  autoSummary: false,
   generateSubtitleType: GenerateSubtitleType.Podcast,
 };
 

@@ -44,6 +44,9 @@ export async function insertSummaryBtn(): Promise<void> {
         // Sanitize
         Array.from(document.getElementsByClassName("yt_ai_summary_container")).forEach(el => { el.remove(); });
 
+        friSummaryInit();
+
+
         // Place Script Div
         document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", `
             <div class="yt_ai_summary_container" style="
@@ -145,7 +148,6 @@ export async function insertSummaryBtn(): Promise<void> {
 
         handleSubtitleSummaryView(getVideoId());
         commandHandle();
-        friSummaryInit();
     });
 }
 

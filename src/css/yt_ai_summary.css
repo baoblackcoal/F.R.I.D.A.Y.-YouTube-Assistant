@@ -7,7 +7,7 @@
 }
 
 .yt_ai_summary_header {
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     font-size: 15px;

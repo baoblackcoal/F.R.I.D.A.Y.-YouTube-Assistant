@@ -75,10 +75,8 @@ export class SubtitlePopup {
             e.stopPropagation();
             const isVisible = this.submenu.style.display === 'block';
             this.submenu.style.display = isVisible ? 'none' : 'block';
-            
-            if (!isVisible) {
-                this.positionSubmenu();
-            } 
+
+            this.positionSubmenu();
             this.updateMenuItems();     
         });
 
