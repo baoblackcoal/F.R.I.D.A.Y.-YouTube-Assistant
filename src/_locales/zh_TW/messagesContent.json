@@ -1,0 +1,65 @@
+{
+    "summary-play": {
+        "message": "播放"
+    },
+    "summary-pause": {
+        "message": "暫停"
+    },
+    "summary-ai-generate": {
+        "message": "AI 生成"
+    },
+    "summary-expand": {
+        "message": "展開"
+    },
+    "summary-collapse": {
+        "message": "摺疊"
+    },
+    "summary-more": {
+        "message": "更多"
+    },
+    "summary-settings": {
+        "message": "設定"
+    },
+    "summary-fri-waiting": {
+        "message": "隨時等候吩咐。"
+    },
+    "summary-fri-generating": {
+        "message": "正在生成總結..."
+    },
+    "summary-fri-translating": {
+        "message": "正在翻譯字幕..."
+    },
+    "summary-fri-finished": {
+        "message": "生成完成。"
+    },
+    "summary-subtitle-generate": {
+        "message": "字幕生成"
+    },
+    "summary-subtitle-none": {
+        "message": "無"
+    },
+    "summary-subtitle-translate": {
+        "message": "字幕翻譯"
+    },
+    "summary-subtitle-to-podcast": {
+        "message": "字幕轉播客"
+    },
+    "summary-pupup-copy": {
+        "message": "複製"
+    },
+    "summary-pupup-download": {
+        "message": "下載"
+    },
+    "summary-pupup-youtube-subtitle": {
+        "message": "Youtube 字幕"
+    },
+    "summary-pupup-auto-generate": {
+        "message": "自動生成"
+    },
+    "summary-pupup-auto-play": {
+        "message": "自動播放"
+    },
+    "summary-pupup-language": {
+        "message": "AI 語言"
+    }
+}

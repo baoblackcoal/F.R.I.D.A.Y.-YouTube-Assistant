@@ -11,6 +11,7 @@ import { insertCommandContainer } from './command/commandView';
 import { globalConfig } from '../common/config';
 import { logTime, waitForElm } from "./utils";
 import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
+import { friSummaryInit } from "./friSummary/friSummary";
 
 function getVideoId(): string {
     return getSearchParam(window.location.href).v || '';
@@ -144,6 +145,7 @@ export async function insertSummaryBtn(): Promise<void> {
 
         handleSubtitleSummaryView(getVideoId());
         commandHandle();
+        friSummaryInit();
     });
 }
 
