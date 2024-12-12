@@ -29,7 +29,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["friday_logo_48.png"],
+      "resources": ["friday_logo_48.png", "_locales/*"],
       "matches": ["*://*.youtube.com/*"]
     }
   ],

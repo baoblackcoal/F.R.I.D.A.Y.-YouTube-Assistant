@@ -84,9 +84,13 @@ export class I18nService {
 
   public async loadLocale(language: Language): Promise<void> {
     try {
-      const response = await fetch(`_locales/${language}/messages.json`);
+      // const response = await fetch(`_locales/${language}/messages.json`);
+      let url = chrome.runtime.getURL(`_locales/${language}/messages.json`);
+      const response = await fetch(url);
       this.messages = await response.json();
-      const responseContent = await fetch(`_locales/${language}/messagesContent.json`);
+      // const responseContent = await fetch(`_locales/${language}/messagesContent.json`);
+      url = chrome.runtime.getURL(`_locales/${language}/messagesContent.json`);
+      const responseContent = await fetch(url);
       const messagesContent = await responseContent.json();
       this.messages = { ...this.messages, ...messagesContent };
 
