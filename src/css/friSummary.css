@@ -230,7 +230,7 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     position: absolute;
     right: 12px;
     width: 24px;
-    height: 24px;
+    height: 24px; 
 }
 
 .fri-sub-popup {
@@ -238,6 +238,8 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
     right: 100%;
     top: 0;
     display: none;
+    min-width: 200px;
+    text-align: left;
 }
 
 .fri-popup-item:hover > .fri-sub-popup {
