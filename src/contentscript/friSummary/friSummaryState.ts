@@ -1,36 +1,19 @@
-
-
-export enum Language {
-    English = 'en',
-    SimplifiedChinese = 'zh_CN',
-    TraditionalChinese = 'zh_TW'
-}
-
-export enum SubtitleType {
-    None = 'None',
-    SubtitleTranslate = 'Subtitle Translate',
-    SubtitleToPodcast = 'Subtitle to Podcast'
-}
-    
-export const languageLabels: Record<Language, string> = {
-    [Language.English]: 'English',
-    [Language.SimplifiedChinese]: '简体中文',
-    [Language.TraditionalChinese]: '繁體中文'
-};
+import { Language, SubtitleType } from "../../common/ISettings";
+import { settingsManager } from "../../common/settingsManager";
 
 export interface IFriSummaryState {
-    getAutoGenerate(): boolean;
-    setAutoGenerate(value: boolean): void;
-    getAutoPlay(): boolean;
-    setAutoPlay(value: boolean): void;
-    getSummaryLanguage(): Language;
-    setSummaryLanguage(value: Language): void;
-    getDisplayLanguage(): Language;
-    setDisplayLanguage(value: Language): void;
-    getSubtitleType(): SubtitleType;
-    setSubtitleType(value: SubtitleType): void;
-    getYoutubeSubtitleVisible(): boolean;
-    setYoutubeSubtitleVisible(value: boolean): void;
+    getAutoGenerate(): Promise<boolean>;
+    setAutoGenerate(value: boolean): Promise<void>;
+    getAutoPlay(): Promise<boolean>;
+    setAutoPlay(value: boolean): Promise<void>;
+    getSummaryLanguage(): Promise<Language>;
+    setSummaryLanguage(value: Language): Promise<void>;
+    getDisplayLanguage(): Promise<Language>;
+    setDisplayLanguage(value: Language): Promise<void>;
+    getSubtitleType(): Promise<SubtitleType>;
+    setSubtitleType(value: SubtitleType): Promise<void>;
+    getYoutubeSubtitleVisible(): Promise<boolean>;
+    setYoutubeSubtitleVisible(value: boolean): Promise<void>;
 }
 
 
@@ -58,52 +41,74 @@ class FriSummaryState implements IFriSummaryState {
         // private constructor
     }
 
-    getYoutubeSubtitleVisible(): boolean {
-        return this.youtubeSubtitleVisible;
+    async getYoutubeSubtitleVisible(): Promise<boolean> {
+        return Promise.resolve(this.youtubeSubtitleVisible);
     }
 
-    setYoutubeSubtitleVisible(value: boolean): void {
+    async setYoutubeSubtitleVisible(value: boolean): Promise<void> {
         this.youtubeSubtitleVisible = value;
+        return Promise.resolve();
     }
 
-    getSubtitleType(): SubtitleType {
-        return this.subtitleType;
+    async getSubtitleType(): Promise<SubtitleType> {
+        return Promise.resolve(this.subtitleType);
     }
 
-    setSubtitleType(value: SubtitleType): void {
+    async setSubtitleType(value: SubtitleType): Promise<void> {
         this.subtitleType = value;
+        return Promise.resolve();
     }
 
-    getAutoGenerate(): boolean {
-        return this.autoGenerate;
+    async getAutoGenerate(): Promise<boolean> {
+        const settings = await settingsManager.getSummarySettings();
+        return settings.autoSummary;
     }
 
-     setAutoGenerate(value: boolean): void {
+    async setAutoGenerate(value: boolean): Promise<void> {
+        const settings = await settingsManager.getSummarySettings();
+        settings.autoSummary = value;
+        await settingsManager.setSummarySettings(settings);
         this.autoGenerate = value;
+        return Promise.resolve();
     }
 
-     getAutoPlay(): boolean {
-        return this.autoPlay;
+    async getAutoPlay(): Promise<boolean> {
+        const settings = await settingsManager.getSummarySettings();
+        return settings.autoTtsSpeak;
     }
 
-     setAutoPlay(value: boolean): void {
+    async setAutoPlay(value: boolean): Promise<void> {
+        const settings = await settingsManager.getSummarySettings();
+        settings.autoTtsSpeak = value;
+        await settingsManager.setSummarySettings(settings);
         this.autoPlay = value;
+        return Promise.resolve();
     }
 
-     getSummaryLanguage(): Language {
-        return this.summaryLanguage;
+    async getSummaryLanguage(): Promise<Language> {
+        const settings = await settingsManager.getSummarySettings();
+        return settings.language;
     }
 
-     setSummaryLanguage(value: Language): void {
+    async setSummaryLanguage(value: Language): Promise<void> {
+        const settings = await settingsManager.getSummarySettings();
+        settings.language = value;
+        await settingsManager.setSummarySettings(settings);
         this.summaryLanguage = value;
-    }   
-
-    getDisplayLanguage(): Language {
-        return this.displayLanguage;
+        return Promise.resolve();
     }
 
-    setDisplayLanguage(value: Language): void {
+    async getDisplayLanguage(): Promise<Language> {
+        const settings = await settingsManager.getSummarySettings();
+        return settings.language;
+    }
+
+    async setDisplayLanguage(value: Language): Promise<void> {
+        const settings = await settingsManager.getSummarySettings();
+        settings.language = value;
+        await settingsManager.setSummarySettings(settings);
         this.displayLanguage = value;
+        return Promise.resolve();
     }
 }
 

@@ -1,4 +1,5 @@
-import { ILlmSettings } from "./ISettings";
+import { ILlmSettings, SubtitleType } from "./ISettings";
+import { Language } from "./ISettings";
 
 export enum Env {
   Dev = "dev",
@@ -10,6 +11,18 @@ export const responseOk = { status: 'ok' };
 export const responseNoHandlers = { status: 'no_handlers' };
 
 
+export const languageLabels: Record<Language, string> = {
+  [Language.English]: 'English',
+  [Language.SimplifiedChinese]: '简体中文',
+  [Language.TraditionalChinese]: '繁體中文'
+};
+
+
+export const subtitleOptionLabels: Record<SubtitleType, string> = {
+  [SubtitleType.None]: 'summary-subtitle-none',
+  [SubtitleType.SubtitleTranslate]: 'summary-subtitle-translate',
+  [SubtitleType.SubtitleToPodcast]: 'summary-subtitle-to-podcast'
+};
 
 export class Common {
 

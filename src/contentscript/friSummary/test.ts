@@ -1,4 +1,4 @@
-import { Language } from "./friSummaryState";
+import { Language } from "../../common/ISettings";
 import { i18nService } from "./i18nService";
 
 // Interfaces for better abstraction and testability

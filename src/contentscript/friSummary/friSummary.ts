@@ -1,8 +1,9 @@
 import { getCopySvg, getToggleSvg, ICONS } from './svgs';
 import { ToastService, ThemeService, InfoTextService, LanguageService } from './test';
 import { FriSummaryPopup, IPopupEvents, ISubtitleEvents, SubtitlePopup } from './friSummaryPopup';
-import { IFriSummaryState, summaryState, Language, SubtitleType } from './friSummaryState';
+import { IFriSummaryState, summaryState } from './friSummaryState';
 import { i18nService } from './i18nService';
+import { Language, SubtitleType } from '../../common/ISettings';
 
 
 class FriSummary {
@@ -18,7 +19,7 @@ class FriSummary {
     }
 
     private async setLanguage(): Promise<void> {
-        await i18nService.setLanguage(this.state.getDisplayLanguage());
+        await i18nService.setLanguage(await this.state.getDisplayLanguage());
     }
 
     private initServices(): void {        

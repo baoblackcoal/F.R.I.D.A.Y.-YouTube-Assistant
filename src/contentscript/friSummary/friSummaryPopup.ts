@@ -1,16 +1,9 @@
-import { Language, languageLabels, SubtitleType } from './friSummaryState';
+import { languageLabels, subtitleOptionLabels } from '../../common/common';
+import { SubtitleType, Language } from '../../common/ISettings';
 import { ICONS } from './svgs';
 import { ToastService } from './test';
 import { IFriSummaryState } from './friSummaryState';
 import { i18nService } from './i18nService';
-
-// export type SubtitleOption = 'none' | 'translate' | 'podcast';
-
-export const subtitleOptionLabels: Record<SubtitleType, string> = {
-    [SubtitleType.None]: 'summary-subtitle-none',
-    [SubtitleType.SubtitleTranslate]: 'summary-subtitle-translate',
-    [SubtitleType.SubtitleToPodcast]: 'summary-subtitle-to-podcast'
-};
 
 export interface IPopupEvents {
     onLanguageChange: (language: Language) => void;
@@ -54,18 +47,19 @@ export class SubtitlePopup {
         return submenu;
     }
 
-    private createMenuItems(): string {
+    private async createMenuItems(): Promise<string> {
+        const subtitleType = await this.state.getSubtitleType();
         return Object.entries(subtitleOptionLabels).map(([key, label]) => `
             <div class="fri-popup-item subtitle-item" data-subtitle-option="${key}">
-                ${key === this.state.getSubtitleType() ? ICONS.check : '<div style="width: 24px;"></div>'}
+                ${key === subtitleType ? ICONS.check : '<div style="width: 24px;"></div>'}
                 <span style="margin-left: 4px;">${i18nService.getMessage(label)}</span>
             </div>
         `).join('');
     }
 
 
-    private initialize(): void {
-        this.submenu.innerHTML = this.createMenuItems();
+    private async initialize(): Promise<void> {
+        this.submenu.innerHTML = await this.createMenuItems();
 
         // Button click handler
         this.button.addEventListener('click', (e) => {
@@ -98,8 +92,8 @@ export class SubtitlePopup {
         });
     }
 
-    private updateMenuItems(): void {
-        this.submenu.innerHTML = this.createMenuItems();
+    private async updateMenuItems(): Promise<void> {
+        this.submenu.innerHTML = await this.createMenuItems();
     }
 
     public destroy(): void {
@@ -109,7 +103,7 @@ export class SubtitlePopup {
 
 export class FriSummaryPopup {
     private state: IFriSummaryState;
-    private popupMenu: HTMLElement;
+    private popupMenu!: HTMLElement;
     private toastService: ToastService;
     private events: IPopupEvents;
 
@@ -122,7 +116,6 @@ export class FriSummaryPopup {
         this.state = initialState;
         this.events = events;
         this.toastService = toastService;
-        this.popupMenu = this.createPopupMenu();
     }
 
     private createLanguageMenuItems(selectedLanguage: Language): string {
@@ -134,7 +127,7 @@ export class FriSummaryPopup {
         `).join('');    
     }
 
-    private createPopupMenu(): HTMLElement {
+    private async createPopupMenu(): Promise<HTMLElement> {
         const popupMenu = document.createElement('div');
         popupMenu.className = 'fri-popup-menu';
         
@@ -152,7 +145,7 @@ export class FriSummaryPopup {
                 <span>${i18nService.getMessage('summary-pupup-language')}</span>
                 <div class="fri-sub-popup-arrow">${ICONS.subPopupArrow}</div>
                 <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(this.state.getSummaryLanguage())}
+                    ${this.createLanguageMenuItems(await this.state.getSummaryLanguage())}
                 </div>
             </div>
             <div class="fri-popup-item" id="auto-generate-item">
@@ -175,7 +168,8 @@ export class FriSummaryPopup {
         return popupMenu;
     }
 
-    public init(moreButton: HTMLElement): void {
+    public async init(moreButton: HTMLElement): Promise<void> {
+        this.popupMenu = await this.createPopupMenu();
         moreButton.parentElement?.appendChild(this.popupMenu);
         this.loadState();
         this.initializePopupMenuEvents(moreButton);
@@ -184,7 +178,7 @@ export class FriSummaryPopup {
         this.initializePopupEvents();
     }
 
-    private loadState(): void {
+    private async loadState(): Promise<void> {
         const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
         const autoGenerateToggle = this.popupMenu.querySelector('#auto-generate-toggle');
         const autoPlayToggle = this.popupMenu.querySelector('#auto-play-toggle');
@@ -192,12 +186,12 @@ export class FriSummaryPopup {
         if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle || !youtubeSubtitleToggle) return;
 
         // set language submenu items checked
-        languageSubmenu.innerHTML = this.createLanguageMenuItems(this.state.getSummaryLanguage());
+        languageSubmenu.innerHTML = this.createLanguageMenuItems(await this.state.getSummaryLanguage());
 
         // set toggle items checked
-        autoGenerateToggle.classList.toggle('active', this.state.getAutoGenerate());
-        autoPlayToggle.classList.toggle('active', this.state.getAutoPlay());
-        youtubeSubtitleToggle.classList.toggle('active', this.state.getYoutubeSubtitleVisible());
+        autoGenerateToggle.classList.toggle('active', await this.state.getAutoGenerate());
+        autoPlayToggle.classList.toggle('active', await this.state.getAutoPlay());
+        youtubeSubtitleToggle.classList.toggle('active', await this.state.getYoutubeSubtitleVisible());
     }
 
     private initializePopupMenuEvents(moreButton: HTMLElement): void {
@@ -238,7 +232,7 @@ export class FriSummaryPopup {
 
             e.stopPropagation();
             const newLanguage = languageItem.getAttribute('data-language') as Language;
-            if (!newLanguage || newLanguage === this.state.getSummaryLanguage()) return;
+            if (!newLanguage || newLanguage === (await this.state.getSummaryLanguage())) return;
 
             await this.handleLanguageChange(newLanguage);
         });

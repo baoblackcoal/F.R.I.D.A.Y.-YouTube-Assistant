@@ -1,5 +1,6 @@
 import { i18n } from '../../common/i18n';
-import { Language, summaryState } from './friSummaryState';
+import { summaryState } from './friSummaryState';
+import { Language } from '../../common/ISettings';
 
 export interface II18nService {
     setLanguage: (language: Language) => Promise<void>;

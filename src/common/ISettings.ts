@@ -17,6 +17,12 @@ export enum Language {
     // Russian = 'Russian',
 }
 
+export enum SubtitleType {
+  None = 'None',
+  SubtitleTranslate = 'Subtitle Translate',
+  SubtitleToPodcast = 'Subtitle to Podcast'
+}
+
 export enum GenerateSubtitleType {
     None = "None",
     EasyToRead = "EasyToRead",
