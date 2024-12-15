@@ -57,7 +57,7 @@ class SpeakButtonHandler implements IButtonHandler {
 
     private speakContent(): void {
         const parser = new DOMParser();
-        const content = document.querySelector(".ytbs_content") as HTMLElement;
+        const content = document.querySelector("#fri-summary-content") as HTMLElement;
         if (content) {
             Array.from(content.children).forEach((node) => {
                 if (node instanceof HTMLElement) {
@@ -228,7 +228,7 @@ class PlayPauseButtonHandler implements IButtonHandler {
 
     private resumeSpeaking(): void {
         const parser = new DOMParser();
-        const content = document.querySelector(".ytbs_content") as HTMLElement;
+        const content = document.querySelector("#fri-summary-content") as HTMLElement;
         if (content) {
             Array.from(content.children).forEach((node) => {
                 if (node instanceof HTMLElement) {

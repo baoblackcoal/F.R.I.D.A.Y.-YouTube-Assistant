@@ -34,7 +34,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
     }
 
     addSummaryParagraphsClickHandlers(): void {
-        const contentElement = document.querySelector(".ytbs_content");
+        const contentElement = document.querySelector("#fri-summary-content");
         if (contentElement) {
             this.addParagraphsClickHandlers(contentElement);
         }
@@ -52,7 +52,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
             }
 
             geminiAPI.setKey(geminiApiKey);
-            const contentElement = document.querySelector(".ytbs_content");
+            const contentElement = document.querySelector("#fri-summary-content");
             if (!contentElement) {
                 this.displayError("Content element not found");
                 return;
@@ -144,7 +144,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
         if (!isError) {
             const parser = new DOMParser();
-            const tempElement = document.querySelector(".ytbs_content") as HTMLElement;
+            const tempElement = document.querySelector("#fri-summary-content") as HTMLElement;
                 const childNodes = tempElement.children;
                 for (let i = 0; i < childNodes.length; i++) {
                     const node = childNodes[i];
@@ -286,8 +286,8 @@ class SubtitleTranslator implements ISubtitleTranslator {
         resetHighlightText();
         await tts.stop();
         await tts.resetStreamSpeak();
-        // automatically speak from current paragraph to the end of the ".ytbs_content" element.
-        const contentElement = document.querySelector(".ytbs_content");
+        // automatically speak from current paragraph to the end of the "#fri-summary-content" element.
+        const contentElement = document.querySelector("#fri-summary-content");
         if (contentElement) {
             //query all paragraphs or h3 in the content element
             const paragraphs = contentElement.querySelectorAll('p, h3');

@@ -165,14 +165,14 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 }
 
 
-.fri-summary-content-container {
+.fri-summary-content {
     padding: 0.5rem;
     margin-top: 0.5rem;
     border-top: 1px solid var(--fri-border);
 }
 
 
-.fri-summary-content-container p {
+.fri-summary-content p {
     margin: 0.75rem 0;
     line-height: 1.6;
     font-size: 14px;

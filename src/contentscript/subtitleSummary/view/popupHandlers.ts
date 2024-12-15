@@ -52,13 +52,13 @@ export class MorePopupHandler implements IPopupHandler {
     }
 
     private handleCopy = async (): Promise<void> => {
-        const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+        const text = (document.querySelector("#fri-summary-content") as HTMLElement).innerText;
         await copyTextToClipboard(text);
         createToast("Content copied to clipboard!");
     }
 
     private handleDownload = async (): Promise<void> => {
-        const text = (document.querySelector(".ytbs_content") as HTMLElement).innerText;
+        const text = (document.querySelector("#fri-summary-content") as HTMLElement).innerText;
         const blob = new Blob([text], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

@@ -84,10 +84,16 @@ class FriSummary {
                 </div>
             </div>
 
-            <div class="fri-summary-content-container" id="fri-summary-content-container">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            </div>
+            <div id="ytbs_summary_status" style="
+                margin-bottom: 12px;
+                color: var(--yt-spec-text-secondary);
+                font-size: 13px;
+            "> </div>
+            <div class="fri-summary-content" style="
+                color: var(--yt-spec-text-primary);
+                line-height: 1.6;
+                padding: 8px 0;
+            " id="fri-summary-content"> </div>    
 
             <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <p> </p>
@@ -141,7 +147,7 @@ class FriSummary {
         const expandButton = container.querySelector('.expand-button') as HTMLElement;
         const collapseButton = container.querySelector('.collapse-button') as HTMLElement;
         const tooltip = container.querySelector('.fri-tooltip') as HTMLElement;
-        const contentContainer = document.getElementById('fri-summary-content-container');
+        const contentContainer = document.getElementById('fri-summary-content');
 
         container.addEventListener('click', () => {
             const isCollapsed = collapseButton.style.display !== 'none';

@@ -55,7 +55,7 @@ export class SubtitleSummaryView {
         if (settings.summary.autoSummary) {
             subtitleSummaryHandle(videoId, subtitleTranslate);
         } else {
-            const ytbsContent = document.querySelector(".ytbs_content") as HTMLElement;
+            const ytbsContent = document.querySelector("#fri-summary-content") as HTMLElement;
             if (ytbsContent) {
                 ytbsContent.innerHTML = "Summary disabled.";
             }
@@ -67,7 +67,7 @@ export class SubtitleSummaryView {
             const ttsTextIndex = message.index ?? 0;
             this.currentReadIndex = ttsTextIndex;
 
-            const ytbsContent = document.querySelector(".ytbs_content") as HTMLElement;
+            const ytbsContent = document.querySelector("#fri-summary-content") as HTMLElement;
             ytbsContent.childNodes.forEach((node) => {
                 if (node instanceof HTMLElement) {
                     const speakIndex = Number(node.getAttribute('speak-index'));
@@ -237,16 +237,7 @@ export function getSubtitleSummaryView(): string {
                     ">More</button>
                 </div>
             </div>
-            <div id="ytbs_summary_status" style="
-                margin-bottom: 12px;
-                color: var(--yt-spec-text-secondary);
-                font-size: 13px;
-            "> </div>
-            <div class="ytbs_content" style="
-                color: var(--yt-spec-text-primary);
-                line-height: 1.6;
-                padding: 8px 0;
-            "> </div>    
+
         </div>
     `;
 }

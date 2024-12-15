@@ -188,7 +188,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
 
     getApiKey(async (geminiApiKey) => {
         let parseText = "";
-        const contentElement = document.querySelector(".ytbs_content");
+        const contentElement = document.querySelector("#fri-summary-content");
         let reavStreamText = "";
         if (contentElement) {
             if (geminiApiKey != null) {
