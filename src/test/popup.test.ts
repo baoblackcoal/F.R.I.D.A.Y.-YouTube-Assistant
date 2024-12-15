@@ -74,11 +74,13 @@ describe('Popup Test', () => {
       pitch: 1.25,
       rate: 1.5,
       language: '',
-      voiceName: ''
+      voiceName: '',
+      voiceNameRobinson: ''
     };
 
     await popupPage.select('#language', settings.language);
     await popupPage.select('#voiceName', settings.voiceName);
+    await popupPage.select('#voiceNameRobinson', settings.voiceNameRobinson);
     await popupPage.select('#speed', settings.rate.toString());
     await popupPage.select('#pitch', settings.pitch.toString());
     await changeVolume(settings.volume);

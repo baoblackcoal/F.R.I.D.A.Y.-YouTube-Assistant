@@ -9,3 +9,66 @@
 .test-controls {
   @apply flex space-x-4 mt-6;
 }
+
+/* Voice section styling */
+.voice-section {
+  @apply flex items-center space-x-4 mb-4;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-section div:first-child {
+  @apply min-w-[80px] font-medium;
+}
+
+.voice-section .select {
+  @apply flex-grow;
+}
+
+.voice-section .base-button {
+  @apply whitespace-nowrap;
+}
+
+/* Tooltip container styles */
+.svg-icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Show tooltip only when hovering over the SVG icon */
+.svg-icon:hover + .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Add arrow to tooltip */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}

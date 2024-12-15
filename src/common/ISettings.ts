@@ -32,6 +32,7 @@ export enum GenerateSubtitleType {
 export interface ITtsSettings {
   language: string;
   voiceName: string;
+  voiceNameRobinson: string;
   rate: number;
   pitch: number;
   volume: number;

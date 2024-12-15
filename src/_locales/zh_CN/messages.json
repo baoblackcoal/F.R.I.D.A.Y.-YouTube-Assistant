@@ -189,5 +189,11 @@
     },
     "option_tts_default_option": {
         "message": "默认"
+    },
+    "option_tts_friday_voice_tooltip": {
+        "message": "Friday 声音用于 AI 总结和播客主持人"
+    },
+    "option_tts_robinson_voice_tooltip": {
+        "message": "Robinson 声音用于播客嘉宾"
     }
 }

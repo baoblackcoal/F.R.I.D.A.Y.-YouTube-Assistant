@@ -25,7 +25,7 @@ class ChromeSettingsManager implements ISettingsManager {
   constructor() {
     const env: Env = common.getEnvironment();
     console.log("environment = "+env);
-    if (env) {
+    if (env === Env.Prod) {
       this.initSettings = getInitSettings(InitialSettingsType.DEFAULT);
     } else {
       this.initSettings = getInitSettings(globalConfig.devInitialSettingsType);

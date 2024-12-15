@@ -15,6 +15,7 @@ export const pitchOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 export const defaultTtsSettings: ITtsSettings = {
   language: '',
   voiceName: '',
+  voiceNameRobinson: '',
   rate: 1.0,
   pitch: 1.0,
   volume: 1.0,
@@ -68,7 +69,7 @@ export const testSettings: IAbstractSettings = {
     diyPromptText2: "hi",
     diyPromptText3: "hello",
     language: Language.SimplifiedChinese,
-    autoTtsSpeak: false,
+    autoTtsSpeak: true,
     autoSummary: true,
     generateSubtitleType: GenerateSubtitleType.Podcast,
   },
@@ -78,7 +79,7 @@ export const testSettings: IAbstractSettings = {
   },
   tts: {
     ...defaultTtsSettings,
-    rate: 1,
+    rate: 2,
     apiType: ApiType.Chrome,
   },
 };

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ttsTypeSelect = document.getElementById('ttsType') as HTMLSelectElement;
     const languageSelect = document.getElementById('language') as HTMLSelectElement;
     const voiceSelect = document.getElementById('voiceName') as HTMLSelectElement;
+    const voiceSelectRobinson = document.getElementById('voiceNameRobinson') as HTMLSelectElement;
     const speedSelect = document.getElementById('speed') as HTMLSelectElement;
     const pitchSelect = document.getElementById('pitch') as HTMLSelectElement;
     const volumeInput = document.getElementById('volume') as HTMLInputElement;
@@ -153,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const settings = await settingsManager.getTtsSettings();
         languageSelect.value = settings.language || '';
         voiceSelect.value = settings.voiceName || '';
+        voiceSelectRobinson.value = settings.voiceNameRobinson || '';
         speedSelect.value = settings.rate.toString();
         pitchSelect.value = settings.pitch.toString();
         volumeInput.value = settings.volume.toString();
@@ -166,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             apiType: ttsTypeSelect.value as ApiType,
             language: languageSelect.value,
             voiceName: voiceSelect.value,
+            voiceNameRobinson: voiceSelectRobinson.value,
             rate: parseFloat(speedSelect.value),
             pitch: parseFloat(pitchSelect.value),
             volume: parseFloat(volumeInput.value),

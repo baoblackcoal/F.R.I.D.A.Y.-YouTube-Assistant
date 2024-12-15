@@ -190,5 +190,11 @@
     },
     "option_tts_default_option": {
         "message": "Default"
+    },
+    "option_tts_friday_voice_tooltip": {
+        "message": "Friday voice for speaking content of AI summarizing and host in Podcast"
+    },
+    "option_tts_robinson_voice_tooltip": {
+        "message": "Robinson voice for speaking content of guest in Podcast"
     }
 }

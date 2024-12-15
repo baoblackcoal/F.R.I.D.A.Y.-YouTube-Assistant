@@ -65,12 +65,18 @@ export class TTSPage {
     // Update buttons
     const testButton = this.container.querySelector('#test') as HTMLButtonElement;
     const stopButton = this.container.querySelector('#stop') as HTMLButtonElement;
+    const testRobinsonButton = this.container.querySelector('#testRobinson') as HTMLButtonElement;
     
     if (testButton) {
       testButton.textContent = i18n.getMessage('option_tts_test_button');
     }
+
     if (stopButton) {
       stopButton.textContent = i18n.getMessage('option_tts_stop_button');
+    }
+
+    if (testRobinsonButton) {
+      testRobinsonButton.textContent = i18n.getMessage('option_tts_test_button');
     }
 
     // Update default options
@@ -135,8 +141,27 @@ export class TTSPage {
     voiceSection.className = 'sub-section';
     voiceSection.innerHTML = `
       <label id="voiceLabel" class="label">${i18n.getMessage('option_tts_voice_label')}</label>
-      <select id="voiceName" class="select">
-      </select>
+      <div id="friday-voice-section" class="voice-section">
+        <div>Friday</div>        
+        <select id="voiceName" class="select"></select>
+        <svg class="svg-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="11" fill="none" stroke="#808080" stroke-width="2"/>
+            <text x="12" y="19" text-anchor="middle" fill="#808080" font-size="20" font-weight="bold">?</text>
+        </svg>
+        <div class="tooltip">${i18n.getMessage('option_tts_friday_voice_tooltip')}</div>
+        <button id="test" class="base-button">${i18n.getMessage('option_tts_test_button')}</button>
+      </div>
+      <div id="robinson-voice-section" class="voice-section">
+        <div>Robinson</div>
+
+        <select id="voiceNameRobinson" class="select"></select>
+        <svg class="svg-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="11" fill="none" stroke="#808080" stroke-width="2"/>
+            <text x="12" y="19" text-anchor="middle" fill="#808080" font-size="20" font-weight="bold">?</text>
+        </svg>
+        <div class="tooltip">${i18n.getMessage('option_tts_robinson_voice_tooltip')}</div>
+        <button id="testRobinson" class="base-button">${i18n.getMessage('option_tts_test_button')}</button>
+      </div>
     `;
 
     // Speed and Pitch Controls
@@ -163,19 +188,19 @@ export class TTSPage {
     `;
 
     // Test Controls
-    const testSection = document.createElement('div');
-    testSection.className = 'test-controls';
-    testSection.innerHTML = `
-      <button id="test" class="base-button">${i18n.getMessage('option_tts_test_button')}</button>
-      <button id="stop" class="base-button">${i18n.getMessage('option_tts_stop_button')}</button>
-    `;
+    // const testSection = document.createElement('div');
+    // testSection.className = 'test-controls';
+    // testSection.innerHTML = `
+    //   <button id="test" class="base-button">${i18n.getMessage('option_tts_test_button')}</button>
+    //   <button id="stop" class="base-button">${i18n.getMessage('option_tts_stop_button')}</button>
+    // `;
 
     controls.appendChild(ttsTypeSection);
     controls.appendChild(languageSection);
     controls.appendChild(voiceSection);
     controls.appendChild(speedPitchSection);
     controls.appendChild(volumeSection);
-    controls.appendChild(testSection);
+    // controls.appendChild(testSection);
 
     this.container.appendChild(controls);
   }
@@ -218,9 +243,11 @@ export class TTSPage {
 
   private populateVoiceOptions(voices: VoiceInfo[]): void {
     const voiceSelect = this.container.querySelector('#voiceName') as HTMLSelectElement;
+    const voiceSelectRobinson = this.container.querySelector('#voiceNameRobinson') as HTMLSelectElement;
     const selectedLanguage = (this.container.querySelector('#language') as HTMLSelectElement).value;
     
     voiceSelect.innerHTML = selectedLanguage === '' ? '<option value="">Default</option>' : '';
+    voiceSelectRobinson.innerHTML = selectedLanguage === '' ? '<option value="">Default</option>' : '';
 
     voices.forEach((voice) => {
       if (voice.lang && voice.lang.startsWith(selectedLanguage) && voice.voiceName) {
@@ -228,10 +255,16 @@ export class TTSPage {
         option.value = voice.voiceName;
         option.textContent = `${voice.voiceName} (${voice.lang})`;
         voiceSelect.appendChild(option);
+
+        const optionRobinson = document.createElement('option');
+        optionRobinson.value = voice.voiceName;
+        optionRobinson.textContent = `${voice.voiceName} (${voice.lang})`;
+        voiceSelectRobinson.appendChild(optionRobinson);
       }
-    });
+    });    
 
     voiceSelect.value = this.settings.voiceName;
+    voiceSelectRobinson.value = this.settings.voiceNameRobinson;
   }
 
   private populateSpeedAndPitchOptions(): void {
@@ -263,18 +296,22 @@ export class TTSPage {
     const ttsTypeSelect = this.container.querySelector('#ttsType') as HTMLSelectElement;
     const languageSelect = this.container.querySelector('#language') as HTMLSelectElement;
     const voiceSelect = this.container.querySelector('#voiceName') as HTMLSelectElement;
+    const voiceSelectRobinson = this.container.querySelector('#voiceNameRobinson') as HTMLSelectElement;
     const speedSelect = this.container.querySelector('#speed') as HTMLSelectElement;
     const pitchSelect = this.container.querySelector('#pitch') as HTMLSelectElement;
     const volumeInput = this.container.querySelector('#volume') as HTMLInputElement;
     const testButton = this.container.querySelector('#test') as HTMLButtonElement;
-    const stopButton = this.container.querySelector('#stop') as HTMLButtonElement;
+    // const stopButton = this.container.querySelector('#stop') as HTMLButtonElement;
+    const testRobinsonButton = this.container.querySelector('#testRobinson') as HTMLButtonElement;
 
     ttsTypeSelect.addEventListener('change', async () => {
       this.settings.apiType = ttsTypeSelect.value as ApiType;
       this.settings.language = '';
       this.settings.voiceName = '';
+      this.settings.voiceNameRobinson = '';
       languageSelect.value = '';
       voiceSelect.value = '';
+      voiceSelectRobinson.value = '';
       await this.saveSettings();
       await this.loadTtsVoices();
 
@@ -289,33 +326,48 @@ export class TTSPage {
       if (voiceSelect.value === '') {
         voiceSelect.value = '';
       }
+      if (voiceSelectRobinson.value === '') {
+        voiceSelectRobinson.value = '';
+      }
       await this.saveSettings();
       this.tts.getVoiceNames((voices) => this.populateVoiceOptions(voices));
     });
 
-    [voiceSelect, speedSelect, pitchSelect, volumeInput].forEach((element) => {
+    [voiceSelect, voiceSelectRobinson, speedSelect, pitchSelect, volumeInput].forEach((element) => {
       element.addEventListener('change', async () => {
         await this.saveSettings();
       });
     });
 
-    testButton.addEventListener('click', async () => {
+    async function speak(ttsPage: TTSPage, isRobinson: boolean): Promise<void> {
       try {
         const response = await fetch('languageStrings.json');
         const languageStrings = await response.json();
-        const testText = languageStrings[this.settings.language] || 
-          "Good day, world! May your moments be filled with peace.";
+        let testText = '';
+        if (isRobinson) {
+          testText = 'Guest_Robinson';
+        } 
+        testText += languageStrings[ttsPage.settings.language] || 
+            "Good day, world! May your moments be filled with peace.";
         
-        await this.tts.resetStreamSpeak();
-        await this.tts.speak(testText);
+        await ttsPage.tts.resetStreamSpeak();
+        await ttsPage.tts.speak(testText);
       } catch (error) {
         console.error('Error loading language strings:', error);
       }
+    }
+
+    testButton.addEventListener('click', async () => {
+      speak(this, false);
     });
 
-    stopButton.addEventListener('click', () => {
-      this.tts.stop();
-    });    
+    testRobinsonButton.addEventListener('click', async () => {
+      speak(this, true);      
+    });
+
+    // stopButton.addEventListener('click', () => {
+    //   this.tts.stop();
+    // });    
   }
 
   private async saveSettings(): Promise<void> {
@@ -325,11 +377,13 @@ export class TTSPage {
     const speedSelect = this.container.querySelector('#speed') as HTMLSelectElement;
     const pitchSelect = this.container.querySelector('#pitch') as HTMLSelectElement;
     const volumeInput = this.container.querySelector('#volume') as HTMLInputElement;
+    const voiceSelectRobinson = this.container.querySelector('#voiceNameRobinson') as HTMLSelectElement;
 
     const settings: ITtsSettings = {
       apiType: ttsTypeSelect.value as ApiType,
       language: languageSelect.value,
       voiceName: voiceSelect.value,
+      voiceNameRobinson: voiceSelectRobinson.value,
       rate: parseFloat(speedSelect.value),
       pitch: parseFloat(pitchSelect.value),
       volume: parseFloat(volumeInput.value),
