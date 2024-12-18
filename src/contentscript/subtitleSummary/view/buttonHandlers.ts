@@ -4,6 +4,10 @@ import { settingsManager } from '../../../common/settingsManager';
 import { SubtitleSummaryView } from './subtitleSummaryView';
 import { MorePopupHandler } from './popupHandlers';
 import { Language } from '../../../common/ISettings';
+import { ICONS } from '../../friSummary/svgs';
+import { i18nService } from '../../friSummary/i18nService';
+import { MessageObserver } from '../../../utils/messageObserver';
+import { ITtsMessage } from '../../../utils/messageQueue';
 // Interfaces
 interface IButtonHandler {
     init(): void;
@@ -192,9 +196,10 @@ class MoreButtonHandler implements IButtonHandler {
 }
 
 class PlayPauseButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_play_pause";
+    private buttonId = "fri-play-button";
     private tts: TTSSpeak;
     private subtitleSummaryView: SubtitleSummaryView;
+    private isSpeaking: boolean = false;
 
     constructor(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView) {
         this.tts = tts;
@@ -205,25 +210,46 @@ class PlayPauseButtonHandler implements IButtonHandler {
         const button = document.getElementById(this.buttonId);
         if (button) {
             button.addEventListener("click", this.handleClick.bind(this));
-            setInterval(this.update.bind(this), 3000);
+            // setInterval(this.update.bind(this), 3000);
+        }
+
+        const messageObserver = MessageObserver.getInstance();
+        messageObserver.addObserverTtsMessage({ action: 'ttsCheckSpeaking' }, (message: any) => {
+            const isSpeaking = message!.speaking;
+            if (this.isSpeaking !== isSpeaking) {
+                this.updatePlayPauseButton(isSpeaking);
+            }
+        });
+    }
+
+    private updatePlayPauseButton(isPlaying: boolean): void {
+        const playButton = document.getElementById('fri-play-button') as HTMLElement;
+        const tooltip = document.getElementById('play-pause-tooltip') as HTMLElement;
+        if (!playButton || !tooltip) return;
+
+        this.isSpeaking = isPlaying;
+        if (isPlaying) {
+            playButton.innerHTML = ICONS['pause'];
+            tooltip.textContent = i18nService.getMessage('summary-pause');
+        } else {
+            playButton.innerHTML = ICONS['play'];
+            tooltip.textContent = i18nService.getMessage('summary-play');
         }
     }
 
     async update(): Promise<void> {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            button.textContent = await this.tts.isSpeaking() ? "Pause" : "Play";
-        }
+        this.updatePlayPauseButton(this.tts.isSpeaking());
     }
 
     private async handleClick(): Promise<void> {
         if (await this.tts.isSpeaking()) {
             await this.tts.stop();
+            this.updatePlayPauseButton(false);
         } else {
             await this.tts.resetStreamSpeak();
             this.resumeSpeaking();
+            this.updatePlayPauseButton(true);
         }
-        await this.update();
     }
 
     private resumeSpeaking(): void {

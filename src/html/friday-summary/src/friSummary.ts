@@ -49,7 +49,7 @@ class FriSummary {
                 <div class="fri-left-controls">
                     ${this.createIconButton('paragraph', 'summary-ai-generate', 'generate-button')}
                     <div class="fri-icon-box play-pause-container">
-                        <button class="fri-icon-button play-button" id="play-button">
+                        <button class="fri-icon-button fri-play-button" id="fri-play-button">
                             ${ICONS['play']}
                         </button>
                         <button class="fri-icon-button pause-button" style="display: none;" id="pause-button">
@@ -119,7 +119,7 @@ class FriSummary {
         const playPauseContainer = document.querySelector('.play-pause-container');
         if (!playPauseContainer) return;
 
-        const playButton = playPauseContainer.querySelector('.play-button') as HTMLElement;
+        const playButton = playPauseContainer.querySelector('.fri-play-button') as HTMLElement;
         const pauseButton = playPauseContainer.querySelector('.pause-button') as HTMLElement;
         const tooltip = playPauseContainer.querySelector('.fri-tooltip') as HTMLElement;
 
@@ -218,7 +218,7 @@ class FriSummary {
     private updateLanguageTexts(): void {
         const playTooltip = document.querySelector('.play-pause-container .fri-tooltip');
         if (playTooltip) {
-            const isPlaying = (document.querySelector('.play-button') as HTMLElement).style.display !== 'none';
+            const isPlaying = (document.querySelector('.fri-play-button') as HTMLElement).style.display !== 'none';
             playTooltip.textContent = i18nService.getMessage(isPlaying ? 'summary-play' : 'summary-pause');
         }
 
