@@ -134,7 +134,7 @@ class LanguageButtonHandler implements IButtonHandler {
 }
 
 class SettingsButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_settings";
+    private buttonId = "fri-settings-button";
 
     init(): void {
         const button = document.getElementById(this.buttonId);

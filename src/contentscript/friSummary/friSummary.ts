@@ -52,7 +52,7 @@ class FriSummary {
         container.innerHTML = `
             <div class="fri-summary-row">
                 <div class="fri-left-controls">
-                    ${this.createIconButton('paragraph', 'summary-ai-generate', 'generate-button')}
+                    ${this.createIconButton('paragraph', 'summary-ai-generate', 'fri-generate-button')}
                     <div class="fri-icon-box play-pause-container">
                         <button class="fri-icon-button fri-play-button" id="fri-play-button">
                             ${ICONS['play']}
@@ -69,8 +69,8 @@ class FriSummary {
                 </div>
 
                 <div class="fri-right-controls">
-                    ${this.createIconButton('more', 'summary-more', 'more-button')}
-                    ${this.createIconButton('settings', 'summary-settings', 'settings-button')}
+                    ${this.createIconButton('more', 'summary-more', 'fri-more-button')}
+                    ${this.createIconButton('settings', 'summary-settings', 'fri-settings-button')}
                     <div class="fri-icon-box expand-collapse-container">
                         <button class="fri-icon-button expand-button" style="display: none;">
                             ${ICONS['expand']}
@@ -83,16 +83,10 @@ class FriSummary {
                 </div>
             </div>
 
-            <div id="ytbs_summary_status" style="
-                margin-bottom: 12px;
-                color: var(--yt-spec-text-secondary);
-                font-size: 13px;
-            "> </div>
-            <div class="fri-summary-content" style="
-                color: var(--yt-spec-text-primary);
-                line-height: 1.6;
-                padding: 8px 0;
-            " id="fri-summary-content"> </div>    
+            <div class="fri-summary-content-container" id="fri-summary-content-container">
+                <div id="ytbs_summary_status" class="fri-summary-status-content"> </div>
+                <div class="fri-summary-content" id="fri-summary-content"> </div>    
+            </div> 
 
             <div id="yt_ai_summary_header" class="yt_ai_summary_header">
                     <p> </p>
@@ -118,34 +112,7 @@ class FriSummary {
     }
 
     private initializeToggleButtons(): void {
-        this.initializePlayPauseToggle();
         this.initializeExpandCollapseToggle();
-        this.initializeActionButtons();
-    }
-
-    // private updatePlayPauseButton(): void {
-    //     const playPauseContainer = document.querySelector('.play-pause-container');
-    //     if (!playPauseContainer) return;
-
-    //     const playButton = playPauseContainer.querySelector('.fri-play-button') as HTMLElement;
-    //     const tooltip = playPauseContainer.querySelector('.play-pause-tooltip') as HTMLElement;
-
-    //     const isPlaying = this.tts.isSpeaking();
-    //         if (isPlaying) {
-    //             playButton.innerHTML = ICONS['pause'];
-    //         } else {
-    //             playButton.innerHTML = ICONS['play'];
-    //     }
-    //     tooltip.textContent = isPlaying ? i18nService.getMessage('summary-pause') : i18nService.getMessage('summary-play');
-    // }
-
-    private initializePlayPauseToggle(): void {
-        // const playPauseContainer = document.querySelector('.play-pause-container');
-        // if (!playPauseContainer) return;      
-
-        // playPauseContainer.addEventListener('click', () => {
-        //     this.updatePlayPauseButton();
-        // });
     }
 
     private initializeExpandCollapseToggle(): void {
@@ -169,18 +136,8 @@ class FriSummary {
         });
     }
 
-    private initializeActionButtons(): void {
-        const generateButton = document.getElementById('generate-button');
-        const moreButton = document.getElementById('more-button');
-        const settingsButton = document.getElementById('settings-button');
-
-        generateButton?.addEventListener('click', () => this.toastService.show('Generate Paragraph'));
-        moreButton?.addEventListener('click', () => this.toastService.show('More'));
-        settingsButton?.addEventListener('click', () => this.toastService.show('Settings'));
-    }
-
     private initializePopupMenu(): void {
-        const moreButton = document.getElementById('more-button');
+        const moreButton = document.getElementById('fri-more-button');
         if (!moreButton) return;
 
         const popupEvents: IPopupEvents = {

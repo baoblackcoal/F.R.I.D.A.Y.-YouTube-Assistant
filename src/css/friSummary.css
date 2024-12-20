@@ -166,11 +166,20 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 
 
 .fri-summary-content {
+    padding: 0.5rem 0;   
+}
+
+.fri-summary-status-content {
+    margin-bottom: 12px;
+    color: var(--yt-spec-text-secondary);
+    font-size: 13px;
+}
+
+.fri-summary-content-container {
     padding: 0.5rem;
     margin-top: 0.5rem;
     border-top: 1px solid var(--fri-border);
 }
-
 
 .fri-summary-content p {
     margin: 0.75rem 0;
