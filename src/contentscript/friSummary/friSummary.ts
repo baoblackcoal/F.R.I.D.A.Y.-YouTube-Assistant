@@ -5,6 +5,7 @@ import { IFriSummaryState, summaryState } from './friSummaryState';
 import { i18nService } from './i18nService';
 import { Language, SubtitleType } from '../../common/ISettings';
 import { TTSSpeak } from '../../common/ttsSpeak';
+import { settingsManager } from '../../common/settingsManager';
 
 class FriSummary {
     private state!: IFriSummaryState
@@ -253,15 +254,16 @@ class FriSummary {
         
         switch (option) {
             case SubtitleType.None:
-                this.toastService.show('Subtitle disabled');
+                this.state.setSubtitleType(SubtitleType.None);
                 break;
-            case SubtitleType.SubtitleTranslate:
-                this.toastService.show('SubtitleTranslate');
+            case SubtitleType.EasyToRead:
+                this.state.setSubtitleType(SubtitleType.EasyToRead);
                 break;
-            case SubtitleType.SubtitleToPodcast:
-                this.toastService.show('SubtitleToPodcast');
+            case SubtitleType.Podcast:
+                this.state.setSubtitleType(SubtitleType.Podcast);
                 break;
         }
+        window.location.reload();
     }
 
     public init(): void {        

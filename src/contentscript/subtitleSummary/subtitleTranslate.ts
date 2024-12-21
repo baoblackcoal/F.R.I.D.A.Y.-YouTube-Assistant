@@ -6,10 +6,10 @@ import { settingsManager } from '../../common/settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
 import { resetHighlightText } from './view/subtitleSummaryView';
 import { parser } from 'marked';
-import { GenerateSubtitleType } from '../../common/ISettings';
+import { SubtitleType } from '../../common/ISettings';
 
 interface ISubtitleTranslator {
-    generatePrompt(videoId: string, generateSubtitleType: GenerateSubtitleType): Promise<string>;
+    generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string>;
     translateSubtitles(videoId: string): Promise<void>;
 }
 
@@ -20,7 +20,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         this.tts = TTSSpeak.getInstance();
     }
 
-    async generatePrompt(videoId: string, generateSubtitleType: GenerateSubtitleType): Promise<string> {
+    async generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string> {
         const textTranscript = await getTranscriptText(videoId);
         if (textTranscript == null) {
             return "";
@@ -28,7 +28,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
 
         const videoTitle = await getVideoTitle();
         const summarySettings = await settingsManager.getSummarySettings();
-        const promptText = generateSubtitleType === GenerateSubtitleType.EasyToRead ? easyToReadPrompt : defaultPodcastPrompt;
+        const promptText = generateSubtitleType === SubtitleType.EasyToRead ? easyToReadPrompt : defaultPodcastPrompt;
 
         return diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
     }
@@ -50,6 +50,8 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 this.displayError("Please set API key in the extension settings");
                 return;
             }
+            
+            updateSummaryStatus("Subtitle generating...");  
 
             geminiAPI.setKey(geminiApiKey);
             const contentElement = document.querySelector("#fri-summary-content");
@@ -126,7 +128,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         // const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
         const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
         let translateTextArray: RegExpMatchArray | null = null;
-        if (generateSubtitleType === GenerateSubtitleType.Podcast) {
+        if (generateSubtitleType === SubtitleType.Podcast) {
             translateTextArray = text.match(/<content_to_podcast>([\s\S]*?)<\/content_to_podcast>/g);
         } else {
             translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
@@ -171,7 +173,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return lastTaskStatusText.replace(/<task_finish_status>/g, '').replace(/<\/task_finish_status>/g, '').replace(/\n/g, '');
     }
 
-    private async checkForErrors(generateSubtitleType: GenerateSubtitleType, isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): Promise<[boolean, ErrorType, string]> {
+    private async checkForErrors(generateSubtitleType: SubtitleType, isFirstConversation: boolean, finish: boolean, translateTextArray: RegExpMatchArray | null, lastTaskStatusText: string, contentElement: Element): Promise<[boolean, ErrorType, string]> {
         let errorType: ErrorType = ErrorType.NotError;
         let isError = false;
         
@@ -189,7 +191,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         if (!isError) {
             translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
             // add \n after ". " or "。" for break line to read easily
-            if (generateSubtitleType === GenerateSubtitleType.EasyToRead) {
+            if (generateSubtitleType === SubtitleType.EasyToRead) {
                 translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
                 if (translateText.split('\n').length <= 1) {
                     isError = true;
@@ -208,13 +210,13 @@ class SubtitleTranslator implements ISubtitleTranslator {
         return [isError, errorType, translateText];
     }
 
-    private async displayTranslatedText(generateSubtitleType: GenerateSubtitleType, translateText: string, contentElement: Element): Promise<boolean> {
+    private async displayTranslatedText(generateSubtitleType: SubtitleType, translateText: string, contentElement: Element): Promise<boolean> {
         const summarySettings = await settingsManager.getSummarySettings();
         const replacements: Record<string, string> = {
             '{language}': summarySettings.language,
             '{textTranscript}': translateText
         };
-        const translatePrompt = generateSubtitleType === GenerateSubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
+        const translatePrompt = generateSubtitleType === SubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
         const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
         const result = await geminiAPI.generate(prompt);
         const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
@@ -223,7 +225,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
         } else {    
             //get the first translated_content from translatedTextArray
             let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
-            if (generateSubtitleType === GenerateSubtitleType.EasyToRead) {
+            if (generateSubtitleType === SubtitleType.EasyToRead) {
                 translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
                 //delete '\n' if paragraph length is less than 50 
                 let deleteCount = 0;

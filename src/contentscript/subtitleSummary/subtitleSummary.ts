@@ -3,7 +3,7 @@ import { geminiAPI } from '../../common/geminiApi';
 import { parse } from 'marked';
 import { TTSSpeak } from '../../common/ttsSpeak';
 import { defaultSummarySettings } from '../../common/settings';
-import { Language, ISummarySettings } from '../../common/ISettings';
+import { Language, ISummarySettings, SubtitleType } from '../../common/ISettings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
 import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
@@ -226,10 +226,14 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                             }                              
                         }
                        
-                    }).then(() => {
+                    }).then(async () => {
                         TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', -1); // speak a new line to make sure last line is spoken
-                        updateSummaryStatus("Translate subtitle...");
-                        subtitleTranslate(videoId);
+                        const subtitleType = await settingsManager.getSummarySettings();
+                        if (subtitleType.generateSubtitleType != SubtitleType.None) {
+                            subtitleTranslate(videoId);
+                        } else {
+                            updateSummaryStatus("Generate Summary Finish.");
+                        }
                         
                     }).catch((error) => {
                         parseText = `Error generating text: ${error}`;

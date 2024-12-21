@@ -6,7 +6,7 @@ import {
   ISummarySettings, 
   ILlmSettings, 
   IAbstractSettings,
-  GenerateSubtitleType
+  SubtitleType
 } from './ISettings';
 
 export const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
@@ -35,7 +35,7 @@ export const defaultSummarySettings: ISummarySettings = {
   language: Language.SimplifiedChinese,
   autoTtsSpeak: false,
   autoSummary: false,
-  generateSubtitleType: GenerateSubtitleType.Podcast,
+  generateSubtitleType: SubtitleType.Podcast,
 };
 
 export const defaultLlmModel: ILlmSettings = {
@@ -71,7 +71,7 @@ export const testSettings: IAbstractSettings = {
     language: Language.SimplifiedChinese,
     autoTtsSpeak: true,
     autoSummary: true,
-    generateSubtitleType: GenerateSubtitleType.Podcast,
+    generateSubtitleType: SubtitleType.Podcast,
   },
   llm: {
     ...defaultLlmModel,

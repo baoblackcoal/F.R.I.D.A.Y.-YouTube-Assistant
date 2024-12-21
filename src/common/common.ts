@@ -20,8 +20,8 @@ export const languageLabels: Record<Language, string> = {
 
 export const subtitleOptionLabels: Record<SubtitleType, string> = {
   [SubtitleType.None]: 'summary-subtitle-none',
-  [SubtitleType.SubtitleTranslate]: 'summary-subtitle-translate',
-  [SubtitleType.SubtitleToPodcast]: 'summary-subtitle-to-podcast'
+  [SubtitleType.EasyToRead]: 'summary-subtitle-translate',
+  [SubtitleType.Podcast]: 'summary-subtitle-to-podcast'
 };
 
 export class Common {

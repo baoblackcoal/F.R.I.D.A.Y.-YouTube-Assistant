@@ -18,11 +18,11 @@ export interface IFriSummaryState {
 
 
 class FriSummaryState implements IFriSummaryState {
-    private autoGenerate: boolean = true;
-    private autoPlay: boolean = false;
-    private summaryLanguage: Language = Language.SimplifiedChinese;
-    private displayLanguage: Language = Language.English;
-    private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
+    // private autoGenerate: boolean = true;
+    // private autoPlay: boolean = false;
+    // private summaryLanguage: Language = Language.SimplifiedChinese;
+    // private displayLanguage: Language = Language.English;
+    // private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
     private youtubeSubtitleVisible: boolean = true;
 
 
@@ -51,11 +51,15 @@ class FriSummaryState implements IFriSummaryState {
     }
 
     async getSubtitleType(): Promise<SubtitleType> {
-        return Promise.resolve(this.subtitleType);
+        const settings = await settingsManager.getSummarySettings();
+        return settings.generateSubtitleType;
     }
 
     async setSubtitleType(value: SubtitleType): Promise<void> {
-        this.subtitleType = value;
+        const settings = await settingsManager.getSummarySettings();
+        settings.generateSubtitleType = value;
+        await settingsManager.setSummarySettings(settings);
+        // this.subtitleType = value;
         return Promise.resolve();
     }
 
@@ -68,7 +72,7 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.autoSummary = value;
         await settingsManager.setSummarySettings(settings);
-        this.autoGenerate = value;
+        // this.autoGenerate = value;
         return Promise.resolve();
     }
 
@@ -81,7 +85,7 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.autoTtsSpeak = value;
         await settingsManager.setSummarySettings(settings);
-        this.autoPlay = value;
+        // this.autoPlay = value;
         return Promise.resolve();
     }
 
@@ -94,7 +98,7 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.language = value;
         await settingsManager.setSummarySettings(settings);
-        this.summaryLanguage = value;
+        // this.summaryLanguage = value;
         return Promise.resolve();
     }
 
@@ -107,7 +111,7 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.language = value;
         await settingsManager.setSummarySettings(settings);
-        this.displayLanguage = value;
+        // this.displayLanguage = value;
         return Promise.resolve();
     }
 }
