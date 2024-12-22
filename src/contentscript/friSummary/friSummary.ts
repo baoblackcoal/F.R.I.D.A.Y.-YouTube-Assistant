@@ -68,14 +68,14 @@ export class FriSummary {
                 <div class="fri-right-controls">
                     ${this.createIconButton('more', 'summary-more', 'fri-more-button')}
                     ${this.createIconButton('settings', 'summary-settings', 'fri-settings-button')}
-                    <div class="fri-icon-box expand-collapse-container">
-                        <button class="fri-icon-button expand-button" style="display: none;">
+                    <div class="fri-icon-box fri-expand-collapse-container">
+                        <button class="fri-icon-button fri-expand-button" style="display: none;">
                             ${ICONS['expand']}
                         </button>
-                        <button class="fri-icon-button collapse-button">
+                        <button class="fri-icon-button fri-collapse-button">
                             ${ICONS['collapse']}
                         </button>
-                        <div class="fri-tooltip" id="expand-collapse-tooltip"></div>
+                        <div class="fri-tooltip" id="fri-expand-collapse-tooltip"></div>
                     </div>
                 </div>
             </div>
@@ -113,13 +113,13 @@ export class FriSummary {
     }
 
     private initializeExpandCollapseToggle(): void {
-        const container = document.querySelector('.expand-collapse-container');
+        const container = document.querySelector('.fri-expand-collapse-container');
         if (!container) return;
 
-        const expandButton = container.querySelector('.expand-button') as HTMLElement;
-        const collapseButton = container.querySelector('.collapse-button') as HTMLElement;
+        const expandButton = container.querySelector('.fri-expand-button') as HTMLElement;
+        const collapseButton = container.querySelector('.fri-collapse-button') as HTMLElement;
         const tooltip = container.querySelector('.fri-tooltip') as HTMLElement;
-        const contentContainer = document.getElementById('fri-summary-content');
+        const contentContainer = document.getElementById('fri-summary-content-container');
 
         container.addEventListener('click', () => {
             const isCollapsed = collapseButton.style.display !== 'none';
@@ -210,7 +210,7 @@ export class FriSummary {
 
         const expandTooltip = document.querySelector('.fri-expand-collapse-container .fri-tooltip');
         if (expandTooltip) {
-            const isCollapsed = (document.querySelector('.collapse-button') as HTMLElement).style.display !== 'none';
+            const isCollapsed = (document.querySelector('.fri-collapse-button') as HTMLElement).style.display !== 'none';
             expandTooltip.textContent = i18nService.getMessage(isCollapsed ? 'summary-expand' : 'summary-collapse');
         }
     }

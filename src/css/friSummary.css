@@ -45,7 +45,7 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 
 
 .fri-summry-container {
-    padding: 1rem;
+    padding: 0.7rem 1rem;
     transition: background-color 0.3s;
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
