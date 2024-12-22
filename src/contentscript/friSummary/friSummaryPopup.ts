@@ -1,7 +1,6 @@
 import { languageLabels, subtitleOptionLabels } from '../../common/common';
 import { SubtitleType, Language } from '../../common/ISettings';
 import { ICONS } from './svgs';
-import { ToastService } from './test';
 import { IFriSummaryState } from './friSummaryState';
 import { i18nService } from './i18nService';
 
@@ -104,18 +103,15 @@ export class SubtitlePopup {
 export class FriSummaryPopup {
     private state: IFriSummaryState;
     private popupMenu!: HTMLElement;
-    private toastService: ToastService;
     private events: IPopupEvents;
 
     constructor(
         initialState: IFriSummaryState,
 
         events: IPopupEvents,
-        toastService: ToastService
     ) {
         this.state = initialState;
         this.events = events;
-        this.toastService = toastService;
     }
 
     private createLanguageMenuItems(selectedLanguage: Language): string {
@@ -218,7 +214,6 @@ export class FriSummaryPopup {
             this.events.onLanguageChange(newLanguage);
         } catch (error) {
             console.error('Failed to change language:', error);
-            this.toastService.show('Failed to change language');
         }
     }
 

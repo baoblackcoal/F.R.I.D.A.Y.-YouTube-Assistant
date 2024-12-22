@@ -106,7 +106,7 @@ export class InfoTextService implements IInfoTextService {
     }
 
     public startDemo(): void {
-        const texts = ['summary-fri-waiting', 'summary-fri-generating', 'summary-fri-translating', 'summary-fri-finished'];
+        const texts = ['summary-fri-waiting', 'summary-fri-generating-summary', 'summary-fri-translating-subtitle', 'summary-fri-finished'];
         let index = 0;
 
         this.intervalId = window.setInterval(() => {

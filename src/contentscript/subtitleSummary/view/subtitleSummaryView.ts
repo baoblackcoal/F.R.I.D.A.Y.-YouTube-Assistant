@@ -1,10 +1,10 @@
 import { TTSSpeak } from '../../../common/ttsSpeak';
 import { settingsManager } from '../../../common/settingsManager';
-import { subtitleSummaryHandle } from '../subtitleSummary';
+import { subtitleSummaryHandle, updateSummaryStatus } from '../subtitleSummary';
 import { listenToMessages } from '../../../common/msTtsService';
 import { MessageObserver } from '../../../utils/messageObserver';
 import { ITtsMessage } from '../../../utils/messageQueue';
-import { responseOk } from '../../../common/common';
+import { FridayStatus, responseOk } from '../../../common/common';
 import { getSettings } from './utils';
 import { initializeButtons } from './buttonHandlers';
 import { waitForElm } from '../../utils';
@@ -44,6 +44,10 @@ export class SubtitleSummaryView {
         await this.resetWhenPageChange();
         initializeButtons(this.tts, this);
         this.handleTtsSpeakingText();
+        updateSummaryStatus("...", FridayStatus.Init);
+        setTimeout(() => {
+            updateSummaryStatus("Waiting...", FridayStatus.Waiting);
+        }, 3000);
         
         await this.handleAutoSummary(subtitleTranslate);
     }

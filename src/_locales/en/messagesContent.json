@@ -23,11 +23,17 @@
     "summary-fri-waiting": {
         "message": "Always ready to serve."
     },
-    "summary-fri-generating": {
+    "summary-fri-generating-summary": {
         "message": "Generating summary..."
     },
-    "summary-fri-translating": {
+    "summary-fri-translating-subtitle": {
         "message": "Translating subtitles..."
+    },
+    "summary-fri-generating-podcast": {
+        "message": "Generating Podcast..."
+    },
+    "summary-fri-generate-subtitle-error": {
+        "message": "Generate error, try again."
     },
     "summary-fri-finished": {
         "message": "Generate finished."

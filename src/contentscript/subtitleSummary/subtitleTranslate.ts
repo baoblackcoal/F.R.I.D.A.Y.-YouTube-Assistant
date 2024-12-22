@@ -7,6 +7,7 @@ import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummarySt
 import { resetHighlightText } from './view/subtitleSummaryView';
 import { parser } from 'marked';
 import { SubtitleType } from '../../common/ISettings';
+import { FridayStatus } from '../../common/common';
 
 interface ISubtitleTranslator {
     generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string>;
@@ -51,7 +52,12 @@ class SubtitleTranslator implements ISubtitleTranslator {
                 return;
             }
             
-            updateSummaryStatus("Subtitle generating...");  
+            const settings = await settingsManager.getSummarySettings();
+            if (settings.generateSubtitleType === SubtitleType.EasyToRead) {
+                updateSummaryStatus("Translating subtitle...", FridayStatus.TranslatingSubtitle);  
+            } else {
+                updateSummaryStatus("Generating podcast...", FridayStatus.GeneratingPodcast);  
+            }
 
             geminiAPI.setKey(geminiApiKey);
             const contentElement = document.querySelector("#fri-summary-content");
@@ -102,22 +108,27 @@ class SubtitleTranslator implements ISubtitleTranslator {
             isFirstConversation = false;//set to false for next translate
 
             if (isError) {
-                updateSummaryStatus(`Translate Subtitle Error: ${errorTypeMessage[errorType]}, Try again.`);
+                updateSummaryStatus(`Translate Subtitle Error: ${errorTypeMessage[errorType]}, Try again.`, FridayStatus.TranslatingSubtitle);
                 contentElement.innerHTML = oldHtml;
                 this.tts.deleteQueueLargerThanMarkIndex();
                 this.addSummaryParagraphsClickHandlers();
                 isFirstConversation = true;
                 await this.sleep(2000);
                 continue;
+            } else {
+                if (summarySettings.generateSubtitleType === SubtitleType.EasyToRead) {
+                    updateSummaryStatus("Translate subtitle...", FridayStatus.TranslatingSubtitle);
+                } else {
+                    updateSummaryStatus("Generate podcast...", FridayStatus.GeneratingPodcast);
+                }
             }
 
             if (finish) {
                 this.tts.speakAndPlayVideoFinsh(getTtsSpeakIndex());
-                updateSummaryStatus("Translate Subtitle Finish.");
+                updateSummaryStatus("Translate Subtitle Finish.", FridayStatus.Finished);
                 break;
             }
 
-            updateSummaryStatus("Translate subtitle...");
             await this.sleep(2000);
         }
     }

@@ -1,5 +1,4 @@
 import { getCopySvg, getToggleSvg, ICONS } from './svgs';
-import { ToastService, ThemeService, InfoTextService, LanguageService } from './test';
 import { FriSummaryPopup, IPopupEvents, ISubtitleEvents, SubtitlePopup } from './friSummaryPopup';
 import { IFriSummaryState, summaryState } from './friSummaryState';
 import { i18nService } from './i18nService';
@@ -7,29 +6,26 @@ import { Language, SubtitleType } from '../../common/ISettings';
 import { TTSSpeak } from '../../common/ttsSpeak';
 import { settingsManager } from '../../common/settingsManager';
 
-class FriSummary {
+export class FriSummary {
     private state!: IFriSummaryState
-
-    private toastService!: ToastService;
-    private themeService!: ThemeService;
-    private infoTextService!: InfoTextService;
-    private languageService!: LanguageService;
     private tts!: TTSSpeak;
-    constructor() {
+    private static instance: FriSummary;
+
+    private constructor() {
         this.state = summaryState;    
         this.tts = TTSSpeak.getInstance();
         this.setLanguage();
     }
 
-    private async setLanguage(): Promise<void> {
-        await i18nService.setLanguage(await this.state.getDisplayLanguage());
+    public static getInstance(): FriSummary {
+        if (!FriSummary.instance) {
+            FriSummary.instance = new FriSummary();
+        }
+        return FriSummary.instance;
     }
 
-    private initServices(): void {        
-        this.toastService = new ToastService();
-        this.themeService = new ThemeService();
-        this.infoTextService = new InfoTextService(this.setFriInfoText);
-        this.languageService = new LanguageService();
+    private async setLanguage(): Promise<void> {
+        await i18nService.setLanguage(await this.state.getDisplayLanguage());
     }
 
     private createIconButton(icon: string, tooltip: string, id: string): string {
@@ -144,18 +140,15 @@ class FriSummary {
         const popupEvents: IPopupEvents = {
             onLanguageChange: (language: Language) => {
                 summaryState.setSummaryLanguage(language);
-                this.toastService.show(`Language changed to ${language}`);
             },
             onAutoGenerateChange: (enabled: boolean) => {
                 summaryState.setAutoGenerate(enabled);
-                this.toastService.show(`Auto Generate: changed to ${enabled}`);
             },
             onAutoPlayChange: (enabled: boolean) => {
                 summaryState.setAutoPlay(enabled);
-                this.toastService.show(`Auto Play: changed to ${enabled}`);
             },
-            onCopy: () => this.toastService.show('Copy'),
-            onDownload: () => this.toastService.show('Download'),
+            onCopy: () => {},
+            onDownload: () => {},
             onYoutubeSubtitleChange: (enabled: boolean) => {
                 const youtubeSubtitleContainer = document.getElementById('yt_ai_summary_header');
                 const youtubeSubtitleBody = document.getElementById('yt_ai_summary_body');
@@ -164,14 +157,12 @@ class FriSummary {
                 youtubeSubtitleContainer.style.display = enabled ? 'flex' : 'none';
                 youtubeSubtitleBody.style.display = enabled ? 'block' : 'none';
                 summaryState.setYoutubeSubtitleVisible(enabled);
-                this.toastService.show(`Youtube Subtitle: changed to ${enabled}`);
             }
         };
 
         const popup = new FriSummaryPopup(
             this.state,
             popupEvents,
-            this.toastService
         );
         
         popup.init(moreButton as HTMLElement);
@@ -279,12 +270,10 @@ class FriSummary {
         this.initializeLanguageHandler();
         this.initializeSubtitlePopup();
         this.updateLanguageTexts();
-        this.initServices();
-        this.infoTextService.startDemo();
     }
 }
 
 export function friSummaryInit(): void {
-    const friSummary = new FriSummary();
+    const friSummary = FriSummary.getInstance();
     friSummary.init();
 }

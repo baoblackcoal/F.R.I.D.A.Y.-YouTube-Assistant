@@ -23,10 +23,10 @@
     "summary-fri-waiting": {
         "message": "隨時等候吩咐。"
     },
-    "summary-fri-generating": {
+    "summary-fri-generating-summary": {
         "message": "正在生成總結..."
     },
-    "summary-fri-translating": {
+    "summary-fri-translating-subtitle": {
         "message": "正在翻譯字幕..."
     },
     "summary-fri-finished": {

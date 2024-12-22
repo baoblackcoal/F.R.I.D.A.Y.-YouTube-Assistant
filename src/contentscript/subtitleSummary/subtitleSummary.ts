@@ -10,6 +10,9 @@ import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 import { MessageObserver } from "../../utils/messageObserver";
 import { ITtsMessage } from "../../utils/messageQueue";
+import { FridayStatus, fridayStatusLabels } from "../../common/common";
+import { FriSummary } from "../friSummary/friSummary";
+import { i18nService } from "../friSummary/i18nService";
 
 let pauseVideoFlag = false;
 export async function waitForPlayer(): Promise<void> {
@@ -165,10 +168,17 @@ export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: 
     generateSummary(videoId, subtitleTranslate);
 }
 
-export function updateSummaryStatus(status: string): void {
+export function updateSummaryStatus(status: string, fridayStatus: FridayStatus): void {
     const summaryStatus = document.getElementById("ytbs_summary_status");
     if (summaryStatus) {
         summaryStatus.textContent = "Generating status: " + status;
+    }
+
+    const friSummary = FriSummary.getInstance();
+    if (fridayStatus == FridayStatus.Init) {
+        friSummary.setFriInfoText("...");
+    } else {
+        friSummary.setFriInfoText(i18nService.getMessage(fridayStatusLabels[fridayStatus]));
     }
 }
 
@@ -194,7 +204,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
             if (geminiApiKey != null) {
                 geminiAPI.setKey(geminiApiKey);
                 try {
-                    updateSummaryStatus("Generating summary...");
+                    updateSummaryStatus("Generating summary...", FridayStatus.GeneratingSummary);
                     let response_text = "";
                     const parser = new DOMParser();
                     let replaceNewLineCount = 0;
@@ -232,7 +242,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                         if (subtitleType.generateSubtitleType != SubtitleType.None) {
                             subtitleTranslate(videoId);
                         } else {
-                            updateSummaryStatus("Generate Summary Finish.");
+                            updateSummaryStatus("Generate Summary Finish.", FridayStatus.Finished);
                         }
                         
                     }).catch((error) => {

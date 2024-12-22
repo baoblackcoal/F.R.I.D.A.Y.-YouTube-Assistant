@@ -24,6 +24,26 @@ export const subtitleOptionLabels: Record<SubtitleType, string> = {
   [SubtitleType.Podcast]: 'summary-subtitle-to-podcast'
 };
 
+export enum FridayStatus {
+  Init = 'init',
+  Waiting = 'waiting',
+  GeneratingSummary = 'generating-summary',
+  TranslatingSubtitle = 'translating-subtitle',
+  GeneratingPodcast = 'generating-podcast',
+  GenerateSubtitleError = 'generate-subtitle-error',
+  Finished = 'finished'
+}
+
+export const fridayStatusLabels: Record<FridayStatus, string> = {
+  [FridayStatus.Init]: 'init',
+  [FridayStatus.Waiting]: 'summary-fri-waiting',
+  [FridayStatus.GeneratingSummary]: 'summary-fri-generating-summary',
+  [FridayStatus.TranslatingSubtitle]: 'summary-fri-translating-subtitle',
+  [FridayStatus.GeneratingPodcast]: 'summary-fri-generating-podcast',
+  [FridayStatus.GenerateSubtitleError]: 'summary-fri-generate-subtitle-error',
+  [FridayStatus.Finished]: 'summary-fri-finished'
+};
+
 export class Common {
 
   private static instance: Common;

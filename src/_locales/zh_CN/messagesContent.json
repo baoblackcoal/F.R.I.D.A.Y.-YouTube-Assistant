@@ -23,11 +23,17 @@
     "summary-fri-waiting": {
         "message": "随时等候吩咐。"
     },
-    "summary-fri-generating": {
+    "summary-fri-generating-summary": {
         "message": "正在生成总结..."
     },
-    "summary-fri-translating": {
-        "message": "正在翻译字幕..."
+    "summary-fri-translating-subtitle": {
+        "message": "正在生成字幕..."
+    },
+    "summary-fri-generating-podcast": {
+        "message": "正在生成播客..."
+    },
+    "summary-fri-generate-subtitle-error": {
+        "message": "生成错误，重新生成。"
     },
     "summary-fri-finished": {
         "message": "生成完成。"
