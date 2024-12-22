@@ -6,6 +6,8 @@ interface ToastOptions {
 
 export class Toast {
     private static container: HTMLElement;
+    private static activeToast: HTMLElement | null = null;
+    private static timeoutId: NodeJS.Timeout | null = null;
 
     private static createContainer() {
         if (!this.container) {
@@ -15,8 +17,20 @@ export class Toast {
         }
     }
 
+    private static clearExistingToast() {
+        if (this.activeToast) {
+            this.activeToast.classList.remove('show');
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
+            this.container.removeChild(this.activeToast);
+            this.activeToast = null;
+        }
+    }
+
     public static show(options: ToastOptions) {
         this.createContainer();
+        this.clearExistingToast();
 
         const toast = document.createElement('div');
         toast.id = 'fri-toast';
@@ -24,6 +38,7 @@ export class Toast {
         toast.textContent = options.message;
 
         this.container.appendChild(toast);
+        this.activeToast = toast;
 
         // Trigger animation
         setTimeout(() => {
@@ -31,11 +46,18 @@ export class Toast {
         }, 10);
 
         // Remove toast after duration
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                this.container.removeChild(toast);
-            }, 300);
+        this.timeoutId = setTimeout(() => {
+            if (toast === this.activeToast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (this.container.contains(toast)) {
+                        this.container.removeChild(toast);
+                    }
+                    if (this.activeToast === toast) {
+                        this.activeToast = null;
+                    }
+                }, 300);
+            }
         }, options.duration || 3000);
     }
 } 
