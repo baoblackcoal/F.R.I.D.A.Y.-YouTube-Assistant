@@ -51,7 +51,7 @@ export interface ISummarySettings {
   diyPromptText3: string;
   language: Language;
   autoTtsSpeak: boolean;
-  autoSummary: boolean;
+  autoGenerate: boolean;
   generateSubtitleType: SubtitleType;
 }
 

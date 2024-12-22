@@ -9,6 +9,7 @@ import { getSettings } from './utils';
 import { initializeButtons } from './buttonHandlers';
 import { waitForElm } from '../../utils';
 import { subtitleTranslate } from '../subtitleTranslate';
+import { getSearchParam } from '../../searchParam';
 
 // Constants
 const HIGHLIGHT_COLOR = "lightskyblue";
@@ -17,23 +18,34 @@ const TIMEOUT_MS = 5000;
 
 // Main view class
 export class SubtitleSummaryView {
+    private static instance: SubtitleSummaryView;
     private tts: TTSSpeak;
     private messageObserver: MessageObserver;
     private currentHighlightNode: HTMLElement | null = null;
     private currentReadIndex = 0;
+    private generating = false;
 
-    constructor() {
+    private constructor() {
         this.tts = TTSSpeak.getInstance();
         this.messageObserver = MessageObserver.getInstance();
     }
 
-    async init(videoId: string): Promise<void> {
+    static getInstance(): SubtitleSummaryView {
+        // singleton
+        if (!SubtitleSummaryView.instance) {
+            SubtitleSummaryView.instance = new SubtitleSummaryView();
+        }
+        return SubtitleSummaryView.instance;
+    }
+
+    async init(): Promise<void> {
         await this.reloadPage();
         await listenToMessages();
         await this.resetWhenPageChange();
         initializeButtons(this.tts, this);
         this.handleTtsSpeakingText();
-        await this.handleAutoSummary(videoId, subtitleTranslate);
+        
+        await this.handleAutoSummary(subtitleTranslate);
     }
 
     //reload page when background send reloadPage message "reloadPage"
@@ -46,20 +58,30 @@ export class SubtitleSummaryView {
         });
     }
 
+    private getVideoId(): string {
+        return getSearchParam(window.location.href).v || '';
+    }
+
     getCurrentIndex(): number {
         return this.currentReadIndex;
     }
 
-    private async handleAutoSummary(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
+    getGenerating(): boolean {
+        return this.generating;
+    }
+
+    async manualStartGenerate(): Promise<void> {
+        this.generating = true;
+        const maualStart = true;
+        await this.handleAutoSummary(subtitleTranslate, maualStart);
+    }
+
+    private async handleAutoSummary(subtitleTranslate: (videoId: string) => Promise<void>, maualStart: boolean = false): Promise<void> {
         const settings = await getSettings();
-        if (settings.summary.autoSummary) {
-            subtitleSummaryHandle(videoId, subtitleTranslate);
-        } else {
-            const ytbsContent = document.querySelector("#fri-summary-content") as HTMLElement;
-            if (ytbsContent) {
-                ytbsContent.innerHTML = "Summary disabled.";
-            }
-        }
+        if (settings.summary.autoGenerate || maualStart) {
+            this.generating = true;
+            subtitleSummaryHandle(this.getVideoId(), subtitleTranslate);
+        }         
     }
 
     private handleTtsSpeakingText(): void {
@@ -242,9 +264,10 @@ export function getSubtitleSummaryView(): string {
     `;
 }
 
-const view = new SubtitleSummaryView();
-export async function handleSubtitleSummaryView(videoId: string): Promise<void> {
-    await view.init(videoId);
+const view = SubtitleSummaryView.getInstance();
+
+export async function handleSubtitleSummaryView(): Promise<void> {
+    await view.init();
 }
 
 export function resetHighlightText(): void {

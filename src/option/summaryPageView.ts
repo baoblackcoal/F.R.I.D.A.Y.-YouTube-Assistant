@@ -371,7 +371,7 @@ export class SummaryPageView implements ISummaryPageView {
     inputs.promptType.value = settings.promptType.toString();
     inputs.language.value = settings.language;
     inputs.autoTtsSpeak.checked = settings.autoTtsSpeak;
-    inputs.autoSummary.checked = settings.autoSummary;
+    inputs.autoSummary.checked = settings.autoGenerate;
     inputs.diyPromptText1.value = settings.diyPromptText1;
     inputs.diyPromptText2.value = settings.diyPromptText2;
     inputs.diyPromptText3.value = settings.diyPromptText3;

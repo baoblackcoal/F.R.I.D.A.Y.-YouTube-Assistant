@@ -27,7 +27,7 @@ export class SummaryPage {
       diyPromptText3: formValues.diyPromptText3,
       language: formValues.language as Language,
       autoTtsSpeak: formValues.autoTtsSpeak,
-      autoSummary: formValues.autoSummary,
+      autoGenerate: formValues.autoSummary,
       generateSubtitleType: SubtitleType.Podcast,
     };
 

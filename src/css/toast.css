@@ -1,15 +1,16 @@
 
 /* Toast Container */
-.toast-container {
+.fri-toast-container {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 5000;
+    font-size: 14px;
   }
   
   /* Toast */
-  .toast {
+  .fri-toast {
     padding: 12px 24px;
     margin-bottom: 10px;
     border-radius: 4px;
@@ -19,16 +20,20 @@
     transition: all 0.3s ease;
   }
   
-  .toast.show {
+  .fri-toast.show {
     opacity: 1;
     transform: translateY(0);
   }
   
-  .toast-success {
+  .fri-toast-success {
     background-color: #4caf50;
   }
+
+  .fri-toast-info {
+    background-color: #2196f3;
+  }
   
-  .toast-error {
+  .fri-toast-error {
     background-color: #f44336;
   }
   

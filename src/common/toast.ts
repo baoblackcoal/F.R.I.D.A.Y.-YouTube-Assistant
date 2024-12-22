@@ -1,6 +1,6 @@
 interface ToastOptions {
     message: string;
-    type: 'success' | 'error';
+    type: 'success' | 'error' | 'info';
     duration?: number;
 }
 
@@ -10,7 +10,7 @@ export class Toast {
     private static createContainer() {
         if (!this.container) {
             this.container = document.createElement('div');
-            this.container.className = 'toast-container';
+            this.container.className = 'fri-toast-container';
             document.body.appendChild(this.container);
         }
     }
@@ -19,7 +19,8 @@ export class Toast {
         this.createContainer();
 
         const toast = document.createElement('div');
-        toast.className = `toast toast-${options.type}`;
+        toast.id = 'fri-toast';
+        toast.className = `fri-toast fri-toast-${options.type}`;
         toast.textContent = options.message;
 
         this.container.appendChild(toast);

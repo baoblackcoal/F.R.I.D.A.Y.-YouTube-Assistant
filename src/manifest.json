@@ -23,7 +23,7 @@
     {
       "matches": ["https://www.youtube.com/*", "https://chat.openai.com/*", "https://example.com/*"],
       "js": ["contentscript/index.bundle.js"],
-      "css": ["css/yt_ai_summary.css", "css/friSummary.css"],
+      "css": ["css/yt_ai_summary.css", "css/friSummary.css", "css/toast.css"],
       "all_frames": false
     }
   ],

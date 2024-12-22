@@ -34,7 +34,7 @@ export const defaultSummarySettings: ISummarySettings = {
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
   language: Language.SimplifiedChinese,
   autoTtsSpeak: false,
-  autoSummary: false,
+  autoGenerate: false,
   generateSubtitleType: SubtitleType.Podcast,
 };
 
@@ -70,7 +70,7 @@ export const testSettings: IAbstractSettings = {
     diyPromptText3: "hello",
     language: Language.SimplifiedChinese,
     autoTtsSpeak: true,
-    autoSummary: true,
+    autoGenerate: false,
     generateSubtitleType: SubtitleType.Podcast,
   },
   llm: {

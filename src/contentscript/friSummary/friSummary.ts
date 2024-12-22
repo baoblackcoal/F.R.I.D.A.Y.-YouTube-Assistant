@@ -60,7 +60,7 @@ class FriSummary {
                         </button>                       
                         <div class="fri-tooltip" id="play-pause-tooltip"></div>
                     </div>
-                    ${this.createIconButton('subtitleGenerate', 'summary-subtitle-generate', 'subtitle-generate-button')}
+                    ${this.createIconButton('subtitleGenerate', 'summary-subtitle-generate', 'fri-subtitle-generate-button')}
                 </div>
 
                 <div class="fri-summary-info-container">
@@ -197,27 +197,27 @@ class FriSummary {
             playTooltip.textContent = i18nService.getMessage(isPlaying ? 'summary-play' : 'summary-pause');
         }
 
-        const generateTooltip = document.getElementById('generate-button-tooltip');
+        const generateTooltip = document.getElementById('fri-generate-button-tooltip');
         if (generateTooltip) {
             generateTooltip.textContent = i18nService.getMessage('summary-ai-generate');
         }
 
-        const subtitleTooltip = document.getElementById('subtitle-generate-button-tooltip');
+        const subtitleTooltip = document.getElementById('fri-subtitle-generate-button-tooltip');
         if (subtitleTooltip) {
             subtitleTooltip.textContent = i18nService.getMessage('summary-subtitle-generate');
         }
 
-        const moreTooltip = document.getElementById('more-button-tooltip');
+        const moreTooltip = document.getElementById('fri-more-button-tooltip');
         if (moreTooltip) {
             moreTooltip.textContent = i18nService.getMessage('summary-more');
         }
 
-        const settingsTooltip = document.getElementById('settings-button-tooltip');
+        const settingsTooltip = document.getElementById('fri-settings-button-tooltip');
         if (settingsTooltip) {
             settingsTooltip.textContent = i18nService.getMessage('summary-settings');
         }   
 
-        const expandTooltip = document.querySelector('.expand-collapse-container .fri-tooltip');
+        const expandTooltip = document.querySelector('.fri-expand-collapse-container .fri-tooltip');
         if (expandTooltip) {
             const isCollapsed = (document.querySelector('.collapse-button') as HTMLElement).style.display !== 'none';
             expandTooltip.textContent = i18nService.getMessage(isCollapsed ? 'summary-expand' : 'summary-collapse');
@@ -231,7 +231,7 @@ class FriSummary {
     }
 
     private initializeSubtitlePopup(): void {
-        const subtitleButton = document.getElementById('subtitle-generate-button');
+        const subtitleButton = document.getElementById('fri-subtitle-generate-button');
         if (!subtitleButton) return;
 
         const subtitleEvents: ISubtitleEvents = {

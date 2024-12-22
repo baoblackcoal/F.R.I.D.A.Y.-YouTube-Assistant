@@ -13,9 +13,6 @@ import { logTime, waitForElm } from "./utils";
 import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
 import { friSummaryInit } from "./friSummary/friSummary";
 
-function getVideoId(): string {
-    return getSearchParam(window.location.href).v || '';
-}
 
 
 export async function insertSummaryBtn(): Promise<void> {
@@ -146,7 +143,7 @@ export async function insertSummaryBtn(): Promise<void> {
             evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
         })
 
-        handleSubtitleSummaryView(getVideoId());
+        handleSubtitleSummaryView();
         commandHandle();
     });
 }

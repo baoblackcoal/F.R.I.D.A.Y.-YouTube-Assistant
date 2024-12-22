@@ -61,5 +61,8 @@
     },
     "summary-pupup-language": {
         "message": "AI 语言"
+    },
+    "summary-generating": {
+        "message": "AI 正在生成..."
     }
 }

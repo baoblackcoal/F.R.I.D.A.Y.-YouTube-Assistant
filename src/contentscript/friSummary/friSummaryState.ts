@@ -65,12 +65,12 @@ class FriSummaryState implements IFriSummaryState {
 
     async getAutoGenerate(): Promise<boolean> {
         const settings = await settingsManager.getSummarySettings();
-        return settings.autoSummary;
+        return settings.autoGenerate;
     }
 
     async setAutoGenerate(value: boolean): Promise<void> {
         const settings = await settingsManager.getSummarySettings();
-        settings.autoSummary = value;
+        settings.autoGenerate = value;
         await settingsManager.setSummarySettings(settings);
         // this.autoGenerate = value;
         return Promise.resolve();
