@@ -5,6 +5,10 @@ import { i18nService } from './i18nService';
 import { Language, SubtitleType } from '../../common/ISettings';
 import { TTSSpeak } from '../../common/ttsSpeak';
 import { settingsManager } from '../../common/settingsManager';
+import { copyTextToClipboard } from '../copy';
+import { Toast } from '../../common/toast';
+import { getVideoTitle } from '../subtitleSummary/subtitleSummary';
+import { SubtitleSummaryView } from '../subtitleSummary/view/subtitleSummaryView';
 
 export class FriSummary {
     private state!: IFriSummaryState
@@ -147,8 +151,36 @@ export class FriSummary {
             onAutoPlayChange: (enabled: boolean) => {
                 summaryState.setAutoPlay(enabled);
             },
-            onCopy: () => {},
-            onDownload: () => {},
+            onCopy: () => {                
+                const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
+                if (hasContent) {
+                    copyTextToClipboard(text);          
+                    Toast.show({
+                        type: 'success',
+                        message: i18nService.getMessage('summary-popup-copy-success')
+                    });
+                    // close popup
+                    const popup = document.getElementById('fri-summary-more-menu');
+                    if (popup) {
+                        popup.style.display = 'none';
+                    }
+                }                 
+            },
+            onDownload: async () => {
+                const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast()
+                if (hasContent) {
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const videoTitle = await getVideoTitle();
+                    a.download = `${videoTitle}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            },
             onYoutubeSubtitleChange: (enabled: boolean) => {
                 const youtubeSubtitleContainer = document.getElementById('yt_ai_summary_header');
                 const youtubeSubtitleBody = document.getElementById('yt_ai_summary_body');
@@ -254,7 +286,7 @@ export class FriSummary {
                 this.state.setSubtitleType(SubtitleType.Podcast);
                 break;
         }
-        window.location.reload();
+        // window.location.reload();
     }
 
     public init(): void {        

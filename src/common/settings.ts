@@ -69,9 +69,9 @@ export const testSettings: IAbstractSettings = {
     diyPromptText2: "hi",
     diyPromptText3: "hello",
     language: Language.SimplifiedChinese,
-    autoTtsSpeak: true,
+    autoTtsSpeak: false,
     autoGenerate: false,
-    generateSubtitleType: SubtitleType.Podcast,
+    generateSubtitleType: SubtitleType.None,
   },
   llm: {
     ...defaultLlmModel,

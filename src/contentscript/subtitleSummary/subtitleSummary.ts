@@ -13,8 +13,10 @@ import { ITtsMessage } from "../../utils/messageQueue";
 import { FridayStatus, fridayStatusLabels } from "../../common/common";
 import { FriSummary } from "../friSummary/friSummary";
 import { i18nService } from "../friSummary/i18nService";
+import { PlayPauseButtonHandler } from "./view/buttonHandlers";
 
 let pauseVideoFlag = false;
+
 export async function waitForPlayer(): Promise<void> {
     let hasEnterWaitForPlayer = false;
 
@@ -227,7 +229,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                                 if (node instanceof HTMLElement && node.getAttribute('speak-index') == null) {
                                     const speakIndex = getTtsSpeakIndex();
                                     node.setAttribute('speak-index', speakIndex.toString());
-                                    if (summarySettings.autoTtsSpeak) {
+                                    if (summarySettings.autoTtsSpeak || PlayPauseButtonHandler.getInstance().getSpeaking()) {
                                         const splitText = node.textContent ?? '';
                                         const textStream = parser.parseFromString(splitText, 'text/html').documentElement.textContent ?? '';
                                         TTSSpeak.getInstance().speakAndPlayVideo(textStream, speakIndex);

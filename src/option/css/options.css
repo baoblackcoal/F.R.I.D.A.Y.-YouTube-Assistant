@@ -32,7 +32,7 @@
 }
 
 .settings-tab-button {
-    @apply w-full px-6 py-3 text-left text-lg font-semibold text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
+    @apply w-full px-6 py-3 text-left  text-base font-normal text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
 }
 
 .settings-tab-button.active {

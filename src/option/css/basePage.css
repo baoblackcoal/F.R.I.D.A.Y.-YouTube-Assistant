@@ -3,7 +3,7 @@
 }
 
 .body-container {
-    @apply bg-gray-50 text-base;
+    @apply bg-gray-50 text-sm;
 }
 
 .controls-container {

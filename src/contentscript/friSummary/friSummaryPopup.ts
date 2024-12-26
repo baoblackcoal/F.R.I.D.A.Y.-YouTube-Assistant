@@ -126,7 +126,7 @@ export class FriSummaryPopup {
     private async createPopupMenu(): Promise<HTMLElement> {
         const popupMenu = document.createElement('div');
         popupMenu.className = 'fri-popup-menu';
-        
+        popupMenu.id = 'fri-summary-more-menu';
         popupMenu.innerHTML = `
             <div class="fri-popup-item" id="copy-item">
                 ${ICONS.copy}

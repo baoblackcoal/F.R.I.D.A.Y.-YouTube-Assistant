@@ -18,11 +18,6 @@ export interface IFriSummaryState {
 
 
 class FriSummaryState implements IFriSummaryState {
-    // private autoGenerate: boolean = true;
-    // private autoPlay: boolean = false;
-    // private summaryLanguage: Language = Language.SimplifiedChinese;
-    // private displayLanguage: Language = Language.English;
-    // private subtitleType: SubtitleType = SubtitleType.SubtitleToPodcast;
     private youtubeSubtitleVisible: boolean = true;
 
 
@@ -59,7 +54,6 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.generateSubtitleType = value;
         await settingsManager.setSummarySettings(settings);
-        // this.subtitleType = value;
         return Promise.resolve();
     }
 
@@ -72,7 +66,6 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.autoGenerate = value;
         await settingsManager.setSummarySettings(settings);
-        // this.autoGenerate = value;
         return Promise.resolve();
     }
 
@@ -85,7 +78,6 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.autoTtsSpeak = value;
         await settingsManager.setSummarySettings(settings);
-        // this.autoPlay = value;
         return Promise.resolve();
     }
 
@@ -98,20 +90,18 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getSummarySettings();
         settings.language = value;
         await settingsManager.setSummarySettings(settings);
-        // this.summaryLanguage = value;
         return Promise.resolve();
     }
 
     async getDisplayLanguage(): Promise<Language> {
-        const settings = await settingsManager.getSummarySettings();
+        const settings = await settingsManager.getGeneralSettings();
         return settings.language;
     }
 
     async setDisplayLanguage(value: Language): Promise<void> {
-        const settings = await settingsManager.getSummarySettings();
+        const settings = await settingsManager.getGeneralSettings();
         settings.language = value;
-        await settingsManager.setSummarySettings(settings);
-        // this.displayLanguage = value;
+        await settingsManager.setGeneralSettings(settings);
         return Promise.resolve();
     }
 }

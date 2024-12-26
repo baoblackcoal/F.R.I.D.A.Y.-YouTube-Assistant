@@ -6,7 +6,7 @@
         "message": "Pause"
     },
     "summary-ai-generate": {
-        "message": "AI Generate"
+        "message": "Generate"
     },
     "summary-expand": {
         "message": "Expand"
@@ -39,7 +39,7 @@
         "message": "Generate finished."
     },
     "summary-subtitle-generate": {
-        "message": "Subtitle Generate"
+        "message": "Subtitle Generate Type"
     },
     "summary-subtitle-none": {
         "message": "None"
@@ -68,7 +68,19 @@
     "summary-pupup-language": {
         "message": "AI Language"
     },
+    "summary-start-generate": {
+        "message": "Start Generate"
+    },
     "summary-generating": {
-        "message": "AI is generating..."
+        "message": "Generating..."
+    },
+    "summary-generate-finish": {
+        "message": "Generate Finished"
+    },
+    "summary-popup-copy-success": {
+        "message": "Copied to clipboard"
+    },
+    "summary-popup-generate-first-tip": {
+        "message": "Content is empty, please generate first"
     }
 }

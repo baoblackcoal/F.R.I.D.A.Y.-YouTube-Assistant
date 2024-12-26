@@ -16,18 +16,20 @@ interface IButtonHandler {
 }
 
 export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView): void {
-    new SpeakButtonHandler(tts).init();
-    new AutoSpeakButtonHandler().init();
-    new LanguageButtonHandler().init();
+    new GenerateButtonHandler(tts).init();
+    // new LanguageButtonHandler().init();
     new SettingsButtonHandler().init();
     new SummaryToggleButtonHandler().init();
-    new MoreButtonHandler().init();
-    new PlayPauseButtonHandler(tts, subtitleSummaryView).init();
-    new AutoSummaryButtonHandler().init();
+
+    // new MoreButtonHandler().init();
+    const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
+    playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
+    playPauseButtonHandler.init();
+    // new AutoSummaryButtonHandler().init();
 }
 
 // Button Handlers
-class SpeakButtonHandler implements IButtonHandler {
+class GenerateButtonHandler implements IButtonHandler {
     private buttonId = "fri-generate-button";
     private tts: TTSSpeak;
 
@@ -39,15 +41,11 @@ class SpeakButtonHandler implements IButtonHandler {
         const button = document.getElementById(this.buttonId);
         if (button) {
             button.addEventListener("click", this.handleClick.bind(this));
-            // setInterval(this.update.bind(this), 3000);
         }
     }
 
     async update(): Promise<void> {
-        // const button = document.getElementById(this.buttonId);
-        // if (button) {
-        //     button.textContent = await this.tts.isSpeaking() ? "Speaking..." : "Speak";
-        // }
+      
     }
 
     private async handleClick(): Promise<void> {
@@ -56,91 +54,42 @@ class SpeakButtonHandler implements IButtonHandler {
             Toast.show({ message: i18nService.getMessage('summary-generating'), type: 'info', duration: 3000 });
         } else {
             subtitleSummaryView.manualStartGenerate();
+            Toast.show({ message: i18nService.getMessage('summary-start-generate'), type: 'info', duration: 3000 });
         }
-
-
-        // if (await this.tts.isSpeaking()) {
-        //     await this.tts.stop();
-        // } else {
-        //     await this.tts.resetStreamSpeak();
-        //     this.speakContent();
-        // }
-        // await this.update();
-    }
-
-    private speakContent(): void {
-        const parser = new DOMParser();
-        const content = document.querySelector("#fri-summary-content") as HTMLElement;
-        if (content) {
-            Array.from(content.children).forEach((node) => {
-                if (node instanceof HTMLElement) {
-                    const speakIndex = Number(node.getAttribute('speak-index') ?? -1);
-                    const text = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
-                    this.tts.speak(text, speakIndex);
-                }
-            });
-        }
-    }
+    }    
 }
 
-class AutoSpeakButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_auto_speak";
 
-    init(): void {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            button.addEventListener("click", this.handleClick.bind(this));
-            this.update();
-        }
-    }
+// class LanguageButtonHandler implements IButtonHandler {
+//     private buttonId = "ytbs_language";
 
-    async update(): Promise<void> {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            const settings = await getSettings();
-            button.textContent = settings.summary.autoTtsSpeak ? "Auto Speak: ON" : "Auto Speak: OFF";
-        }
-    }
+//     init(): void {
+//         const button = document.getElementById(this.buttonId);
+//         if (button) {
+//             button.addEventListener("click", this.handleClick.bind(this));
+//             this.update();
+//         }
+//     }
 
-    private async handleClick(): Promise<void> {
-        const settings = await getSettings();
-        settings.summary.autoTtsSpeak = !settings.summary.autoTtsSpeak;
-        await settingsManager.setSummarySettings(settings.summary);
-        await this.update();
-        window.location.reload();
-    }
-}
+//     async update(): Promise<void> {
+//         const button = document.getElementById(this.buttonId);
+//         if (button) {
+//             const settings = await getSettings();
+//             button.textContent = settings.summary.language;
+//         }
+//     }
 
-class LanguageButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_language";
-
-    init(): void {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            button.addEventListener("click", this.handleClick.bind(this));
-            this.update();
-        }
-    }
-
-    async update(): Promise<void> {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            const settings = await getSettings();
-            button.textContent = settings.summary.language;
-        }
-    }
-
-    private async handleClick(): Promise<void> {
-        const settings = await getSettings();
-        const currentLanguage = settings.summary.language as Language;
-        const languages = Object.values(Language) as Language[];
-        const nextLanguageIndex = (languages.indexOf(currentLanguage) + 1) % languages.length;
-        settings.summary.language = languages[nextLanguageIndex];
-        await settingsManager.setSummarySettings(settings.summary);
-        await this.update();
-        window.dispatchEvent(new CustomEvent('generalLanguageSyncChanged', {}));
-    }
-}
+//     private async handleClick(): Promise<void> {
+//         const settings = await getSettings();
+//         const currentLanguage = settings.summary.language as Language;
+//         const languages = Object.values(Language) as Language[];
+//         const nextLanguageIndex = (languages.indexOf(currentLanguage) + 1) % languages.length;
+//         settings.summary.language = languages[nextLanguageIndex];
+//         await settingsManager.setSummarySettings(settings.summary);
+//         await this.update();
+//         window.dispatchEvent(new CustomEvent('generalLanguageSyncChanged', {}));
+//     }
+// }
 
 class SettingsButtonHandler implements IButtonHandler {
     private buttonId = "fri-settings-button";
@@ -181,36 +130,52 @@ class SummaryToggleButtonHandler implements IButtonHandler {
     }
 }
 
-class MoreButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_more_btn";
-    private popupHandler: MorePopupHandler;
+// class MoreButtonHandler implements IButtonHandler {
+//     private buttonId = "ytbs_more_btn";
+//     private popupHandler: MorePopupHandler;
 
-    constructor() {
-        this.popupHandler = new MorePopupHandler();
-    }
+//     constructor() {
+//         this.popupHandler = new MorePopupHandler();
+//     }
 
-    init(): void {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            button.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.popupHandler.open(button);
-            });
-        }
-    }
+//     init(): void {
+//         const button = document.getElementById(this.buttonId);
+//         if (button) {
+//             button.addEventListener("click", (event) => {
+//                 event.stopPropagation();
+//                 this.popupHandler.open(button);
+//             });
+//         }
+//     }
 
-    async update(): Promise<void> {
-        // No update needed for this button
-    }
-}
+//     async update(): Promise<void> {
+//         // No update needed for this button
+//     }
+// }
 
-class PlayPauseButtonHandler implements IButtonHandler {
+export class PlayPauseButtonHandler implements IButtonHandler {
     private buttonId = "fri-play-button";
-    private tts: TTSSpeak;
-    private subtitleSummaryView: SubtitleSummaryView;
+    private tts!: TTSSpeak;
+    private subtitleSummaryView!: SubtitleSummaryView;
     private isSpeaking: boolean = false;
 
-    constructor(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView) {
+    private addingSpeakContent: boolean = false;
+
+    private constructor() {
+
+    }
+
+    //single instance
+    private static instance: PlayPauseButtonHandler;
+
+    public static getInstance(): PlayPauseButtonHandler {
+        if (!PlayPauseButtonHandler.instance) {
+            PlayPauseButtonHandler.instance = new PlayPauseButtonHandler();
+        }
+        return PlayPauseButtonHandler.instance;
+    }
+
+    public initVariable(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView) {
         this.tts = tts;
         this.subtitleSummaryView = subtitleSummaryView;
     }
@@ -255,13 +220,17 @@ class PlayPauseButtonHandler implements IButtonHandler {
             await this.tts.stop();
             this.updatePlayPauseButton(false);
         } else {
-            await this.tts.resetStreamSpeak();
-            this.resumeSpeaking();
-            this.updatePlayPauseButton(true);
+            const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
+            if (hasContent) {
+                await this.tts.resetStreamSpeak();
+                this.resumeSpeaking();
+                this.updatePlayPauseButton(true);
+            }
         }
     }
 
     private resumeSpeaking(): void {
+        this.addingSpeakContent = true;
         const parser = new DOMParser();
         const content = document.querySelector("#fri-summary-content") as HTMLElement;
         if (content) {
@@ -275,33 +244,44 @@ class PlayPauseButtonHandler implements IButtonHandler {
                 }
             });
         }
+        this.addingSpeakContent = false;
+    }
+
+    public getSpeaking(): boolean {
+        return this.isSpeaking;
+    }
+
+    public async awaitAddingSpeakContent(): Promise<void> {
+        while (this.addingSpeakContent) {
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
     }
 }
 
-class AutoSummaryButtonHandler implements IButtonHandler {
-    private buttonId = "ytbs_auto_summary";
+// class AutoSummaryButtonHandler implements IButtonHandler {
+//     private buttonId = "ytbs_auto_summary";
 
-    init(): void {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            button.addEventListener("click", this.handleClick.bind(this));
-            this.update();
-        }
-    }
+//     init(): void {
+//         const button = document.getElementById(this.buttonId);
+//         if (button) {
+//             button.addEventListener("click", this.handleClick.bind(this));
+//             this.update();
+//         }
+//     }
 
-    async update(): Promise<void> {
-        const button = document.getElementById(this.buttonId);
-        if (button) {
-            const settings = await getSettings();
-            button.textContent = settings.summary.autoGenerate ? "Summary: ON" : "Summary: OFF";
-        }
-    }
+//     async update(): Promise<void> {
+//         const button = document.getElementById(this.buttonId);
+//         if (button) {
+//             const settings = await getSettings();
+//             button.textContent = settings.summary.autoGenerate ? "Summary: ON" : "Summary: OFF";
+//         }
+//     }
 
-    private async handleClick(): Promise<void> {
-        const settings = await getSettings();
-        settings.summary.autoGenerate = !settings.summary.autoGenerate;
-        await settingsManager.setSummarySettings(settings.summary);
-        await this.update();
-        window.location.reload();
-    }
-}
+//     private async handleClick(): Promise<void> {
+//         const settings = await getSettings();
+//         settings.summary.autoGenerate = !settings.summary.autoGenerate;
+//         await settingsManager.setSummarySettings(settings.summary);
+//         await this.update();
+//         window.location.reload();
+//     }
+// }

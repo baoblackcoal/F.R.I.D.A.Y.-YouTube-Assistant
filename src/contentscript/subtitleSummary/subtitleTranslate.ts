@@ -8,6 +8,7 @@ import { resetHighlightText } from './view/subtitleSummaryView';
 import { parser } from 'marked';
 import { SubtitleType } from '../../common/ISettings';
 import { FridayStatus } from '../../common/common';
+import { PlayPauseButtonHandler } from './view/buttonHandlers';
 
 interface ISubtitleTranslator {
     generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string>;
@@ -167,7 +168,7 @@ class SubtitleTranslator implements ISubtitleTranslator {
                             const speakIndex = getTtsSpeakIndex();
                             node.setAttribute('speak-index', speakIndex.toString());
 
-                            if (summarySettings.autoTtsSpeak) { 
+                            if (summarySettings.autoTtsSpeak || PlayPauseButtonHandler.getInstance().getSpeaking()) { 
                                 const textStream = parser.parseFromString(node.innerHTML, 'text/html').documentElement.textContent ?? '';
                                 this.tts.speakAndPlayVideo(textStream, speakIndex);
                             }

@@ -6,7 +6,7 @@
         "message": "暂停"
     },
     "summary-ai-generate": {
-        "message": "AI 生成"
+        "message": "生成"
     },
     "summary-expand": {
         "message": "展开"
@@ -39,7 +39,7 @@
         "message": "生成完成。"
     },
     "summary-subtitle-generate": {
-        "message": "字幕生成"
+        "message": "字幕生成类型"
     },
     "summary-subtitle-none": {
         "message": "无"
@@ -68,7 +68,19 @@
     "summary-pupup-language": {
         "message": "AI 语言"
     },
+    "summary-start-generate": {
+        "message": "开始生成"
+    },
     "summary-generating": {
-        "message": "AI 正在生成..."
+        "message": "正在生成..."
+    },
+    "summary-generate-finish": {
+        "message": "生成完成"
+    },
+    "summary-popup-copy-success": {
+        "message": "已复制到剪贴板"
+    },
+    "summary-popup-generate-first-tip": {
+        "message": "内容为空，请先执行 AI 生成"
     }
 }

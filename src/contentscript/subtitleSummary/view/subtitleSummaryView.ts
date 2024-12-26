@@ -10,6 +10,8 @@ import { initializeButtons } from './buttonHandlers';
 import { waitForElm } from '../../utils';
 import { subtitleTranslate } from '../subtitleTranslate';
 import { getSearchParam } from '../../searchParam';
+import { i18nService } from '../../friSummary/i18nService';
+import { Toast } from '../../../common/toast';
 
 // Constants
 const HIGHLIGHT_COLOR = "lightskyblue";
@@ -72,6 +74,21 @@ export class SubtitleSummaryView {
 
     getGenerating(): boolean {
         return this.generating;
+    }
+
+    public checkGenerateContentAndToast(): [boolean, string] {
+        let hasContent = false;
+        const text = (document.querySelector("#fri-summary-content") as HTMLElement).innerText;
+        if (!text) {
+            Toast.show({
+                type: 'info',
+                message: i18nService.getMessage('summary-popup-generate-first-tip')
+            });
+            hasContent = false;
+        } else {
+            hasContent = true;
+        }
+        return [hasContent, text];
     }
 
     async manualStartGenerate(): Promise<void> {
