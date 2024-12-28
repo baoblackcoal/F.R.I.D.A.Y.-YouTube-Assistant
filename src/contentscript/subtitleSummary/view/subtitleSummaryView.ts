@@ -79,7 +79,7 @@ export class SubtitleSummaryView {
     public checkGenerateContentAndToast(): [boolean, string] {
         let hasContent = false;
         const text = (document.querySelector("#fri-summary-content") as HTMLElement).innerText;
-        if (!text) {
+        if (!text || text === " ") {
             Toast.show({
                 type: 'info',
                 message: i18nService.getMessage('summary-popup-generate-first-tip')

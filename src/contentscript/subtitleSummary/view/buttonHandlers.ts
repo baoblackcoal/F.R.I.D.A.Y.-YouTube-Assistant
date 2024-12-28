@@ -9,6 +9,8 @@ import { i18nService } from '../../friSummary/i18nService';
 import { MessageObserver } from '../../../utils/messageObserver';
 import { ITtsMessage } from '../../../utils/messageQueue';
 import { Toast } from '../../../common/toast';
+import { FriSummary } from '../../friSummary/friSummary';
+import { fridayStatusLabels } from '../../../common/common';
 // Interfaces
 interface IButtonHandler {
     init(): void;
@@ -53,6 +55,13 @@ class GenerateButtonHandler implements IButtonHandler {
         if (subtitleSummaryView.getGenerating()) {
             Toast.show({ message: i18nService.getMessage('summary-generating'), type: 'info', duration: 3000 });
         } else {
+            const contentContainer = document.getElementById('fri-summary-content-container');
+            if (contentContainer) {
+                if (contentContainer.style.display === 'none') {
+                    FriSummary.getInstance().updateExpandCollapse(true);
+                } 
+            }
+
             subtitleSummaryView.manualStartGenerate();
             Toast.show({ message: i18nService.getMessage('summary-start-generate'), type: 'info', duration: 3000 });
         }

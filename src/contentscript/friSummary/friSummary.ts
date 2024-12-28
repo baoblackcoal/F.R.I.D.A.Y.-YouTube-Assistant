@@ -73,10 +73,10 @@ export class FriSummary {
                     ${this.createIconButton('more', 'summary-more', 'fri-more-button')}
                     ${this.createIconButton('settings', 'summary-settings', 'fri-settings-button')}
                     <div class="fri-icon-box fri-expand-collapse-container">
-                        <button class="fri-icon-button fri-expand-button" style="display: none;">
+                        <button class="fri-icon-button fri-expand-button">
                             ${ICONS['expand']}
                         </button>
-                        <button class="fri-icon-button fri-collapse-button">
+                        <button class="fri-icon-button fri-collapse-button" style="display: none;">
                             ${ICONS['collapse']}
                         </button>
                         <div class="fri-tooltip" id="fri-expand-collapse-tooltip"></div>
@@ -116,23 +116,47 @@ export class FriSummary {
         this.initializeExpandCollapseToggle();
     }
 
+    private handleExpandCollapseToggle(): void {
+        const contentContainer = document.getElementById('fri-summary-content-container');
+        const needSetExpand = contentContainer!.style.display === 'none';
+        this.updateExpandCollapse(needSetExpand);
+    }
+
+    public updateExpandCollapse(expand: boolean): void {
+        const container = document.querySelector('.fri-expand-collapse-container');
+        const contentContainer = document.getElementById('fri-summary-content-container');
+
+        if (!container || !contentContainer) return;
+
+        const collapseButton = container.querySelector('.fri-collapse-button') as HTMLElement;
+        const expandButton = container.querySelector('.fri-expand-button') as HTMLElement;
+        const tooltip = container.querySelector('.fri-tooltip') as HTMLElement;
+
+        if (!collapseButton || !expandButton || !tooltip) return;
+                
+        if (expand) {
+            expandButton.style.display = 'none';
+            collapseButton.style.display = 'flex';
+            tooltip.textContent = i18nService.getMessage('summary-collapse');
+            contentContainer.style.display = 'block';
+        } else {
+            expandButton.style.display = 'flex';
+            collapseButton.style.display = 'none';
+            tooltip.textContent = i18nService.getMessage('summary-expand');
+            contentContainer.style.display = 'none';            
+        }
+    }
+
     private initializeExpandCollapseToggle(): void {
         const container = document.querySelector('.fri-expand-collapse-container');
         if (!container) return;
 
-        const expandButton = container.querySelector('.fri-expand-button') as HTMLElement;
-        const collapseButton = container.querySelector('.fri-collapse-button') as HTMLElement;
-        const tooltip = container.querySelector('.fri-tooltip') as HTMLElement;
-        const contentContainer = document.getElementById('fri-summary-content-container');
+        this.updateExpandCollapse(false);
 
         container.addEventListener('click', () => {
-            const isCollapsed = collapseButton.style.display !== 'none';
-            expandButton.style.display = isCollapsed ? 'flex' : 'none';
-            collapseButton.style.display = isCollapsed ? 'none' : 'flex';
-            tooltip.textContent = isCollapsed ? i18nService.getMessage('summary-collapse') : i18nService.getMessage('summary-expand');
-
-            if (contentContainer) {
-                contentContainer.style.display = isCollapsed ? 'none' : 'block';
+            const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
+            if (hasContent) {
+                this.handleExpandCollapseToggle()
             }
         });
     }
@@ -240,10 +264,11 @@ export class FriSummary {
             settingsTooltip.textContent = i18nService.getMessage('summary-settings');
         }   
 
+        const contentContainer = document.getElementById('fri-summary-content-container');
         const expandTooltip = document.querySelector('.fri-expand-collapse-container .fri-tooltip');
-        if (expandTooltip) {
-            const isCollapsed = (document.querySelector('.fri-collapse-button') as HTMLElement).style.display !== 'none';
-            expandTooltip.textContent = i18nService.getMessage(isCollapsed ? 'summary-expand' : 'summary-collapse');
+        if (contentContainer && expandTooltip) {
+            const needExpand = contentContainer.style.display === 'none';
+            expandTooltip.textContent = i18nService.getMessage(needExpand ? 'summary-expand' : 'summary-collapse');
         }
     }
 
