@@ -120,10 +120,19 @@ export class FriSummary {
     private handleExpandCollapseToggle(): void {
         const contentContainer = document.getElementById('fri-summary-content-container');
         const needSetExpand = contentContainer!.style.display === 'none';
-        this.updateExpandCollapse(needSetExpand);
+        this.updateGenerateContentExpandCollapse(needSetExpand);
     }
 
-    public updateExpandCollapse(expand: boolean): void {
+    public setGenerateContentExpand(): void {
+        const contentContainer = document.getElementById('fri-summary-content-container');
+        if (contentContainer) {
+            if (contentContainer.style.display === 'none') {
+                FriSummary.getInstance().updateGenerateContentExpandCollapse(true);
+            } 
+        }
+    }
+
+    public updateGenerateContentExpandCollapse(expand: boolean): void {
         const container = document.querySelector('.fri-expand-collapse-container');
         const contentContainer = document.getElementById('fri-summary-content-container');
 
@@ -152,7 +161,7 @@ export class FriSummary {
         const container = document.querySelector('.fri-expand-collapse-container');
         if (!container) return;
 
-        this.updateExpandCollapse(false);
+        this.updateGenerateContentExpandCollapse(false);
 
         container.addEventListener('click', () => {
             const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();

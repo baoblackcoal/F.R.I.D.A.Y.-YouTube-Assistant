@@ -10,7 +10,7 @@ import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 import { MessageObserver } from "../../utils/messageObserver";
 import { ITtsMessage } from "../../utils/messageQueue";
-import { FridayStatus, fridayStatusLabels } from "../../common/common";
+import { FridayStatus, fridayStatusLabels, GenerateStatus } from "../../common/common";
 import { FriSummary } from "../friSummary/friSummary";
 import { i18nService } from "../friSummary/i18nService";
 import { PlayPauseButtonHandler } from "./view/buttonHandlers";
@@ -181,6 +181,16 @@ export function updateSummaryStatus(status: string, fridayStatus: FridayStatus):
         friSummary.setFriInfoText("...");
     } else {
         friSummary.setFriInfoText(i18nService.getMessage(fridayStatusLabels[fridayStatus]));
+    }
+
+    //finish event
+    switch (fridayStatus) {
+        case FridayStatus.Finished:
+            window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Finished } }));
+            break;
+        case FridayStatus.GeneratingSummary, FridayStatus.TranslatingSubtitle, FridayStatus.GeneratingPodcast:
+            window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Generating } }));
+            break;
     }
 }
 

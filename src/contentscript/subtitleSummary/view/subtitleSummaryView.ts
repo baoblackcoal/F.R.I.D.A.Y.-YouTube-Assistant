@@ -12,6 +12,7 @@ import { subtitleTranslate } from '../subtitleTranslate';
 import { getSearchParam } from '../../searchParam';
 import { i18nService } from '../../friSummary/i18nService';
 import { Toast } from '../../../common/toast';
+import { FriSummary } from '../../friSummary/friSummary';
 
 // Constants
 const HIGHLIGHT_COLOR = "lightskyblue";
@@ -100,6 +101,7 @@ export class SubtitleSummaryView {
         const settings = await getSettings();
         if (settings.summary.autoGenerate || maualStart) {
             this.generating = true;
+            FriSummary.getInstance().setGenerateContentExpand();
             subtitleSummaryHandle(this.getVideoId(), subtitleTranslate);
         }         
     }

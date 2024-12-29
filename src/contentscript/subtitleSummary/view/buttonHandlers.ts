@@ -10,7 +10,7 @@ import { MessageObserver } from '../../../utils/messageObserver';
 import { ITtsMessage } from '../../../utils/messageQueue';
 import { Toast } from '../../../common/toast';
 import { FriSummary } from '../../friSummary/friSummary';
-import { fridayStatusLabels } from '../../../common/common';
+import { FridayStatus, fridayStatusLabels, GenerateStatus } from '../../../common/common';
 // Interfaces
 interface IButtonHandler {
     init(): void;
@@ -31,9 +31,16 @@ export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSu
 class GenerateButtonHandler implements IButtonHandler {
     private buttonId = "fri-generate-button";
     private tts: TTSSpeak;
+    // private fridayStatus: FridayStatus = FridayStatus.Init;
+    private generateStatus: GenerateStatus = GenerateStatus.Waiting;
+    private generateFinished: boolean = false;
 
     constructor(tts: TTSSpeak) {
         this.tts = tts;
+        window.addEventListener('GenerateStatus', (event: any) => {
+            this.generateStatus = event.detail.GenerateStatus;
+            this.generateFinished = this.generateStatus == GenerateStatus.Finished;
+        });
     }
 
     init(): void {
@@ -49,19 +56,23 @@ class GenerateButtonHandler implements IButtonHandler {
 
     private async handleClick(): Promise<void> {
         const subtitleSummaryView = SubtitleSummaryView.getInstance();
-        if (subtitleSummaryView.getGenerating()) {
-            Toast.show({ message: i18nService.getMessage('summary-generating'), type: 'info', duration: 3000 });
-        } else {
-            const contentContainer = document.getElementById('fri-summary-content-container');
-            if (contentContainer) {
-                if (contentContainer.style.display === 'none') {
-                    FriSummary.getInstance().updateExpandCollapse(true);
-                } 
-            }
-
-            subtitleSummaryView.manualStartGenerate();
-            Toast.show({ message: i18nService.getMessage('summary-start-generate'), type: 'info', duration: 3000 });
+        let status = this.generateStatus;
+        if (!this.generateFinished && subtitleSummaryView.getGenerating()) {
+            status = GenerateStatus.Generating; //GenerateStatus update slow, so use subtitleSummaryView.getGenerating() to update
         }
+
+        switch (status) {
+            case GenerateStatus.Waiting:
+                subtitleSummaryView.manualStartGenerate();
+                Toast.show({ message: i18nService.getMessage('summary-start-generate'), type: 'info', duration: 3000 });
+                break;           
+            case GenerateStatus.Generating:
+                Toast.show({ message: i18nService.getMessage('summary-generating'), type: 'info', duration: 3000 });
+                break;
+            case GenerateStatus.Finished:
+                Toast.show({ message: i18nService.getMessage('summary-generate-finished'), type: 'info', duration: 3000 });
+                break;
+        }          
     }    
 }
 
@@ -103,6 +114,7 @@ class SummaryToggleButtonHandler implements IButtonHandler {
         }
     }
 }
+
 export class PlayPauseButtonHandler implements IButtonHandler {
     private buttonId = "fri-play-button";
     private tts!: TTSSpeak;

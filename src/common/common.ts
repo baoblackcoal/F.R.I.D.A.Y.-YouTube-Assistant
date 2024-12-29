@@ -34,6 +34,12 @@ export enum FridayStatus {
   Finished = 'finished'
 }
 
+export enum GenerateStatus {
+  Waiting = 'waiting',
+  Generating = 'generating',
+  Finished = 'finished'
+}
+
 export const fridayStatusLabels: Record<FridayStatus, string> = {
   [FridayStatus.Init]: 'init',
   [FridayStatus.Waiting]: 'summary-fri-waiting',

@@ -74,8 +74,8 @@
     "summary-generating": {
         "message": "正在生成..."
     },
-    "summary-generate-finish": {
-        "message": "生成完成"
+    "summary-generate-finished": {
+        "message": "已生成完成"
     },
     "summary-popup-copy-success": {
         "message": "已复制到剪贴板"

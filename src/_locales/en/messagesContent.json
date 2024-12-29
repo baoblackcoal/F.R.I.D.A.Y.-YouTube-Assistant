@@ -74,7 +74,7 @@
     "summary-generating": {
         "message": "Generating..."
     },
-    "summary-generate-finish": {
+    "summary-generate-finished": {
         "message": "Generate Finished"
     },
     "summary-popup-copy-success": {
