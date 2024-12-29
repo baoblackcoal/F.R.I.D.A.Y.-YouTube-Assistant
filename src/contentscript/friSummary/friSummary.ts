@@ -9,6 +9,7 @@ import { copyTextToClipboard } from '../copy';
 import { Toast } from '../../common/toast';
 import { getVideoTitle } from '../subtitleSummary/subtitleSummary';
 import { SubtitleSummaryView } from '../subtitleSummary/view/subtitleSummaryView';
+import { toggleYoutubeSubtitle } from '../youtube';
 
 export class FriSummary {
     private state!: IFriSummaryState
@@ -206,13 +207,7 @@ export class FriSummary {
                 }
             },
             onYoutubeSubtitleChange: (enabled: boolean) => {
-                const youtubeSubtitleContainer = document.getElementById('yt_ai_summary_header');
-                const youtubeSubtitleBody = document.getElementById('yt_ai_summary_body');
-                if (!youtubeSubtitleContainer || !youtubeSubtitleBody) return;
-
-                youtubeSubtitleContainer.style.display = enabled ? 'flex' : 'none';
-                youtubeSubtitleBody.style.display = enabled ? 'block' : 'none';
-                summaryState.setYoutubeSubtitleVisible(enabled);
+                toggleYoutubeSubtitle();
             }
         };
 

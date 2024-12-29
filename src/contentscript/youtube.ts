@@ -10,10 +10,8 @@ import { waitForPlayer } from './subtitleSummary/subtitleSummary';
 import { insertCommandContainer } from './command/commandView';
 import { globalConfig } from '../common/config';
 import { logTime, waitForElm } from "./utils";
-import { getSubtitleSummaryView, handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
+import { handleSubtitleSummaryView, insertSummaryButtonView } from "./subtitleSummary/view/subtitleSummaryView";
 import { friSummaryInit } from "./friSummary/friSummary";
-
-
 
 export async function insertSummaryBtn(): Promise<void> {
     // log time ms   
@@ -44,41 +42,6 @@ export async function insertSummaryBtn(): Promise<void> {
         friSummaryInit();
 
 
-        // Place Script Div
-        document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", `
-            <div class="yt_ai_summary_container" style="
-                font-family: 'Roboto', sans-serif;
-                font-size: 14px;
-                background-color: var(--yt-spec-badge-chip-background);
-                border-radius: 12px;
-                border-color: var(--yt-spec-base-background);
-                padding: 16px;
-                width: -webkit-fill-available;
-                margin: 8px 12px 0px 0px;">
-
-                ${getSubtitleSummaryView()}
-
-                <div id="yt_ai_summary_header" class="yt_ai_summary_header">
-                    <p> </p>
-                    
-                    <p class="yt_ai_summary_header_text">Transcript</p>
-                    <div class="yt_ai_summary_header_actions">
-                        
-                        <div id="yt_ai_summary_header_copy" class="yt_ai_summary_header_action_btn yt-summary-hover-el" data-hover-label="Copy Transcript\n(Plain Text)">
-                            ${getCopySvg()}
-                        </div>
-                        <div style="filter: brightness(0.9);" id="yt_ai_summary_header_toggle" class="yt_ai_summary_header_action_btn">
-                            ${getToggleSvg()}
-                        </div>
-                    </div>
-                </div>
-                <div id="yt_ai_summary_body" class="yt_ai_summary_body">
-                    <div id="yt_ai_summary_lang_select" class="yt_ai_summary_lang_select"></div>
-                    <div id="yt_ai_summary_text" class="yt_ai_summary_text"></div>
-                </div>
-            </div>
-        `);
-
         // Event Listener: Hover Label
         Array.from(document.getElementsByClassName("yt-summary-hover-el")).forEach(el => {
             const label = el.getAttribute("data-hover-label");
@@ -103,49 +66,37 @@ export async function insertSummaryBtn(): Promise<void> {
             copyTranscript(videoId);
         })
 
-        // // Event Listener: AI Summary
-        // document.querySelector("#yt_ai_summary_header_summary")!.addEventListener("click", (e) => {
-        //     e.stopPropagation();
-        //     const prompt = copyTranscriptAndPrompt();
-        //     setTimeout(() => {
-        //         chrome.runtime.sendMessage({ message: "setPrompt", prompt: prompt });
-        //         window.open("https://chat.openai.com/chat?ref=glasp", "_blank");
-        //     }, 500);
-        // })
-
-        // // Event Listener: Jump to Current Timestamp
-        // document.querySelector("#yt_ai_summary_header_track")!.addEventListener("click", (e) => {
-        //     e.stopPropagation();
-        //     scrollIntoCurrTimeDiv();
-        // })
-
         // Event Listener: Toggle Transcript Body
         document.querySelector("#yt_ai_summary_header")!.addEventListener("click", async (e) => {
-            const videoId = getSearchParam(window.location.href).v || "";
-            sanitizeWidget();
-
-            if (!isWidgetOpen()) { return; }
-
-            // Get Transcript Language Options & Create Language Select Btns
-            const langOptionsWithLink = await getLangOptionsWithLink(videoId);
-            if (!langOptionsWithLink) {
-                noTranscriptionAlert();
-                return;
-            }
-            createLangSelectBtns(langOptionsWithLink as { language: string, link: string }[]);
-
-            // Create Transcript HTML & Add Event Listener
-            const transcriptHTML = await getTranscriptHTML(langOptionsWithLink[0].link, videoId);
-            (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = transcriptHTML;
-            evtListenerOnTimestamp();
-
-            // Event Listener: Language Select Btn Click
-            evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
+            toggleYoutubeSubtitle();
         })
 
         handleSubtitleSummaryView();
         commandHandle();
     });
+}
+
+export async function toggleYoutubeSubtitle(): Promise<void> {
+    const videoId = getSearchParam(window.location.href).v || "";
+    sanitizeWidget();
+
+    if (!isWidgetOpen()) { return; }
+
+    // Get Transcript Language Options & Create Language Select Btns
+    const langOptionsWithLink = await getLangOptionsWithLink(videoId);
+    if (!langOptionsWithLink) {
+        noTranscriptionAlert();
+        return;
+    }
+    createLangSelectBtns(langOptionsWithLink as { language: string, link: string }[]);
+
+    // Create Transcript HTML & Add Event Listener
+    const transcriptHTML = await getTranscriptHTML(langOptionsWithLink[0].link, videoId);
+    (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = transcriptHTML;
+    evtListenerOnTimestamp();
+
+    // Event Listener: Language Select Btn Click
+    evtListenerOnLangBtns(langOptionsWithLink as { language: string, link: string }[], videoId);
 }
 
 function sanitizeWidget(): void {
@@ -183,7 +134,7 @@ function noTranscriptionAlert(): void {
 
 function createLangSelectBtns(langOptionsWithLink: { language: string, link: string }[]): void {
     (document.querySelector("#yt_ai_summary_lang_select") as HTMLElement).innerHTML = Array.from(langOptionsWithLink).map((langOption, index) => {
-        return `<button class="yt_ai_summary_lang ${(index == 0) ? "yt_ai_summary_lange_selected" : ""}" data-yt-transcript-lang="${langOption.language}">${langOption.language}</button>`;
+        return `<button class="yt_ai_summary_lang ${(index == 0) ? "yt_ai_summary_lange_selected" : "yt_ai_summary_lange_unselected"}" data-yt-transcript-lang="${langOption.language}">${langOption.language}</button>`;
     }).join("");
 }
 
@@ -198,8 +149,12 @@ function evtListenerOnLangBtns(langOptionsWithLink: { language: string, link: st
             (document.querySelector("#yt_ai_summary_text") as HTMLElement).innerHTML = transcriptHTML;
             evtListenerOnTimestamp()
             targetBtn!.classList.add("yt_ai_summary_lange_selected");
+            targetBtn!.classList.remove("yt_ai_summary_lange_unselected");
             Array.from(document.getElementsByClassName("yt_ai_summary_lang")).forEach((langBtn) => {
-                if (langBtn !== targetBtn) { langBtn.classList.remove("yt_ai_summary_lange_selected"); }
+                if (langBtn !== targetBtn) { 
+                    langBtn.classList.remove("yt_ai_summary_lange_selected"); 
+                    langBtn.classList.add("yt_ai_summary_lange_unselected");
+                }
             })
         })
     })

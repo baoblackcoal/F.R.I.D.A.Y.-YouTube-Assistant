@@ -19,15 +19,12 @@ interface IButtonHandler {
 
 export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView): void {
     new GenerateButtonHandler(tts).init();
-    // new LanguageButtonHandler().init();
     new SettingsButtonHandler().init();
     new SummaryToggleButtonHandler().init();
 
-    // new MoreButtonHandler().init();
     const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
     playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
     playPauseButtonHandler.init();
-    // new AutoSummaryButtonHandler().init();
 }
 
 // Button Handlers
@@ -68,38 +65,6 @@ class GenerateButtonHandler implements IButtonHandler {
     }    
 }
 
-
-// class LanguageButtonHandler implements IButtonHandler {
-//     private buttonId = "ytbs_language";
-
-//     init(): void {
-//         const button = document.getElementById(this.buttonId);
-//         if (button) {
-//             button.addEventListener("click", this.handleClick.bind(this));
-//             this.update();
-//         }
-//     }
-
-//     async update(): Promise<void> {
-//         const button = document.getElementById(this.buttonId);
-//         if (button) {
-//             const settings = await getSettings();
-//             button.textContent = settings.summary.language;
-//         }
-//     }
-
-//     private async handleClick(): Promise<void> {
-//         const settings = await getSettings();
-//         const currentLanguage = settings.summary.language as Language;
-//         const languages = Object.values(Language) as Language[];
-//         const nextLanguageIndex = (languages.indexOf(currentLanguage) + 1) % languages.length;
-//         settings.summary.language = languages[nextLanguageIndex];
-//         await settingsManager.setSummarySettings(settings.summary);
-//         await this.update();
-//         window.dispatchEvent(new CustomEvent('generalLanguageSyncChanged', {}));
-//     }
-// }
-
 class SettingsButtonHandler implements IButtonHandler {
     private buttonId = "fri-settings-button";
 
@@ -138,30 +103,6 @@ class SummaryToggleButtonHandler implements IButtonHandler {
         }
     }
 }
-
-// class MoreButtonHandler implements IButtonHandler {
-//     private buttonId = "ytbs_more_btn";
-//     private popupHandler: MorePopupHandler;
-
-//     constructor() {
-//         this.popupHandler = new MorePopupHandler();
-//     }
-
-//     init(): void {
-//         const button = document.getElementById(this.buttonId);
-//         if (button) {
-//             button.addEventListener("click", (event) => {
-//                 event.stopPropagation();
-//                 this.popupHandler.open(button);
-//             });
-//         }
-//     }
-
-//     async update(): Promise<void> {
-//         // No update needed for this button
-//     }
-// }
-
 export class PlayPauseButtonHandler implements IButtonHandler {
     private buttonId = "fri-play-button";
     private tts!: TTSSpeak;
@@ -266,31 +207,3 @@ export class PlayPauseButtonHandler implements IButtonHandler {
         }
     }
 }
-
-// class AutoSummaryButtonHandler implements IButtonHandler {
-//     private buttonId = "ytbs_auto_summary";
-
-//     init(): void {
-//         const button = document.getElementById(this.buttonId);
-//         if (button) {
-//             button.addEventListener("click", this.handleClick.bind(this));
-//             this.update();
-//         }
-//     }
-
-//     async update(): Promise<void> {
-//         const button = document.getElementById(this.buttonId);
-//         if (button) {
-//             const settings = await getSettings();
-//             button.textContent = settings.summary.autoGenerate ? "Summary: ON" : "Summary: OFF";
-//         }
-//     }
-
-//     private async handleClick(): Promise<void> {
-//         const settings = await getSettings();
-//         settings.summary.autoGenerate = !settings.summary.autoGenerate;
-//         await settingsManager.setSummarySettings(settings.summary);
-//         await this.update();
-//         window.location.reload();
-//     }
-// }

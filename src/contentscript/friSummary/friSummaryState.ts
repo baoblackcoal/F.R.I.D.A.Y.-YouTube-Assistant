@@ -18,7 +18,7 @@ export interface IFriSummaryState {
 
 
 class FriSummaryState implements IFriSummaryState {
-    private youtubeSubtitleVisible: boolean = true;
+    private youtubeSubtitleVisible: boolean = false;
 
 
     private static instance: FriSummaryState;

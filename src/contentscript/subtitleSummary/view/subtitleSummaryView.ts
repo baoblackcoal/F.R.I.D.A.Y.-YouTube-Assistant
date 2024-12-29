@@ -33,7 +33,6 @@ export class SubtitleSummaryView {
     }
 
     static getInstance(): SubtitleSummaryView {
-        // singleton
         if (!SubtitleSummaryView.instance) {
             SubtitleSummaryView.instance = new SubtitleSummaryView();
         }
@@ -173,116 +172,6 @@ export function insertSummaryButtonView(): void {
         logoElement.insertAdjacentElement('afterend', logo);
     }
 
-}
-
-export function getSubtitleSummaryView(): string {
-    return `
-        <div class="ytbs_container" style="
-            font-family: 'Roboto', sans-serif;
-            font-size: 15px;           
-        ">
-            <div id="ytbs_control_panel" style="
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 16px;
-                align-items: center;
-                gap: 12px;
-            ">
-                <div class="ytbs_left_controls" style="display: flex; gap: 8px;">
-                    <button id="ytbs_play_pause" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">Pause</button>
-                    <button id="ytbs_speak" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">Speak</button>
-                    <button id="ytbs_language" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">English</button>
-                </div>
-
-                <div id="ytbs_summary_title" style="
-                    color: var(--yt-spec-text-primary);
-                    font-size: 16px;
-                    font-weight: 500;
-                    flex-grow: 1;
-                    text-align: center;
-                    width: auto;
-                ">YouTube Summary</div>
-
-                <div class="ytbs_right_controls" style="display: flex; gap: 8px;">
-                    <button id="ytbs_auto_summary" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">Summary</button>
-                    <button id="ytbs_auto_speak" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">Auto Speak</button>
-                    <button id="ytbs_settings" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">Settings</button>
-                    <button id="ytbs_more_btn" style="
-                        background-color: var(--yt-spec-badge-chip-background);
-                        color: var(--yt-spec-text-primary);
-                        border: none;
-                        border-radius: 18px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    ">More</button>
-                </div>
-            </div>
-
-        </div>
-    `;
 }
 
 const view = SubtitleSummaryView.getInstance();
