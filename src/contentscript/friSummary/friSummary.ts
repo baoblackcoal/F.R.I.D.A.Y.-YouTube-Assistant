@@ -334,7 +334,7 @@ export class FriSummary {
                 this.state.setSubtitleType(SubtitleType.Podcast);
                 break;
         }
-        // window.location.reload();
+        window.location.reload();
     }
 
     public init(): void {        
