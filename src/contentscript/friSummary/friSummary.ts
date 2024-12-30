@@ -10,6 +10,7 @@ import { Toast } from '../../common/toast';
 import { getVideoTitle } from '../subtitleSummary/subtitleSummary';
 import { SubtitleSummaryView } from '../subtitleSummary/view/subtitleSummaryView';
 import { toggleYoutubeSubtitle } from '../youtube';
+import { GenerateStatus } from '../../common/common';
 
 export class FriSummary {
     private state!: IFriSummaryState
@@ -20,6 +21,7 @@ export class FriSummary {
         this.state = summaryState;    
         this.tts = TTSSpeak.getInstance();
         this.setLanguage();
+        this.handleEvents();
     }
 
     public static getInstance(): FriSummary {
@@ -27,6 +29,15 @@ export class FriSummary {
             FriSummary.instance = new FriSummary();
         }
         return FriSummary.instance;
+    }
+
+    private handleEvents(): void {
+        window.addEventListener('GenerateStatus', (event: Event) => {
+            const generateStatus = (event as CustomEvent).detail.GenerateStatus;
+            if (generateStatus === GenerateStatus.Generating) {
+                this.setGenerateAndPlayTooltip(true);
+            }
+        });
     }
 
     private async setLanguage(): Promise<void> {
@@ -241,12 +252,20 @@ export class FriSummary {
         }, 300);
     }
 
-    private updateLanguageTexts(): void {
+    public setGenerateAndPlayTooltip(startGenerate: boolean = false): void {
         const playTooltip = document.querySelector('.play-pause-container .fri-tooltip');
         if (playTooltip) {
-            const isPlaying = (document.querySelector('.fri-play-button') as HTMLElement).style.display !== 'none';
-            playTooltip.textContent = i18nService.getMessage(isPlaying ? 'summary-play' : 'summary-pause');
+            if (!startGenerate) {
+                playTooltip.textContent = i18nService.getMessage('summary-generate-and-play');
+            } else {
+                const isPlaying = (document.querySelector('.fri-play-button') as HTMLElement).style.display !== 'none';
+                playTooltip.textContent = i18nService.getMessage(isPlaying ? 'summary-play' : 'summary-pause');
+            }
         }
+    }
+
+    private updateLanguageTexts(): void {
+        this.setGenerateAndPlayTooltip();
 
         const generateTooltip = document.getElementById('fri-generate-button-tooltip');
         if (generateTooltip) {

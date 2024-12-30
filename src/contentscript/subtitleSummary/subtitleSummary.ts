@@ -188,7 +188,9 @@ export function updateSummaryStatus(status: string, fridayStatus: FridayStatus):
         case FridayStatus.Finished:
             window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Finished } }));
             break;
-        case FridayStatus.GeneratingSummary, FridayStatus.TranslatingSubtitle, FridayStatus.GeneratingPodcast:
+        case FridayStatus.GeneratingSummary:
+        case FridayStatus.TranslatingSubtitle:
+        case FridayStatus.GeneratingPodcast:
             window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Generating } }));
             break;
     }

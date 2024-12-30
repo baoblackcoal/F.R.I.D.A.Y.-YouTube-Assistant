@@ -8,6 +8,9 @@
     "summary-ai-generate": {
         "message": "Generate"
     },
+    "summary-generate-and-play": {
+        "message": "Generate and Play"
+    },
     "summary-expand": {
         "message": "Expand"
     },

@@ -8,6 +8,9 @@
     "summary-ai-generate": {
         "message": "生成"
     },
+    "summary-generate-and-play": {
+        "message": "生成並播放"
+    },
     "summary-expand": {
         "message": "展開"
     },
