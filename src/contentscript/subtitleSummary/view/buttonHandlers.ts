@@ -154,7 +154,7 @@ export class PlayPauseButtonHandler implements IButtonHandler {
             const isSpeaking = message!.speaking;
             if (this.isSpeaking !== isSpeaking) {
                 this.updatePlayPauseButton(isSpeaking);
-            }
+            }            
         });
     }
 
@@ -182,12 +182,14 @@ export class PlayPauseButtonHandler implements IButtonHandler {
             await this.tts.stop();
             this.updatePlayPauseButton(false);
         } else {
-            const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
-            if (hasContent) {
-                await this.tts.resetStreamSpeak();
-                this.resumeSpeaking();
-                this.updatePlayPauseButton(true);
-            }
+            const [hasContent, text] = this.subtitleSummaryView.checkGenerateContent();
+            if (!hasContent) {
+                this.subtitleSummaryView.manualStartGenerate();
+            } 
+
+            await this.tts.resetStreamSpeak();
+            this.resumeSpeaking();
+            this.updatePlayPauseButton(true);
         }
     }
 

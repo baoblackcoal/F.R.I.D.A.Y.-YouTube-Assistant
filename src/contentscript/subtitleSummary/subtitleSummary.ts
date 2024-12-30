@@ -222,8 +222,10 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                     let replaceNewLineCount = 0;
                     geminiAPI.streamGenerate(prompt, async (text) => {
                         reavStreamText += text;
+
                         reavStreamText = reavStreamText.replace(/\. /g, '. \n').replace(/。/g, '。\n');
                         if (reavStreamText.includes('\n')) {
+                            reavStreamText = reavStreamText.replace(/<HTML_FORMAT>/g, '');            
                             reavStreamText = reavStreamText.replace(/HTML_FORMAT/g, '');                        
                             const splitTextArray = reavStreamText.split('\n');
                             reavStreamText = splitTextArray[splitTextArray.length - 1];

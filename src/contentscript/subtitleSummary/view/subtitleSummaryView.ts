@@ -76,18 +76,22 @@ export class SubtitleSummaryView {
         return this.generating;
     }
 
-    public checkGenerateContentAndToast(): [boolean, string] {
-        let hasContent = false;
+    public checkGenerateContent(): [boolean, string] {
         const text = (document.querySelector("#fri-summary-content") as HTMLElement).innerText;
         if (!text || text === " ") {
+            return [false, ""];
+        }
+        return [true, text];    
+    }
+
+    public checkGenerateContentAndToast(): [boolean, string] {
+        const [hasContent, text] = this.checkGenerateContent();
+        if (!hasContent) {
             Toast.show({
                 type: 'info',
                 message: i18nService.getMessage('summary-popup-generate-first-tip')
             });
-            hasContent = false;
-        } else {
-            hasContent = true;
-        }
+        } 
         return [hasContent, text];
     }
 
