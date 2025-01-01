@@ -101,11 +101,6 @@ export class SubtitleTranslate implements ISubtitleTranslate {
 
     private cloneAndResetContent(contentElement: Element): string {
         const tempElement = contentElement.cloneNode(true) as HTMLElement;
-        tempElement.childNodes.forEach(node => {
-            if (node instanceof HTMLElement && node.style.backgroundColor !== "white") {
-                node.style.backgroundColor = "white";
-            }
-        });
         return tempElement.innerHTML;
     }
 
