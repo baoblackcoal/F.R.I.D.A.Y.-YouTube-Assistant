@@ -8,7 +8,7 @@ import { FridayStatus, responseOk } from '../../../common/common';
 import { getSettings } from './utils';
 import { initializeButtons } from './buttonHandlers';
 import { waitForElm } from '../../utils';
-import { subtitleTranslate } from '../subtitleTranslate';
+import { ISubtitleTranslate, SubtitleTranslate } from '../subtitleTranslate';
 import { getSearchParam } from '../../searchParam';
 import { i18nService } from '../../friSummary/i18nService';
 import { Toast } from '../../../common/toast';
@@ -51,7 +51,7 @@ export class SubtitleSummaryView {
             updateSummaryStatus("Waiting...", FridayStatus.Waiting);
         }, 3000);
         
-        await this.handleAutoSummary(subtitleTranslate);
+        await this.handleAutoSummary();
     }
 
     //reload page when background send reloadPage message "reloadPage"
@@ -98,15 +98,15 @@ export class SubtitleSummaryView {
     async manualStartGenerate(): Promise<void> {
         this.generating = true;
         const maualStart = true;
-        await this.handleAutoSummary(subtitleTranslate, maualStart);
+        await this.handleAutoSummary(maualStart);
     }
 
-    private async handleAutoSummary(subtitleTranslate: (videoId: string) => Promise<void>, maualStart: boolean = false): Promise<void> {
+    private async handleAutoSummary(maualStart: boolean = false): Promise<void> {
         const settings = await getSettings();
         if (settings.summary.autoGenerate || maualStart) {
             this.generating = true;
             FriSummary.getInstance().setGenerateContentExpand();
-            subtitleSummaryHandle(this.getVideoId(), subtitleTranslate);
+            subtitleSummaryHandle(this.getVideoId(), SubtitleTranslate.getInstance());
         }         
     }
 

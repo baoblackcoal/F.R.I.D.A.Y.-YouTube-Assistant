@@ -10,16 +10,26 @@ import { SubtitleType } from '../../common/ISettings';
 import { FridayStatus } from '../../common/common';
 import { PlayPauseButtonHandler } from './view/buttonHandlers';
 
-interface ISubtitleTranslator {
+export interface ISubtitleTranslate {
     generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string>;
     translateSubtitles(videoId: string): Promise<void>;
+    addSummaryParagraphsClickHandlers(): void;
 }
 
-class SubtitleTranslator implements ISubtitleTranslator {
+export class SubtitleTranslate implements ISubtitleTranslate {
     private tts: TTSSpeak;
 
     constructor() {
         this.tts = TTSSpeak.getInstance();
+    }
+
+    //singleton
+    private static instance: SubtitleTranslate;
+    public static getInstance(): SubtitleTranslate {
+        if (!SubtitleTranslate.instance) {
+            SubtitleTranslate.instance = new SubtitleTranslate();
+        }
+        return SubtitleTranslate.instance;
     }
 
     async generatePrompt(videoId: string, generateSubtitleType: SubtitleType): Promise<string> {
@@ -45,7 +55,6 @@ class SubtitleTranslator implements ISubtitleTranslator {
     async translateSubtitles(videoId: string): Promise<void> {
         const summarySettings = await settingsManager.getSummarySettings();
 
-        this.addSummaryParagraphsClickHandlers();
 
         getApiKey(async (geminiApiKey) => {
             if (!geminiApiKey) {
@@ -344,7 +353,7 @@ const errorTypeMessage = {
     [ErrorType.TranslateError]: "translate error",
 }
 
-export const subtitleTranslate = async (videoId: string): Promise<void> => {
-    const translator = new SubtitleTranslator();
-    await translator.translateSubtitles(videoId);
-};
+// export const subtitleTranslate = async (videoId: string): Promise<void> => {
+//     const translator = SubtitleTranslate.getInstance();
+//     await translator.translateSubtitles(videoId);
+// };

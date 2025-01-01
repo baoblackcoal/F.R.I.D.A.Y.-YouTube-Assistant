@@ -6,7 +6,7 @@ import { defaultSummarySettings } from '../../common/settings';
 import { Language, ISummarySettings, SubtitleType } from '../../common/ISettings';
 import { defaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
-import { handleSubtitleSummaryView } from "./view/subtitleSummaryView";
+import { handleSubtitleSummaryView, SubtitleSummaryView } from "./view/subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
 import { MessageObserver } from "../../utils/messageObserver";
 import { ITtsMessage } from "../../utils/messageQueue";
@@ -14,6 +14,7 @@ import { FridayStatus, fridayStatusLabels, GenerateStatus } from "../../common/c
 import { FriSummary } from "../friSummary/friSummary";
 import { i18nService } from "../friSummary/i18nService";
 import { PlayPauseButtonHandler } from "./view/buttonHandlers";
+import { ISubtitleTranslate } from "./subtitleTranslate";
 
 let pauseVideoFlag = false;
 
@@ -166,7 +167,7 @@ export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
 }
 
-export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
+export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<void> {
     generateSummary(videoId, subtitleTranslate);
 }
 
@@ -201,7 +202,7 @@ export function getTtsSpeakIndex(): number {
     return paragraphIndex++;
 }
 
-export async function generateSummary(videoId: string, subtitleTranslate: (videoId: string) => Promise<void>): Promise<void> {
+export async function generateSummary(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<void> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
         return;
@@ -253,10 +254,12 @@ export async function generateSummary(videoId: string, subtitleTranslate: (video
                         }
                        
                     }).then(async () => {
+                        subtitleTranslate.addSummaryParagraphsClickHandlers();
+
                         TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', -1); // speak a new line to make sure last line is spoken
                         const subtitleType = await settingsManager.getSummarySettings();
                         if (subtitleType.generateSubtitleType != SubtitleType.None) {
-                            subtitleTranslate(videoId);
+                            subtitleTranslate.translateSubtitles(videoId);
                         } else {
                             updateSummaryStatus("Generate Summary Finish.", FridayStatus.Finished);
                         }
