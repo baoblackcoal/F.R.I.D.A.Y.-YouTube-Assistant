@@ -26,7 +26,7 @@
         "message": "📝 總結 YouTube 影片。"
     },
     "option_general_feature_translate": {
-        "message": "🌍 翻譯字幕。"
+        "message": "🌍 翻譯字幕，根據Youtbue字幕生成播客。"
     },
     "option_general_feature_tts": {
         "message": "🔊 朗讀內容。"
@@ -49,7 +49,7 @@
         "message": "通用"
     },
     "option_tab_summary": {
-        "message": "AI 總結"
+        "message": "AI生成"
     },
     "option_tab_tts": {
         "message": "語音合成"
@@ -114,7 +114,7 @@
         "message": "自動停止影片並朗讀摘要"
     },
     "option_summary_prompt_type": {
-        "message": "提示類型"
+        "message": "總結Prompt類型"
     },
     "option_summary_prompt_default": {
         "message": "預設"
