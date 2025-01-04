@@ -3,7 +3,8 @@
 }
 
 .body-container {
-    @apply bg-gray-50 text-sm;
+    @apply bg-gray-50;
+    font-size: 15px;
 }
 
 .controls-container {

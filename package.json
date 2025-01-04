@@ -28,6 +28,7 @@
     "clean": "rimraf dist/*",
     "build:css": "tailwindcss -i ./src/option/css/options.css -o ./dist/options.css --minify",
     "build-clean-css": "npm run clean && npm run build:css && webpack --config webpack.config.js",
+    "build-css": "npm run build:css && webpack --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
     "test": "jest",
     "build-release": "npm run clean && npm run build:css && cross-env NODE_ENV=production webpack"
