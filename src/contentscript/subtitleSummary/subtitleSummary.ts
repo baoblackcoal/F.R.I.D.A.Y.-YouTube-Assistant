@@ -186,6 +186,9 @@ export function updateSummaryStatus(status: string, fridayStatus: FridayStatus):
 
     //finish event
     switch (fridayStatus) {
+        case FridayStatus.Init:
+            window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Init } }));
+            break;
         case FridayStatus.Finished:
             window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Finished } }));
             break;

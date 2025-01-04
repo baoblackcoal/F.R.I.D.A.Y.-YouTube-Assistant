@@ -18,9 +18,11 @@ interface IButtonHandler {
 }
 
 export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSummaryView): void {
-    new GenerateButtonHandler(tts).init();
-    new SettingsButtonHandler().init();
-    new SummaryToggleButtonHandler().init();
+    GenerateButtonHandler.getInstance().initVariable(tts);
+    GenerateButtonHandler.getInstance().init();
+
+    SettingsButtonHandler.getInstance().init();
+    SummaryToggleButtonHandler.getInstance().init();
 
     const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
     playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
@@ -30,17 +32,28 @@ export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSu
 // Button Handlers
 class GenerateButtonHandler implements IButtonHandler {
     private buttonId = "fri-generate-button";
-    private tts: TTSSpeak;
+    private tts!: TTSSpeak;
     // private fridayStatus: FridayStatus = FridayStatus.Init;
-    private generateStatus: GenerateStatus = GenerateStatus.Waiting;
+    private generateStatus: GenerateStatus = GenerateStatus.Init;
     private generateFinished: boolean = false;
 
-    constructor(tts: TTSSpeak) {
-        this.tts = tts;
+    private constructor() {
         window.addEventListener('GenerateStatus', (event: any) => {
             this.generateStatus = event.detail.GenerateStatus;
             this.generateFinished = this.generateStatus == GenerateStatus.Finished;
+            if (this.generateStatus == GenerateStatus.Init) {
+                this.generateFinished = false;
+            }
         });
+    }
+
+    //single instance
+    private static instance: GenerateButtonHandler;
+    public static getInstance(): GenerateButtonHandler {
+        if (!GenerateButtonHandler.instance) {
+            GenerateButtonHandler.instance = new GenerateButtonHandler();
+        }
+        return GenerateButtonHandler.instance;
     }
 
     init(): void {
@@ -48,6 +61,10 @@ class GenerateButtonHandler implements IButtonHandler {
         if (button) {
             button.addEventListener("click", this.handleClick.bind(this));
         }
+    }
+
+    initVariable(tts: TTSSpeak): void {
+        this.tts = tts;
     }
 
     async update(): Promise<void> {
@@ -62,7 +79,7 @@ class GenerateButtonHandler implements IButtonHandler {
         }
 
         switch (status) {
-            case GenerateStatus.Waiting:
+            case GenerateStatus.Init:
                 subtitleSummaryView.manualStartGenerate();
                 Toast.show({ message: i18nService.getMessage('summary-start-generate'), type: 'info', duration: 3000 });
                 break;           
@@ -88,6 +105,15 @@ class SettingsButtonHandler implements IButtonHandler {
         }
     }
 
+    //single instance
+    private static instance: SettingsButtonHandler;
+    public static getInstance(): SettingsButtonHandler {
+        if (!SettingsButtonHandler.instance) {
+            SettingsButtonHandler.instance = new SettingsButtonHandler();
+        }
+        return SettingsButtonHandler.instance;
+    }
+
     async update(): Promise<void> {
         // No update needed for this button
     }
@@ -101,6 +127,15 @@ class SummaryToggleButtonHandler implements IButtonHandler {
         if (button) {
             button.addEventListener("click", this.handleClick.bind(this));
         }
+    }
+
+    //single instance
+    private static instance: SummaryToggleButtonHandler;
+    public static getInstance(): SummaryToggleButtonHandler {
+        if (!SummaryToggleButtonHandler.instance) {
+            SummaryToggleButtonHandler.instance = new SummaryToggleButtonHandler();
+        }
+        return SummaryToggleButtonHandler.instance;
     }
 
     async update(): Promise<void> {

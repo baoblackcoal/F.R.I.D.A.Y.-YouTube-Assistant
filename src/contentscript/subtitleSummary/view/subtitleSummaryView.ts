@@ -41,6 +41,7 @@ export class SubtitleSummaryView {
     }
 
     async init(): Promise<void> {
+        this.generating = false;
         await this.reloadPage();
         await listenToMessages();
         await this.resetWhenPageChange();
