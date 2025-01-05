@@ -108,10 +108,10 @@
         "message": "Summary Language"
     },
     "option_summary_auto_summary": {
-        "message": "Auto Generate: when video loads"
+        "message": "Auto Generate: Automatically generate when video loads"
     },
     "option_summary_auto_tts": {
-        "message": "Auto Play: stop video and speak generated content automatically"
+        "message": "Auto Play: Automatically stop video and speak generated content"
     },
     "option_summary_prompt_type": {
         "message": "Summary Prompt Type"

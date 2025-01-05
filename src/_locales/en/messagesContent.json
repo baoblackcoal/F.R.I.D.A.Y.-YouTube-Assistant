@@ -72,18 +72,21 @@
         "message": "AI Language"
     },
     "summary-start-generate": {
-        "message": "Start Generate"
+        "message": "Fiday: Start Generate"
     },
     "summary-generating": {
-        "message": "Generating..."
+        "message": "Fiday: Generating..."
     },
     "summary-generate-finished": {
-        "message": "Generate Finished"
+        "message": "Fiday: Generate Finished"
     },
     "summary-popup-copy-success": {
-        "message": "Copied to clipboard"
+        "message": "Fiday: Copied to clipboard"
     },
     "summary-popup-generate-first-tip": {
-        "message": "Content is empty, please generate first"
+        "message": "Fiday: Content is empty, please generate first"
+    },
+    "summary-tip-no-youtube-transcript": {
+        "message": "Fiday: Cannot generate because the video does not have a YouTube transcript."
     }
 }

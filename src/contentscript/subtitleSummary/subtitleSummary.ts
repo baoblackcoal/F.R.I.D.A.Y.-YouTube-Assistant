@@ -15,6 +15,7 @@ import { FriSummary } from "../friSummary/friSummary";
 import { i18nService } from "../friSummary/i18nService";
 import { PlayPauseButtonHandler } from "./view/buttonHandlers";
 import { ISubtitleTranslate } from "./subtitleTranslate";
+import { Toast } from "../../common/toast";
 
 let pauseVideoFlag = false;
 
@@ -167,8 +168,8 @@ export async function getPlayPauseFlag(): Promise<boolean> {
     return playPauseFlag;
 }
 
-export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<void> {
-    generateSummary(videoId, subtitleTranslate);
+export async function subtitleSummaryHandle(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<boolean> {
+    return generateSummary(videoId, subtitleTranslate);
 }
 
 export function updateSummaryStatus(status: string, fridayStatus: FridayStatus): void {
@@ -205,11 +206,19 @@ export function getTtsSpeakIndex(): number {
     return paragraphIndex++;
 }
 
-export async function generateSummary(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<void> {
+export async function generateSummary(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<boolean> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
-        return;
+        Toast.show({
+            type: 'error',
+            message: i18nService.getMessage('summary-tip-no-youtube-transcript'),
+            duration: 4000
+        });
+        window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Init } }));
+        return false;
     }
+
+    FriSummary.getInstance().setGenerateContentExpand();
 
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
@@ -281,6 +290,8 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
             }
         }
     });
+
+    return true;
 }
 
 // Add this message listener at the end of the file

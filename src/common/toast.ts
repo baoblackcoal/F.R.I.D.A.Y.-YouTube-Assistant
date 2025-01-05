@@ -1,3 +1,9 @@
+export enum ToastType {
+    Success = 'success',
+    Error = 'error',
+    Info = 'info'
+}
+
 interface ToastOptions {
     message: string;
     type: 'success' | 'error' | 'info';

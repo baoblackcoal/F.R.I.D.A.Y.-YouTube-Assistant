@@ -2,7 +2,7 @@
 /* Toast Container */
 .fri-toast-container {
     position: fixed;
-    top: 20px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 5000;
@@ -16,7 +16,7 @@
     border-radius: 4px;
     color: white;
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-40px);
     transition: all 0.3s ease;
   }
   

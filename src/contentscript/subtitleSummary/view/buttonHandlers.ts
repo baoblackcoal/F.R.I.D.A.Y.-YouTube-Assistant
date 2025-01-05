@@ -191,6 +191,13 @@ export class PlayPauseButtonHandler implements IButtonHandler {
                 this.updatePlayPauseButton(isSpeaking);
             }            
         });
+
+        window.addEventListener('GenerateStatus', (event: any) => {
+            const generateStatus = event.detail.GenerateStatus;
+            if (generateStatus == GenerateStatus.Init) {
+                this.updatePlayPauseButton(false);
+            }
+        });
     }
 
     private updatePlayPauseButton(isPlaying: boolean): void {

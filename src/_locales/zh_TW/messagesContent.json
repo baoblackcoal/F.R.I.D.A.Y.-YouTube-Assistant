@@ -72,19 +72,22 @@
         "message": "AI 語言"
     },
     "summary-start-generate": {
-        "message": "開始生成"
+        "message": "Fiday: 開始生成"
     },
     "summary-generating": {
-        "message": "正在生成..."
+        "message": "Fiday: 正在生成..."
     },
     "summary-generate-finished": {
-        "message": "已生成完成"
+        "message": "Fiday: 已生成完成"
     },
     "summary-popup-copy-success": {
-        "message": "已複製到剪貼簿"
+        "message": "Fiday: 已複製到剪貼簿"
     },
     "summary-popup-generate-first-tip": {
-        "message": "内容为空，请先执行生成"
+        "message": "Fiday: 內容為空，請先執行生成。"
+    },
+    "summary-tip-no-youtube-transcript": {
+        "message": "Fiday: 無法生成，因為視頻沒有 YouTube 字幕。"
     }
 
 }

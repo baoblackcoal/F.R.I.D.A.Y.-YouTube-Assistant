@@ -106,8 +106,10 @@ export class SubtitleSummaryView {
         const settings = await getSettings();
         if (settings.summary.autoGenerate || maualStart) {
             this.generating = true;
-            FriSummary.getInstance().setGenerateContentExpand();
-            subtitleSummaryHandle(this.getVideoId(), SubtitleTranslate.getInstance());
+            const generating = await subtitleSummaryHandle(this.getVideoId(), SubtitleTranslate.getInstance());
+            if (!generating) {
+                this.generating = false;
+            }
         }         
     }
 
