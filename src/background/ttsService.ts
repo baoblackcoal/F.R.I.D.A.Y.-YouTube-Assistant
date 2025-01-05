@@ -62,15 +62,14 @@ export class TtsService implements ITtsService {
                 text = this.speakingText;
             }
             
-            // set robinson value to true if text includes 'Robinson(Guest)'
-            const robinson = text.toLowerCase().includes('robinson(guest)');
+            const robinson = text.toLowerCase().includes('robinson:');
             // set volueName to "Microsoft Kangkang - Chinese (Simplified, PRC)" if robinson is true
             let voiceName = this.ttsSettings.voiceName;
             if (robinson) {
                 voiceName = this.ttsSettings.voiceNameRobinson;
             }
-            //delete 'Robinson(Guest)' or 'Friday(Host)' from text
-            text = text.replace(/Robinson\(Guest\)|Friday\(Host\)/g, '');
+            //delete 'Robinson:' or 'Friday:' from text
+            text = text.replace(/Robinson:|Friday:/g, '');
             chrome.tts.speak(text, {
                 rate: this.ttsSettings.rate,
                 pitch: this.ttsSettings.pitch,

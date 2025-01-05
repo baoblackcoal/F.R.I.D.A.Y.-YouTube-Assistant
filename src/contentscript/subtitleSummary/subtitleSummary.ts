@@ -20,7 +20,9 @@ import { Toast } from "../../common/toast";
 let pauseVideoFlag = false;
 
 export async function waitForPlayer(): Promise<void> {
-    let hasEnterWaitForPlayer = false;
+    const summarySettings = await settingsManager.getSummarySettings();
+    
+    let hasEnterWaitForPlayer = summarySettings.autoTtsSpeak && summarySettings.autoGenerate;
 
     async function checkVideoAndPause(name: string): Promise<void> {
         if (hasEnterWaitForPlayer) {
