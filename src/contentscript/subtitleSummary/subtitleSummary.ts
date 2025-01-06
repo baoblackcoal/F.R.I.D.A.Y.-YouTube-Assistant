@@ -20,9 +20,9 @@ import { Toast } from "../../common/toast";
 let pauseVideoFlag = false;
 
 export async function waitForPlayer(): Promise<void> {
-    const summarySettings = await settingsManager.getSummarySettings();
-    
-    let hasEnterWaitForPlayer = summarySettings.autoTtsSpeak && summarySettings.autoGenerate;
+    // const summarySettings = await settingsManager.getSummarySettings();
+    // let hasEnterWaitForPlayer = summarySettings.autoTtsSpeak && summarySettings.autoGenerate;
+    let hasEnterWaitForPlayer = false;
 
     async function checkVideoAndPause(name: string): Promise<void> {
         if (hasEnterWaitForPlayer) {
@@ -298,8 +298,15 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
 
 // Add this message listener at the end of the file
 const messageObserver = MessageObserver.getInstance();
-messageObserver.addObserverTtsMessage({ action: 'playVideo' }, (message: ITtsMessage) => {
-    if (!pauseVideoFlag) {
-        playVideo();
-    }
+// messageObserver.addObserverTtsMessage({ action: 'playVideo' }, (message: ITtsMessage) => {
+//     if (!pauseVideoFlag) {
+//         playVideo();
+//     }
+// });
+
+messageObserver.addObserverTtsMessage({ action: 'ttsCheckSpeaking' }, (message: any) => {
+    const isSpeaking = message!.speaking;
+    if (isSpeaking) {
+        pauseVideo();
+    } 
 });
