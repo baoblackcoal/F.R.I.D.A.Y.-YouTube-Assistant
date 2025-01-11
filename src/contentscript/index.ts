@@ -17,8 +17,11 @@ window.onload = async () => {
         const bodyList = document.querySelector("body");
         let observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                if (oldHref !== document.location.href) {
-                    oldHref = document.location.href;
+                // delete '&index=*' from  'https://www.youtube.com/watch?v=fzD7yzL7PmI&list=PLduYMAFW6Yatbkjv1YHTxTxGv3fmNaDKJ&index=7 ', for fix bug that reflash the page will call insertSummaryBtn() 2 times.
+                let url = document.location.href;
+                url = url.replace(/&index=\d+/, '');
+                if (oldHref !== url) {
+                    oldHref = url;
                     insertSummaryBtn();
                 }
             });
