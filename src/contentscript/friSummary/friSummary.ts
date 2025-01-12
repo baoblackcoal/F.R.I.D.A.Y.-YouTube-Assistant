@@ -10,7 +10,7 @@ import { Toast } from '../../common/toast';
 import { getVideoTitle } from '../subtitleSummary/subtitleSummary';
 import { SubtitleSummaryView } from '../subtitleSummary/view/subtitleSummaryView';
 import { toggleYoutubeSubtitle } from '../youtube';
-import { GenerateStatus } from '../../common/common';
+import { common, Env, GenerateStatus } from '../../common/common';
 
 export class FriSummary {
     private state!: IFriSummaryState
@@ -124,7 +124,13 @@ export class FriSummary {
         return div;
     }
 
-    private initializeToggleButtons(): void {
+    private initializeElement(): void {
+        if (common.getEnvironment() == Env.Prod) {
+            const summaryStatus = document.getElementById("ytbs_summary_status");
+            summaryStatus!.style.display = 'none';
+
+        }
+
         this.initializeExpandCollapseToggle();
     }
 
@@ -345,7 +351,7 @@ export class FriSummary {
         const container = this.createFriSummaryContainer();
         document.querySelector("#bottom-row")!.insertAdjacentHTML("afterbegin", container.innerHTML);
 
-        this.initializeToggleButtons();
+        this.initializeElement();
         this.initializePopupMenu();
         this.initializeLanguageHandler();
         this.initializeSubtitlePopup();
