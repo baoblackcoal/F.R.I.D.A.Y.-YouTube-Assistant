@@ -111,7 +111,7 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    const hide = true;
+    const hide = false;
     if (hide) {
       ttsTypeSection.innerHTML = `
       <label id="ttsTypeLabel" class="hidden">${i18n.getMessage('option_tts_type_label')}</label>
@@ -345,7 +345,7 @@ export class TTSPage {
         const languageStrings = await response.json();
         let testText = '';
         if (isRobinson) {
-          testText = 'Guest_Robinson';
+          testText = 'Robinson:';
         } 
         testText += languageStrings[ttsPage.settings.language] || 
             "Good day, world! May your moments be filled with peace.";

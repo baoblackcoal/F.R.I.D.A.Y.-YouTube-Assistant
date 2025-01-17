@@ -48,7 +48,7 @@ class MessageQueue implements IMessageQueue {
     private async processQueue(mockSendMessage?: (message: ITtsMessage) => void): Promise<void> {
         if (this.isProcessing) return;
         this.isProcessing = true;
-        this.messageObserver.updateObserverType();
+        await this.messageObserver.updateObserverType();
         while (this.queue.length > 0) {
             const message = this.queue.shift();
             // split the message text into lines

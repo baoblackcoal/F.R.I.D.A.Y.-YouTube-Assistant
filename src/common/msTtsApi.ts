@@ -161,6 +161,7 @@ export class MsTtsApi implements IMsTtsApi {
         this.ttsSettings = await settingsManager.getTtsSettings();
         // this.ttsSettings.voiceName = this.ttsSettings.voiceName || "zh-CN-XiaoyuMultilingualNeural";
         this.ttsSettings.voiceName = this.ttsSettings.voiceName || "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaorouNeural)"
+        this.ttsSettings.voiceNameRobinson = this.ttsSettings.voiceNameRobinson || "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaorouNeural)"
     }
 
     private generateSsml(text: string): string {
@@ -169,7 +170,17 @@ export class MsTtsApi implements IMsTtsApi {
             const sign = percentage >= 0 ? '+' : '-';
             return `${sign}${Math.abs(percentage).toFixed(0)}%`;
         }
+
+        const robinson = text.toLowerCase().includes('robinson:') || text.toLowerCase().includes('robinson：');
+        // set volueName to "Microsoft Kangkang - Chinese (Simplified, PRC)" if robinson is true
+        let voiceName = this.ttsSettings.voiceName;
+        if (robinson) {
+            voiceName = this.ttsSettings.voiceNameRobinson;
+        }
+        //delete 'Robinson:' or 'Friday:' from text
+        text = text.replace(/Robinson:|Friday:|Robinson：|Friday：/g, '');
         
+
         const rateString = formatPercentage(this.ttsSettings.rate);
         const pitchString = formatPercentage(this.ttsSettings.pitch);
         // change volume(0-1) to %
@@ -179,7 +190,7 @@ export class MsTtsApi implements IMsTtsApi {
 
         return `
             <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN">
-                <voice name="${this.ttsSettings.voiceName}">
+                <voice name="${voiceName}">
                     <prosody rate="${rateString}" pitch="${pitchString}" volume="${volumeString}">
                         ${text}
                     </prosody>

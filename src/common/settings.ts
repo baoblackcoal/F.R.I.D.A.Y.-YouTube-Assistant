@@ -79,8 +79,8 @@ export const testSettings: IAbstractSettings = {
   },
   tts: {
     ...defaultTtsSettings,
-    rate: 2,
-    apiType: ApiType.Chrome,
+    rate: 1.25,
+    apiType: ApiType.Azure,
   },
 };
 
