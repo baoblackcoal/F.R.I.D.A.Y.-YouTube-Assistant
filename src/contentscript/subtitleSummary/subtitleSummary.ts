@@ -16,6 +16,7 @@ import { i18nService } from "../friSummary/i18nService";
 import { PlayPauseButtonHandler } from "./view/buttonHandlers";
 import { ISubtitleTranslate } from "./subtitleTranslate";
 import { Toast } from "../../common/toast";
+import { commentPromptText } from "../../prompts/commentPrompt";
 
 let pauseVideoFlag = false;
 
@@ -135,7 +136,8 @@ async function generatePrompt(videoId: string): Promise<string> {
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
 
-    let promptText = defaultPromptText;
+    // let promptText = defaultPromptText;
+    let promptText = commentPromptText;
     if (summarySettings.promptType > 0) {
         const diyPromptKey = `diyPromptText${summarySettings.promptType}`;
         promptText = summarySettings[diyPromptKey as keyof ISummarySettings] as string || defaultPromptText;
@@ -240,7 +242,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                     geminiAPI.streamGenerate(prompt, async (text) => {
                         reavStreamText += text;
 
-                        reavStreamText = reavStreamText.replace(/\. /g, '. \n').replace(/。/g, '。\n');
+                        // reavStreamText = reavStreamText.replace(/\. /g, '. \n').replace(/。/g, '。\n');
                         if (reavStreamText.includes('\n')) {
                             reavStreamText = reavStreamText.replace(/<HTML_FORMAT>/g, '');            
                             reavStreamText = reavStreamText.replace(/HTML_FORMAT/g, '');                        
