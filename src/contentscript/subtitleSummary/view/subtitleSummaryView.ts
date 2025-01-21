@@ -50,7 +50,7 @@ export class SubtitleSummaryView {
         updateSummaryStatus("...", FridayStatus.Init);
         setTimeout(() => {
             updateSummaryStatus("Waiting...", FridayStatus.Waiting);
-        }, 3000);
+        }, 1000);
         
         await this.handleAutoSummary();
     }

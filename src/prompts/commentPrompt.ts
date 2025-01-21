@@ -8,7 +8,7 @@ The output format should follow these rules:
 3. Each expert's section should include:  
    - expert_name: The expert’s name.  
    - expert_background: A brief introduction to their background, achievements, and influence in around 20 words.  
-   - expert_comment: A comment that reflects their personal style, incorporating their experience, strong opinions, signature expressions, and just comment the one thing experts do best. No third party allowed, not to say hello, should be around 40 to 80 words.
+   - expert_comment: A comment that reflects their personal style, incorporating their experience, strong opinions, signature expressions, and just comment the one thing experts do best. No third party allowed, not to say hello, should be around 40 to 80 words, should be in {language}.
 4. Do not output expert_name, expert_background, expert_comment, expert_interesting_keypoint.  
 5. The entire output should be in {language}, ensuring fluency and alignment with the expert’s typical language style.  
 
