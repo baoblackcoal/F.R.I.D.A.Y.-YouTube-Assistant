@@ -136,8 +136,8 @@ async function generatePrompt(videoId: string): Promise<string> {
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
 
-    // let promptText = defaultPromptText;
-    let promptText = commentPromptText;
+    let promptText = defaultPromptText;
+    // let promptText = commentPromptText;
     if (summarySettings.promptType > 0) {
         const diyPromptKey = `diyPromptText${summarySettings.promptType}`;
         promptText = summarySettings[diyPromptKey as keyof ISummarySettings] as string || defaultPromptText;

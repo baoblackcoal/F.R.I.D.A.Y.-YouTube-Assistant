@@ -71,7 +71,7 @@ export const testSettings: IAbstractSettings = {
     language: Language.SimplifiedChinese,
     autoTtsSpeak: false,
     autoGenerate: false,
-    generateSubtitleType: SubtitleType.None,
+    generateSubtitleType: SubtitleType.EasyToRead,
   },
   llm: {
     ...defaultLlmModel,

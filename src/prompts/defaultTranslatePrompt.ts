@@ -1,5 +1,5 @@
 export const easyToReadPrompt = `
-Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read.
+Please finish a task that make all of following YouTube video subtitle ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read.
 
 output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain content_is_easy_to_read, task_finish_status.
 content_is_easy_to_read(delimited by XML tags <content_is_easy_to_read> and </content_is_easy_to_read>) is just adding punctuation marks or line breaks '
@@ -31,7 +31,7 @@ task_finish_status
 {textTranscript}
 </ORIGINAL_CONTENT>
 
-Each time you output no more than 2000 words and no less than 800, divided into multiple outputs.
+It must be divided into multiple outputs, each time output must be no more than 1000 words and no less than 500 words.
 `;
 
 

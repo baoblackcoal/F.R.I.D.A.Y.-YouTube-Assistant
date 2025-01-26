@@ -216,7 +216,7 @@ export class SubtitleTranslate implements ISubtitleTranslate {
             }
 
             const translateTextLength = translateText.length;
-            if (!isError && (isFirstConversation && !finish && (translateTextLength < 400 || translateTextLength > 8000))) {
+            if (!isError && (isFirstConversation && !finish && (translateTextLength < 400 || translateTextLength > 15000))) {
                 console.log("translateTextLength=", translateTextLength);
                 isError = true;
                 errorType = ErrorType.FirstConversationOutputSizeError;
