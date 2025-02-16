@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await tts.resetStreamSpeak();
                 await tts.speak(testText);
             })
-            .catch(error => console.error('Error loading language strings:', error));
+            .catch(error => console.log('Error loading language strings:', error));
     });
 
     stopButton.addEventListener('click', () => {

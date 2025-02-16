@@ -213,7 +213,7 @@ export class FriSummaryPopup {
             }
             this.events.onLanguageChange(newLanguage);
         } catch (error) {
-            console.error('Failed to change language:', error);
+            console.log('Failed to change language:', error);
         }
     }
 

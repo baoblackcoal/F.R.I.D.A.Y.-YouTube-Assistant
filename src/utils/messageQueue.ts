@@ -65,7 +65,7 @@ class MessageQueue implements IMessageQueue {
                         await this.sendMessage(message);
                     }
                 } catch (error) {
-                    console.error('Failed to send message:', error);
+                    console.log('Failed to send message:', error);
                 }
             }
         }
@@ -85,7 +85,7 @@ class MessageQueue implements IMessageQueue {
             //         if (chrome.runtime.lastError) {
             //             if (retries > 0 && chrome.runtime.lastError?.message?.includes('message port closed')) {
             //                 retries--;
-            //                 console.warn('Retrying to send message, attempts left:', retries);
+            //                 console.log('Retrying to send message, attempts left:', retries);
             //                 await new Promise(resolve => setTimeout(resolve, 3000));
             //                 trySendMessage(); // Retry sending the message
             //             } else {

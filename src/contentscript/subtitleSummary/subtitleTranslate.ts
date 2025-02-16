@@ -275,7 +275,7 @@ export class SubtitleTranslate implements ISubtitleTranslate {
             newElement.innerHTML = message;
             contentElement.appendChild(newElement);
         } else {
-            console.error(message);
+            console.log(message);
         }
     }
 

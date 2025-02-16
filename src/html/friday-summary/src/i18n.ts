@@ -93,7 +93,7 @@ export class I18nService {
 
       this.currentLanguage = language;
     } catch (error) {
-      console.error('Failed to load locale:', error);
+      console.log('Failed to load locale:', error);
       // Fallback to English if loading fails
       if (language !== Language.English) {
         await this.loadLocale(Language.English);

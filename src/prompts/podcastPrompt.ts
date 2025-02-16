@@ -53,7 +53,7 @@ task_finish_status
 {textTranscript}
 </ORIGINAL_CONTENT>
 
-Each time you output no more than 1000 words and no less than 500, divided into multiple outputs.
+It must be divided into multiple outputs, each time output must be no more than 1000 words and no less than 500 words.
 `;
 
 

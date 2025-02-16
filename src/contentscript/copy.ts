@@ -8,7 +8,7 @@ export function copyTextToClipboard(text: string): void {
                 // Success callback
             },
             (err: any) => {
-                console.error('Could not copy text: ', err);
+                console.log('Could not copy text: ', err);
             }
         );
     }
@@ -31,7 +31,7 @@ export function copyTextToClipboard(text: string): void {
             const msg = successful ? 'successful' : 'unsuccessful';
             console.log('Fallback: Copying text command was ' + msg);
         } catch (err) {
-            console.error('Fallback: Oops, unable to copy', err);
+            console.log('Fallback: Oops, unable to copy', err);
         }
 
         document.body.removeChild(textArea);

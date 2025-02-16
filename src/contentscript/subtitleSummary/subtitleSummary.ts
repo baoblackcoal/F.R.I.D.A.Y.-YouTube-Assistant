@@ -109,7 +109,7 @@ export function getApiKey(callback: (key: string | null) => void): void {
                 geminiApiKey = process.env.GEMINI_API_KEY ?? null;
             }
         } catch (error) {
-            console.error('Error getting Gemini API Key:', error);
+            console.log('Error getting Gemini API Key:', error);
         }
         callback(geminiApiKey);
     });
@@ -285,7 +285,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                         contentElement.innerHTML = parseText;
                     });
                 } catch (error) {
-                    console.error('An error occurred:', error);
+                    console.log('An error occurred:', error);
                     contentElement.innerHTML = `Error generating text: ${error}`;
                 }
             } else {

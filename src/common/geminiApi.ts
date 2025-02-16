@@ -27,6 +27,7 @@ export const setKey = async (key: string): Promise<void> => {
   };
 
   geminiModel = googleAI.getGenerativeModel({
+    // model: "gemini-2.0-flash",
     model: "gemini-2.0-flash-exp",
     // model: "gemini-1.5-flash-002",
     // model: "gemini-1.5-flash",
@@ -45,7 +46,7 @@ export const sayHelloByGemini = async (): Promise<string> => {
     console.log(response);
     return response;
   } catch (error) {
-    console.error("Response error:", error);
+    console.log("Response error:", error);
     return "An error occurred";
   }
 };
@@ -88,7 +89,7 @@ export const streamGenerate = async (prompt: string, callback: (text: string) =>
         await callback(chunk.text());
     }
   } catch (error) {
-    console.error("Response error:", error);
+    console.log("Response error:", error);
     callback("Error: " + error);
   }
 }

@@ -54,7 +54,7 @@ window.onload = async () => {
     //     // Send a message to the background worker
     //     chrome.runtime.sendMessage({ action: 'fetchData' }, (response) => {
     //         if (!response) {
-    //             console.error('No response received from background script');
+    //             console.log('No response received from background script');
     //             return;
     //         } else if (response.error) {
     //             console.log(response.error);

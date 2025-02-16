@@ -125,7 +125,7 @@ export class GeneralPage {
 
       await settingsManager.setGeneralSettings(generalSettings);
     } catch (error) {
-      console.error('Failed to change language:', error);
+      console.log('Failed to change language:', error);
     }
   }
 

@@ -101,6 +101,6 @@ export async function commandHandle() {
             }
         });
     } else {
-        console.error('Input or output element not found');
+        console.log('Input or output element not found');
     }
 }

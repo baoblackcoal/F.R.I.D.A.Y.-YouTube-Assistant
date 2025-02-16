@@ -11,6 +11,8 @@ Your output content should follow the following rules:
 2.When I say "continue", you must continue output next easy to read content like <FORMAT> and </FORMAT> from ORIGINAL_CONTENT.
 3.When I say "continue" when you finish the task, you must output content like <FORMAT_FINISH> and </FORMAT_FINISH> and can not output anything else.
 4.Should include content_is_easy_to_read and task_finish_status when output <FORMAT> and </FORMAT>.
+5.Maximum worlds of each paragraph should less than 50 words.
+6.content_is_easy_to_read words no more than 400 words and no less than 200 words.
 
 <FORMAT>
 <content_is_easy_to_read>

@@ -69,7 +69,7 @@ export class TTSSpeak implements TTSInterface {
                 messageQueue.enqueue(message);
                 resolve();
             } catch (error) {
-                console.error('Error in speak:', error);
+                console.log('Error in speak:', error);
                 reject(error);
             }
         });
@@ -89,7 +89,7 @@ export class TTSSpeak implements TTSInterface {
                     resolve();
                 });
             } catch (error) {
-                console.error('Error in resetStreamSpeak:', error);
+                console.log('Error in resetStreamSpeak:', error);
                 reject(error);
             }
         });
@@ -106,7 +106,7 @@ export class TTSSpeak implements TTSInterface {
                 messageQueue.enqueue(message);
                 resolve();
             } catch (error) {
-                console.error('Error in speakAndPlayVideo:', error);
+                console.log('Error in speakAndPlayVideo:', error);
                 reject(error);
             }
         });
@@ -133,7 +133,7 @@ export class TTSSpeak implements TTSInterface {
                     resolve();
                 });
             } catch (error) {
-                console.error('Error in stop:', error);
+                console.log('Error in stop:', error);
                 reject(error);
             }
         });

@@ -72,7 +72,7 @@ export class MsTtsService implements ITtsService {
                     this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: true });     
                     await this.msTtsApi.synthesizeSpeech(nextText.text, this.notifyTtsSpeakingTextFromAzureCallback, nextText.index);               
                 } catch (error) {
-                    console.error("Error during speech synthesis: ", error);
+                    console.log("Error during speech synthesis: ", error);
                 }
             } else {
                 this.messageObserver.notifyObserversTtsMessage({ action: 'ttsCheckSpeaking', speaking: false });

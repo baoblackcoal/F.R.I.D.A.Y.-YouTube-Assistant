@@ -353,7 +353,7 @@ export class TTSPage {
         await ttsPage.tts.resetStreamSpeak();
         await ttsPage.tts.speak(testText);
       } catch (error) {
-        console.error('Error loading language strings:', error);
+        console.log('Error loading language strings:', error);
       }
     }
 

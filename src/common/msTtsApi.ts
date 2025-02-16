@@ -63,7 +63,7 @@ export class MsTtsApi implements IMsTtsApi {
             this.player = new sdk.SpeakerAudioDestination();
             this.audioConfig = sdk.AudioConfig.fromSpeakerOutput(this.player);
         } catch (error) {
-            console.warn("Failed to initialize SpeakerAudioDestination. Falling back to default audio output.", error);
+            console.log("Failed to initialize SpeakerAudioDestination. Falling back to default audio output.", error);
             this.useDefaultAudioOutput = true;
             this.audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
         }
@@ -83,7 +83,7 @@ export class MsTtsApi implements IMsTtsApi {
             // this.player?.close();
             this.synthesizer!.close();
         } catch (error) {
-            console.warn("Error during stop synthesis: ", error);
+            console.log("Error during stop synthesis: ", error);
         }
     }
 
@@ -141,14 +141,14 @@ export class MsTtsApi implements IMsTtsApi {
                 //     text,
                     result => callback(result),
                     error => {
-                        console.error("Error during synthesis 1: ", error);
+                        console.log("Error during synthesis 1: ", error);
                         this.synthesizer?.close();
                         this.synthesizer = undefined;
                         reject(error);
                     }
                 );
             } catch (error) {
-                console.error("Error during synthesis 2: ", error);
+                console.log("Error during synthesis 2: ", error);
                 this.synthesizer?.close();
                 //reject(error);
             }
