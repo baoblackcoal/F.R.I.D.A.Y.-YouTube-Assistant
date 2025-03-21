@@ -23,12 +23,12 @@ export const setKey = async (key: string): Promise<void> => {
     temperature: 0.9,
     topP: 1,
     topK: 1,
-    maxOutputTokens: 5000,
+    maxOutputTokens: 100,
   };
 
   geminiModel = googleAI.getGenerativeModel({
-    // model: "gemini-2.0-flash",
-    model: "gemini-2.0-flash-exp",
+    model: "gemini-2.0-flash",
+    // model: "gemini-2.0-flash-exp",
     // model: "gemini-1.5-flash-002",
     // model: "gemini-1.5-flash",
     generationConfig: geminiConfig,

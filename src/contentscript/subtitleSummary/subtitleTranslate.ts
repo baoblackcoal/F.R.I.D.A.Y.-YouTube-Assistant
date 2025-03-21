@@ -142,14 +142,24 @@ export class SubtitleTranslate implements ISubtitleTranslate {
         const generateSubtitleType = summarySettings.generateSubtitleType;
         const text = await geminiAPI.chat(prompt, isFirstConversation);
         // const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
-        const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
         let translateTextArray: RegExpMatchArray | null = null;
-        if (generateSubtitleType === SubtitleType.Podcast) {
-            translateTextArray = text.match(/<content_to_podcast>([\s\S]*?)<\/content_to_podcast>/g);
-        } else {
-            translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
+        const xmlText = generateSubtitleType === SubtitleType.Podcast ? "content_to_podcast" : "content_is_easy_to_read";
+        translateTextArray = text.match(`/<${xmlText}>([\s\S]*?)<\/${xmlText}>/g`);
+        
+        if (translateTextArray == null) {
+            // Fix regex syntax - remove backticks and forward slashes
+            const notFinishText = text.match(new RegExp(`<${xmlText}>\n(.*)`,'s'));
+            if (notFinishText) {
+                translateTextArray = [notFinishText[1]];
+            }
         }
-        const lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
+
+        const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
+        let lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
+        if (lastTaskStatusText.length == 0) {
+            lastTaskStatusText = 'task_is_not_finish';
+        }
+
         const finish = lastTaskStatusText === 'task_is_finish';
         let [isError, errorType, translateText] = await this.checkForErrors(generateSubtitleType, isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
         
@@ -205,59 +215,73 @@ export class SubtitleTranslate implements ISubtitleTranslate {
 
         let translateText = ''
         if (!isError) {
-            translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
-            // add \n after ". " or "。" for break line to read easily
-            if (generateSubtitleType === SubtitleType.EasyToRead) {
-                translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
-                if (translateText.split('\n').length <= 1) {
-                    isError = true;
-                    errorType = ErrorType.OutputSizeNotEnouthNewLine;
-                }
-            }
+            translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('');
+            
+            // translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
 
-            const translateTextLength = translateText.length;
-            if (!isError && (isFirstConversation && !finish && (translateTextLength < 400 || translateTextLength > 15000))) {
-                console.log("translateTextLength=", translateTextLength);
-                isError = true;
-                errorType = ErrorType.FirstConversationOutputSizeError;
-            }
+            // // add \n after ". " or "。" for break line to read easily
+            // if (generateSubtitleType === SubtitleType.EasyToRead) {
+            //     translateText = translateText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+            //     if (translateText.split('\n').length <= 1) {
+            //         isError = true;
+            //         errorType = ErrorType.OutputSizeNotEnouthNewLine;
+            //     }
+            // }
+
+            // const translateTextLength = translateText.length;
+            // if (!isError && (isFirstConversation && !finish && (translateTextLength < 400 || translateTextLength > 15000))) {
+            //     console.log("translateTextLength=", translateTextLength);
+            //     isError = true;
+            //     errorType = ErrorType.FirstConversationOutputSizeError;
+            // }
         }      
 
         return [isError, errorType, translateText];
     }
 
     private async displayTranslatedText(generateSubtitleType: SubtitleType, translateText: string, contentElement: Element): Promise<boolean> {
-        const summarySettings = await settingsManager.getSummarySettings();
-        const replacements: Record<string, string> = {
-            '{language}': summarySettings.language,
-            '{textTranscript}': translateText
-        };
-        const translatePrompt = generateSubtitleType === SubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
-        const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
-        const result = await geminiAPI.generate(prompt);
-        const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
-        if (translatedTextArray?.length != 1) {
-            return false;
-        } else {    
-            //get the first translated_content from translatedTextArray
-            let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
-            if (generateSubtitleType === SubtitleType.EasyToRead) {
-                translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
-                //delete '\n' if paragraph length is less than 50 
-                let deleteCount = 0;
-                for (let i = 0; i < translatedText.length; i++) {
-                    deleteCount++;
-                    if (translatedText.charAt(i) === '\n') {
-                        if (deleteCount < 50) { 
-                            translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
-                        } else {
-                            deleteCount = 0;
-                        }
-                    }
-                }
-            }           
+        // const summarySettings = await settingsManager.getSummarySettings();
+        // const replacements: Record<string, string> = {
+        //     '{language}': summarySettings.language,
+        //     '{textTranscript}': translateText
+        // };
+        // const translatePrompt = generateSubtitleType === SubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
+        // const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
+        // const result = await geminiAPI.generate(prompt);
+        // const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
+        // if (translatedTextArray?.length != 1) {
+        //     return false;
+        // } else 
+        {    
+            // //get the first translated_content from translatedTextArray
+            // let translatedText = translateText;
+            // if (generateSubtitleType === SubtitleType.EasyToRead) {
+            //     // translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+            //     //delete '\n' if paragraph length is less than 50 
+            //     let deleteCount = 0;
+            //     for (let i = 0; i < translatedText.length; i++) {
+            //         deleteCount++;
+            //         if (translatedText.charAt(i) === '\n') {
+            //             if (deleteCount < 50) { 
+            //                 translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
+            //             } else {
+            //                 deleteCount = 0;
+            //             }
+            //         }
+            //     }
+            // }           
 
-            translatedText.split('\n').forEach(line => {
+            // translatedText.split('\n').forEach(line => {
+            //     const newElement = document.createElement('p');
+            //     newElement.innerHTML = line;
+            //     newElement.style.marginBottom = '15px';
+            //     contentElement.appendChild(newElement);
+            //     this.addParagraphClickHandlers(newElement);
+            // });
+
+            
+
+            translateText.split('\n').forEach(line => {
                 const newElement = document.createElement('p');
                 newElement.innerHTML = line;
                 newElement.style.marginBottom = '15px';
@@ -268,6 +292,49 @@ export class SubtitleTranslate implements ISubtitleTranslate {
             return true;
         }
     }
+
+    // private async displayTranslatedText(generateSubtitleType: SubtitleType, translateText: string, contentElement: Element): Promise<boolean> {
+    //     const summarySettings = await settingsManager.getSummarySettings();
+    //     const replacements: Record<string, string> = {
+    //         '{language}': summarySettings.language,
+    //         '{textTranscript}': translateText
+    //     };
+    //     const translatePrompt = generateSubtitleType === SubtitleType.Podcast ? translatePodcastPrompt : translateEasyToReadPrompt;
+    //     const prompt = translatePrompt.replace(/{language}|{textTranscript}/g, match => replacements[match] || match);
+    //     const result = await geminiAPI.generate(prompt);
+    //     const translatedTextArray = result.match(/<translated_content>([\s\S]*?)<\/translated_content>/g);
+    //     if (translatedTextArray?.length != 1) {
+    //         return false;
+    //     } else {    
+    //         //get the first translated_content from translatedTextArray
+    //         let translatedText = translatedTextArray ? translatedTextArray[0].replace(/<translated_content>/g, '').replace(/<\/translated_content>/g, '') : '';
+    //         if (generateSubtitleType === SubtitleType.EasyToRead) {
+    //             translatedText = translatedText.replace(/\. /g, '.\n').replace(/\。/g, '。\n');
+    //             //delete '\n' if paragraph length is less than 50 
+    //             let deleteCount = 0;
+    //             for (let i = 0; i < translatedText.length; i++) {
+    //                 deleteCount++;
+    //                 if (translatedText.charAt(i) === '\n') {
+    //                     if (deleteCount < 50) { 
+    //                         translatedText = translatedText.substring(0, i) + ' ' + translatedText.substring(i + 1);
+    //                     } else {
+    //                         deleteCount = 0;
+    //                     }
+    //                 }
+    //             }
+    //         }           
+
+    //         translatedText.split('\n').forEach(line => {
+    //             const newElement = document.createElement('p');
+    //             newElement.innerHTML = line;
+    //             newElement.style.marginBottom = '15px';
+    //             contentElement.appendChild(newElement);
+    //             this.addParagraphClickHandlers(newElement);
+    //         });
+
+    //         return true;
+    //     }
+    // }
 
     private displayError(message: string, contentElement?: Element): void {
         if (contentElement) {
