@@ -14,60 +14,18 @@ import { PlayPauseButtonHandler } from "./subtitleSummary/view/buttonHandlers";
 
 // State to track if the summary container is visible or not
 let isFriSummaryVisible = false;
-let isDebugMode = true; // Set to true to enable debug output
-
-/**
- * Logs debug information to console and optionally to UI
- */
-function mobileDebugLog(message: string, level: 'info' | 'error' | 'warn' = 'info'): void {
-    const prefix = '[Mobile Friday] ';
-    
-    // Always log to console
-    if (level === 'info') {
-        console.log(prefix + message);
-    } else if (level === 'error') {
-        console.error(prefix + message);
-    } else if (level === 'warn') {
-        console.warn(prefix + message);
-    }
-    
-    // If debug mode is enabled, add to UI
-    if (isDebugMode) {
-        const debugContainer = document.getElementById('mobile-friday-debug');
-        if (debugContainer) {
-            const timestamp = new Date().toLocaleTimeString();
-            const logEntry = document.createElement('div');
-            logEntry.className = `mobile-debug-entry mobile-debug-${level}`;
-            logEntry.textContent = `[${timestamp}] ${message}`;
-            debugContainer.appendChild(logEntry);
-            
-            // Limit number of entries
-            while (debugContainer.children.length > 20) {
-                debugContainer.removeChild(debugContainer.firstChild as Node);
-            }
-            
-            // Scroll to bottom
-            debugContainer.scrollTop = debugContainer.scrollHeight;
-        }
-    }
-}
 
 /**
  * Attaches event handlers to the buttons in the mobile Friday UI
  */
 function attachButtonEventHandlers(): void {
-    mobileDebugLog('Attaching event handlers to mobile Friday buttons');
-
     // Generate button
     const generateButton = document.getElementById('fri-generate-button');
     if (generateButton) {
-        mobileDebugLog('Found generate button, attaching click handler');
         generateButton.addEventListener('click', async () => {
-            mobileDebugLog('Mobile generate button clicked');
             const subtitleSummaryView = SubtitleSummaryView.getInstance();
             
             if (subtitleSummaryView.getGenerating()) {
-                mobileDebugLog('Already generating summary', 'warn');
                 Toast.show({ 
                     message: i18nService.getMessage('summary-generating') || 'Already generating summary...', 
                     type: 'info', 
@@ -79,7 +37,6 @@ function attachButtonEventHandlers(): void {
             // Get current video ID
             const videoId = getSearchParam(window.location.href).v;
             if (!videoId) {
-                mobileDebugLog('No video ID found in URL', 'error');
                 Toast.show({ 
                     message: 'No video ID found', 
                     type: 'error', 
@@ -95,12 +52,9 @@ function attachButtonEventHandlers(): void {
             }
             
             // Check if subtitles are available
-            mobileDebugLog('Checking if video has subtitles');
             const subtitlesAvailable = await hasSubtitles(videoId);
             
             if (!subtitlesAvailable) {
-                mobileDebugLog('No subtitles available for this video', 'error');
-                
                 // Update UI to show no subtitles available
                 if (infoText) {
                     infoText.textContent = 'No subtitles available';
@@ -125,7 +79,6 @@ function attachButtonEventHandlers(): void {
                 return;
             }
             
-            mobileDebugLog('Subtitles found, starting manual generation');
             Toast.show({ 
                 message: i18nService.getMessage('summary-start-generate') || 'Starting to generate summary...', 
                 type: 'info', 
@@ -133,7 +86,6 @@ function attachButtonEventHandlers(): void {
             });
             
             try {
-                mobileDebugLog('Calling manualStartGenerate()');
                 // Update status text to show progress
                 const infoText = document.getElementById('fri-summary-info-text');
                 if (infoText) {
@@ -142,7 +94,6 @@ function attachButtonEventHandlers(): void {
                 
                 // Add timeout to fail gracefully if taking too long
                 const timeout = setTimeout(() => {
-                    mobileDebugLog('Generation timeout reached', 'warn');
                     Toast.show({ 
                         message: 'Generation is taking longer than expected. Please try again.', 
                         type: 'info', 
@@ -174,7 +125,6 @@ function attachButtonEventHandlers(): void {
                         const retryButton = document.getElementById('mobile-friday-retry-gen');
                         if (retryButton) {
                             retryButton.addEventListener('click', () => {
-                                mobileDebugLog('Retry button clicked after timeout');
                                 // Clear error message
                                 if (summaryContent) {
                                     summaryContent.innerHTML = '<p>Tap the paragraph icon to generate a summary of this video.</p>';
@@ -193,11 +143,7 @@ function attachButtonEventHandlers(): void {
                 
                 await subtitleSummaryView.manualStartGenerate();
                 clearTimeout(timeout);
-                
-                mobileDebugLog('Generation started successfully');
             } catch (error) {
-                mobileDebugLog('Error in manual generation: ' + (error instanceof Error ? error.message : String(error)), 'error');
-                
                 // Update UI to show the error
                 const summaryContent = document.getElementById('fri-summary-content');
                 const infoText = document.getElementById('fri-summary-info-text');
@@ -226,7 +172,6 @@ function attachButtonEventHandlers(): void {
                     const retryButton = document.getElementById('mobile-friday-retry-gen');
                     if (retryButton) {
                         retryButton.addEventListener('click', () => {
-                            mobileDebugLog('Retry button clicked');
                             // Clear error message
                             if (summaryContent) {
                                 summaryContent.innerHTML = '<p>Tap the paragraph icon to generate a summary of this video.</p>';
@@ -249,16 +194,12 @@ function attachButtonEventHandlers(): void {
                 });
             }
         });
-    } else {
-        mobileDebugLog('Generate button not found', 'error');
     }
 
     // Settings button
     const settingsButton = document.getElementById('fri-settings-button');
     if (settingsButton) {
-        mobileDebugLog('Found settings button, attaching click handler');
         settingsButton.addEventListener('click', () => {
-            mobileDebugLog('Mobile settings button clicked');
             chrome.runtime.sendMessage({ action: 'openOptionsPage' });
         });
     }
@@ -432,28 +373,6 @@ export function injectMobileStyles(): void {
             margin: 8px 0 !important;
         }
         
-        /* Mobile debug container */
-        .mobile-friday-debug {
-            border-top: 1px solid var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.1)) !important;
-            margin-top: 16px;
-            padding: 8px;
-            color: var(--yt-spec-text-secondary, #606060);
-        }
-        
-        .mobile-debug-entry {
-            font-size: 11px;
-            margin-bottom: 4px;
-            word-break: break-word;
-        }
-        
-        .mobile-debug-error {
-            color: #c00;
-        }
-        
-        .mobile-debug-warn {
-            color: #f90;
-        }
-        
         /* Dark mode overrides */
         html[dark] .mobile-friday-logo {
             background-color: #282828;
@@ -464,12 +383,7 @@ export function injectMobileStyles(): void {
             color: var(--yt-spec-text-primary, #fff);
         }
         
-        html[dark] .mobile-friday-debug {
-            color: var(--yt-spec-text-secondary, #aaa);
-        }
-        
-        html[dark] .fri-summary-content-container,
-        html[dark] .mobile-friday-debug {
+        html[dark] .fri-summary-content-container {
             border-color: rgba(255, 255, 255, 0.1) !important;
         }
         
@@ -538,16 +452,13 @@ export function injectMobileStyles(): void {
 function toggleFriSummaryContainer(): void {
     const container = document.getElementById('mobile-friday-container');
     if (!container) {
-        mobileDebugLog('Mobile Friday container not found', 'error');
         return;
     }
 
     if (isFriSummaryVisible) {
-        mobileDebugLog('Hiding Friday summary container');
         container.style.display = 'none';
         isFriSummaryVisible = false;
     } else {
-        mobileDebugLog('Showing Friday summary container');
         container.style.display = 'block';
         isFriSummaryVisible = true;
         
@@ -563,16 +474,12 @@ function initializeMobileFriSummary(): void {
     try {
         // Check if we already initialized
         if (document.querySelector('.fri-summry-container')) {
-            mobileDebugLog('Friday summary already initialized');
             return;
         }
-        
-        mobileDebugLog('Initializing Friday summary for mobile');
         
         // Get the container
         const contentContainer = document.getElementById('mobile-friday-content');
         if (!contentContainer) {
-            mobileDebugLog('Mobile Friday content container not found', 'error');
             return;
         }
         
@@ -580,8 +487,6 @@ function initializeMobileFriSummary(): void {
         const friSummaryWrapper = document.createElement('div');
         friSummaryWrapper.id = 'bottom-row'; // Add this id to make FriSummary init work
         contentContainer.appendChild(friSummaryWrapper);
-        
-        mobileDebugLog('Created bottom-row wrapper for FriSummary');
         
         // Initialize manually by creating the container and adding it to the DOM
         const friSummaryContainer = document.createElement('div');
@@ -628,7 +533,6 @@ function initializeMobileFriSummary(): void {
         `;
         
         friSummaryWrapper.appendChild(friSummaryContainer);
-        mobileDebugLog('Added simplified Friday summary container to mobile view');
         
         // Add event handlers to the buttons - Must be after DOM elements are added
         setTimeout(() => {
@@ -639,28 +543,20 @@ function initializeMobileFriSummary(): void {
         try {
             const friSummary = FriSummary.getInstance();
             friSummary.init();
-            mobileDebugLog('Initialized FriSummary instance');
             
             // Initialize SubtitleSummaryView and button handlers
             const subtitleSummaryView = SubtitleSummaryView.getInstance();
             subtitleSummaryView.init();
-            mobileDebugLog('Initialized SubtitleSummaryView');
             
             // Make sure play button works
             const playButton = document.getElementById('fri-play-button');
             if (playButton) {
-                mobileDebugLog('Adding click handler to play button');
                 const tts = TTSSpeak.getInstance();
                 const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
                 playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
                 playPauseButtonHandler.init();
-                mobileDebugLog('Play button handler initialized');
-            } else {
-                mobileDebugLog('Play button not found', 'error');
             }
         } catch (instanceError) {
-            mobileDebugLog('Error initializing FriSummary instance: ' + (instanceError instanceof Error ? instanceError.message : String(instanceError)), 'error');
-            
             // Fallback UI in case of initialization error
             const fallbackContent = document.createElement('div');
             fallbackContent.style.padding = '20px';
@@ -683,7 +579,6 @@ function initializeMobileFriSummary(): void {
                 const retryButton = document.getElementById('mobile-friday-retry');
                 if (retryButton) {
                     retryButton.addEventListener('click', () => {
-                        console.log('Retry button clicked');
                         // Clear summary container and try again
                         const container = document.getElementById('mobile-friday-container');
                         if (container) {
@@ -721,7 +616,6 @@ function createMobileLogoIcon(): HTMLElement {
     logoIcon.innerHTML = getLogoSvg();
     
     logoIcon.addEventListener('click', () => {
-        mobileDebugLog('Mobile logo clicked');
         toggleFriSummaryContainer();
     });
     
@@ -753,7 +647,6 @@ function createFriSummaryContainer(): HTMLElement {
         <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
     closeButton.addEventListener('click', () => {
-        mobileDebugLog('Close button clicked');
         toggleFriSummaryContainer();
     });
     header.appendChild(closeButton);
@@ -762,22 +655,8 @@ function createFriSummaryContainer(): HTMLElement {
     const summaryContent = document.createElement('div');
     summaryContent.id = 'mobile-friday-content';
     
-    // Create debug container (only visible in debug mode)
-    const debugContainer = document.createElement('div');
-    debugContainer.id = 'mobile-friday-debug';
-    debugContainer.className = 'mobile-friday-debug';
-    debugContainer.style.display = isDebugMode ? 'block' : 'none';
-    debugContainer.style.maxHeight = '150px';
-    debugContainer.style.overflowY = 'auto';
-    debugContainer.style.borderTop = '1px solid var(--fri-border, #ccc)';
-    debugContainer.style.marginTop = '16px';
-    debugContainer.style.padding = '8px';
-    debugContainer.style.fontSize = '12px';
-    debugContainer.style.fontFamily = 'monospace';
-    
     container.appendChild(header);
     container.appendChild(summaryContent);
-    container.appendChild(debugContainer);
     
     return container;
 }
@@ -788,17 +667,13 @@ function createFriSummaryContainer(): HTMLElement {
 export function insertMobileLogoIcon(): void {
     // Don't insert if already exists
     if (document.querySelector('.mobile-friday-logo')) {
-        mobileDebugLog('Mobile logo already exists');
         return;
     }
 
     // Only insert on watch pages
     if (window.location.pathname.indexOf('/watch') !== 0) {
-        mobileDebugLog('Not a watch page, skipping mobile logo insertion');
         return;
     }
-
-    mobileDebugLog('Inserting mobile logo on: ' + window.location.href);
 
     // Inject styles
     injectMobileStyles();
@@ -806,12 +681,10 @@ export function insertMobileLogoIcon(): void {
     // Create and add logo icon
     const logoIcon = createMobileLogoIcon();
     document.body.appendChild(logoIcon);
-    mobileDebugLog('Mobile logo added to the page');
 
     // Create and add Friday summary container
     const container = createFriSummaryContainer();
     document.body.appendChild(container);
-    mobileDebugLog('Mobile Friday container added to the page');
 }
 
 /**
@@ -892,24 +765,14 @@ export function createMobileUI(): void {
     container.appendChild(header);
     container.appendChild(content);
     
-    // Create debug container if enabled
-    if (isDebugMode) {
-        const debugContainer = document.createElement('div');
-        debugContainer.className = 'mobile-friday-debug';
-        debugContainer.id = 'mobile-friday-debug';
-        container.appendChild(debugContainer);
-    }
-    
     document.body.appendChild(container);
     
     // Add event listeners
     logoButton.addEventListener('click', () => {
-        mobileDebugLog('Logo clicked, opening summary panel');
         container.style.display = 'block';
     });
     
     closeButton.addEventListener('click', () => {
-        mobileDebugLog('Close button clicked, hiding summary panel');
         container.style.display = 'none';
     });
     
@@ -938,7 +801,6 @@ function setupThemeChangeObserver(): void {
             if (mutation.type === 'attributes' && 
                 (mutation.attributeName === 'dark' || mutation.attributeName === 'data-theme')) {
                 updateTheme();
-                mobileDebugLog('YouTube theme changed, updating UI');
             }
         });
     });
@@ -958,7 +820,6 @@ function setupThemeChangeObserver(): void {
  * This is an alias for attachButtonEventHandlers for better readability
  */
 function setupMobileGenerateButton(): void {
-    mobileDebugLog('Setting up mobile generate button');
     attachButtonEventHandlers();
 }
 
@@ -966,9 +827,7 @@ function setupMobileGenerateButton(): void {
  * Initialize mobile interface
  */
 export function initializeMobile(): void {
-    mobileDebugLog('Initializing mobile interface');
     createMobileUI();
     setupMobileGenerateButton();
     setupThemeChangeObserver();
-    mobileDebugLog('Mobile interface initialized');
 } 
