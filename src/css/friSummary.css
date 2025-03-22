@@ -115,7 +115,7 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 .fri-left-controls {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 8px;
     min-width: fit-content;
     border-right: 1px solid var(--fri-border);
     padding-right: 8px;
@@ -140,7 +140,7 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 .fri-right-controls {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 8px;
     min-width: fit-content;
 }
 
