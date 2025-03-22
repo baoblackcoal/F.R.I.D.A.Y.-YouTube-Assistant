@@ -3,6 +3,7 @@
 import { settingsManager } from "../common/settingsManager";
 import { insertSummaryBtn } from "./youtube";
 import { logTime } from "./utils";
+import { insertMobileLogoIcon } from "./mobile";
 let oldHref = "";
 
 
@@ -23,6 +24,26 @@ window.onload = async () => {
                 if (oldHref !== url) {
                     oldHref = url;
                     insertSummaryBtn();
+                }
+            });
+        });
+        if (bodyList) {
+            observer.observe(bodyList, { childList: true, subtree: true });
+        }
+    }
+
+    // Handle mobile YouTube site
+    if (window.location.hostname === "m.youtube.com") {
+        logTime("mobile youtube loaded");
+        
+        const bodyList = document.querySelector("body");
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                let url = document.location.href;
+                url = url.replace(/&index=\d+/, '');
+                if (oldHref !== url) {
+                    oldHref = url;
+                    insertMobileLogoIcon();
                 }
             });
         });

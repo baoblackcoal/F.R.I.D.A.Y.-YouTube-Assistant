@@ -2,29 +2,91 @@ import $ from "jquery";
 
 export async function getLangOptionsWithLink(videoId: string) {
   
-  // Get a transcript URL
-  const videoPageResponse = await fetch("https://www.youtube.com/watch?v=" + videoId);
-  const videoPageHtml = await videoPageResponse.text();
-  const splittedHtml = videoPageHtml.split('"captions":')
-
-  if (splittedHtml.length < 2) { return; } // No Caption Available
-
-  const captions_json = JSON.parse(splittedHtml[1].split(',"videoDetails')[0].replace('\n', ''));
-  const captionTracks = captions_json.playerCaptionsTracklistRenderer.captionTracks;
-  const languageOptions = Array.from(captionTracks).map((i: any) => { return i.name.simpleText; })
+  // Determine the base URL based on current hostname
+  const currentHostname = window.location.hostname;
+  const baseUrl = currentHostname.includes('m.youtube.com') 
+    ? "https://m.youtube.com/watch?v=" 
+    : "https://www.youtube.com/watch?v=";
   
-  const first = "English"; // Sort by English first
-  languageOptions.sort(function(x,y){ return x.includes(first) ? -1 : y.includes(first) ? 1 : 0; });
-  languageOptions.sort(function(x,y){ return x == first ? -1 : y == first ? 1 : 0; });
-
-  return Array.from(languageOptions).map((langName: string, index: number) => {
-    const link = captionTracks.find((i: any) => i.name.simpleText === langName).baseUrl;
-    return {
-      language: langName,
-      link: link
+  try {
+    // Get a transcript URL
+    const videoPageResponse = await fetch(baseUrl + videoId);
+    if (!videoPageResponse.ok) {
+      throw new Error(`Failed to fetch video page: ${videoPageResponse.status}`);
     }
-  })
+    
+    const videoPageHtml = await videoPageResponse.text();
+    const splittedHtml = videoPageHtml.split('"captions":')
 
+    if (splittedHtml.length < 2) { 
+      console.log("No captions found in the video page HTML");
+      return null; // No Caption Available
+    }
+
+    try {
+      // Try to find the right section to parse
+      let captionsSection = splittedHtml[1].split(',"videoDetails')[0];
+      // In case the structure is different
+      if (!captionsSection || captionsSection.trim() === '') {
+        // Try alternative splitting patterns
+        const alternatives = [
+          ',"microformat"',
+          ',"playabilityStatus"',
+          ',"playerConfig"',
+          ',"storyboards"'
+        ];
+        
+        for (const alt of alternatives) {
+          const tempSection = splittedHtml[1].split(alt)[0];
+          if (tempSection && tempSection.trim() !== '') {
+            captionsSection = tempSection;
+            console.log("Used alternative caption section pattern:", alt);
+            break;
+          }
+        }
+      }
+      
+      if (!captionsSection || captionsSection.trim() === '') {
+        throw new Error("Could not locate caption section in page HTML");
+      }
+      
+      // Clean the JSON string before parsing
+      captionsSection = captionsSection.replace('\n', '').trim();
+      // Add closing brace if missing
+      if (!captionsSection.endsWith('}')) {
+        captionsSection += '}';
+      }
+      
+      const captions_json = JSON.parse(captionsSection);
+      
+      if (!captions_json.playerCaptionsTracklistRenderer || 
+          !captions_json.playerCaptionsTracklistRenderer.captionTracks) {
+        throw new Error("Captions data structure is not as expected");
+      }
+      
+      const captionTracks = captions_json.playerCaptionsTracklistRenderer.captionTracks;
+      const languageOptions = Array.from(captionTracks).map((i: any) => { return i.name.simpleText; })
+      
+      const first = "English"; // Sort by English first
+      languageOptions.sort(function(x,y){ return x.includes(first) ? -1 : y.includes(first) ? 1 : 0; });
+      languageOptions.sort(function(x,y){ return x == first ? -1 : y == first ? 1 : 0; });
+
+      return Array.from(languageOptions).map((langName: string, index: number) => {
+        const link = captionTracks.find((i: any) => i.name.simpleText === langName).baseUrl;
+        return {
+          language: langName,
+          link: link
+        }
+      });
+    } catch (parseError) {
+      console.error("Error parsing captions JSON:", parseError);
+      console.log("Problematic HTML section:", splittedHtml[1].substring(0, 300) + "...");
+      throw new Error("Failed to parse video caption data: " + (parseError instanceof Error ? parseError.message : String(parseError)));
+    }
+  } catch (error) {
+    console.error('Error getting language options:', error);
+    return null;
+  }
 }
 
 export async function getTranscript(langOption: { link: string }): Promise<string> {
@@ -175,4 +237,50 @@ export async function getTranscriptHTML(link: string, videoId: string): Promise<
 function convertIntToHms(num: number) {
   const h = (num < 3600) ? 14 : 12;
   return (new Date(num * 1000).toISOString().substring(h, 19)).toString();
+}
+
+/**
+ * Checks if the video has subtitles available without fetching the full subtitle data
+ * @param videoId The YouTube video ID
+ * @returns Promise<boolean> True if subtitles are available
+ */
+export async function hasSubtitles(videoId: string): Promise<boolean> {
+  try {
+    // Determine the base URL based on current hostname
+    const currentHostname = window.location.hostname;
+    const baseUrl = currentHostname.includes('m.youtube.com') 
+      ? "https://m.youtube.com/watch?v=" 
+      : "https://www.youtube.com/watch?v=";
+    
+    // Try to fetch just the head of the page to check if it exists
+    const headResponse = await fetch(baseUrl + videoId, { 
+      method: 'HEAD'
+    });
+    
+    if (!headResponse.ok) {
+      return false;
+    }
+    
+    // If the head request is successful, do a normal fetch
+    const videoPageResponse = await fetch(baseUrl + videoId);
+    if (!videoPageResponse.ok) {
+      return false;
+    }
+    
+    const videoPageHtml = await videoPageResponse.text();
+    
+    // Quick check for captions marker in HTML
+    const hasCaptionsSection = videoPageHtml.includes('"captions":');
+    if (!hasCaptionsSection) {
+      return false;
+    }
+    
+    // Additional check for playerCaptionsTracklistRenderer
+    const hasCaptionTracks = videoPageHtml.includes('playerCaptionsTracklistRenderer');
+    
+    return hasCaptionTracks;
+  } catch (error) {
+    console.error('Error checking for subtitles:', error);
+    return false;
+  }
 }
