@@ -1,4 +1,3 @@
-
 /* import tailwind css */
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
@@ -32,7 +31,7 @@
 }
 
 .settings-tab-button {
-    @apply w-full px-6 py-3 text-left  text-base font-semibold text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
+    @apply w-full px-6 py-3 text-left text-base font-semibold text-gray-600 hover:bg-gray-100 focus:outline-none rounded-full;
 }
 
 .settings-tab-button.active {
@@ -81,9 +80,230 @@
     display: none;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for large screens */
 @media (max-width: 1280px) {
     .settings-layout {
         @apply mx-4;
     }
+}
+
+/* Responsive adjustments for tablets */
+/* @media (max-width: 1024px) {
+    .settings-layout {
+        @apply flex-col;
+    }
+    
+    .settings-sidebar {
+        @apply w-full border-r-0 border-b border-gray-200 pb-4 mb-4;
+        padding-right: 0;
+    }
+    
+    .settings-header {
+        @apply justify-center;
+    }
+    
+    .settings-nav {
+        @apply flex flex-row justify-center space-y-0 space-x-4;
+    }
+    
+    .settings-tab-button {
+        @apply px-4 py-2 text-sm w-auto;
+    }
+    
+    .settings-main {
+        @apply w-full max-w-full;
+    }
+} */
+
+/* Small utility classes for responsive layouts */
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+
+/* Responsive adjustments for mobile phones */
+@media (max-width: 1024px) {
+    .settings-layout {
+        @apply mx-2 pt-4  flex-col;
+        padding-top: 0rem;
+    }
+    
+    /* Hide the top navigation on mobile devices */
+    .settings-sidebar {
+        @apply w-full border-r-0 border-b border-gray-200 pb-4 mb-4;
+        padding-right: 0;
+        display: block;
+        margin-bottom: 0rem;
+        padding-bottom: 0rem;
+    }
+     
+    .settings-header {
+        @apply justify-center;
+    }
+    
+    /* Main content takes full width */
+    .settings-main {
+        @apply w-full max-w-full;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 0rem;
+    }
+    
+    .settings-nav {
+        @apply flex flex-row justify-center space-y-0 space-x-4;
+        display: none;
+    }
+    
+    .settings-tab-button {
+        @apply px-3 py-2 text-sm w-auto;
+    }
+
+    .page-container {
+        display: block;
+        padding-top: 0rem;
+    }
+    
+    .settings-content-wrapper {
+        @apply px-2;
+    }
+    
+    .settings-footer {
+        @apply flex-col space-y-2 space-x-0;
+    }
+    
+    .settings-footer button {
+        @apply w-full;
+    }
+    
+    .toast-notification {
+        @apply bottom-2 right-2 left-2 text-center;
+    }
+    
+    /* Make mobile bottom navigation more prominent */
+    .mobile-only.fixed {
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 12px 12px 0 0;
+        z-index: 100;
+    }
+    
+    .mobile-tab-button {
+        transition: all 0.2s ease;
+    }
+    
+    .mobile-tab-button svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+    
+    .desktop-only {
+        display: none;
+    }
+    
+    .mobile-only.fixed {
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 12px 12px 0 0;
+        z-index: 100;
+    }
+}
+
+/* 
+@media (max-width: 1024px) {
+    .mobile-only {
+        display: block;
+    }
+    
+    .desktop-only {
+        display: none;
+    }
+    
+    .mobile-only.fixed {
+        background-color: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 12px 12px 0 0;
+        z-index: 100;
+    }
+    
+    .mobile-tab-button {
+        transition: all 0.2s ease;
+    }
+    
+    .mobile-tab-button.mobile-active {
+        transform: translateY(-5px);
+    }
+    
+    .mobile-tab-button svg {
+        width: 24px;
+        height: 24px;
+    }
+} */
+
+/* Mobile Navigation */
+.mobile-tab-button {
+    @apply px-4 py-2 text-gray-500 hover:text-blue-600 focus:outline-none rounded-md transition-colors duration-200;
+}
+
+.mobile-tab-button.mobile-active {
+    @apply text-blue-600 font-semibold;
+}
+
+.mobile-tab-button.mobile-active svg {
+    @apply text-blue-600;
+}
+
+/* Mobile tab indicator transition */
+.mobile-tab-indicator {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.mobile-tab-button.mobile-active .mobile-tab-indicator {
+    opacity: 1;
+}
+
+/* Style scrollbars for better UI (webkit browsers) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+}
+
+/* Add smooth transitions for responsive layout changes */
+.settings-layout,
+.settings-sidebar,
+.settings-main,
+.settings-nav {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Data attribute based styling for different device types */
+body[data-device-type="mobile"] .settings-content-wrapper {
+    @apply pt-2 pb-24; /* Increased bottom padding to account for the mobile menu */
+}
+
+body[data-device-type="tablet"] .settings-content-wrapper {
+    @apply pt-4;
+}
+
+body[data-device-type="desktop"] .settings-sidebar {
+    @apply sticky top-0 self-start h-screen;
 }

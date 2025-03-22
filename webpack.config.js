@@ -52,6 +52,14 @@ const moduleRules = [
 
 module.exports = (env, argv) => {
   const isProduction = process.env.NODE_ENV === 'production';
+  const isResponsiveDesign = process.env.RESPONSIVE_DESIGN === 'true';
+
+  // Conditionally add responsive design plugin settings
+  const responsiveDesignPlugins = isResponsiveDesign ? [
+    new webpack.DefinePlugin({
+      'process.env.RESPONSIVE_DESIGN': JSON.stringify(true),
+    }),
+  ] : [];
 
   return {
     mode: isProduction ? 'production' : 'development',
@@ -62,7 +70,6 @@ module.exports = (env, argv) => {
       options: './src/option/options.ts',
       background: './src/background/background.ts',
       tts: './src/tts.ts'
-
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -76,7 +83,7 @@ module.exports = (env, argv) => {
       minimizer: [new TerserPlugin({
         terserOptions: {
           compress: {
-            drop_console: true,
+            drop_console: isProduction && !isResponsiveDesign, // Keep console logs in responsive design mode
           },
           format: {
             comments: false,
@@ -116,6 +123,8 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         filename: '[name].css',
       }),
+      // Spread additional responsive design plugins
+      ...responsiveDesignPlugins
     ],
     resolve: {
       extensions: ['.ts', '.js']

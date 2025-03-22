@@ -5,6 +5,7 @@ import { TTSPage } from './ttsPage';
 import { settingsManager, ISettingsManager } from '../common/settingsManager';
 import { i18n } from '../common/i18n';
 import { Language } from '../common/ISettings';
+import { DeviceDetector, DeviceInfo } from '../utils/deviceDetector';
 
 export interface TabConfig {
   id: string;
@@ -17,10 +18,15 @@ class OptionsPage {
   private settingsManager: ISettingsManager;
   private tabs: TabConfig[];
   private toast: HTMLElement;
+  private deviceDetector: DeviceDetector;
+  private resizeObserver: ResizeObserver | null = null;
 
   constructor() {
     this.settingsManager = settingsManager;
     this.toast = document.getElementById('toast') as HTMLElement;
+    
+    // Initialize device detector
+    this.deviceDetector = DeviceDetector.instance;
     
     // Initialize tab configurations
     this.tabs = [
@@ -49,12 +55,41 @@ class OptionsPage {
     this.initializeTabContent();
     this.attachEventListeners();
     this.updateTabLabels();
+    this.setupResponsiveLayout();
+    
     i18n.attachI18nEvent({
       eventId: 'optionsPage',
       callback: async (language: Language) => {
         this.updateTabLabels();
       }
     });
+  }
+
+  private setupResponsiveLayout(): void {
+    // Apply device-specific attributes to the document
+    this.deviceDetector.applyDeviceAttributes();
+    
+    // Add listener for device changes (resize, orientation change)
+    this.deviceDetector.addResizeListener((deviceInfo: DeviceInfo) => {
+      this.updateLayoutForDeviceType(deviceInfo);
+    });
+    
+    // Initial layout update based on current device
+    this.updateLayoutForDeviceType(this.deviceDetector.deviceInfo);
+  }
+
+  private updateLayoutForDeviceType(deviceInfo: DeviceInfo): void {
+    // Apply specific layout adjustments if needed
+    if (deviceInfo.isMobile) {
+      // Mobile-specific UI adjustments beyond CSS
+      console.log("Mobile device detected - applying mobile layout");
+    } else if (deviceInfo.isTablet) {
+      // Tablet-specific UI adjustments beyond CSS
+      console.log("Tablet device detected - applying tablet layout");
+    } else {
+      // Desktop-specific UI adjustments beyond CSS
+      console.log("Desktop device detected - applying desktop layout");
+    }
   }
 
   private initializeTabContent(): void {
@@ -90,13 +125,56 @@ class OptionsPage {
           this.showTab(tab.id);
         });
       }
+      
+      // Add event listeners for mobile tab buttons
+      const mobileTabButton = document.getElementById(`mobile-tab-${tab.id}`);
+      if (mobileTabButton) {
+        mobileTabButton.addEventListener('click', () => {
+          // Update both desktop and mobile tab indicators
+          this.tabs.forEach(t => {
+            const desktopBtn = document.getElementById(`tab-${t.id}`);
+            const mobileBtn = document.getElementById(`mobile-tab-${t.id}`);
+            
+            if (desktopBtn) {
+              if (t.id === tab.id) {
+                desktopBtn.classList.add('active');
+                desktopBtn.classList.remove('inactive');
+              } else {
+                desktopBtn.classList.remove('active');
+                desktopBtn.classList.add('inactive');
+              }
+            }
+            
+            if (mobileBtn) {
+              if (t.id === tab.id) {
+                mobileBtn.classList.add('mobile-active');
+              } else {
+                mobileBtn.classList.remove('mobile-active');
+              }
+            }
+          });
+          
+          this.showTab(tab.id);
+        });
+      }
     });
+
+    // Listen for window resize events
+    window.addEventListener('resize', this.handleWindowResize.bind(this));
+  }
+
+  private handleWindowResize(): void {
+    // Throttle resize events to prevent performance issues
+    if (!this.resizeObserver) {
+      return;
+    }
   }
 
   private showTab(tabId: string): void {
     // Update tab buttons
     this.tabs.forEach(tab => {
       const button = document.getElementById(`tab-${tab.id}`);
+      const mobileButton = document.getElementById(`mobile-tab-${tab.id}`);
       const content = document.getElementById(`content-${tab.id}`);
       
       if (button && content) {
@@ -104,17 +182,34 @@ class OptionsPage {
           button.classList.add('active');
           button.classList.remove('inactive');
           content.classList.remove('hidden');
+          
+          if (mobileButton) {
+            mobileButton.classList.add('mobile-active');
+            // Show the indicator for the active tab
+            const indicator = mobileButton.querySelector('.mobile-tab-indicator');
+            if (indicator) {
+              (indicator as HTMLElement).style.opacity = '1';
+            }
+          }
         } else {
           button.classList.remove('active');
           button.classList.add('inactive');
           content.classList.add('hidden');
+          
+          if (mobileButton) {
+            mobileButton.classList.remove('mobile-active');
+            // Hide the indicator for inactive tabs
+            const indicator = mobileButton.querySelector('.mobile-tab-indicator');
+            if (indicator) {
+              (indicator as HTMLElement).style.opacity = '0';
+            }
+          }
         }
       }
     });
 
     this.currentTab = tabId;
   }
-
 
   private updateTabLabels(): void {
     const tabLabels = {
@@ -128,11 +223,36 @@ class OptionsPage {
       if (tabButton) {
         tabButton.textContent = tabLabels[tab.id as keyof typeof tabLabels];
       }
+      
+      // Update mobile tab labels as well
+      const mobileTabButton = document.getElementById(`mobile-tab-${tab.id}`);
+      if (mobileTabButton) {
+        const labelElement = mobileTabButton.querySelector('span');
+        if (labelElement) {
+          labelElement.textContent = tabLabels[tab.id as keyof typeof tabLabels];
+        }
+      }
     });
+  }
+  
+  // Cleanup when page is unloaded
+  public dispose(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
+    
+    window.removeEventListener('resize', this.handleWindowResize.bind(this));
+    console.log("Options page disposed");
   }
 }
 
 // Initialize the options page when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new OptionsPage();
+  const optionsPage = new OptionsPage();
+  
+  // Clean up when window is unloaded
+  window.addEventListener('unload', () => {
+    optionsPage.dispose();
+  });
 });
