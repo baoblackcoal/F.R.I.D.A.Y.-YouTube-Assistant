@@ -21,7 +21,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
+      "matches": ["https://www.youtube.com/*", "https://m.google.com/*"],
       "js": ["contentscript/index.bundle.js"],
       "css": ["css/yt_ai_summary.css", "css/friSummary.css", "css/toast.css"],
       "all_frames": false

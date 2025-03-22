@@ -115,8 +115,6 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         filename: '[name].css',
       }),
-      // Spread additional responsive design plugins
-      ...responsiveDesignPlugins
     ],
     resolve: {
       extensions: ['.ts', '.js']
