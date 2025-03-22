@@ -118,6 +118,6 @@
 
 @media (max-width: 1024px) {
     .page-container {
-        @apply pt-0 pb-4;
+        @apply pt-0 pb-24;
     }
 }

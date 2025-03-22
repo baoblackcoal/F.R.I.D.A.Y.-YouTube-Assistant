@@ -87,33 +87,6 @@
     }
 }
 
-/* Responsive adjustments for tablets */
-/* @media (max-width: 1024px) {
-    .settings-layout {
-        @apply flex-col;
-    }
-    
-    .settings-sidebar {
-        @apply w-full border-r-0 border-b border-gray-200 pb-4 mb-4;
-        padding-right: 0;
-    }
-    
-    .settings-header {
-        @apply justify-center;
-    }
-    
-    .settings-nav {
-        @apply flex flex-row justify-center space-y-0 space-x-4;
-    }
-    
-    .settings-tab-button {
-        @apply px-4 py-2 text-sm w-auto;
-    }
-    
-    .settings-main {
-        @apply w-full max-w-full;
-    }
-} */
 
 /* Small utility classes for responsive layouts */
 .mobile-only {
@@ -216,36 +189,6 @@
     }
 }
 
-/* 
-@media (max-width: 1024px) {
-    .mobile-only {
-        display: block;
-    }
-    
-    .desktop-only {
-        display: none;
-    }
-    
-    .mobile-only.fixed {
-        background-color: white;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        border-radius: 12px 12px 0 0;
-        z-index: 100;
-    }
-    
-    .mobile-tab-button {
-        transition: all 0.2s ease;
-    }
-    
-    .mobile-tab-button.mobile-active {
-        transform: translateY(-5px);
-    }
-    
-    .mobile-tab-button svg {
-        width: 24px;
-        height: 24px;
-    }
-} */
 
 /* Mobile Navigation */
 .mobile-tab-button {
