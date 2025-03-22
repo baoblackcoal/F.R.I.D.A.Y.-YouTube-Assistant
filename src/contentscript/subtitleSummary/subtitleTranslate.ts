@@ -143,10 +143,10 @@ export class SubtitleTranslate implements ISubtitleTranslate {
         const text = await geminiAPI.chat(prompt, isFirstConversation);
         // const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
         let translateTextArray: RegExpMatchArray | null = null;
-        const xmlText = generateSubtitleType === SubtitleType.Podcast ? "content_to_podcast" : "task_start";
+        // const xmlText = generateSubtitleType === SubtitleType.Podcast ? "content_to_podcast" : "task_start";
         // translateTextArray = text.match(`/<${xmlText}>([\s\S]*?)<\/${xmlText}>/g`);
         //get string from text 
-        const notFinishText = text.match(new RegExp(`${xmlText}\n(.*)`,'s'));
+        const notFinishText = text.match(new RegExp(`task_start\n(.*)`,'s'));
         if (notFinishText) {
             // remove 'task_start' , 'task_is_finish' and 'task_is_not_finish' from notFinishText
             translateTextArray = [notFinishText[1].replace(/task_start|task_is_finish|task_is_not_finish/g, '')];

@@ -1,4 +1,4 @@
-export const defaultPodcastPrompt = `
+export const defaultPodcastPrompt1 = `
 Please finish a task that make all of following ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) to podcast content.
 
 
@@ -54,6 +54,31 @@ task_finish_status
 </ORIGINAL_CONTENT>
 
 It must be divided into multiple outputs, each time output must be no more than 1000 words and no less than 500 words.
+`;
+
+
+export const defaultPodcastPrompt = `
+<ORIGINAL_CONTENT>
+{textTranscript}
+</ORIGINAL_CONTENT>
+
+<PODCAST_CONTENT_RULES>
+1.Host Role Responsibilities (Friday): introducing the  Guest Role Robinson, engaging with the Guest Role in an interesting and continuous manner, every speech should be less than 50 words.
+2.Guest Role Responsibilities (Robinson): The central figure of the podcast, Provides unique perspectives, expertise, or personal stories to add depth and diversity to the content, and should include some vivid examples to explain hard-to-understand content, and should be more than 100 words and less than 200 words for each speech.
+3.Podcast content size should be equal to ORIGINAL_CONTENT size;
+4."Friday: " add to speech of Host Role, "Robinson: " add  speech of to Guest Role;
+5. Podcast content language should be {language}, "Friday", "Robinson", "Friday: " and "Robinson: " should not be translated.
+</PODCAST_CONTENT_RULES>
+
+Please finish a task that make all of RIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) to podcast content into {language}.
+
+The output rules:
+1.Add one of "task_start" for every time you start to output.
+2.Pocast content must follow the rules of <PODCAST_CONTENT_RULES> and </PODCAST_CONTENT_RULES>.
+3.After the entire original content is translated, output "task_is_finish" regardless of what I input next.
+4.Can not output <RIGINAL_CONTENT> and <PODCAST_CONTENT_RULES>, and don't explain what you're doing.
+
+Now, please finish the task and flow the output rules.
 `;
 
 
