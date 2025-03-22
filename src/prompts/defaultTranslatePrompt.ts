@@ -1,4 +1,4 @@
-export const easyToReadPrompt = `
+export const easyToReadPrompt1 = `
 Please finish a task that make all of following YouTube video subtitle ORIGINAL_CONTENT(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) more easy to read.
 
 output format(delimited by XML tags <FORMAT> and </FORMAT>) that contain content_is_easy_to_read, task_finish_status.
@@ -25,6 +25,18 @@ task_finish_status
 task_finish_status
 </task_finish_status>
 </FORMAT_FINISH>
+
+<ORIGINAL_CONTENT>
+{textTranscript}
+</ORIGINAL_CONTENT>
+`;
+
+export const easyToReadPrompt = `
+Translate the following original content(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into {language}. The output requirements are:
+1. Do not modify the original content of the translated text. fix error words and add  paragraphs make the translated text easier to read.
+2. Add "task_start" for every time you start to output.
+3. After the entire original content is translated, output "task_is_finish" regardless of what I input next.
+4. Do not output any other content besides the above three points.
 
 <ORIGINAL_CONTENT>
 {textTranscript}

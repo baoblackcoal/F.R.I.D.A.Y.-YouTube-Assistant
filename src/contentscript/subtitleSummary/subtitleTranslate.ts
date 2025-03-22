@@ -143,22 +143,43 @@ export class SubtitleTranslate implements ISubtitleTranslate {
         const text = await geminiAPI.chat(prompt, isFirstConversation);
         // const translateTextArray = text.match(/<content_is_easy_to_read>([\s\S]*?)<\/content_is_easy_to_read>/g);
         let translateTextArray: RegExpMatchArray | null = null;
-        const xmlText = generateSubtitleType === SubtitleType.Podcast ? "content_to_podcast" : "content_is_easy_to_read";
-        translateTextArray = text.match(`/<${xmlText}>([\s\S]*?)<\/${xmlText}>/g`);
+        const xmlText = generateSubtitleType === SubtitleType.Podcast ? "content_to_podcast" : "task_start";
+        // translateTextArray = text.match(`/<${xmlText}>([\s\S]*?)<\/${xmlText}>/g`);
+        //get string from text 
+        const notFinishText = text.match(new RegExp(`${xmlText}\n(.*)`,'s'));
+        if (notFinishText) {
+            // remove 'task_start' , 'task_is_finish' and 'task_is_not_finish' from notFinishText
+            translateTextArray = [notFinishText[1].replace(/task_start|task_is_finish|task_is_not_finish/g, '')];
+        }
         
-        if (translateTextArray == null) {
-            // Fix regex syntax - remove backticks and forward slashes
-            const notFinishText = text.match(new RegExp(`<${xmlText}>\n(.*)`,'s'));
-            if (notFinishText) {
-                translateTextArray = [notFinishText[1]];
-            }
-        }
+        // if (translateTextArray == null) {
+        //     // Fix regex syntax - remove backticks and forward slashes
+        //     const notFinishText = text.match(new RegExp(`<${xmlText}>\n(.*)`,'s'));
+        //     if (notFinishText) {
+        //         translateTextArray = [notFinishText[1]];
+        //     }
+        // }
 
-        const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
-        let lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
-        if (lastTaskStatusText.length == 0) {
-            lastTaskStatusText = 'task_is_not_finish';
-        }
+        // text include task_is_finish string
+        const taskIsFinishText = text.match(/task_is_finish/g);
+        let lastTaskStatusText = taskIsFinishText ? 'task_is_finish' : 'task_is_not_finish';
+
+        // if (taskIsFinishText) {
+        //     lastTaskStatusText = 'task_is_finish';
+        //     translateTextArray = [taskIsFinishText[1]];
+        // } else {
+        //     lastTaskStatusText = 'task_is_not_finish';
+        //     translateTextArray = ["task_is_not_finish"];
+
+        // }
+        
+        
+
+        // const taskStatusArray = text.match(/<task_finish_status>([\s\S]*?)<\/task_finish_status>/g);
+        // let lastTaskStatusText = this.extractLastTaskStatus(taskStatusArray);
+        // if (lastTaskStatusText.length == 0) {
+        //     lastTaskStatusText = 'task_is_not_finish';
+        // }
 
         const finish = lastTaskStatusText === 'task_is_finish';
         let [isError, errorType, translateText] = await this.checkForErrors(generateSubtitleType, isFirstConversation, finish, translateTextArray, lastTaskStatusText, contentElement);
@@ -215,7 +236,9 @@ export class SubtitleTranslate implements ISubtitleTranslate {
 
         let translateText = ''
         if (!isError) {
-            translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('');
+            translateText = translateTextArray ? translateTextArray[0] : '';
+
+            // translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('');
             
             // translateText = translateTextArray!!.map(item => item.replace(/<content_is_easy_to_read>/g, '').replace(/<\/content_is_easy_to_read>/g, '')).join('\n');
 
