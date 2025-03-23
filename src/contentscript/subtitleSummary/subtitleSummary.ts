@@ -73,16 +73,41 @@ export async function waitForPlayer(): Promise<void> {
 
 
 export async function getVideoTitle(): Promise<string> {
-    const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
-    if (titleDiv) {
-        const h1Element = titleDiv.querySelector('h1.style-scope.ytd-watch-metadata');
-        if (h1Element) {
-            const titleElement = h1Element.querySelector('yt-formatted-string.style-scope.ytd-watch-metadata');
-            if (titleElement) {
-                return titleElement.textContent?.trim() ?? "Can not get Title";
+    // 检查是否为移动版YouTube
+    const isMobileYouTube = window.location.hostname === 'm.youtube.com';
+    
+    if (isMobileYouTube) {
+        // 移动版YouTube标题选择器
+        const mobileTitleElement = document.querySelector('.slim-video-information-title');
+        if (mobileTitleElement && mobileTitleElement.textContent) {
+            return mobileTitleElement.textContent.trim();
+        }
+        
+        // 备用选择器，防止DOM结构变化
+        const mobileTitleFallback = document.querySelector('.slim-video-metadata-title');
+        if (mobileTitleFallback && mobileTitleFallback.textContent) {
+            return mobileTitleFallback.textContent.trim();
+        }
+    } else {
+        // 桌面版YouTube标题获取逻辑
+        const titleDiv = document.querySelector('div#title.style-scope.ytd-watch-metadata');
+        if (titleDiv) {
+            const h1Element = titleDiv.querySelector('h1.style-scope.ytd-watch-metadata');
+            if (h1Element) {
+                const titleElement = h1Element.querySelector('yt-formatted-string.style-scope.ytd-watch-metadata');
+                if (titleElement) {
+                    return titleElement.textContent?.trim() ?? "Can not get Title";
+                }
             }
         }
     }
+    
+    // 最终尝试：查找页面标题中的信息
+    const pageTitle = document.title;
+    if (pageTitle && pageTitle.includes(' - YouTube')) {
+        return pageTitle.replace(' - YouTube', '');
+    }
+    
     return "Can not get Title";
 }
 
