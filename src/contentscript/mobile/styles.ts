@@ -126,7 +126,7 @@ export function injectMobileStyles(): void {
             border-radius: 0 !important;
             border: none !important;
             box-shadow: none !important;
-            width: 100% !important;
+            width: 98% !important;
             margin: 0 !important;
             padding: 12px !important;
         }
@@ -254,7 +254,7 @@ export function injectMobileStyles(): void {
         }
         
         /* 修复菜单项点击状态 */
-        .fri-popup-item {
+        .fri-popup-item, .subtitle-item {
             padding: 12px 16px !important;
             height: auto !important;
             display: flex !important;
@@ -262,20 +262,32 @@ export function injectMobileStyles(): void {
             border-bottom: 1px solid var(--yt-spec-10-percent-layer, rgba(0,0,0,0.05)) !important;
         }
         
-        .fri-popup-item:last-child {
+        .fri-popup-item:last-child, .subtitle-item:last-child {
             border-bottom: none !important;
         }
         
         /* 特别处理当前点击项的背景色 */
         .fri-popup-item.active,
-        .fri-popup-item:active {
+        .fri-popup-item:active,
+        .subtitle-item.active,
+        .subtitle-item:active,
+        .language-sub-item.active,
+        .language-sub-item:active {
             background-color: var(--yt-spec-10-percent-layer, rgba(0,0,0,0.08)) !important;
         }
         
         [data-theme="dark"] .fri-popup-item.active,
         [data-theme="dark"] .fri-popup-item:active,
+        [data-theme="dark"] .subtitle-item.active,
+        [data-theme="dark"] .subtitle-item:active,
+        [data-theme="dark"] .language-sub-item.active,
+        [data-theme="dark"] .language-sub-item:active,
         html[dark] .fri-popup-item.active,
-        html[dark] .fri-popup-item:active {
+        html[dark] .fri-popup-item:active,
+        html[dark] .subtitle-item.active,
+        html[dark] .subtitle-item:active,
+        html[dark] .language-sub-item.active,
+        html[dark] .language-sub-item:active {
             background-color: var(--yt-spec-10-percent-layer, rgba(255,255,255,0.1)) !important;
         }
         
@@ -394,6 +406,35 @@ export function injectMobileStyles(): void {
         html[dark] .friday-retry-button:hover, 
         html[dark] .friday-retry-button:active {
             background-color: #2196f3;
+        }
+        
+        /* 子菜单样式 */
+        .fri-sub-popup {
+            background-color: var(--yt-spec-menu-background, #ffffff) !important;
+            border: 1px solid var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            z-index: 1001 !important;
+        }
+        
+        [data-theme="dark"] .fri-sub-popup,
+        html[dark] .fri-sub-popup {
+            background-color: var(--yt-spec-menu-background, #282828) !important;
+            border-color: var(--yt-spec-10-percent-layer, #3f3f3f) !important;
+        }
+        
+        /* 子菜单项hover状态 */
+        .subtitle-item:hover,
+        .language-sub-item:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(0,0,0,0.05)) !important;
+        }
+        
+        [data-theme="dark"] .subtitle-item:hover,
+        [data-theme="dark"] .language-sub-item:hover,
+        html[dark] .subtitle-item:hover,
+        html[dark] .language-sub-item:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(255,255,255,0.1)) !important;
         }
     `;
     document.head.appendChild(styleElement);

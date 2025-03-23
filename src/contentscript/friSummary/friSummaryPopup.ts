@@ -93,6 +93,16 @@ export class SubtitlePopup {
 
     private async updateMenuItems(): Promise<void> {
         this.submenu.innerHTML = await this.createMenuItems();
+        
+        // 为子菜单项添加点击处理
+        const subtitleItems = this.submenu.querySelectorAll('.subtitle-item');
+        subtitleItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // 添加active类并在延迟后移除，产生点击效果
+                item.classList.add('active');
+                setTimeout(() => item.classList.remove('active'), 300);
+            });
+        });
     }
 
     public destroy(): void {
@@ -221,6 +231,21 @@ export class FriSummaryPopup {
         const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
         if (!languageSubmenu) return;
 
+        // 为所有语言子菜单项添加点击处理
+        const addClickHandlers = () => {
+            const langItems = languageSubmenu.querySelectorAll('.language-sub-item');
+            langItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    // 添加active类并延迟移除，产生点击效果
+                    item.classList.add('active');
+                    setTimeout(() => item.classList.remove('active'), 300);
+                });
+            });
+        };
+        
+        // 初始添加处理程序
+        addClickHandlers();
+
         languageSubmenu.addEventListener('click', async (e) => {
             const languageItem = (e.target as HTMLElement).closest('.language-sub-item');
             if (!languageItem) return;
@@ -230,6 +255,9 @@ export class FriSummaryPopup {
             if (!newLanguage || newLanguage === (await this.state.getSummaryLanguage())) return;
 
             await this.handleLanguageChange(newLanguage);
+            
+            // 更新语言后重新添加处理程序
+            setTimeout(addClickHandlers, 100);
         });
     }
 
