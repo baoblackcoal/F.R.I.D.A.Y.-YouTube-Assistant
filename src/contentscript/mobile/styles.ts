@@ -42,7 +42,7 @@ export function injectMobileStyles(): void {
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--yt-spec-base-background, #ffffff);
+            background-color: var(--yt-spec-base-background, #f9f9f9);
             color: var(--yt-spec-text-primary, #0f0f0f);
             z-index: 9999;
             overflow-y: auto;
@@ -121,7 +121,7 @@ export function injectMobileStyles(): void {
         
         /* Override fri-summary container for mobile */
         .fri-summry-container {
-            background-color: var(--yt-spec-base-background, #ffffff) !important;
+            background-color: var(--yt-spec-base-background, #f9f9f9) !important;
             color: var(--yt-spec-text-primary, #0f0f0f) !important;
             border-radius: 0 !important;
             border: none !important;
@@ -230,6 +230,100 @@ export function injectMobileStyles(): void {
         [data-theme="dark"] .fri-popup-item:hover,
         html[dark] .fri-popup-item:hover {
             background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1)) !important;
+        }
+        
+        /* 移动端弹出菜单样式 */
+        #fri-summary-more-menu {
+            position: fixed !important;
+            right: 8px !important;
+            top: 170px !important;
+            width: 70% !important;
+            max-width: 250px !important;
+            background-color: var(--yt-spec-menu-background, #ffffff) !important;
+            border: 1px solid var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1) !important;
+            z-index: 1000 !important;
+            border-radius: 8px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        html[dark] #fri-summary-more-menu {
+            background-color: var(--yt-spec-menu-background, #282828) !important;
+            border-color: var(--yt-spec-10-percent-layer, #3f3f3f) !important;
+        }
+        
+        /* 修复菜单项点击状态 */
+        .fri-popup-item {
+            padding: 12px 16px !important;
+            height: auto !important;
+            display: flex !important;
+            align-items: center !important;
+            border-bottom: 1px solid var(--yt-spec-10-percent-layer, rgba(0,0,0,0.05)) !important;
+        }
+        
+        .fri-popup-item:last-child {
+            border-bottom: none !important;
+        }
+        
+        /* 特别处理当前点击项的背景色 */
+        .fri-popup-item.active,
+        .fri-popup-item:active {
+            background-color: var(--yt-spec-10-percent-layer, rgba(0,0,0,0.08)) !important;
+        }
+        
+        [data-theme="dark"] .fri-popup-item.active,
+        [data-theme="dark"] .fri-popup-item:active,
+        html[dark] .fri-popup-item.active,
+        html[dark] .fri-popup-item:active {
+            background-color: var(--yt-spec-10-percent-layer, rgba(255,255,255,0.1)) !important;
+        }
+        
+        /* 修改菜单项中的图标颜色 */
+        .fri-popup-item svg {
+            fill: var(--yt-spec-text-primary, #0f0f0f) !important;
+            color: var(--yt-spec-text-primary, #0f0f0f) !important;
+            width: 24px !important;
+            height: 24px !important;
+            margin-right: 16px !important;
+        }
+        
+        [data-theme="dark"] .fri-popup-item svg,
+        html[dark] .fri-popup-item svg {
+            fill: var(--yt-spec-text-primary, #ffffff) !important;
+            color: var(--yt-spec-text-primary, #ffffff) !important;
+        }
+        
+        /* 修复图标高亮状态 */
+        #fri-generate-button {
+            color: var(--yt-spec-text-primary, #030303) !important;
+            background-color: transparent !important;
+        }
+        
+        #fri-generate-button.active {
+            color: #065fd4 !important;
+            background-color: rgba(6, 95, 212, 0.1) !important;
+        }
+        
+        html[dark] #fri-generate-button {
+            color: var(--yt-spec-text-primary, #ffffff) !important;
+        }
+        
+        html[dark] #fri-generate-button.active {
+            color: #3ea6ff !important;
+            background-color: rgba(62, 166, 255, 0.15) !important;
+        }
+        
+        /* 确保toast显示正确 */
+        .fri-toast-container {
+            top: 60px !important;
+            z-index: 9999 !important;
+        }
+        
+        .fri-toast {
+            width: auto !important;
+            max-width: 90% !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
         }
         
         /* Dark mode overrides */

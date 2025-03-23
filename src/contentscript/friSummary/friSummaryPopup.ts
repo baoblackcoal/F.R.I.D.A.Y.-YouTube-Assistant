@@ -257,8 +257,17 @@ export class FriSummaryPopup {
         const copyItem = this.popupMenu.querySelector('#copy-item');
         const downloadItem = this.popupMenu.querySelector('#download-item');
 
-        copyItem?.addEventListener('click', () => this.events.onCopy());
-        downloadItem?.addEventListener('click', () => this.events.onDownload());
+        copyItem?.addEventListener('click', () => {
+            copyItem.classList.add('active');
+            this.events.onCopy();
+            setTimeout(() => copyItem.classList.remove('active'), 300);
+        });
+        
+        downloadItem?.addEventListener('click', () => {
+            downloadItem.classList.add('active');
+            this.events.onDownload();
+            setTimeout(() => downloadItem.classList.remove('active'), 300);
+        });
     }
 
     public updateText(): void {
