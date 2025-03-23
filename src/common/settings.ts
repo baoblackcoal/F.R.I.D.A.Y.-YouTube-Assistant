@@ -79,8 +79,10 @@ export const testSettings: IAbstractSettings = {
   },
   tts: {
     ...defaultTtsSettings,
-    rate: 1.25,
+    rate: 1,
     apiType: ApiType.Azure,
+    voiceName: "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaochenNeural)",
+    voiceNameRobinson: "Microsoft Server Speech Text to Speech Voice (zh-CN, YunzeNeural)",
   },
 };
 
