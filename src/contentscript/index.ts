@@ -3,7 +3,7 @@
 import { settingsManager } from "../common/settingsManager";
 import { insertSummaryBtn } from "./youtube";
 import { logTime } from "./utils";
-import { insertMobileLogoIcon } from "./mobile";
+import { insertMobileLogoIcon } from "./mobile/index";
 let oldHref = "";
 
 
