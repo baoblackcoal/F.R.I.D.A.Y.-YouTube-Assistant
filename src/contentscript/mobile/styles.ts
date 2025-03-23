@@ -126,7 +126,7 @@ export function injectMobileStyles(): void {
             border-radius: 0 !important;
             border: none !important;
             box-shadow: none !important;
-            width: 98% !important;
+            width: 94% !important;
             margin: 0 !important;
             padding: 12px !important;
         }
