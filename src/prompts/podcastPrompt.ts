@@ -66,7 +66,7 @@ export const defaultPodcastPrompt = `
 1.Host Role Responsibilities (Friday): introducing the  Guest Role Robinson, engaging with the Guest Role in an interesting and continuous manner, every speech should be less than 50 words.
 2.Guest Role Responsibilities (Robinson): The central figure of the podcast, Provides unique perspectives, expertise, or personal stories to add depth and diversity to the content, and should include some vivid examples to explain hard-to-understand content, and should be more than 100 words and less than 200 words for each speech.
 3.Podcast content size should be equal to ORIGINAL_CONTENT size;
-4."Friday: " add to speech of Host Role, "Robinson: " add  speech of to Guest Role;
+4."Friday: " add to speech of Host Role, "Robinson: " add  speech of to Guest Role, The speech content of the role should be consistent with their role positioning;
 5. Podcast content language should be {language}, "Friday", "Robinson", "Friday: " and "Robinson: " should not be translated.
 </PODCAST_CONTENT_RULES>
 
