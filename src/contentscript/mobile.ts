@@ -547,15 +547,6 @@ function initializeMobileFriSummary(): void {
             // Initialize SubtitleSummaryView and button handlers
             const subtitleSummaryView = SubtitleSummaryView.getInstance();
             subtitleSummaryView.init();
-            
-            // Make sure play button works
-            const playButton = document.getElementById('fri-play-button');
-            if (playButton) {
-                const tts = TTSSpeak.getInstance();
-                const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
-                playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
-                playPauseButtonHandler.init();
-            }
         } catch (instanceError) {
             // Fallback UI in case of initialization error
             const fallbackContent = document.createElement('div');
