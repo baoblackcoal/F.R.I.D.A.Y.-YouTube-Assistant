@@ -87,10 +87,6 @@ class GenerateButtonHandler implements IButtonHandler {
                 Toast.show({ message: i18nService.getMessage('summary-generating'), type: 'info', duration: 3000 });
                 break;
             case GenerateStatus.Finished:
-                const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();                
-                playPauseButtonHandler.initVariable(this.tts, subtitleSummaryView);
-                playPauseButtonHandler.init();
-                
                 await this.tts.resetStreamSpeak();
 
                 subtitleSummaryView.reInitContent();

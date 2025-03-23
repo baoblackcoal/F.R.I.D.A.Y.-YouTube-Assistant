@@ -92,8 +92,8 @@ export function initializeMobileFriSummary(): void {
             const subtitleSummaryView = SubtitleSummaryView.getInstance();
             subtitleSummaryView.init();
             
-            // Make sure play button works
-            setupPlayButton(subtitleSummaryView);
+            // // Make sure play button works
+            // setupPlayButton(subtitleSummaryView);
         } catch (instanceError) {
             // Fallback UI in case of initialization error
             const fallbackContent = document.createElement('div');
