@@ -6,10 +6,7 @@
 import { getLogoSvg } from "../svgs";
 import { injectMobileStyles } from "./styles";
 import { isYouTubeDarkMode } from "./theme";
-import { toggleFriSummaryContainer } from "./controller";
-
-// State to track if the summary container is visible or not
-export let isFriSummaryVisible = false;
+import * as state from "./state";
 
 /**
  * Creates the mobile logo icon element
@@ -25,6 +22,27 @@ export function createMobileLogoIcon(): HTMLElement {
     });
     
     return logoIcon;
+}
+
+/**
+ * Toggles the visibility of the Friday summary container
+ */
+export function toggleFriSummaryContainer(): void {
+    const container = document.getElementById('mobile-friday-container');
+    if (!container) {
+        return;
+    }
+
+    const isVisible = state.toggleFriSummaryVisible();
+    container.style.display = isVisible ? 'block' : 'none';
+    
+    // If becoming visible, initialize
+    if (isVisible) {
+        // Import dynamically to avoid circular dependencies
+        import('./controller').then(controller => {
+            controller.initializeMobileFriSummary();
+        });
+    }
 }
 
 /**
@@ -71,6 +89,7 @@ export function createFriSummaryContainer(): HTMLElement {
  * Creates the mobile UI elements
  */
 export function createMobileUI(): void {
+    // Don't create UI if it already exists
     if (document.getElementById('mobile-friday-container')) {
         return; // UI already created
     }
@@ -87,52 +106,13 @@ export function createMobileUI(): void {
     </svg>`;
     document.body.appendChild(logoButton);
 
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'mobile-friday-container';
-    container.id = 'mobile-friday-container';
-    
-    // Apply dark mode attribute if needed
-    if (isYouTubeDarkMode()) {
-        container.setAttribute('data-theme', 'dark');
-    }
-
-    // Create header
-    const header = document.createElement('div');
-    header.className = 'mobile-friday-header';
-    
-    const title = document.createElement('h2');
-    title.className = 'mobile-friday-title';
-    title.textContent = 'YouTube Summary';
-    
-    const closeButton = document.createElement('button');
-    closeButton.className = 'mobile-friday-close';
-    closeButton.textContent = '×';
-    
-    header.appendChild(closeButton);
-    header.appendChild(title);
-    
-    // Create content area
-    const content = document.createElement('div');
-    content.className = 'mobile-friday-content';
-    content.id = 'fri-summary-content';
-    content.innerHTML = '<p>Tap the paragraph icon to generate a summary of this video.</p>';
-    
-    // Assemble container
-    container.appendChild(header);
-    container.appendChild(content);
-    
+    // Create container using the same method as insertMobileLogoIcon to ensure consistency
+    const container = createFriSummaryContainer();
     document.body.appendChild(container);
     
     // Add event listeners
     logoButton.addEventListener('click', () => {
-        container.style.display = 'block';
-        isFriSummaryVisible = true;
-    });
-    
-    closeButton.addEventListener('click', () => {
-        container.style.display = 'none';
-        isFriSummaryVisible = false;
+        toggleFriSummaryContainer();
     });
 }
 
@@ -159,5 +139,10 @@ export function insertMobileLogoIcon(): void {
 
     // Create and add Friday summary container
     const container = createFriSummaryContainer();
+    
+    // 确保容器初始状态为隐藏
+    container.style.display = 'none';
+    state.setFriSummaryVisible(false);
+    
     document.body.appendChild(container);
 } 

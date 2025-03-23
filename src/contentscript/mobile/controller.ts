@@ -7,28 +7,7 @@ import { FriSummary } from "../friSummary/friSummary";
 import { SubtitleSummaryView } from "../subtitleSummary/view/subtitleSummaryView";
 import { ICONS } from "../friSummary/svgs";
 import { setupPlayButton } from "./buttons";
-import { isFriSummaryVisible } from "./ui";
-
-/**
- * Toggles the visibility of the Friday summary container
- */
-export function toggleFriSummaryContainer(): void {
-    const container = document.getElementById('mobile-friday-container');
-    if (!container) {
-        return;
-    }
-
-    if (isFriSummaryVisible) {
-        container.style.display = 'none';
-        (window as any).isFriSummaryVisible = false;
-    } else {
-        container.style.display = 'block';
-        (window as any).isFriSummaryVisible = true;
-        
-        // Initialize Friday summary for mobile if not already done
-        initializeMobileFriSummary();
-    }
-}
+import * as state from "./state";
 
 /**
  * Initializes the Friday summary UI for mobile
