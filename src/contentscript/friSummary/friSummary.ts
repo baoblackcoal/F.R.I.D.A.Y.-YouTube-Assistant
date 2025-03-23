@@ -222,14 +222,70 @@ export class FriSummary {
                 if (hasContent) {
                     const blob = new Blob([text], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
                     const videoTitle = await getVideoTitle();
-                    a.download = `${videoTitle}.txt`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
+                    const filename = `${videoTitle}.txt`;
+                    
+                    // 检测是否在移动域名下
+                    const isMobileYoutube = window.location.hostname === 'm.youtube.com';
+                    
+                    if (isMobileYoutube) {
+                        try {
+                            // 为了在回调函数中访问FriSummary实例中的this，保存引用
+                            const self = this;
+                            
+                            // 移动设备下，使用data URI直接触发下载，并防止打开新页面
+                            const reader = new FileReader();
+                            reader.onload = function() {
+                                // 创建一个隐藏的iframe来处理下载，避免打开新页面
+                                const iframe = document.createElement('iframe');
+                                iframe.style.display = 'none';
+                                document.body.appendChild(iframe);
+                                
+                                const iframeDoc = iframe.contentWindow?.document;
+                                if (iframeDoc) {
+                                    // 在iframe中创建下载链接
+                                    const downloadLink = iframeDoc.createElement('a');
+                                    downloadLink.href = reader.result as string;
+                                    downloadLink.download = filename;
+                                    iframeDoc.body.appendChild(downloadLink);
+                                    
+                                    // 使用触发事件方式点击，更可靠
+                                    const clickEvent = iframeDoc.createEvent('MouseEvents');
+                                    clickEvent.initEvent('click', true, true);
+                                    downloadLink.dispatchEvent(clickEvent);
+                                    
+                                    // 创建成功消息
+                                    Toast.show({
+                                        type: 'success',
+                                        message: 'Summary downloaded successfully!'
+                                    });
+                                    
+                                    // 清理iframe
+                                    setTimeout(() => {
+                                        document.body.removeChild(iframe);
+                                    }, 1000);
+                                }
+                            };
+                            
+                            // 将blob转换为data URI
+                            reader.readAsDataURL(blob);
+                        } catch (error) {
+                            console.error('Error downloading on mobile:', error);
+                            Toast.show({
+                                type: 'error',
+                                message: 'Download failed. Please try again.'
+                            });
+                        }
+                    } else {
+                        // 桌面版处理方式保持不变
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
                 }
             },
             onYoutubeSubtitleChange: (enabled: boolean) => {
