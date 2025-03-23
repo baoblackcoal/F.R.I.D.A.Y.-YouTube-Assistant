@@ -102,6 +102,13 @@ export class SubtitleSummaryView {
         await this.handleAutoSummary(maualStart);
     }
 
+    public reInitContent(): void {
+        const content = document.querySelector("#fri-summary-content") as HTMLElement;
+        if (content) {
+            content.innerHTML = "";
+        }
+    }
+
     private async handleAutoSummary(maualStart: boolean = false): Promise<void> {
         const settings = await getSettings();
         if (settings.summary.autoGenerate || maualStart) {
