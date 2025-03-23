@@ -19,6 +19,13 @@ export class Toast {
         if (!this.container) {
             this.container = document.createElement('div');
             this.container.className = 'fri-toast-container';
+            
+            // 在移动版YouTube上设置toast的特定样式，确保它总是可见
+            if (window.location.hostname === 'm.youtube.com') {
+                this.container.style.zIndex = '9999';
+                this.container.style.top = '60px';  // 避开移动版YouTube的头部
+            }
+            
             document.body.appendChild(this.container);
         }
     }

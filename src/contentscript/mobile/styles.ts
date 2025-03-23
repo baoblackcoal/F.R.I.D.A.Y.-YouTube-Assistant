@@ -121,12 +121,20 @@ export function injectMobileStyles(): void {
         
         /* Override fri-summary container for mobile */
         .fri-summry-container {
-            margin: 0 !important;
+            background-color: var(--yt-spec-base-background, #ffffff) !important;
+            color: var(--yt-spec-text-primary, #0f0f0f) !important;
             border-radius: 0 !important;
-            width: 94% !important;
-            padding: 16px !important;
-            box-shadow: none !important;
             border: none !important;
+            box-shadow: none !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 12px !important;
+        }
+        
+        [data-theme="dark"] .fri-summry-container,
+        html[dark] .fri-summry-container {
+            background-color: var(--yt-spec-base-background, #0f0f0f) !important;
+            color: var(--yt-spec-text-primary, #ffffff) !important;
         }
         
         .fri-summary-row {
@@ -144,13 +152,37 @@ export function injectMobileStyles(): void {
         }
         
         .fri-summary-info {
-            color: var(--yt-spec-text-primary, #030303);
+            color: var(--yt-spec-text-primary, #0f0f0f) !important;
             font-size: 14px;
             font-weight: 400;
         }
         
+        [data-theme="dark"] .fri-summary-info,
+        html[dark] .fri-summary-info {
+            color: var(--yt-spec-text-primary, #ffffff) !important;
+        }
+        
         .fri-icon-box {
             margin: 0 4px;
+        }
+        
+        .fri-icon-button {
+            color: var(--yt-spec-text-secondary, #606060) !important;
+            background: transparent !important;
+        }
+        
+        [data-theme="dark"] .fri-icon-button,
+        html[dark] .fri-icon-button {
+            color: var(--yt-spec-text-secondary, #aaaaaa) !important;
+        }
+        
+        .fri-icon-button:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.05)) !important;
+        }
+        
+        [data-theme="dark"] .fri-icon-button:hover,
+        html[dark] .fri-icon-button:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1)) !important;
         }
         
         .fri-left-controls, .fri-right-controls {
@@ -159,16 +191,45 @@ export function injectMobileStyles(): void {
         }
         
         .fri-summary-content-container {
-            border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border-top: 1px solid var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.1)) !important;
             padding: 16px 0 !important;
             margin-top: 0 !important;
         }
         
+        [data-theme="dark"] .fri-summary-content-container,
+        html[dark] .fri-summary-content-container {
+            border-top: 1px solid var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1)) !important;
+        }
+        
         .fri-summary-content p {
-            color: var(--yt-spec-text-primary, #030303);
+            color: var(--yt-spec-text-primary, #0f0f0f) !important;
             font-size: 14px;
             line-height: 1.4;
             margin: 8px 0 !important;
+        }
+        
+        [data-theme="dark"] .fri-summary-content p,
+        html[dark] .fri-summary-content p {
+            color: var(--yt-spec-text-primary, #ffffff) !important;
+        }
+        
+        /* 调整菜单项样式 */
+        .fri-popup-item {
+            color: var(--yt-spec-text-primary, #0f0f0f) !important;
+        }
+        
+        [data-theme="dark"] .fri-popup-item,
+        html[dark] .fri-popup-item {
+            color: var(--yt-spec-text-primary, #ffffff) !important;
+        }
+        
+        .fri-popup-item:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.05)) !important;
+        }
+        
+        [data-theme="dark"] .fri-popup-item:hover,
+        html[dark] .fri-popup-item:hover {
+            background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1)) !important;
         }
         
         /* Dark mode overrides */

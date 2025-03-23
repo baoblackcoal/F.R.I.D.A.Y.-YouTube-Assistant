@@ -18,10 +18,26 @@ export function attachButtonEventHandlers(): void {
     // Generate button
     const generateButton = document.getElementById('fri-generate-button');
     if (generateButton) {
+        // 初始状态下移除高亮
+        generateButton.classList.remove('active');
+        
+        // 监听生成状态变化
+        window.addEventListener('GenerateStatus', (event: any) => {
+            const status = event.detail?.GenerateStatus;
+            if (status && status !== 'Init') {
+                generateButton.classList.add('active');
+            } else {
+                generateButton.classList.remove('active');
+            }
+        });
+        
         generateButton.addEventListener('click', async () => {
             const subtitleSummaryView = SubtitleSummaryView.getInstance();
             
             if (subtitleSummaryView.getGenerating()) {
+                // 点击时添加active类
+                generateButton.classList.add('active');
+                
                 Toast.show({ 
                     message: i18nService.getMessage('summary-generating') || 'Already generating summary...', 
                     type: 'info', 
@@ -40,6 +56,9 @@ export function attachButtonEventHandlers(): void {
                 });
                 return;
             }
+            
+            // 开始生成时添加active类
+            generateButton.classList.add('active');
             
             // Update UI to show we're checking for subtitles
             const infoText = document.getElementById('fri-summary-info-text');
