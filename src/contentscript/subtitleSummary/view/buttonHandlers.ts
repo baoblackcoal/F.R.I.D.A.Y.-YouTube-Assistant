@@ -11,6 +11,8 @@ import { ITtsMessage } from '../../../utils/messageQueue';
 import { Toast } from '../../../common/toast';
 import { FriSummary } from '../../friSummary/friSummary';
 import { FridayStatus, fridayStatusLabels, GenerateStatus } from '../../../common/common';
+import { SrtGenerator } from '../srtGenerate';
+
 // Interfaces
 interface IButtonHandler {
     init(): void;
@@ -27,6 +29,43 @@ export function initializeButtons(tts: TTSSpeak, subtitleSummaryView: SubtitleSu
     const playPauseButtonHandler = PlayPauseButtonHandler.getInstance();
     playPauseButtonHandler.initVariable(tts, subtitleSummaryView);
     playPauseButtonHandler.init();
+    
+    // Add SRT toggle button to the fri-buttons-container
+    addSrtButtonToContainer();
+}
+
+// Add SRT button to the container
+function addSrtButtonToContainer(): void {
+    const buttonsContainer = document.querySelector('.fri-buttons-container');
+    if (buttonsContainer && !document.getElementById('fri-srt-button')) {
+        // Create SRT button
+        const srtButton = document.createElement('button');
+        srtButton.id = 'fri-srt-button';
+        srtButton.className = 'fri-button';
+        srtButton.setAttribute('aria-label', 'Show SRT Subtitles');
+        srtButton.innerHTML = createSrtButtonSvg();
+        
+        // Create tooltip
+        const tooltip = document.createElement('span');
+        tooltip.className = 'fri-tooltip';
+        tooltip.id = 'srt-tooltip';
+        tooltip.textContent = 'Show SRT Subtitles';
+        
+        // Append elements
+        srtButton.appendChild(tooltip);
+        buttonsContainer.appendChild(srtButton);
+    }
+}
+
+// Create SVG for SRT button
+function createSrtButtonSvg(): string {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+        <path d="M6 10h4"></path>
+        <path d="M14 10h4"></path>
+        <path d="M6 14h8"></path>
+        <path d="M16 14h2"></path>
+    </svg>`;
 }
 
 // Button Handlers

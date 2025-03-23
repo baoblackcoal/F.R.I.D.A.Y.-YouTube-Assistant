@@ -3,6 +3,9 @@ interface Icons {
 }
 
 export const ICONS: Icons = {
+    srt: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M4 6h16M4 10h12M4 14h16M4 18h8" stroke-linecap="round"></path>
+</svg>`,  
     paragraph: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 6h16M4 10h12M4 14h16M4 18h8" stroke-linecap="round"></path>
     </svg>`,    

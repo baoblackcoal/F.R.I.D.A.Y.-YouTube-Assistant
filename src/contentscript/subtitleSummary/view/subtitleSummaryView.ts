@@ -13,6 +13,7 @@ import { getSearchParam } from '../../searchParam';
 import { i18nService } from '../../friSummary/i18nService';
 import { Toast } from '../../../common/toast';
 import { FriSummary } from '../../friSummary/friSummary';
+import { SrtButtonHandler } from '../srtGenerate';
 
 // Constants
 const HIGHLIGHT_COLOR = "lightskyblue";
@@ -46,6 +47,8 @@ export class SubtitleSummaryView {
         await listenToMessages();
         await this.resetWhenPageChange();
         initializeButtons(this.tts, this);
+        // Initialize SRT button handler
+        SrtButtonHandler.getInstance().init();
         this.handleTtsSpeakingText();
         updateSummaryStatus("...", FridayStatus.Init);
         setTimeout(() => {
