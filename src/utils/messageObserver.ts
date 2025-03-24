@@ -22,7 +22,7 @@ export interface IMessageObserver {
 
 export class MessageObserver implements IMessageObserver {
     private static instance: MessageObserver;
-    private observerType: ObserverType = ObserverType.Callback;
+    private observerType: ObserverType = ObserverType.ChromeMessage;
     private ttsHandlers: Map<string, TtsMessageHandler[]> = new Map();
     // private handlers: Map<string, MessageHandler[]> = new Map();
     

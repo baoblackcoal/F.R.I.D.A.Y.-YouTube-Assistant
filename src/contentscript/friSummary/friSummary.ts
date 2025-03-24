@@ -65,7 +65,7 @@ export class FriSummary {
         container.innerHTML = `
             <div class="fri-summary-row">
                 <div class="fri-left-controls">
-                    ${this.createIconButton('srt', 'summary-ai-generate', 'fri-srt-button')}
+                    <!-- ${this.createIconButton('srt', 'summary-ai-generate', 'fri-srt-button')} -->
 
                     ${this.createIconButton('paragraph', 'summary-ai-generate', 'fri-generate-button')}
                     <div class="fri-icon-box play-pause-container">
