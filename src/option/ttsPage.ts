@@ -111,7 +111,7 @@ export class TTSPage {
 
     // TTS Type Selection
     const ttsTypeSection = document.createElement('div');
-    const hide = false;
+    const hide = true;
     if (hide) {
       ttsTypeSection.innerHTML = `
       <label id="ttsTypeLabel" class="hidden">${i18n.getMessage('option_tts_type_label')}</label>

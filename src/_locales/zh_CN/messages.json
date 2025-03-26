@@ -104,7 +104,7 @@
         "message": "更好的 API 使用控制"
     },
     "option_summary_language_label": {
-        "message": "总结的语言"
+        "message": "AI生成的语言"
     },
     "option_summary_auto_summary": {
         "message": "自动生成：视频加载时自动生成"

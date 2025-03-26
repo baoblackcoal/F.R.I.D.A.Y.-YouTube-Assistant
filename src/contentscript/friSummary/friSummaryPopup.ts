@@ -146,6 +146,7 @@ export class FriSummaryPopup {
                 ${ICONS.download}
                 <span>${i18nService.getMessage('summary-pupup-download')}</span>
             </div>
+            <!-- 
             <div class="fri-popup-item with-sub" id="language-item">
                 ${ICONS.language}
                 <span>${i18nService.getMessage('summary-pupup-language')}</span>
@@ -154,6 +155,7 @@ export class FriSummaryPopup {
                     ${this.createLanguageMenuItems(await this.state.getSummaryLanguage())}
                 </div>
             </div>
+            language -->
             <div class="fri-popup-item" id="auto-generate-item">
                 ${ICONS.paragraph}
                 <span>${i18nService.getMessage('summary-pupup-auto-generate')}</span>
@@ -308,7 +310,7 @@ export class FriSummaryPopup {
 
         copyItem!.textContent = i18nService.getMessage('summary-pupup-copy');
         downloadItem!.textContent = i18nService.getMessage('summary-pupup-download');
-        languageItem!.textContent = i18nService.getMessage('summary-pupup-language');
+        //languageItem!.textContent = i18nService.getMessage('summary-pupup-language');
         autoGenerateItem!.textContent = i18nService.getMessage('summary-pupup-auto-generate');
         autoPlayItem!.textContent = i18nService.getMessage('summary-pupup-auto-play');
         youtubeSubtitleItem!.textContent = i18nService.getMessage('summary-pupup-youtube-subtitle');

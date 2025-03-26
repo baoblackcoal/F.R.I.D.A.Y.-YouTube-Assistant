@@ -62,7 +62,7 @@ export function injectMobileStyles(): void {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 6px 16px;
             background-color: var(--yt-spec-base-background, #ffffff);
             border-bottom: 1px solid var(--yt-spec-10-percent-layer, #e5e5e5);
             z-index: 1;
@@ -80,6 +80,9 @@ export function injectMobileStyles(): void {
             margin: 0;
             flex-grow: 1;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .mobile-friday-close {
@@ -147,7 +150,7 @@ export function injectMobileStyles(): void {
         .fri-summary-info-container {
             width: 100%;
             order: -1;
-            margin-bottom: 16px;
+            margin-left: 12px;
             padding: 0 !important;
         }
         
@@ -203,9 +206,14 @@ export function injectMobileStyles(): void {
         
         .fri-summary-content p {
             color: var(--yt-spec-text-primary, #0f0f0f) !important;
-            font-size: 14px;
             line-height: 1.4;
             margin: 8px 0 !important;
+        }
+
+        .fri-summary-content h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 8px 0 !important;
         }
         
         [data-theme="dark"] .fri-summary-content p,

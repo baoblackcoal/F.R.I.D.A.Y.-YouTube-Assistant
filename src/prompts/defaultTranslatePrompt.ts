@@ -36,7 +36,8 @@ Translate the following original content(delimited by XML tags <ORIGINAL_CONTENT
 1. Do not modify the original content of the translated text. fix error words and add  paragraphs make the translated text easier to read.
 2. Add "task_start" for every time you start to output.
 3. After the entire original content is translated, output "task_is_finish" regardless of what I input next.
-4. Do not output any other content besides the above three points.
+4. Do not explain what you're doing.
+5. Do not output jsons.
 
 <ORIGINAL_CONTENT>
 {textTranscript}

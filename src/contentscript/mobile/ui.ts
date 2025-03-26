@@ -7,6 +7,7 @@ import { getLogoSvg } from "../svgs";
 import { injectMobileStyles } from "./styles";
 import { isYouTubeDarkMode } from "./theme";
 import * as state from "./state";
+import { i18n } from "../../common/i18n";
 
 /**
  * Creates the mobile logo icon element
@@ -15,7 +16,7 @@ import * as state from "./state";
 export function createMobileLogoIcon(): HTMLElement {
     const logoIcon = document.createElement('div');
     logoIcon.className = 'mobile-friday-logo';
-    logoIcon.innerHTML = getLogoSvg();
+    logoIcon.innerHTML = `<img src="${chrome.runtime.getURL('friday_logo_48.png')}" alt="Friday AI" />`;
     
     logoIcon.addEventListener('click', () => {
         toggleFriSummaryContainer();
@@ -60,7 +61,7 @@ export function createFriSummaryContainer(): HTMLElement {
     
     const title = document.createElement('div');
     title.className = 'mobile-friday-title';
-    title.textContent = 'Friday AI';
+    title.innerHTML = `<img src="${chrome.runtime.getURL('friday_logo_48.png')}" style="width: 32px; height: 32px; margin-right: 16px;" />   F.R.I.D.A.Y. YouTube AI Assistant`;
     header.appendChild(title);
     
     // Add close button
@@ -101,9 +102,7 @@ export function createMobileUI(): void {
     const logoButton = document.createElement('button');
     logoButton.className = 'mobile-friday-logo';
     logoButton.id = 'mobile-friday-logo';
-    logoButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 18H13V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z" fill="#065FD4"/>
-    </svg>`;
+    logoButton.innerHTML = `<img src="${chrome.runtime.getURL('friday-logo_48.png')}" alt="Friday AI" />`;
     document.body.appendChild(logoButton);
 
     // Create container using the same method as insertMobileLogoIcon to ensure consistency

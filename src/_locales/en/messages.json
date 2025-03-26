@@ -105,7 +105,7 @@
         "message": "Better control over API usage"
     },
     "option_summary_language_label": {
-        "message": "Summary Language"
+        "message": "AI Generated Language"
     },
     "option_summary_auto_summary": {
         "message": "Auto Generate: Automatically generate when video loads"

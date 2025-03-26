@@ -105,7 +105,7 @@
         "message": "更好的 API 使用控制"
     },
     "option_summary_language_label": {
-        "message": "總結語言"
+        "message": "AI生成的語言"
     },
     "option_summary_auto_summary": {
         "message": "影片載入時自動生成摘要"
