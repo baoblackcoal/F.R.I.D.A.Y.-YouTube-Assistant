@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "description": "__MSG_assistant_description__",
   "default_locale": "en",
-  "permissions": ["contextMenus", "tts", "storage", "tabs", "activeTab"],
+  "permissions": ["contextMenus", "tts", "storage", "tabs", "activeTab", "downloads"],
   "background": {
     "service_worker": "background.bundle.js"
   },

@@ -62,6 +62,40 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
     const handled = handleTTSMessage(message.action, message, sender, sendResponse);
     if (!handled) {
         switch (message.action) {    
+            case 'downloadFile':
+                try {
+                    // Sanitize filename - remove invalid characters and ensure .txt extension
+                    const sanitizedFilename = message.data.filename
+                        .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_') // Replace invalid characters with underscore
+                        .replace(/^\.+/, '_')  // Replace leading dots
+                        .trim();
+                    const filename = sanitizedFilename.toLowerCase().endsWith('.txt') 
+                        ? sanitizedFilename 
+                        : `${sanitizedFilename}.txt`;
+
+                    // Create a data URL instead of a Blob URL
+                    const base64Content = btoa(unescape(encodeURIComponent(message.data.content)));
+                    const dataUrl = `data:text/plain;base64,${base64Content}`;
+                    
+                    chrome.downloads.download({
+                        url: dataUrl,
+                        filename: filename,
+                        saveAs: true
+                    }, (downloadId) => {
+                        if (chrome.runtime.lastError) {
+                            console.error('Download error:', chrome.runtime.lastError);
+                            sendResponse({ success: false, error: chrome.runtime.lastError });
+                        } else {
+                            sendResponse({ success: true, downloadId });
+                        }
+                    });
+                    return true; // Keep the message channel open for the async response
+                } catch (error: unknown) {
+                    console.error('Error initiating download:', error);
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+                    sendResponse({ success: false, error: errorMessage });
+                }
+                break;
             case 'openOptionsPage':
                 if (chrome.runtime.openOptionsPage) {
                     chrome.runtime.openOptionsPage();
