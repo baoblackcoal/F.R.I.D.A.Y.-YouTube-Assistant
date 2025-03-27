@@ -32,8 +32,16 @@ task_finish_status
 `;
 
 export const easyToReadPrompt = `
-Translate the following original content(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into {language}. The output requirements are:
-1. Do not modify the original content of the translated text. fix error words and add  paragraphs make the translated text easier to read.
+Translate the following original content(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into {language}. 
+
+The translate requirements are:
+1. Style: Sound like authentic spoken the people in {language}, avoid formality or sounding translated.
+2. Tone: Accurately reflect the original tone and emotions (thoughtful, firm, humorous, etc.). Aim for concise, natural, and impactful language that resonates with the reader.
+3. Expression: Use idiomatic and common {language} expressions. Understand the core meaning and rephrase it in the most appropriate and natural way. Use colloquialisms appropriate to the context and character, but avoid forcing slang or internet jargon.
+4. Strategy: Capture the essence. Understand the underlying logic and emotional nuance of the original text, and creatively re-express it, focusing on conveying the overall meaning rather than a word-for-word translation. Avoid literal translation.
+
+The output requirements are:
+1. Do not modify the original content of the translated text. fix error words and add  paragraphs make the translated text easier to read, translate must follow translate requirements.
 2. Add "task_start" for every time you start to output.
 3. After the entire original content is translated, output "task_is_finish" regardless of what I input next.
 4. Do not explain what you're doing.
