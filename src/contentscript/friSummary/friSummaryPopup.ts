@@ -183,25 +183,25 @@ export class FriSummaryPopup {
     }
 
     private async loadState(): Promise<void> {
-        const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
+        // const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
         const autoGenerateToggle = this.popupMenu.querySelector('#auto-generate-toggle');
         const autoPlayToggle = this.popupMenu.querySelector('#auto-play-toggle');
         const autoDownloadToggle = this.popupMenu.querySelector('#auto-download-toggle');
         const youtubeSubtitleToggle = this.popupMenu.querySelector('#youtube-subtitle-toggle');
-        if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle || !autoDownloadToggle || !youtubeSubtitleToggle) return;
+        // if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle || !autoDownloadToggle || !youtubeSubtitleToggle) return;
 
         // set language submenu items checked
-        languageSubmenu.innerHTML = this.createLanguageMenuItems(await this.state.getSummaryLanguage());
+        // languageSubmenu.innerHTML = this.createLanguageMenuItems(await this.state.getSummaryLanguage());
 
         // set toggle items checked
-        autoGenerateToggle.classList.toggle('active', await this.state.getAutoGenerate());
-        autoPlayToggle.classList.toggle('active', await this.state.getAutoPlay());
-        autoDownloadToggle.classList.toggle('active', await this.state.getAutoDownload());
-        youtubeSubtitleToggle.classList.toggle('active', await this.state.getYoutubeSubtitleVisible());
+        autoGenerateToggle!.classList.toggle('active', await this.state.getAutoGenerate());
+        autoPlayToggle!.classList.toggle('active', await this.state.getAutoPlay());
+        autoDownloadToggle!.classList.toggle('active', await this.state.getAutoDownload());
+        youtubeSubtitleToggle!.classList.toggle('active', await this.state.getYoutubeSubtitleVisible());
     }
 
     private initializePopupMenuEvents(moreButton: HTMLElement): void {
-        moreButton.addEventListener('click', (e) => {
+        moreButton.addEventListener('click', async (e) => {
             e.stopPropagation();
             const isVisible = this.popupMenu.style.display === 'block';
             this.popupMenu.style.display = isVisible ? 'none' : 'block';
