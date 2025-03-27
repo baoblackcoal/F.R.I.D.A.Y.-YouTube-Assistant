@@ -11,6 +11,7 @@ export interface IPopupEvents {
     onCopy: () => void;
     onDownload: () => void;
     onYoutubeSubtitleChange: (enabled: boolean) => void;
+    onAutoDownloadChange: (enabled: boolean) => void;
 }
 
 export interface ISubtitleEvents {
@@ -146,16 +147,6 @@ export class FriSummaryPopup {
                 ${ICONS.download}
                 <span>${i18nService.getMessage('summary-pupup-download')}</span>
             </div>
-            <!-- 
-            <div class="fri-popup-item with-sub" id="language-item">
-                ${ICONS.language}
-                <span>${i18nService.getMessage('summary-pupup-language')}</span>
-                <div class="fri-sub-popup-arrow">${ICONS.subPopupArrow}</div>
-                <div class="fri-sub-popup fri-popup-menu" id="language-submenu">
-                    ${this.createLanguageMenuItems(await this.state.getSummaryLanguage())}
-                </div>
-            </div>
-            language -->
             <div class="fri-popup-item" id="auto-generate-item">
                 ${ICONS.paragraph}
                 <span>${i18nService.getMessage('summary-pupup-auto-generate')}</span>
@@ -165,6 +156,11 @@ export class FriSummaryPopup {
                 ${ICONS.play}
                 <span>${i18nService.getMessage('summary-pupup-auto-play')}</span>
                 <div class="fri-toggle" id="auto-play-toggle"></div>
+            </div>
+            <div class="fri-popup-item" id="auto-download-item">
+                ${ICONS.download}
+                <span>${i18nService.getMessage('summary-pupup-auto-download')}</span>
+                <div class="fri-toggle" id="auto-download-toggle"></div>
             </div>
             <div class="fri-popup-item" id="youtube-subtitle-item">
                 ${ICONS.youtubeSubtitle}
@@ -190,8 +186,9 @@ export class FriSummaryPopup {
         const languageSubmenu = this.popupMenu.querySelector('#language-submenu');
         const autoGenerateToggle = this.popupMenu.querySelector('#auto-generate-toggle');
         const autoPlayToggle = this.popupMenu.querySelector('#auto-play-toggle');
+        const autoDownloadToggle = this.popupMenu.querySelector('#auto-download-toggle');
         const youtubeSubtitleToggle = this.popupMenu.querySelector('#youtube-subtitle-toggle');
-        if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle || !youtubeSubtitleToggle) return;
+        if (!languageSubmenu || !autoGenerateToggle || !autoPlayToggle || !autoDownloadToggle || !youtubeSubtitleToggle) return;
 
         // set language submenu items checked
         languageSubmenu.innerHTML = this.createLanguageMenuItems(await this.state.getSummaryLanguage());
@@ -199,6 +196,7 @@ export class FriSummaryPopup {
         // set toggle items checked
         autoGenerateToggle.classList.toggle('active', await this.state.getAutoGenerate());
         autoPlayToggle.classList.toggle('active', await this.state.getAutoPlay());
+        autoDownloadToggle.classList.toggle('active', await this.state.getAutoDownload());
         youtubeSubtitleToggle.classList.toggle('active', await this.state.getYoutubeSubtitleVisible());
     }
 
@@ -267,6 +265,7 @@ export class FriSummaryPopup {
         const toggleItems = [
             { id: 'auto-generate', onChange: this.events.onAutoGenerateChange },
             { id: 'auto-play', onChange: this.events.onAutoPlayChange },
+            { id: 'auto-download', onChange: this.events.onAutoDownloadChange },
             { id: 'youtube-subtitle', onChange: this.events.onYoutubeSubtitleChange }
         ];
 
@@ -306,6 +305,7 @@ export class FriSummaryPopup {
         const languageItem = this.popupMenu.querySelector('#language-item span');
         const autoGenerateItem = this.popupMenu.querySelector('#auto-generate-item span');
         const autoPlayItem = this.popupMenu.querySelector('#auto-play-item span');
+        const autoDownloadItem = this.popupMenu.querySelector('#auto-download-item span');
         const youtubeSubtitleItem = this.popupMenu.querySelector('#youtube-subtitle-item span');
 
         copyItem!.textContent = i18nService.getMessage('summary-pupup-copy');
@@ -313,6 +313,7 @@ export class FriSummaryPopup {
         //languageItem!.textContent = i18nService.getMessage('summary-pupup-language');
         autoGenerateItem!.textContent = i18nService.getMessage('summary-pupup-auto-generate');
         autoPlayItem!.textContent = i18nService.getMessage('summary-pupup-auto-play');
+        autoDownloadItem!.textContent = i18nService.getMessage('summary-pupup-auto-download');
         youtubeSubtitleItem!.textContent = i18nService.getMessage('summary-pupup-youtube-subtitle');
     }
 } 

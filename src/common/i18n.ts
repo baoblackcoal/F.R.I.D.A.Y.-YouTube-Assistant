@@ -7,12 +7,28 @@ interface LocaleMessages {
   };
 }
 
-
 interface I18nEvent {
   eventId: string;
   callback: (language: Language) => Promise<void>;
 }
 
+const messages: Record<Language, Record<string, { message: string }>> = {
+  [Language.English]: {
+    'summary-pupup-auto-download': {
+      message: 'Auto Download'
+    }
+  },
+  [Language.SimplifiedChinese]: {
+    'summary-pupup-auto-download': {
+      message: '自动下载'
+    }
+  },
+  [Language.TraditionalChinese]: {
+    'summary-pupup-auto-download': {
+      message: '自動下載'
+    }
+  }
+};
 
 export class I18nService {
   private static instance: I18nService;
@@ -51,7 +67,7 @@ export class I18nService {
     window.addEventListener('generalLanguageChanged', async (event: Event) => {
       const customEvent = event as CustomEvent<{language: Language}>;
       const { language } = customEvent.detail;
-      await i18n.loadLocale(language);
+      await this.loadLocale(language);
       this.i18nEvents.forEach(event => {
         event.callback(language);
       });
@@ -65,12 +81,12 @@ export class I18nService {
   }
 
   public getMessage(key: string): string {
-    const message = this.messages[key]?.message;
+    const message = this.messages[key]?.message || messages[this.currentLanguage]?.[key]?.message;
     return message || `${key} not found`;
   }
 
   public getMessageWithParams(key: string, params: Record<string, string>): string {
-    const message = this.messages[key]?.message;
+    const message = this.messages[key]?.message || messages[this.currentLanguage]?.[key]?.message;
     return message ? message.replace(/{(\w+)}/g, (_, p) => params[p] || `{${p}}`) : `${key} not found`;
   }
 
@@ -84,11 +100,9 @@ export class I18nService {
 
   public async loadLocale(language: Language): Promise<void> {
     try {
-      // const response = await fetch(`_locales/${language}/messages.json`);
       let url = chrome.runtime.getURL(`_locales/${language}/messages.json`);
       const response = await fetch(url);
       this.messages = await response.json();
-      // const responseContent = await fetch(`_locales/${language}/messagesContent.json`);
       url = chrome.runtime.getURL(`_locales/${language}/messagesContent.json`);
       const responseContent = await fetch(url);
       const messagesContent = await responseContent.json();

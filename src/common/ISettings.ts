@@ -52,6 +52,7 @@ export interface ISummarySettings {
   language: Language;
   autoTtsSpeak: boolean;
   autoGenerate: boolean;
+  autoDownload: boolean;
   generateSubtitleType: SubtitleType;
 }
 

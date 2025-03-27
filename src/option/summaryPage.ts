@@ -28,6 +28,7 @@ export class SummaryPage {
       language: formValues.language as Language,
       autoTtsSpeak: formValues.autoTtsSpeak,
       autoGenerate: formValues.autoSummary,
+      autoDownload: formValues.autoDownload,
       generateSubtitleType: SubtitleType.Podcast,
     };
 

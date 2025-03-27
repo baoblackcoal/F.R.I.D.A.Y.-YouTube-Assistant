@@ -35,6 +35,7 @@ export const defaultSummarySettings: ISummarySettings = {
   language: Language.SimplifiedChinese,
   autoTtsSpeak: false,
   autoGenerate: false,
+  autoDownload: false,
   generateSubtitleType: SubtitleType.EasyToRead,
 };
 

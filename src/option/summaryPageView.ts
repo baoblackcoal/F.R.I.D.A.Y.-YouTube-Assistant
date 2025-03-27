@@ -20,6 +20,7 @@ export interface ISummaryPageView {
     language: string;
     autoTtsSpeak: boolean;
     autoSummary: boolean;
+    autoDownload: boolean;
     diyPromptText1: string;
     diyPromptText2: string;
     diyPromptText3: string;
@@ -61,6 +62,9 @@ export class SummaryPageView implements ISummaryPageView {
 
     const autoTtsSpeakCheckbox = this.container.querySelector('#autoTtsSpeak') as HTMLInputElement;
     autoTtsSpeakCheckbox.addEventListener('change', () => this.onSettingsChangeToSave());
+
+    const autoDownloadCheckbox = this.container.querySelector('#autoDownload') as HTMLInputElement;
+    autoDownloadCheckbox.addEventListener('change', () => this.onSettingsChangeToSave());
   }
 
   attachLanguageChangeFromGeneralPage(): void {
@@ -163,6 +167,10 @@ export class SummaryPageView implements ISummaryPageView {
         <input type="checkbox" id="autoTtsSpeak" class="checkbox-input">
         <label for="autoTtsSpeak" class="checkbox-label">${i18n.getMessage('option_summary_auto_tts')}</label>
       </div>
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="autoDownload" class="checkbox-input">
+        <label for="autoDownload" class="checkbox-label">${i18n.getMessage('option_summary_auto_download')}</label>
+      </div>
     `;
   }
 
@@ -236,28 +244,17 @@ export class SummaryPageView implements ISummaryPageView {
   }
 
   public getFormValues() {
-    const inputs = {
-      apiKeyType: this.container.querySelector('input[name="apiKeyType"]:checked') as HTMLInputElement,
-      geminiApiKey: this.container.querySelector('#geminiApiKey') as HTMLInputElement,
-      promptType: this.container.querySelector('#promptType') as HTMLSelectElement,
-      language: this.container.querySelector('#language') as HTMLSelectElement,
-      autoTtsSpeak: this.container.querySelector('#autoTtsSpeak') as HTMLInputElement,
-      autoSummary: this.container.querySelector('#autoSummary') as HTMLInputElement,
-      diyPromptText1: this.container.querySelector('#diyPromptText1') as HTMLTextAreaElement,
-      diyPromptText2: this.container.querySelector('#diyPromptText2') as HTMLTextAreaElement,
-      diyPromptText3: this.container.querySelector('#diyPromptText3') as HTMLTextAreaElement,
-    };
-
     return {
-      apiKeyType: inputs.apiKeyType.value,
-      geminiApiKey: inputs.geminiApiKey.value,
-      promptType: parseInt(inputs.promptType.value),
-      language: inputs.language.value,
-      autoTtsSpeak: inputs.autoTtsSpeak.checked,
-      autoSummary: inputs.autoSummary.checked,
-      diyPromptText1: inputs.diyPromptText1.value,
-      diyPromptText2: inputs.diyPromptText2.value,
-      diyPromptText3: inputs.diyPromptText3.value,
+      apiKeyType: (this.container.querySelector('input[name="apiKeyType"]:checked') as HTMLInputElement)?.value,
+      geminiApiKey: (this.container.querySelector('#geminiApiKey') as HTMLInputElement)?.value,
+      promptType: parseInt((this.container.querySelector('#promptType') as HTMLSelectElement)?.value || '0'),
+      language: (this.container.querySelector('#language') as HTMLSelectElement)?.value,
+      autoTtsSpeak: (this.container.querySelector('#autoTtsSpeak') as HTMLInputElement)?.checked,
+      autoSummary: (this.container.querySelector('#autoSummary') as HTMLInputElement)?.checked,
+      autoDownload: (this.container.querySelector('#autoDownload') as HTMLInputElement)?.checked,
+      diyPromptText1: (this.container.querySelector('#diyPromptText1') as HTMLTextAreaElement)?.value,
+      diyPromptText2: (this.container.querySelector('#diyPromptText2') as HTMLTextAreaElement)?.value,
+      diyPromptText3: (this.container.querySelector('#diyPromptText3') as HTMLTextAreaElement)?.value,
     };
   }
 
@@ -363,6 +360,7 @@ export class SummaryPageView implements ISummaryPageView {
       language: this.container.querySelector('#language') as HTMLSelectElement,
       autoTtsSpeak: this.container.querySelector('#autoTtsSpeak') as HTMLInputElement,
       autoSummary: this.container.querySelector('#autoSummary') as HTMLInputElement,
+      autoDownload: this.container.querySelector('#autoDownload') as HTMLInputElement,
       diyPromptText1: this.container.querySelector('#diyPromptText1') as HTMLTextAreaElement,
       diyPromptText2: this.container.querySelector('#diyPromptText2') as HTMLTextAreaElement,
       diyPromptText3: this.container.querySelector('#diyPromptText3') as HTMLTextAreaElement,
@@ -372,6 +370,7 @@ export class SummaryPageView implements ISummaryPageView {
     inputs.language.value = settings.language;
     inputs.autoTtsSpeak.checked = settings.autoTtsSpeak;
     inputs.autoSummary.checked = settings.autoGenerate;
+    inputs.autoDownload.checked = settings.autoDownload;
     inputs.diyPromptText1.value = settings.diyPromptText1;
     inputs.diyPromptText2.value = settings.diyPromptText2;
     inputs.diyPromptText3.value = settings.diyPromptText3;

@@ -17,6 +17,7 @@ import { PlayPauseButtonHandler } from "./view/buttonHandlers";
 import { ISubtitleTranslate } from "./subtitleTranslate";
 import { Toast } from "../../common/toast";
 import { commentPromptText } from "../../prompts/commentPrompt";
+import { summaryState } from "../friSummary/friSummaryState";
 
 let pauseVideoFlag = false;
 
@@ -221,6 +222,17 @@ export function updateSummaryStatus(status: string, fridayStatus: FridayStatus):
             break;
         case FridayStatus.Finished:
             window.dispatchEvent(new CustomEvent('GenerateStatus', { detail: { GenerateStatus: GenerateStatus.Finished } }));
+            // Handle auto-download
+            (async () => {
+                const state = summaryState;
+                const autoDownload = await state.getAutoDownload();
+                if (autoDownload) {
+                    const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContent();
+                    if (hasContent) {
+                        await friSummary.downloadContent(text);
+                    }
+                }
+            })();
             break;
         case FridayStatus.GeneratingSummary:
         case FridayStatus.TranslatingSubtitle:

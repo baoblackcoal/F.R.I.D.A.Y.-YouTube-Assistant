@@ -14,6 +14,8 @@ export interface IFriSummaryState {
     setSubtitleType(value: SubtitleType): Promise<void>;
     getYoutubeSubtitleVisible(): Promise<boolean>;
     setYoutubeSubtitleVisible(value: boolean): Promise<void>;
+    getAutoDownload(): Promise<boolean>;
+    setAutoDownload(value: boolean): Promise<void>;
 }
 
 
@@ -102,6 +104,18 @@ class FriSummaryState implements IFriSummaryState {
         const settings = await settingsManager.getGeneralSettings();
         settings.language = value;
         await settingsManager.setGeneralSettings(settings);
+        return Promise.resolve();
+    }
+
+    async getAutoDownload(): Promise<boolean> {
+        const settings = await settingsManager.getSummarySettings();
+        return settings.autoDownload;
+    }
+
+    async setAutoDownload(value: boolean): Promise<void> {
+        const settings = await settingsManager.getSummarySettings();
+        settings.autoDownload = value;
+        await settingsManager.setSummarySettings(settings);
         return Promise.resolve();
     }
 }

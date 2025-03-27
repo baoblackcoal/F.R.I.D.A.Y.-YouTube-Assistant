@@ -196,98 +196,32 @@ export class FriSummary {
 
         const popupEvents: IPopupEvents = {
             onLanguageChange: (language: Language) => {
-                summaryState.setSummaryLanguage(language);
+                this.state.setSummaryLanguage(language);
             },
             onAutoGenerateChange: (enabled: boolean) => {
-                summaryState.setAutoGenerate(enabled);
+                this.state.setAutoGenerate(enabled);
             },
             onAutoPlayChange: (enabled: boolean) => {
-                summaryState.setAutoPlay(enabled);
+                this.state.setAutoPlay(enabled);
             },
-            onCopy: () => {                
+            onAutoDownloadChange: (enabled: boolean) => {
+                this.state.setAutoDownload(enabled);
+            },
+            onCopy: async () => {
                 const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
                 if (hasContent) {
-                    copyTextToClipboard(text);          
+                    await copyTextToClipboard(text);
                     Toast.show({
                         type: 'success',
-                        message: i18nService.getMessage('summary-popup-copy-success')
+                        message: i18nService.getMessage('summary-tip-copy-success'),
+                        duration: 2000
                     });
-                    // close popup
-                    const popup = document.getElementById('fri-summary-more-menu');
-                    if (popup) {
-                        popup.style.display = 'none';
-                    }
-                }                 
+                }
             },
             onDownload: async () => {
-                const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast()
+                const [hasContent, text] = SubtitleSummaryView.getInstance().checkGenerateContentAndToast();
                 if (hasContent) {
-                    const blob = new Blob([text], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const videoTitle = await getVideoTitle();
-                    const filename = `${videoTitle}.txt`;
-                    
-                    // 检测是否在移动域名下
-                    const isMobileYoutube = window.location.hostname === 'm.youtube.com';
-                    
-                    if (isMobileYoutube) {
-                        try {
-                            // 为了在回调函数中访问FriSummary实例中的this，保存引用
-                            const self = this;
-                            
-                            // 移动设备下，使用data URI直接触发下载，并防止打开新页面
-                            const reader = new FileReader();
-                            reader.onload = function() {
-                                // 创建一个隐藏的iframe来处理下载，避免打开新页面
-                                const iframe = document.createElement('iframe');
-                                iframe.style.display = 'none';
-                                document.body.appendChild(iframe);
-                                
-                                const iframeDoc = iframe.contentWindow?.document;
-                                if (iframeDoc) {
-                                    // 在iframe中创建下载链接
-                                    const downloadLink = iframeDoc.createElement('a');
-                                    downloadLink.href = reader.result as string;
-                                    downloadLink.download = filename;
-                                    iframeDoc.body.appendChild(downloadLink);
-                                    
-                                    // 使用触发事件方式点击，更可靠
-                                    const clickEvent = iframeDoc.createEvent('MouseEvents');
-                                    clickEvent.initEvent('click', true, true);
-                                    downloadLink.dispatchEvent(clickEvent);
-                                    
-                                    // 创建成功消息
-                                    Toast.show({
-                                        type: 'success',
-                                        message: 'Summary downloaded successfully!'
-                                    });
-                                    
-                                    // 清理iframe
-                                    setTimeout(() => {
-                                        document.body.removeChild(iframe);
-                                    }, 1000);
-                                }
-                            };
-                            
-                            // 将blob转换为data URI
-                            reader.readAsDataURL(blob);
-                        } catch (error) {
-                            console.error('Error downloading on mobile:', error);
-                            Toast.show({
-                                type: 'error',
-                                message: 'Download failed. Please try again.'
-                            });
-                        }
-                    } else {
-                        // 桌面版处理方式保持不变
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }
+                    await this.downloadContent(text);
                 }
             },
             onYoutubeSubtitleChange: (enabled: boolean) => {
@@ -301,6 +235,67 @@ export class FriSummary {
         );
         
         popup.init(moreButton as HTMLElement);
+    }
+
+    public async downloadContent(text: string): Promise<void> {
+        try {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const videoTitle = await getVideoTitle();
+            const filename = `${videoTitle}.txt`;
+
+            // Check if running on mobile
+            const isMobileYoutube = window.location.hostname === 'm.youtube.com';
+            if (isMobileYoutube) {
+                // Mobile download handling
+                const response = await fetch(url);
+                const content = await response.text();
+                
+                // Create a message to send to background script
+                chrome.runtime.sendMessage({
+                    action: 'downloadFile',
+                    data: {
+                        content: content,
+                        filename: filename
+                    }
+                }, (response) => {
+                    if (response.success) {
+                        Toast.show({
+                            type: 'success',
+                            message: i18nService.getMessage('summary-tip-download-success'),
+                            duration: 2000
+                        });
+                    } else {
+                        Toast.show({
+                            type: 'error',
+                            message: 'Download failed. Please try again.',
+                            duration: 2000
+                        });
+                    }
+                });
+            } else {
+                // Desktop download handling
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                Toast.show({
+                    type: 'success',
+                    message: i18nService.getMessage('summary-tip-download-success'),
+                    duration: 2000
+                });
+            }
+        } catch (error) {
+            console.error('Error downloading:', error);
+            Toast.show({
+                type: 'error',
+                message: 'Download failed. Please try again.',
+                duration: 2000
+            });
+        }
     }
 
     public setFriInfoText(text: string): void {
