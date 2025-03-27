@@ -8,6 +8,8 @@ dist/
 
 build/
 
+release/
+
 # IntelliJ
 .idea
 # VS Code

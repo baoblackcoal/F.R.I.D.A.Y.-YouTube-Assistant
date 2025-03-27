@@ -7,6 +7,7 @@
     "@types/jquery": "^3.5.30",
     "@types/node": "^16.18.108",
     "@types/puppeteer": "^5.4.7",
+    "adm-zip": "^0.5.16",
     "babel-loader": "^8.2.5",
     "copy-webpack-plugin": "^10.2.4",
     "cross-env": "^7.0.3",
@@ -30,7 +31,7 @@
     "build": "npm run clean && npm run build-css && webpack --config webpack.config.js",
     "build-pack": "webpack --config webpack.config.js",
     "test": "jest",
-    "build-release": "npm run clean && npm run build:css && cross-env NODE_ENV=production webpack"
+    "build-release": "npm run clean && npm run build-css && cross-env NODE_ENV=production webpack && node scripts/build-zip.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.17.1",
