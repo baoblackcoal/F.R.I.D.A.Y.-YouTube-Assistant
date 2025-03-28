@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
                     chrome.downloads.download({
                         url: dataUrl,
                         filename: filename,
-                        saveAs: true
+                        saveAs: false
                     }, (downloadId) => {
                         if (chrome.runtime.lastError) {
                             console.error('Download error:', chrome.runtime.lastError);
