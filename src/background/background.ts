@@ -69,9 +69,19 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
                         .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_') // Replace invalid characters with underscore
                         .replace(/^\.+/, '_')  // Replace leading dots
                         .trim();
-                    const filename = sanitizedFilename.toLowerCase().endsWith('.txt') 
-                        ? sanitizedFilename 
-                        : `${sanitizedFilename}.txt`;
+                    
+                    // Add timestamp to filename to prevent duplicates
+                    const now = new Date();
+                    const timestamp = now.getFullYear() + '-' +
+                        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(now.getDate()).padStart(2, '0') + '_' +
+                        String(now.getHours()).padStart(2, '0') + '-' +
+                        String(now.getMinutes()).padStart(2, '0') + '-' +
+                        String(now.getSeconds()).padStart(2, '0');
+                    const nameWithoutExt = sanitizedFilename.toLowerCase().endsWith('.txt') 
+                        ? sanitizedFilename.slice(0, -4) 
+                        : sanitizedFilename;
+                    const filename = `${nameWithoutExt}_${timestamp}.txt`;
 
                     // Create a data URL instead of a Blob URL
                     const base64Content = btoa(unescape(encodeURIComponent(message.data.content)));

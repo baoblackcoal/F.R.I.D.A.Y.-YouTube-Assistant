@@ -31,7 +31,7 @@
     "build": "npm run clean && npm run build-css && webpack --config webpack.config.js",
     "build-pack": "webpack --config webpack.config.js",
     "test": "jest",
-    "build-release": "npm run clean && npm run build-css && cross-env NODE_ENV=production webpack && node scripts/build-zip.js"
+    "build-release": "npm run clean && npm run build-css && cross-env NODE_ENV=production webpack --config webpack.config.js && node scripts/build-zip.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.17.1",

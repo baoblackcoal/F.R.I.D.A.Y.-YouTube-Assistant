@@ -36,8 +36,17 @@ distFiles.forEach(file => {
     }
 });
 
+// get timestamp
+const now = new Date();
+const timestamp = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0') + '_' +
+    String(now.getHours()).padStart(2, '0') + '-' +
+    String(now.getMinutes()).padStart(2, '0') + '-' +
+    String(now.getSeconds()).padStart(2, '0');
+
 // 生成带版本号的 zip 文件名
-const zipFileName = `Friday_V${version}.zip`;
+const zipFileName = `Friday_V${version}_${timestamp}.zip`;
 
 // 生成 zip 文件
 zip.writeZip(path.join(zipDir, zipFileName));
