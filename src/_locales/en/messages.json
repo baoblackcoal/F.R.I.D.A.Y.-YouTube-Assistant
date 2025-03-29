@@ -113,6 +113,9 @@
     "option_summary_auto_tts": {
         "message": "Auto Play: Automatically stop video and speak generated content"
     },
+    "option_summary_auto_download": {
+        "message": "Auto Download: Automatically download generated content after AI generation"
+    },
     "option_summary_prompt_type": {
         "message": "Summary Prompt Type"
     },

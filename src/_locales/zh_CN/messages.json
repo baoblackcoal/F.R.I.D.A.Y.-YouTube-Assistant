@@ -43,8 +43,6 @@
     "option_general_sync_language_label": {
         "message": "同步“AI生成的语言”设置"
     },
-
-
     "option_tab_general": {
         "message": "通用"
     },
@@ -111,6 +109,9 @@
     },
     "option_summary_auto_tts": {
         "message": "自动播放：自动停止视频播放并朗读生成内容"
+    },
+    "option_summary_auto_download": {
+        "message": "自动下载: AI生成完成后自动下载生成内容"
     },
     "option_summary_prompt_type": {
         "message": "总结Prompt类型"
