@@ -176,19 +176,19 @@ export function insertSummaryButtonView(): void {
     const fridayLogo = document.getElementById('ytbs_summary_logo');
 
     if (logoElement && !fridayLogo) {
-        // Create a new button element
-        const logo = document.createElement('img');
-        logo.id = 'ytbs_summary_logo';
-        logo.src = chrome.runtime.getURL('friday_logo_48.png');
-        logo.style.width = '32px';
+        // // Create a new button element
+        // const logo = document.createElement('img');
+        // logo.id = 'ytbs_summary_logo';
+        // logo.src = chrome.runtime.getURL('friday_logo_48.png');
+        // logo.style.width = '32px';
 
-        // Add a click event listener for custom functionality
-        logo.addEventListener('click', () => {
-            // alert('Summary button clicked!'); // Replace with desired functionality
-        });
+        // // Add a click event listener for custom functionality
+        // logo.addEventListener('click', () => {
+        //     // alert('Summary button clicked!'); // Replace with desired functionality
+        // });
         
-        // Insert the button after the logo element
-        logoElement.insertAdjacentElement('afterend', logo);
+        // // Insert the button after the logo element
+        // logoElement.insertAdjacentElement('afterend', logo);
     }
 
 }

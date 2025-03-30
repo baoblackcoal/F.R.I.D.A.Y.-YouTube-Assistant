@@ -214,6 +214,7 @@ export function injectMobileStyles(): void {
             font-size: 16px;
             font-weight: 500;
             margin: 0 0 8px 0 !important;
+            font-weight: bold;
         }
         
         [data-theme="dark"] .fri-summary-content p,

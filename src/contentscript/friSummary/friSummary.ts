@@ -78,8 +78,13 @@ export class FriSummary {
                 </div>
 
                 <div class="fri-summary-info-container">
-                    <div class="fri-summary-info"> <strong>Friday:  </strong>
-                        <span id="fri-summary-info-text" class="fri-summary-info-text">...</span>
+                    <div class="fri-summary-info"> 
+                        <img src="${chrome.runtime.getURL('friday_logo_48.png')}" class="fri-summary-info-logo">                   
+                        
+                        <span class="fri-summary-info-text">
+                            <strong>Friday: </strong> 
+                            <span id="fri-summary-info-text"> ...</span>
+                        </span>
                     </div>
                 </div>
 

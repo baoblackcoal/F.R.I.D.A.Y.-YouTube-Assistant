@@ -1,6 +1,6 @@
 {
     "extension_name": {
-        "message": "F.R.I.D.A.Y. YouTube 助手"
+        "message": "Friday YouTube 助手"
     },
     "assistant_description": {
         "message": "🤖 你的個人 YouTube 助手。"
@@ -8,10 +8,10 @@
 
     
     "option_general_extension_name": {
-        "message": "F.R.I.D.A.Y. YouTube 助手"
+        "message": "Friday YouTube 助手"
     },
     "option_general_welcome_greeting": {
-        "message": "👋 你好！我是 F.R.I.D.A.Y."
+        "message": "👋 你好！我是 Friday"
     },
     "option_general_assistant_description": {
         "message": "🤖 你的個人 YouTube 助手。"

@@ -54,7 +54,7 @@ export class GeneralPage {
     const welcomeSection = this.container.querySelector('#welcome-section');
     if (welcomeSection) {
       welcomeSection.innerHTML = `
-        <img src="friday_logo_&_ytb.png" alt="F.R.I.D.A.Y." class="h-24 mx-auto">
+        <img src="friday_logo_&_ytb.png" alt="Friday" class="h-24 mx-auto">
         <div class="welcome-messages">
           <p>${i18n.getMessage('option_general_welcome_greeting')}</p>
           <p>${i18n.getMessage('option_general_assistant_description')}</p>
@@ -65,7 +65,7 @@ export class GeneralPage {
             <li>${i18n.getMessage('option_general_feature_translate')}</li>
             <li>${i18n.getMessage('option_general_feature_tts')}</li>
             <li>${i18n.getMessage('option_general_feature_more')} 
-                <a href="https://github.com/baoblackcoal/F.R.I.D.A.Y.-YouTube-Assistant" 
+                <a href="https://github.com/baoblackcoal/Friday-YouTube-Assistant" 
                    target="_blank" 
                    rel="noopener noreferrer">${i18n.getMessage('option_general_open_source')}</a>
             </li>

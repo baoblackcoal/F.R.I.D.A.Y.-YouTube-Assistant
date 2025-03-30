@@ -61,7 +61,7 @@ export function createFriSummaryContainer(): HTMLElement {
     
     const title = document.createElement('div');
     title.className = 'mobile-friday-title';
-    title.innerHTML = `<img src="${chrome.runtime.getURL('friday_logo_48.png')}" style="width: 32px; height: 32px; margin-right: 16px;" />   F.R.I.D.A.Y. YouTube AI Assistant`;
+    title.innerHTML = `Friday`;
     header.appendChild(title);
     
     // Add close button

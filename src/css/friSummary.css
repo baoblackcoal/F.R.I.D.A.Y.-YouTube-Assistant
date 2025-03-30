@@ -310,6 +310,14 @@ canvas,caption,center,cite,code,dd,del,dfn,div,dl,dt,em,embed,fieldset,font,form
 .fri-summary-info-text {
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.fri-summary-info-logo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
 .fri-summary-info-text.fade-out {
