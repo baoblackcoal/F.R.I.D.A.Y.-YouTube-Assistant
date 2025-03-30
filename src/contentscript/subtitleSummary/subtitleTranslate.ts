@@ -1,6 +1,6 @@
 import { geminiAPI } from '../../common/geminiApi';
 import { TTSSpeak } from '../../common/ttsSpeak';
-import { easyToReadPrompt, translateEasyToReadPrompt } from "../../prompts/defaultTranslatePrompt";
+import { TranslatePrompt} from "../../prompts/defaultTranslatePrompt";
 import { defaultPodcastPrompt, translatePodcastPrompt } from "../../prompts/podcastPrompt";
 import { settingsManager } from '../../common/settingsManager';
 import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
@@ -40,7 +40,7 @@ export class SubtitleTranslate implements ISubtitleTranslate {
 
         const videoTitle = await getVideoTitle();
         const summarySettings = await settingsManager.getSummarySettings();
-        const promptText = generateSubtitleType === SubtitleType.EasyToRead ? easyToReadPrompt : defaultPodcastPrompt;
+        const promptText = generateSubtitleType === SubtitleType.EasyToRead ? TranslatePrompt : defaultPodcastPrompt;
 
         return diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
     }

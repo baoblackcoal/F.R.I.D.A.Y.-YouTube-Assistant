@@ -1,7 +1,8 @@
 
 
 
-export const defaultPromptText = `Summarize the following original content(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into brief sentences, highlights, and keywords.
+export const defaultPromptText = `
+Summarize the following original content(delimited by XML tags <ORIGINAL_CONTENT> and </ORIGINAL_CONTENT>) into brief sentences, highlights, and keywords in {language}.
 
 The output format should follow the following rules:
 1. use the following html format(delimited by XML tags <HTML_FORMAT> and </HTML_FORMAT>). 
