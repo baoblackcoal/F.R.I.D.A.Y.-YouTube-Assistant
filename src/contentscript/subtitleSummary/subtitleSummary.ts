@@ -4,7 +4,7 @@ import { parse } from 'marked';
 import { TTSSpeak } from '../../common/ttsSpeak';
 import { defaultSummarySettings } from '../../common/settings';
 import { Language, ISummarySettings, SubtitleType } from '../../common/ISettings';
-import { defaultPromptText } from "../../prompts/defaultPromptText";
+import { summaryDefaultPromptText } from "../../prompts/defaultPromptText";
 import { settingsManager } from '../../common/settingsManager';
 import { handleSubtitleSummaryView, SubtitleSummaryView } from "./view/subtitleSummaryView";
 import { logTime, waitForElm } from "../utils";
@@ -162,11 +162,11 @@ async function generatePrompt(videoId: string): Promise<string> {
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
 
-    let promptText = defaultPromptText;
+    let promptText = summaryDefaultPromptText;
     // let promptText = commentPromptText;
     if (summarySettings.promptType > 0) {
         const diyPromptKey = `diyPromptText${summarySettings.promptType}`;
-        promptText = summarySettings[diyPromptKey as keyof ISummarySettings] as string || defaultPromptText;
+        promptText = summarySettings[diyPromptKey as keyof ISummarySettings] as string || summaryDefaultPromptText;
     }
 
     const prompt = diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);

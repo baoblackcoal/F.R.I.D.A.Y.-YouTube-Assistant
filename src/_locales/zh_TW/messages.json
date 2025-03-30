@@ -108,13 +108,13 @@
         "message": "AI生成的語言"
     },
     "option_summary_auto_summary": {
-        "message": "自動生成: 影片載入時自動生成摘要"
+        "message": "自動生成：影片載入時自動生成摘要"
     },
     "option_summary_auto_tts": {
-        "message": "自動播放: 自動停止影片並朗讀摘要"
+        "message": "自動播放：自動停止影片並朗讀摘要"
     },
     "option_summary_auto_download": {
-        "message": "自動下載: AI生成完成後自動下載生成內容"
+        "message": "自動下載：AI生成完成後自動下載生成內容"
     },
     "option_summary_prompt_type": {
         "message": "總結Prompt類型"

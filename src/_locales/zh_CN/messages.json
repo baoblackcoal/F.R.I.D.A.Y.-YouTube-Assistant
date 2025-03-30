@@ -111,7 +111,7 @@
         "message": "自动播放：自动停止视频播放并朗读生成内容"
     },
     "option_summary_auto_download": {
-        "message": "自动下载: AI生成完成后自动下载生成内容"
+        "message": "自动下载：AI生成完成后自动下载生成内容"
     },
     "option_summary_prompt_type": {
         "message": "总结Prompt类型"

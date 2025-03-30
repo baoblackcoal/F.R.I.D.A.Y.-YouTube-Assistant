@@ -8,6 +8,7 @@ import {
   IAbstractSettings,
   SubtitleType
 } from './ISettings';
+import { summaryDiy1PromptText } from '../prompts/defaultPromptText';
 
 export const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 export const pitchOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -29,7 +30,7 @@ export const defaultGeneralSettings: IGeneralSettings = {
 
 export const defaultSummarySettings: ISummarySettings = {
   promptType: 0,
-  diyPromptText1: "Summarize the video titled '{videoTitle}' with the following transcript in {language}  :\n\n{textTranscript}",
+  diyPromptText1: summaryDiy1PromptText,
   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
   diyPromptText3: "Analyze the main themes and ideas in this video in {language}:\n\n{videoTitle}\n\n{textTranscript}",
   language: Language.SimplifiedChinese,

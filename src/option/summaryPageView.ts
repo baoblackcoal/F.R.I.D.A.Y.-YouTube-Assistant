@@ -1,6 +1,6 @@
 import { Language, ISummarySettings, ILlmSettings } from '../common/ISettings';
 import { settingsManager } from '../common/settingsManager';
-import { defaultPromptText } from '../prompts/defaultPromptText';
+import { summaryDefaultPromptText } from '../prompts/defaultPromptText';
 import './css/basePage.css';
 import './css/summaryPage.css';
 import { i18n, I18nService } from '../common/i18n';
@@ -192,7 +192,7 @@ export class SummaryPageView implements ISummaryPageView {
           <label class="label">${i18n.getMessage('option_summary_prompt_default_readonly')}</label>
           <div class="truncate-wrapper">
             <textarea id="defaultPromptText" rows="12" readonly
-                      class="textarea-field readonly">${defaultPromptText}</textarea>
+                      class="textarea-field readonly">${summaryDefaultPromptText}</textarea>
           </div>
         </div>
 
