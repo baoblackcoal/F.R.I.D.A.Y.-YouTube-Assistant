@@ -25,7 +25,7 @@ export enum Language {
 
 export enum SubtitleType {
     None = "None",
-    EasyToRead = "EasyToRead",
+    Translation = "Translation",
     Podcast = "Podcast",
 }
 
@@ -45,6 +45,7 @@ export interface IGeneralSettings {
 }
 
 export interface ISummarySettings {
+  isCommonKey: boolean;
   promptType: number;
   diyPromptText1: string;
   diyPromptText2: string;
@@ -64,7 +65,6 @@ export interface ILlmSettings {
   frequencyPenalty: number;
   presencePenalty: number;
   userApiKey: string;
-  isCommonKey: boolean;
 }
 
 export interface IAbstractSettings {

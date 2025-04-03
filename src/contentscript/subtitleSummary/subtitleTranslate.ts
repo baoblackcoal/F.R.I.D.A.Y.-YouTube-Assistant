@@ -3,7 +3,7 @@ import { TTSSpeak } from '../../common/ttsSpeak';
 import { TranslatePrompt} from "../../prompts/defaultTranslatePrompt";
 import { defaultPodcastPrompt, translatePodcastPrompt } from "../../prompts/podcastPrompt";
 import { settingsManager } from '../../common/settingsManager';
-import { getVideoTitle, getTranscriptText, diyPrompt, getApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
+import { getVideoTitle, getTranscriptText, diyPrompt, getGeminiApiKey, updateSummaryStatus, getTtsSpeakIndex } from "./subtitleSummary";
 import { resetHighlightText } from './view/subtitleSummaryView';
 import { parser } from 'marked';
 import { SubtitleType } from '../../common/ISettings';
@@ -40,7 +40,7 @@ export class SubtitleTranslate implements ISubtitleTranslate {
 
         const videoTitle = await getVideoTitle();
         const summarySettings = await settingsManager.getSummarySettings();
-        const promptText = generateSubtitleType === SubtitleType.EasyToRead ? TranslatePrompt : defaultPodcastPrompt;
+        const promptText = generateSubtitleType === SubtitleType.Translation ? TranslatePrompt : defaultPodcastPrompt;
 
         return diyPrompt(promptText, videoTitle, textTranscript, summarySettings.language);
     }
@@ -56,14 +56,14 @@ export class SubtitleTranslate implements ISubtitleTranslate {
         const summarySettings = await settingsManager.getSummarySettings();
 
 
-        getApiKey(async (geminiApiKey) => {
+        getGeminiApiKey(async (geminiApiKey) => {
             if (!geminiApiKey) {
                 this.displayError("Please set API key in the extension settings");
                 return;
             }
             
             const settings = await settingsManager.getSummarySettings();
-            if (settings.generateSubtitleType === SubtitleType.EasyToRead) {
+            if (settings.generateSubtitleType === SubtitleType.Translation) {
                 updateSummaryStatus("Translating subtitle...", FridayStatus.TranslatingSubtitle);  
             } else {
                 updateSummaryStatus("Generating podcast...", FridayStatus.GeneratingPodcast);  
@@ -121,7 +121,7 @@ export class SubtitleTranslate implements ISubtitleTranslate {
                 await this.sleep(2000);
                 continue;
             } else {
-                if (summarySettings.generateSubtitleType === SubtitleType.EasyToRead) {
+                if (summarySettings.generateSubtitleType === SubtitleType.Translation) {
                     updateSummaryStatus("Translate subtitle...", FridayStatus.TranslatingSubtitle);
                 } else {
                     updateSummaryStatus("Generate podcast...", FridayStatus.GeneratingPodcast);

@@ -391,8 +391,8 @@ export class FriSummary {
             case SubtitleType.None:
                 this.state.setSubtitleType(SubtitleType.None);
                 break;
-            case SubtitleType.EasyToRead:
-                this.state.setSubtitleType(SubtitleType.EasyToRead);
+            case SubtitleType.Translation:
+                this.state.setSubtitleType(SubtitleType.Translation);
                 break;
             case SubtitleType.Podcast:
                 this.state.setSubtitleType(SubtitleType.Podcast);

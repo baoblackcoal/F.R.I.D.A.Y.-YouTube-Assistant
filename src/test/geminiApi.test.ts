@@ -5,8 +5,8 @@ import testUtils from './testUtils';
 
 dotenv.config();
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY_TEST;
-if (!GEMINI_API_KEY) {
+const GEMINI_API_KEY_DEV = process.env.GEMINI_API_KEY_TEST;
+if (!GEMINI_API_KEY_DEV) {
   throw new Error("GEMINI_API_KEY_TEST is not set in the environment variables");
 }
 
@@ -34,14 +34,14 @@ describe('Gemini API Tests', () => {
   }, 20000);
 
   test('should set API key and generate content', async () => {
-    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY_DEV}`, 'API key set successfully');
     const result = await helpers.runCommandAndGetOutput(testSetup.page, 'generate "Tell me a joke"');
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
   }, 60000);
 
   test('should call sayHelloByGemini', async () => {
-    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY_DEV}`, 'API key set successfully');
     const result = await helpers.runCommandAndGetOutput(testSetup.page, 'sayHelloByGemini');
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
@@ -55,7 +55,7 @@ describe('Gemini API Tests', () => {
   }, 60000);
 
   test('should handle multiple consecutive requests', async () => {
-    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY_DEV}`, 'API key set successfully');
     const prompts = ['Tell me a joke', 'What is the capital of France?', 'Hello'];
     for (const prompt of prompts) {
       const result = await helpers.runCommandAndGetOutput(testSetup.page, `generate "${prompt}"`);
@@ -67,7 +67,7 @@ describe('Gemini API Tests', () => {
   }, 60000);
 
   test('should handle streamGenerate', async () => {
-    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY}`, 'API key set successfully');
+    await helpers.runCommandAndExpectOutput(testSetup.page, `setKey ${GEMINI_API_KEY_DEV}`, 'API key set successfully');
     const result = await helpers.runCommandAndGetOutput(testSetup.page, 'streamGenerate "Tell me about the future of AI"');
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);

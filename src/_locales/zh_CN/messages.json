@@ -155,6 +155,9 @@
     "option_summary_testing": {
         "message": "测试中..."
     },
+    "tip_save_success": {
+        "message": "保存成功"
+    },
     "option_summary_api_key_empty": {
         "message": "请输入 API 密钥"
     },

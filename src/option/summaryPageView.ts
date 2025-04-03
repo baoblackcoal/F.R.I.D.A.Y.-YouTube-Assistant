@@ -110,7 +110,10 @@ export class SummaryPageView implements ISummaryPageView {
         </label>
       </div>
       <input type="text" id="geminiApiKey" class="input-field">
-      <button id="testApiKey" class="base-button">${i18n.getMessage('option_summary_test_button')}</button>
+      <div class="button-container">
+        <button id="testApiKey" class="base-button">${i18n.getMessage('option_summary_test_button')}</button>
+        <button id="saveGeminiApiKey" class="base-button">${i18n.getMessage('option_summary_prompt_save')}</button>
+      </div>
       
       <div id="apiKeyInfoCommonKey" class="api-key-info api-key-info-common">
         <p class="mb-2"><strong>${i18n.getMessage('option_summary_common_key_info_title')}</strong></p>
@@ -136,8 +139,8 @@ export class SummaryPageView implements ISummaryPageView {
           <li>${i18n.getMessage('option_summary_custom_key_benefit_quota')}</li>
           <li>${i18n.getMessage('option_summary_custom_key_benefit_control')}</li>
         </ul>
-        <p class="mt-2">${i18n.getMessage('option_summary_custom_key_description')} <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
-            Google Cloud Console
+        <p class="mt-2">${i18n.getMessage('option_summary_custom_key_description')} <a href="https://aistudio.google.com/u/0/apikey" target="_blank" rel="noopener noreferrer">
+            Google AI Studio
           </a>
         </p>
       </div>
@@ -227,16 +230,20 @@ export class SummaryPageView implements ISummaryPageView {
     const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
     const commonKeyInfo = this.container.querySelector('#apiKeyInfoCommonKey') as HTMLElement;
     const yourKeyInfo = this.container.querySelector('#apiKeyInfoYourKey') as HTMLElement;
+    const saveButton = this.container.querySelector('#saveGeminiApiKey') as HTMLElement;
 
     let displayKey = '';
     if (apiKey !== '') {
       displayKey = apiKey.replace(/.{6}$/, '******');
     }
     apiKeyInput.value = displayKey;
+    
     if (isCommonKey) {
       apiKeyInput.readOnly = true;
+      saveButton.style.display = 'none';
     } else {
       apiKeyInput.readOnly = false;
+      saveButton.style.display = 'none'; // Initially hide save button even for custom key
     }
 
     commonKeyInfo.style.display = isCommonKey ? 'block' : 'none';
@@ -264,10 +271,19 @@ export class SummaryPageView implements ISummaryPageView {
     
     await this.onSettingsChangeToSave();
     
-    const llmSettings = await settingsManager.getLlmSettings();
-    const apiKey = common.getApiKey(llmSettings);
+    const summarySettings = await settingsManager.getSummarySettings();
+    const apiKey = await common.getApiKey(summarySettings);
     
     this.loadApiKeySection(isCommonKey, apiKey);
+  }
+
+  private async saveUserGeminiApiKey(): Promise<void> {
+    const geminiApiKey = this.getFormValues().geminiApiKey;
+    await chrome.storage.sync.set({ geminiApiKey: geminiApiKey });
+    Toast.show({
+      type: 'success',
+      message: i18n.getMessage('tip_save_success')
+    });
   }
 
   private async onTestApiKey(): Promise<void> {
@@ -280,8 +296,17 @@ export class SummaryPageView implements ISummaryPageView {
     
     try {
         // Get the current API key
-        const llmSettings = await settingsManager.getLlmSettings();
-        const apiKey = common.getApiKey(llmSettings);
+        const summarySettings = await settingsManager.getSummarySettings();
+        let apiKey = '';
+        if (summarySettings.isCommonKey) {
+            apiKey = await common.getApiKey(summarySettings);
+        } else {
+            apiKey = apiKeyInput.value.trim();
+            if (apiKey.includes('*')) {
+                const geminiApiKey = await chrome.storage.sync.get('geminiApiKey');
+                apiKey = geminiApiKey.geminiApiKey;
+            }
+        }
         if (!apiKey) {
             throw new Error(i18n.getMessage('option_summary_api_key_empty'));
         }
@@ -325,14 +350,27 @@ export class SummaryPageView implements ISummaryPageView {
       await this.onTestApiKey();
     });
 
+    //handle saveGeminiApiKey button
+    const saveGeminiApiKeyButton = this.container.querySelector('#saveGeminiApiKey') as HTMLButtonElement;
+    saveGeminiApiKeyButton.addEventListener('click', async () => {
+      await this.saveUserGeminiApiKey();
+      saveGeminiApiKeyButton.style.display = 'none'; // Hide after saving
+    });
+
     // Handle geminiApiKey input change
     const geminiApiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
-    geminiApiKeyInput.addEventListener('change', async () => {
-      const key = geminiApiKeyInput.value.trim();
-      if (key) {
-        const llmSettings = await settingsManager.getLlmSettings();
-        llmSettings.userApiKey = key;
-        await settingsManager.setLlmSettings(llmSettings);
+    let originalApiKey = geminiApiKeyInput.value;
+    
+    geminiApiKeyInput.addEventListener('input', async () => {
+      const saveButton = this.container.querySelector('#saveGeminiApiKey') as HTMLElement;
+      const isYourKey = (this.container.querySelector('#apiKeyTypeYourKey') as HTMLInputElement).checked;
+      const currentValue = geminiApiKeyInput.value.trim();
+      
+      // Show save button only if using custom key and value has changed
+      if (isYourKey && currentValue !== originalApiKey) {
+        saveButton.style.display = 'block';
+      } else {
+        saveButton.style.display = 'none';
       }
     });
 
@@ -379,9 +417,9 @@ export class SummaryPageView implements ISummaryPageView {
     const commonKeyRadio = this.container.querySelector('#apiKeyTypeCommonKey') as HTMLInputElement;
     const yourKeyRadio = this.container.querySelector('#apiKeyTypeYourKey') as HTMLInputElement;
     const apiKeyInput = this.container.querySelector('#geminiApiKey') as HTMLInputElement;
-    const isCommonKey = llmSettings.isCommonKey;
+    const isCommonKey = settings.isCommonKey;
     
-    const apiKey = common.getApiKey(llmSettings);
+    const apiKey = await common.getApiKey(settings);
     if (isCommonKey) {
       commonKeyRadio.checked = true;
       apiKeyInput.readOnly = true;

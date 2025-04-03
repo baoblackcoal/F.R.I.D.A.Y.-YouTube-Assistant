@@ -29,6 +29,7 @@ export const defaultGeneralSettings: IGeneralSettings = {
 };
 
 export const defaultSummarySettings: ISummarySettings = {
+  isCommonKey: true,
   promptType: 0,
   diyPromptText1: summaryDiy1PromptText,
   diyPromptText2: "Create a bullet-point summary of the key points from this video in {language}:\n\nTitle: {videoTitle}\n\nTranscript: {textTranscript}",
@@ -37,7 +38,7 @@ export const defaultSummarySettings: ISummarySettings = {
   autoTtsSpeak: false,
   autoGenerate: false,
   autoDownload: false,
-  generateSubtitleType: SubtitleType.EasyToRead,
+  generateSubtitleType: SubtitleType.Translation,
 };
 
 export const defaultLlmModel: ILlmSettings = {
@@ -48,7 +49,6 @@ export const defaultLlmModel: ILlmSettings = {
   frequencyPenalty: 0,
   presencePenalty: 0,
   userApiKey: "",
-  isCommonKey: true,
 };
 
 export const defaultSettings: IAbstractSettings = {
@@ -67,13 +67,12 @@ export const testSettings: IAbstractSettings = {
   summary: {
     ...defaultSummarySettings,
     promptType: 0,
-    diyPromptText1: "hi",
     diyPromptText2: "hi",
     diyPromptText3: "hello",
     language: Language.SimplifiedChinese,
     autoTtsSpeak: false,
     autoGenerate: false,
-    generateSubtitleType: SubtitleType.EasyToRead,
+    generateSubtitleType: SubtitleType.Translation,
   },
   llm: {
     ...defaultLlmModel,

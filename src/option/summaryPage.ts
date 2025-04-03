@@ -17,10 +17,18 @@ export class SummaryPage {
     );
   }
 
+  saveUserGeminiApiKey(): void {
+    const geminiApiKey = this.view.getFormValues().geminiApiKey;
+    chrome.storage.sync.set({ geminiApiKey: geminiApiKey });
+  }
+
   private async handleSettingsChange(): Promise<void> {
     const formValues = this.view.getFormValues();
+    const oldSettings = await settingsManager.getSummarySettings();    
+    const isCommonKey = formValues.apiKeyType === 'Common Key';
     
     const summarySettings: ISummarySettings = {
+      isCommonKey: isCommonKey,
       promptType: formValues.promptType,
       diyPromptText1: formValues.diyPromptText1,
       diyPromptText2: formValues.diyPromptText2,
@@ -29,21 +37,9 @@ export class SummaryPage {
       autoTtsSpeak: formValues.autoTtsSpeak,
       autoGenerate: formValues.autoSummary,
       autoDownload: formValues.autoDownload,
-      generateSubtitleType: SubtitleType.Podcast,
+      generateSubtitleType: oldSettings.generateSubtitleType,
     };
 
-    const isUserKey = formValues.apiKeyType === 'Your Key';
-    if (isUserKey) {
-      await settingsManager.setLlmSettings({ 
-        ...await settingsManager.getLlmSettings(),
-        isCommonKey: false 
-      });
-    } else {
-      await settingsManager.setLlmSettings({ 
-        ...await settingsManager.getLlmSettings(), 
-        isCommonKey: true 
-      });
-    }
     console.log('summarySettings', summarySettings);                                                                                                    
     await settingsManager.setSummarySettings(summarySettings);
   }

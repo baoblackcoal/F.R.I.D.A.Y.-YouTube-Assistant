@@ -158,6 +158,9 @@
     "option_summary_testing": {
         "message": "測試中..."
     },
+    "tip_save_success": {
+        "message": "儲存成功"
+    },
     "option_summary_api_key_empty": {
         "message": "請輸入 API 金鑰"
     },

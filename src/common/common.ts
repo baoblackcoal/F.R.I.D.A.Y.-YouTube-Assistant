@@ -1,4 +1,4 @@
-import { ILlmSettings, SubtitleType } from "./ISettings";
+import { ILlmSettings, ISummarySettings, SubtitleType } from "./ISettings";
 import { Language } from "./ISettings";
 
 export enum Env {
@@ -20,7 +20,7 @@ export const languageLabels: Record<Language, string> = {
 
 export const subtitleOptionLabels: Record<SubtitleType, string> = {
   [SubtitleType.None]: 'summary-subtitle-none',
-  [SubtitleType.EasyToRead]: 'summary-subtitle-translate',
+  [SubtitleType.Translation]: 'summary-subtitle-translate',
   [SubtitleType.Podcast]: 'summary-subtitle-to-podcast'
 };
 
@@ -61,14 +61,15 @@ export class Common {
   }
 
   private getCommonKeyApiKey(): string {
-    return 'AIzaSyDkPJhsoRJcLvbYurWIWtf_n50izLzSGN4';
+    return process.env.GEMINI_API_KEY ?? '';
   }
 
-  public getApiKey(settings: ILlmSettings): string {
+  public async getApiKey(settings: ISummarySettings): Promise<string> {
     if (settings.isCommonKey) {
       return this.getCommonKeyApiKey();
     } else {
-      return settings.userApiKey;
+      const r = await chrome.storage.sync.get('geminiApiKey');
+      return r.geminiApiKey;
     }
   }
 

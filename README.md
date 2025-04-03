@@ -38,3 +38,21 @@ npm run build-release
 9. YouTube Summary with ChatGPT extension should be installed and active!
 
 
+## Environment Variables
+
+The application requires the following environment variables to be set in a `.env` file:
+
+### API Keys
+- `GEMINI_API_KEY_DEV`: Google Gemini API key for development environment
+- `GEMINI_API_KEY_TEST`: Google Gemini API key for test environment
+- `GEMINI_API_KEY_PRODUCTION`: Google Gemini API key for production environment
+
+### Speech Services
+- `SPEECH_KEY`: Azure Speech Services API key
+- `SPEECH_REGION`: Azure Speech Services region (e.g., 'eastus')
+
+Make sure to create a `.env` file in the root directory and add these variables with your own API keys before running the application.
+
+**Note**: Never commit your actual API keys to version control. The `.env` file should be added to your `.gitignore`.
+
+

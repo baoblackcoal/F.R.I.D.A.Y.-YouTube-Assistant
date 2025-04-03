@@ -10,7 +10,7 @@ import { handleSubtitleSummaryView, SubtitleSummaryView } from "./view/subtitleS
 import { logTime, waitForElm } from "../utils";
 import { MessageObserver } from "../../utils/messageObserver";
 import { ITtsMessage } from "../../utils/messageQueue";
-import { FridayStatus, fridayStatusLabels, GenerateStatus } from "../../common/common";
+import { common, FridayStatus, fridayStatusLabels, GenerateStatus } from "../../common/common";
 import { FriSummary } from "../friSummary/friSummary";
 import { i18nService } from "../friSummary/i18nService";
 import { PlayPauseButtonHandler } from "./view/buttonHandlers";
@@ -122,22 +122,15 @@ export async function getTranscriptText(videoId: string): Promise<string | null>
     return textTranscript.replace(/\n/g, '');
 }
 
-export function getApiKey(callback: (key: string | null) => void): void {
-    chrome.storage.sync.get('geminiApiKey', (data) => {
-        let geminiApiKey: string | null = null;
-        try {
-            if (data.geminiApiKey) {
-                geminiApiKey = data.geminiApiKey;
-            } else {
-                console.log('Gemini API Key not found in browser storage.');
-            }
-            if (geminiApiKey == null) {
-                geminiApiKey = process.env.GEMINI_API_KEY ?? null;
-            }
-        } catch (error) {
-            console.log('Error getting Gemini API Key:', error);
+export function getGeminiApiKey(callback: (key: string | null) => void): void {
+    settingsManager.getSummarySettings().then(async (summarySettings) => {
+        const apiKey = await common.getApiKey(summarySettings);
+        if (apiKey) {
+            callback(apiKey);
+        } else {
+            callback(null);
         }
-        callback(geminiApiKey);
+        return;
     });
 }
 
@@ -264,7 +257,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
     // Get summarySettings using settingsManager
     const summarySettings = await settingsManager.getSummarySettings();
 
-    getApiKey(async (geminiApiKey) => {
+    getGeminiApiKey(async (geminiApiKey) => {
         let parseText = "";
         const contentElement = document.querySelector("#fri-summary-content");
         let reavStreamText = "";
@@ -276,7 +269,19 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                     let response_text = "";
                     const parser = new DOMParser();
                     let replaceNewLineCount = 0;
+                    let getError = false;
                     geminiAPI.streamGenerate(prompt, async (text) => {
+                        // detect if text include 'Error:'
+                        if (text.includes('Error:')) {
+                            Toast.show({
+                                type: 'error',
+                                message: text,
+                                duration: 10000
+                            });
+                            getError = true; 
+                            return;
+                        }
+
                         reavStreamText += text;
 
                         // reavStreamText = reavStreamText.replace(/\. /g, '. \n').replace(/。/g, '。\n');
@@ -306,28 +311,37 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                             }                              
                         }
                        
-                    }).then(async () => {
-                        subtitleTranslate.addSummaryParagraphsClickHandlers();
-
-                        TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', -1); // speak a new line to make sure last line is spoken
-                        const subtitleType = await settingsManager.getSummarySettings();
-                        if (subtitleType.generateSubtitleType != SubtitleType.None) {
-                            subtitleTranslate.translateSubtitles(videoId);
-                        } else {
-                            updateSummaryStatus("Generate Summary Finish.", FridayStatus.Finished);
-                        }
-                        
                     }).catch((error) => {
-                        parseText = `Error generating text: ${error}`;
-                        contentElement.innerHTML = parseText;
+                        if (!getError) {
+                            Toast.show({
+                                type: 'error',
+                                message: "Error generating text: " + error,
+                                duration: 10000
+                            });
+                        }
+                    }).then(async () => {
+                        if (!getError) {
+                            subtitleTranslate.addSummaryParagraphsClickHandlers();
+
+                            TTSSpeak.getInstance().speakAndPlayVideo(reavStreamText + '\n', -1); // speak a new line to make sure last line is spoken
+                            const subtitleType = await settingsManager.getSummarySettings();
+                            if (subtitleType.generateSubtitleType != SubtitleType.None) {
+                                subtitleTranslate.translateSubtitles(videoId);
+                            } else {
+                                updateSummaryStatus("Generate Summary Finish.", FridayStatus.Finished);
+                            }
+                        }
                     });
-                } catch (error) {
+                } catch (error) {                    
                     console.log('An error occurred:', error);
                     contentElement.innerHTML = `Error generating text: ${error}`;
                 }
             } else {
-                parseText = "Please set API key in the extension settings";
-                contentElement.innerHTML = parseText;
+                Toast.show({
+                    type: 'error',
+                    message: "Please set API key in the extension settings",
+                    duration: 4000
+                });
             }
         }
     });

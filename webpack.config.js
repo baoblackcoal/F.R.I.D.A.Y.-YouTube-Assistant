@@ -52,6 +52,8 @@ const moduleRules = [
 
 module.exports = (env, argv) => {
   const isProduction = process.env.NODE_ENV === 'production';
+  const isYtbsDev = process.env.YTBS_DEV == 'true';
+  console.log(`process.env.YTBS_DEV = ${process.env.YTBS_DEV}, isYtbsDev = ${isYtbsDev}`);
 
   return {
     mode: isProduction ? 'production' : 'development',
@@ -108,7 +110,7 @@ module.exports = (env, argv) => {
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
-        'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
+        'process.env.GEMINI_API_KEY': JSON.stringify(isYtbsDev ? process.env.GEMINI_API_KEY_DEV : process.env.GEMINI_API_KEY_PRODUCTION),
         'process.env.SPEECH_KEY': JSON.stringify(process.env.SPEECH_KEY),
         'process.env.SPEECH_REGION': JSON.stringify(process.env.SPEECH_REGION)
       }),

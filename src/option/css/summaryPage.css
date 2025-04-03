@@ -98,3 +98,11 @@
   @apply border-blue-200 bg-blue-50 text-blue-800;
   @apply dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-300;
 }
+
+.button-container {
+  @apply flex gap-2 mt-2;
+}
+
+.button-container button {
+  @apply flex-none;
+}
