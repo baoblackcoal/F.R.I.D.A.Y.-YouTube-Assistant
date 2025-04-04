@@ -124,8 +124,8 @@ export class SummaryPageView implements ISummaryPageView {
           <li>${i18n.getMessage('option_summary_common_key_limit_rpd')}</li>
         </ul>
         <p class="mt-2">${i18n.getMessage('option_summary_gemini_flash_1_5_pricing')}
-          <a href="https://ai.google.dev/pricing#1_5flash" target="_blank" rel="noopener noreferrer">
-            Gemini Flash 1.5 Pricing
+          <a href="https://ai.google.dev/pricing" target="_blank" rel="noopener noreferrer">
+            Gemini Developer API Pricing
           </a>
         </p>
       </div>
@@ -234,7 +234,7 @@ export class SummaryPageView implements ISummaryPageView {
 
     let displayKey = '';
     if (apiKey !== '') {
-      displayKey = apiKey.replace(/.{6}$/, '******');
+      displayKey = '*'.repeat(apiKey.length);
     }
     apiKeyInput.value = displayKey;
     

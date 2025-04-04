@@ -72,7 +72,7 @@
         "message": "Common Key Information:"
     },
     "option_summary_common_key_description": {
-        "message": "Use the Common Key, which is a shared key with the following limits:"
+        "message": "Use the Common Key, which is a shared key with the following limits (may cause unstable generation, apply for personal key):"
     },
     "option_summary_common_key_limit_rpm": {
         "message": "15 requests per minute (RPM)"

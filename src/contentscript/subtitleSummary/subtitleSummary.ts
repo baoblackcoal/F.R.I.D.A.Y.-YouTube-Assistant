@@ -240,6 +240,21 @@ export function getTtsSpeakIndex(): number {
     return paragraphIndex++;
 }
 
+export function handleGenerateError(text: string): boolean {
+    let getError = false;
+    if (text.includes('Error:')) {
+        Toast.show({
+            type: 'error',
+            message: i18nService.getMessage('summary-generate-error'),
+            duration: 5000
+        });
+        getError = true;
+        //open chrome option
+        // window.open(chrome.runtime.getURL('options.html'), '_blank');
+    }
+    return getError;
+}
+
 export async function generateSummary(videoId: string, subtitleTranslate: ISubtitleTranslate): Promise<boolean> {
     const prompt = await generatePrompt(videoId);
     if (prompt == "") {
@@ -272,13 +287,8 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                     let getError = false;
                     geminiAPI.streamGenerate(prompt, async (text) => {
                         // detect if text include 'Error:'
-                        if (text.includes('Error:')) {
-                            Toast.show({
-                                type: 'error',
-                                message: text,
-                                duration: 10000
-                            });
-                            getError = true; 
+                        getError = handleGenerateError(text);
+                        if (getError) {                            
                             return;
                         }
 
@@ -312,7 +322,7 @@ export async function generateSummary(videoId: string, subtitleTranslate: ISubti
                         }
                        
                     }).catch((error) => {
-                        if (!getError) {
+                        if (getError) {
                             Toast.show({
                                 type: 'error',
                                 message: "Error generating text: " + error,

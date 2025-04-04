@@ -52,7 +52,6 @@
     "option_tab_tts": {
         "message": "语音合成"
     },
-
     "option_summary_api_key_section": {
         "message": "Gemini API 密钥"
     },
@@ -69,16 +68,16 @@
         "message": "公共密钥信息："
     },
     "option_summary_common_key_description": {
-        "message": "使用公共密钥，该密钥具有以下限制："
+        "message": "使用公共密钥，该公共密钥具有以下限制（可能会导致生成不稳定，建议申请个人密钥）："
     },
     "option_summary_common_key_limit_rpm": {
-        "message": "每分钟 15 个请求 (RPM)"
+        "message": "所有用户每分钟共 15 个请求 (RPM)"
     },
     "option_summary_common_key_limit_tpm": {
-        "message": "每分钟 100 万个令牌 (TPM)"
+        "message": "所有用户每分钟共 100 万个令牌 (TPM)"
     },
     "option_summary_common_key_limit_rpd": {
-        "message": "每天 1,500 个请求 (RPD)"
+        "message": "所有用户每天共 1,500 个请求 (RPD)"
     },
     "option_summary_gemini_flash_1_5_pricing": {
         "message": "更多详情，请访问"

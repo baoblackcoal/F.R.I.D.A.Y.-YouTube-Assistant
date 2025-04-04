@@ -41,6 +41,9 @@
     "summary-fri-finished": {
         "message": "Generate finished."
     },
+    "summary-generate-error": {
+        "message": "Generate error, please check Gemini API key in settings."
+    },
     "summary-subtitle-generate": {
         "message": "Subtitle Generate Type"
     },

@@ -41,6 +41,9 @@
     "summary-fri-finished": {
         "message": "生成完成。"
     },
+    "summary-generate-error": {
+        "message": "生成错误，请检查设置中的Gemini API密钥。"
+    },
     "summary-subtitle-generate": {
         "message": "字幕生成类型"
     },

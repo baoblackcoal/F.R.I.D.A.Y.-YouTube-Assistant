@@ -72,7 +72,7 @@
         "message": "公共金鑰資訊："
     },
     "option_summary_common_key_description": {
-        "message": "使用公共金鑰，該金鑰具有以下限制："
+        "message": "使用公共金鑰，該金鑰具有以下限制（可能會導致生成不穩定，建議申請個人密鑰）："
     },
     "option_summary_common_key_limit_rpm": {
         "message": "每分鐘 15 個請求 (RPM)"
